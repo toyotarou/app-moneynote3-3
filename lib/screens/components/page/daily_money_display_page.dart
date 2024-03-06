@@ -558,7 +558,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
   Future<void> _makeBankPriceList() async {
     final bankPricesCollection = widget.isar.bankPrices;
 
-    final getBankPrices = await bankPricesCollection.where().findAll();
+    final getBankPrices = await bankPricesCollection.where().sortByDate().findAll();
 
     setState(() {
       _bankPriceList = getBankPrices;

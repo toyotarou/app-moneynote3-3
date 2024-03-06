@@ -218,16 +218,57 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       list.add(Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            Text(bankPriceList![i].date),
-            Text(bankPriceList![i].price.toString().toCurrency()),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(bankPriceList![i].date),
+                Text(bankPriceList![i].price.toString().toCurrency()),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(),
+                GestureDetector(
+                  onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
+                  child: Text('delete', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                ),
+              ],
+            ),
           ],
         ),
       ));
     }
 
     return list;
+  }
+
+  ///
+  void _showDeleteDialog({required int id}) {
+    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+
+    final Widget continueButton = TextButton(
+        onPressed: () {
+          _deleteBankPrice(id: id);
+
+          Navigator.pop(context);
+        },
+        child: const Text('はい'));
+
+    final alert = AlertDialog(
+      backgroundColor: Colors.blueGrey.withOpacity(0.3),
+      content: const Text('このデータを消去しますか？'),
+      actions: [cancelButton, continueButton],
+    );
+
+    showDialog(context: context, builder: (BuildContext context) => alert);
+  }
+
+  ///
+  Future<void> _deleteBankPrice({required int id}) async {
+    final bankPriceCollection = widget.isar.bankPrices;
+    await widget.isar.writeTxn(() async => bankPriceCollection.delete(id));
   }
 }
