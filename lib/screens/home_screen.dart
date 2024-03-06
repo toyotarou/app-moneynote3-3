@@ -416,11 +416,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => MoneyDialog(
-                  context: context,
-                  widget: BankPriceAdjustAlert(
-                      isar: widget.isar, bankNameList: bankNameList, emoneyNameList: emoneyNameList),
-                ),
+                onTap: () {
+                  ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+
+                  MoneyDialog(
+                    context: context,
+                    widget: BankPriceAdjustAlert(
+                        isar: widget.isar, bankNameList: bankNameList, emoneyNameList: emoneyNameList),
+                  );
+                },
                 child: Row(
                   children: [
                     const MenuHeadIcon(),

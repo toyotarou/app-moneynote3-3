@@ -9,6 +9,7 @@ import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
 import '../../collections/emoney_name.dart';
 import '../../extensions/extensions.dart';
+import '../../state/app_params/app_params_notifier.dart';
 import '../../state/bank_price_adjust/bank_price_adjust_notifier.dart';
 import 'parts/error_dialog.dart';
 
@@ -46,6 +47,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    final inputButtonClicked = ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
+
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
@@ -66,9 +69,16 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('金融機関、電子マネー金額修正'),
-                  GestureDetector(
-                    onTap: _inputBankPriceAdjust,
-                    child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6), size: 16),
+                  ElevatedButton(
+                    onPressed: inputButtonClicked
+                        ? null
+                        : () {
+                            ref.read(appParamProvider.notifier).setInputButtonClicked(flag: true);
+
+                            _inputBankPriceAdjust();
+                          },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    child: const Text('input'),
                   ),
                 ],
               ),
