@@ -892,7 +892,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   Future<void> _makeSpendItemList() async {
     final spendItemsCollection = widget.isar.spendItems;
-    final getSpendItems = await spendItemsCollection.where().findAll();
+    final getSpendItems = await spendItemsCollection.where().sortByOrder().findAll();
 
     if (mounted) {
       setState(() => _spendItemList = getSpendItems);

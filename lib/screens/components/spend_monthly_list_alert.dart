@@ -160,7 +160,7 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   ///
   Future<void> _makeSpendItemList() async {
     final spendItemsCollection = widget.isar.spendItems;
-    final getSpendItems = await spendItemsCollection.where().findAll();
+    final getSpendItems = await spendItemsCollection.where().sortByOrder().findAll();
     setState(() => _spendItemList = getSpendItems);
   }
 }
