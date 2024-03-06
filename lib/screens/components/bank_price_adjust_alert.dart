@@ -8,10 +8,13 @@ import 'package:isar/isar.dart';
 import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
 import '../../collections/emoney_name.dart';
+import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import '../../state/bank_price_adjust/bank_price_adjust_notifier.dart';
+import 'bank_price_input_alert.dart';
 import 'parts/error_dialog.dart';
+import 'parts/money_dialog.dart';
 
 class Deposit {
   Deposit(this.flag, this.name);
@@ -35,6 +38,9 @@ class BankPriceAdjustAlert extends ConsumerStatefulWidget {
 
 class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
   final List<TextEditingController> _bankPriceTecs = [];
+
+  Map<int, BankName> bankNameMap = {};
+  Map<int, EmoneyName> emoneyNameMap = {};
 
   ///
   @override
@@ -104,14 +110,86 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     final list = <Widget>[];
 
+    final depoItemList = <DepoItem>[];
+
     final depositNameList = <Deposit>[Deposit('', '')];
 
-    widget.bankNameList?.forEach((element) => depositNameList.add(
-          Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
-        ));
+    widget.bankNameList?.forEach((element) {
+      depositNameList.add(
+        Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
+      );
 
-    widget.emoneyNameList?.forEach(
-        (element) => depositNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName)));
+      depoItemList.add(DepoItem(element.id, '${element.bankName}\n${element.branchName}', DepositType.bank));
+
+      bankNameMap[element.id] = element;
+    });
+
+    widget.emoneyNameList?.forEach((element) {
+      depositNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName));
+
+      depoItemList.add(DepoItem(element.id, element.emoneyName, DepositType.emoney));
+
+      emoneyNameMap[element.id] = element;
+    });
+
+    //==============================================
+    list.add(const SizedBox(height: 10));
+
+    final list2 = <Widget>[];
+    depoItemList.forEach((element) {
+      list2.add(
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                if (element.type == DepositType.bank) {
+                  MoneyDialog(
+                    context: context,
+                    widget: BankPriceInputAlert(
+                      date: DateTime.now(),
+                      isar: widget.isar,
+                      depositType: DepositType.bank,
+                      bankName: bankNameMap[element.id],
+                    ),
+                  );
+                }
+                if (element.type == DepositType.emoney) {
+                  MoneyDialog(
+                    context: context,
+                    widget: BankPriceInputAlert(
+                      date: DateTime.now(),
+                      isar: widget.isar,
+                      depositType: DepositType.emoney,
+                      emoneyName: emoneyNameMap[element.id],
+                    ),
+                  );
+                }
+              },
+              child: CircleAvatar(
+                backgroundColor: (element.type == DepositType.bank)
+                    ? Colors.blueAccent.withOpacity(0.2)
+                    : Colors.greenAccent.withOpacity(0.2),
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    element.name,
+                    style: const TextStyle(fontSize: 8, color: Colors.white),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 5),
+          ],
+        ),
+      );
+    });
+
+    list
+      ..add(SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: list2)))
+      ..add(const SizedBox(height: 10));
+    //==============================================
 
     for (var i = 0; i < 10; i++) {
       list.add(DecoratedBox(
@@ -318,4 +396,13 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
       Navigator.pop(context);
     }
   }
+}
+
+///
+class DepoItem {
+  DepoItem(this.id, this.name, this.type);
+
+  int id;
+  String name;
+  DepositType type;
 }
