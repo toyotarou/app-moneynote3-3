@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../../extensions/extensions.dart';
+import '../../state/money_graph/money_graph_notifier.dart';
 import '../../utilities/utilities.dart';
 
 class MoneyGraphAlert extends ConsumerStatefulWidget {
@@ -13,15 +14,18 @@ class MoneyGraphAlert extends ConsumerStatefulWidget {
     super.key,
     required this.date,
     required this.isar,
-    required this.monthDateSumMap,
+    required this.monthlyDateSumMap,
     required this.bankPriceTotalPadMap,
+    required this.monthlySpendMap,
   });
 
   final DateTime date;
   final Isar isar;
 
-  final Map<String, int> monthDateSumMap;
+  final Map<String, int> monthlyDateSumMap;
   final Map<String, int> bankPriceTotalPadMap;
+
+  final Map<String, int> monthlySpendMap;
 
   @override
   ConsumerState<MoneyGraphAlert> createState() => _MoneyGraphAlertState();
@@ -47,6 +51,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
     final graphWidthState = ref.watch(graphWidthProvider);
 
+    final displayGraphFlag = ref.watch(moneyGraphProvider.select((value) => value.displayGraphFlag));
+
     return AlertDialog(
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
@@ -62,7 +68,36 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('所持金額'), Container()],
+                children: [
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () => ref.read(moneyGraphProvider.notifier).setDisplayGraphFlag(flag: 'total'),
+                        child: Text(
+                          '所持金額',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: (displayGraphFlag == 'total')
+                                  ? Colors.yellowAccent
+                                  : Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      GestureDetector(
+                        onTap: () => ref.read(moneyGraphProvider.notifier).setDisplayGraphFlag(flag: 'spend'),
+                        child: Text(
+                          '使用金額',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: (displayGraphFlag == 'spend')
+                                  ? Colors.yellowAccent
+                                  : Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(),
+                ],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               const SizedBox(height: 20),
@@ -116,12 +151,31 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
   void _setChartData() {
     final map = <String, int>{};
 
-    widget.monthDateSumMap.forEach((key, value) {
-      if (widget.date.yyyymm == DateTime.parse('$key 00:00:00').yyyymm) {
-        final value2 = widget.bankPriceTotalPadMap[key] ?? 0;
-        map[key] = value + value2;
-      }
-    });
+    final displayGraphFlag = ref.watch(moneyGraphProvider.select((value) => value.displayGraphFlag));
+
+    var warisuu = 500000;
+
+    switch (displayGraphFlag) {
+      case 'total':
+        widget.monthlyDateSumMap.forEach((key, value) {
+          if (widget.date.yyyymm == DateTime.parse('$key 00:00:00').yyyymm) {
+            final value2 = widget.bankPriceTotalPadMap[key] ?? 0;
+            map[key] = value + value2;
+          }
+        });
+        break;
+
+      case 'spend':
+        widget.monthlySpendMap.forEach((key, value) {
+          if (widget.date.yyyymm == DateTime.parse('$key 00:00:00').yyyymm) {
+            map[key] = value;
+          }
+        });
+
+        warisuu = 50000;
+
+        break;
+    }
 
     _flspots = [];
     _dateMap = {};
@@ -139,8 +193,6 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
     final minValue = list.reduce(min);
     final maxValue = list.reduce(max);
-
-    const warisuu = 500000;
 
     final graphMin = ((minValue / warisuu).floor()) * warisuu;
     final graphMax = ((maxValue / warisuu).ceil()) * warisuu;
@@ -176,7 +228,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
             showTitles: true,
             reservedSize: 50,
             getTitlesWidget: (value, meta) {
-              final year = DateTime.parse(_dateMap[value.toInt().toString()].toString()).year.toString().padLeft(2, '0');
+              final year =
+                  DateTime.parse(_dateMap[value.toInt().toString()].toString()).year.toString().padLeft(2, '0');
               final month =
                   DateTime.parse(_dateMap[value.toInt().toString()].toString()).month.toString().padLeft(2, '0');
               final day = DateTime.parse(_dateMap[value.toInt().toString()].toString()).day.toString().padLeft(2, '0');

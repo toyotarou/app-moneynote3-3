@@ -58,11 +58,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Map<String, Money> moneyMap = {};
 
-  Map<String, int> monthDateSumMap = {};
+  Map<String, int> dateCurrencySumMap = {};
 
   List<BankPrice>? bankPriceList = [];
 
   List<SpendTimePlace>? monthlySpendTimePlaceList = [];
+  List<SpendTimePlace>? spendTimePlaceList = [];
+  Map<String, List<SpendTimePlace>> spendTimePlaceCountMap = {};
+  List<SpendTimePlace> spendTypeBlankSpendTimePlaceList = [];
 
   Map<String, int> monthlySpendTimePlaceSumMap = {};
 
@@ -73,9 +76,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<EmoneyName>? emoneyNameList = [];
 
   List<Deposit> depoNameList = [];
-  List<Deposit> depositNameList = [];
 
   List<SpendItem>? _spendItemList = [];
+
+  List<String> monthFirstDateList = [];
+
+  Map<String, int> monthlySpendMap = {};
 
   ///
   void _init() {
@@ -99,13 +105,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     final calendarState = ref.watch(calendarProvider);
-
-    if (depoNameList.isNotEmpty) {
-      depositNameList = [];
-      depositNameList.add(Deposit('', ''));
-
-      depoNameList.forEach((element) => depositNameList.add(element));
-    }
 
     return Scaffold(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
@@ -326,6 +325,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        final spendMapMonthly = <String, int>{};
+
+                        var mSpend = 0;
+                        monthlySpendMap.forEach((key, value) {
+                          mSpend += value;
+                          spendMapMonthly[key] = mSpend;
+                        });
+
                         MoneyDialog(
                           context: context,
                           widget: MoneyGraphAlert(
@@ -333,8 +340,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ? DateTime.parse('${widget.baseYm}-01 00:00:00')
                                 : DateTime.now(),
                             isar: widget.isar,
-                            monthDateSumMap: monthDateSumMap,
+                            monthlyDateSumMap: dateCurrencySumMap,
                             bankPriceTotalPadMap: bankPriceTotalPadMap,
+                            monthlySpendMap: spendMapMonthly,
                           ),
                         );
                       },
@@ -410,7 +418,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               GestureDetector(
                 onTap: () => MoneyDialog(
                   context: context,
-                  widget: BankPriceAdjustAlert(isar: widget.isar, depositNameList: depositNameList),
+                  widget: BankPriceAdjustAlert(
+                      isar: widget.isar, bankNameList: bankNameList, emoneyNameList: emoneyNameList),
                 ),
                 child: Row(
                   children: [
@@ -456,7 +465,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  MoneyDialog(context: context, widget: SpendItemInputAlert(isar: widget.isar));
+                  MoneyDialog(
+                    context: context,
+                    widget: SpendItemInputAlert(
+                      isar: widget.isar,
+                      spendItemList: _spendItemList ?? [],
+                      spendTimePlaceCountMap: spendTimePlaceCountMap,
+                    ),
+                  );
                 },
                 child: Row(
                   children: [
@@ -566,8 +582,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final genDate = DateTime.parse('$generateYmd 00:00:00');
         dateDiff = genDate.difference(DateTime.now()).inSeconds;
 
-        if (monthDateSumMap[generateYmd] != null && bankPriceTotalPadMap[generateYmd] != null) {
-          dateSum = monthDateSumMap[generateYmd]! + bankPriceTotalPadMap[generateYmd]!;
+        if (dateCurrencySumMap[generateYmd] != null && bankPriceTotalPadMap[generateYmd] != null) {
+          dateSum = dateCurrencySumMap[generateYmd]! + bankPriceTotalPadMap[generateYmd]!;
         }
       }
 
@@ -578,8 +594,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt() - 1).yyyymmdd;
 
       if (zenjitsu != '') {
-        if (monthDateSumMap[zenjitsu] != null && bankPriceTotalPadMap[zenjitsu] != null) {
-          zenjitsuSum = monthDateSumMap[zenjitsu]! + bankPriceTotalPadMap[zenjitsu]!;
+        if (dateCurrencySumMap[zenjitsu] != null && bankPriceTotalPadMap[zenjitsu] != null) {
+          zenjitsuSum = dateCurrencySumMap[zenjitsu]! + bankPriceTotalPadMap[zenjitsu]!;
         }
       }
 
@@ -605,10 +621,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 : () => MoneyDialog(
                       context: context,
                       widget: DailyMoneyDisplayAlert(
-                        date: DateTime.parse('$generateYmd 00:00:00'),
-                        isar: widget.isar,
-                        moneyMap: moneyMap,
-                      ),
+                          date: DateTime.parse('$generateYmd 00:00:00'), isar: widget.isar, moneyMap: moneyMap),
                     ),
             child: Container(
               margin: const EdgeInsets.all(1),
@@ -701,8 +714,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         moneyList = getMoneys;
 
         if (moneyList!.isNotEmpty) {
-          moneyList!.forEach((element) => monthDateSumMap[element.date] = _utility.makeCurrencySum(money: element));
+          moneyList!.forEach((element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element));
           moneyList!.forEach((element) => moneyMap[element.date] = element);
+          moneyList!.forEach((element) {
+            final exDate = element.date.split('-');
+            if (exDate[2].toInt() == 1) {
+              if (!monthFirstDateList.contains(element.date)) {
+                monthFirstDateList.add(element.date);
+              }
+            }
+          });
         }
       });
     }
@@ -796,9 +817,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return SingleChildScrollView(
       child: DefaultTextStyle(
-        style: const TextStyle(fontSize: 10),
-        child: Column(mainAxisSize: MainAxisSize.min, children: list),
-      ),
+          style: const TextStyle(fontSize: 10), child: Column(mainAxisSize: MainAxisSize.min, children: list)),
     );
   }
 

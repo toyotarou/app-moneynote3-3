@@ -17,8 +17,23 @@ const SpendItemSchema = CollectionSchema(
   name: r'SpendItem',
   id: -7020034350100909142,
   properties: {
-    r'spendItemName': PropertySchema(
+    r'color': PropertySchema(
       id: 0,
+      name: r'color',
+      type: IsarType.string,
+    ),
+    r'defaultTime': PropertySchema(
+      id: 1,
+      name: r'defaultTime',
+      type: IsarType.string,
+    ),
+    r'order': PropertySchema(
+      id: 2,
+      name: r'order',
+      type: IsarType.long,
+    ),
+    r'spendItemName': PropertySchema(
+      id: 3,
       name: r'spendItemName',
       type: IsarType.string,
     )
@@ -43,6 +58,8 @@ int _spendItemEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.color.length * 3;
+  bytesCount += 3 + object.defaultTime.length * 3;
   bytesCount += 3 + object.spendItemName.length * 3;
   return bytesCount;
 }
@@ -53,7 +70,10 @@ void _spendItemSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.spendItemName);
+  writer.writeString(offsets[0], object.color);
+  writer.writeString(offsets[1], object.defaultTime);
+  writer.writeLong(offsets[2], object.order);
+  writer.writeString(offsets[3], object.spendItemName);
 }
 
 SpendItem _spendItemDeserialize(
@@ -63,8 +83,11 @@ SpendItem _spendItemDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = SpendItem();
+  object.color = reader.readString(offsets[0]);
+  object.defaultTime = reader.readString(offsets[1]);
   object.id = id;
-  object.spendItemName = reader.readString(offsets[0]);
+  object.order = reader.readLong(offsets[2]);
+  object.spendItemName = reader.readString(offsets[3]);
   return object;
 }
 
@@ -76,6 +99,12 @@ P _spendItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readLong(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -173,6 +202,270 @@ extension SpendItemQueryWhere
 
 extension SpendItemQueryFilter
     on QueryBuilder<SpendItem, SpendItem, QFilterCondition> {
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'color',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'color',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'color',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'color',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'color',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'color',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'color',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'color',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'color',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> colorIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'color',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> defaultTimeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'defaultTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition>
+      defaultTimeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'defaultTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> defaultTimeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'defaultTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> defaultTimeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'defaultTime',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition>
+      defaultTimeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'defaultTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> defaultTimeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'defaultTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> defaultTimeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'defaultTime',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> defaultTimeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'defaultTime',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition>
+      defaultTimeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'defaultTime',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition>
+      defaultTimeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'defaultTime',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -218,6 +511,59 @@ extension SpendItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> orderEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'order',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> orderGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'order',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> orderLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'order',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterFilterCondition> orderBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'order',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -370,6 +716,42 @@ extension SpendItemQueryLinks
     on QueryBuilder<SpendItem, SpendItem, QFilterCondition> {}
 
 extension SpendItemQuerySortBy on QueryBuilder<SpendItem, SpendItem, QSortBy> {
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> sortByColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> sortByColorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> sortByDefaultTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'defaultTime', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> sortByDefaultTimeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'defaultTime', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> sortByOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'order', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> sortByOrderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'order', Sort.desc);
+    });
+  }
+
   QueryBuilder<SpendItem, SpendItem, QAfterSortBy> sortBySpendItemName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'spendItemName', Sort.asc);
@@ -385,6 +767,30 @@ extension SpendItemQuerySortBy on QueryBuilder<SpendItem, SpendItem, QSortBy> {
 
 extension SpendItemQuerySortThenBy
     on QueryBuilder<SpendItem, SpendItem, QSortThenBy> {
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> thenByColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> thenByColorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> thenByDefaultTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'defaultTime', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> thenByDefaultTimeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'defaultTime', Sort.desc);
+    });
+  }
+
   QueryBuilder<SpendItem, SpendItem, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -394,6 +800,18 @@ extension SpendItemQuerySortThenBy
   QueryBuilder<SpendItem, SpendItem, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> thenByOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'order', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QAfterSortBy> thenByOrderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'order', Sort.desc);
     });
   }
 
@@ -412,6 +830,26 @@ extension SpendItemQuerySortThenBy
 
 extension SpendItemQueryWhereDistinct
     on QueryBuilder<SpendItem, SpendItem, QDistinct> {
+  QueryBuilder<SpendItem, SpendItem, QDistinct> distinctByColor(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'color', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QDistinct> distinctByDefaultTime(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'defaultTime', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<SpendItem, SpendItem, QDistinct> distinctByOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'order');
+    });
+  }
+
   QueryBuilder<SpendItem, SpendItem, QDistinct> distinctBySpendItemName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -426,6 +864,24 @@ extension SpendItemQueryProperty
   QueryBuilder<SpendItem, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<SpendItem, String, QQueryOperations> colorProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'color');
+    });
+  }
+
+  QueryBuilder<SpendItem, String, QQueryOperations> defaultTimeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'defaultTime');
+    });
+  }
+
+  QueryBuilder<SpendItem, int, QQueryOperations> orderProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'order');
     });
   }
 

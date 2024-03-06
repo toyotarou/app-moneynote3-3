@@ -7,4 +7,10 @@ class SpendItem {
   Id id = Isar.autoIncrement;
 
   late String spendItemName;
+
+  late int order;
+
+  late String color;
+
+  late String defaultTime;
 }

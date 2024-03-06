@@ -1,19 +1,27 @@
 import 'dart:ui';
 
+import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/collections/spend_time_place.dart';
 
 import '../../collections/spend_item.dart';
+import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import 'parts/error_dialog.dart';
+import 'parts/spend_item_card.dart';
 
 class SpendItemInputAlert extends ConsumerStatefulWidget {
-  const SpendItemInputAlert({super.key, required this.isar});
+  const SpendItemInputAlert(
+      {super.key, required this.isar, required this.spendItemList, required this.spendTimePlaceCountMap});
 
   final Isar isar;
+
+  final List<SpendItem> spendItemList;
+
+  final Map<String, List<SpendTimePlace>> spendTimePlaceCountMap;
 
   @override
   ConsumerState<SpendItemInputAlert> createState() => _SpendItemInputAlertState();
@@ -22,49 +30,131 @@ class SpendItemInputAlert extends ConsumerStatefulWidget {
 class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   final TextEditingController _spendItemEditingController = TextEditingController();
 
-  List<SpendItem> _spendItemList = [];
+  List<DragAndDropItem> spendItemDDItemList = [];
+  List<DragAndDropList> ddList = [];
+
+  List<int> orderedIdList = [];
+
+  Map<int, String> spendItemNameMap = {};
+
+  Color mycolor = Colors.white;
+
+  Map<int, String> spendItemColorMap = {};
+
+  Map<int, String> spendItemDefaultTimeMap = {};
 
   ///
-  void _init() {
-    _makeSpendItemList();
+  @override
+  void initState() {
+    super.initState();
+
+    widget.spendItemList.forEach((element) {
+      final colorCode = (element.color != '') ? element.color : '0xffffffff';
+      final defaultTime = (element.defaultTime != '') ? element.defaultTime : '08:00';
+
+      spendItemDDItemList.add(
+        DragAndDropItem(
+          child: SpendItemCard(
+            key: Key(element.id.toString()),
+            spendItemName: element.spendItemName,
+            deleteButtonPress: () => _showDeleteDialog(id: element.id),
+            colorPickerButtonPress: () => _showColorPickerDialog(id: element.id),
+            colorCode: colorCode,
+            defaultTimeButtonPress: () => _showDefaultTimeDialog(id: element.id),
+            defaultTime: defaultTime,
+            spendTimePlaceCountMap: widget.spendTimePlaceCountMap,
+          ),
+        ),
+      );
+
+      spendItemNameMap[element.id] = element.spendItemName;
+
+      spendItemColorMap[element.id] = element.color;
+
+      spendItemDefaultTimeMap[element.id] = element.defaultTime;
+    });
+
+    ddList.add(DragAndDropList(children: spendItemDDItemList));
   }
 
   ///
   @override
   Widget build(BuildContext context) {
-    Future(_init);
-
-    return AlertDialog(
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.zero,
+    return Scaffold(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.zero,
-      content: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        width: double.infinity,
-        height: double.infinity,
-        child: DefaultTextStyle(
-          style: GoogleFonts.kiwiMaru(fontSize: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              Container(width: context.screenSize.width),
-              const Text('消費アイテム管理'),
-              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              _displayInputParts(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(),
-                  TextButton(
-                    onPressed: _inputSpendItem,
-                    child: const Text('消費アイテムを追加する', style: TextStyle(fontSize: 12)),
+      body: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: DefaultTextStyle(
+            style: GoogleFonts.kiwiMaru(fontSize: 12),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Container(width: context.screenSize.width),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [const Text('消費アイテム管理'), Container()],
+                ),
+                Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+                _displayInputParts(),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(),
+                          GestureDetector(
+                            onTap: _inputSpendItem,
+                            child: Text(
+                              '消費アイテムを追加する',
+                              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(),
+                          GestureDetector(
+                            onTap: _settingReorderIds,
+                            child: Text(
+                              '並び順を保存する',
+                              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              Expanded(child: _displaySpendItemList()),
-            ],
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: DragAndDropLists(
+                      children: ddList,
+                      onItemReorder: _itemReorder,
+                      onListReorder: _listReorder,
+
+                      ///
+                      itemDecorationWhileDragging: const BoxDecoration(
+                        color: Colors.black,
+                        boxShadow: [BoxShadow(color: Colors.white, blurRadius: 4)],
+                      ),
+
+                      ///
+                      lastListTargetSize: 0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -75,9 +165,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   Widget _displayInputParts() {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
-        ],
+        boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -115,46 +203,32 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       return;
     }
 
-    final spendItem = SpendItem()..spendItemName = _spendItemEditingController.text;
+    final spendItem = SpendItem()
+      ..spendItemName = _spendItemEditingController.text
+      ..order = widget.spendItemList.length + 1
+      ..defaultTime = '08:00'
+      ..color = '0xffffffff';
 
     await widget.isar.writeTxn(() async => widget.isar.spendItems.put(spendItem));
 
     _spendItemEditingController.clear();
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   ///
-  Future<void> _makeSpendItemList() async {
-    final spendItemsCollection = widget.isar.spendItems;
+  void _itemReorder(int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
+    setState(() {
+      final movedItem = ddList[oldListIndex].children.removeAt(oldItemIndex);
 
-    final getSpendItems = await spendItemsCollection.where().findAll();
-
-    setState(() => _spendItemList = getSpendItems);
-  }
-
-  ///
-  Widget _displaySpendItemList() {
-    final list = <Widget>[];
-
-    final oneWidth = context.screenSize.width / 5;
-
-    _spendItemList.forEach((element) {
-      list.add(
-        GestureDetector(
-          onLongPress: () => _showDeleteDialog(id: element.id),
-          child: Container(
-            width: oneWidth,
-            padding: const EdgeInsets.all(2),
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.4))),
-            alignment: Alignment.center,
-            child: Text(element.spendItemName),
-          ),
-        ),
-      );
+      ddList[newListIndex].children.insert(newItemIndex, movedItem);
     });
-
-    return Wrap(children: list);
   }
+
+  ///
+  void _listReorder(int oldListIndex, int newListIndex) {}
 
   ///
   void _showDeleteDialog({required int id}) {
@@ -208,5 +282,154 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     //-----------------------------------
 
     await widget.isar.writeTxn(() async => spendItemsCollection.delete(id));
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
+  ///
+  Future<void> _settingReorderIds() async {
+    orderedIdList = [];
+
+    for (final value in ddList) {
+      for (final child in value.children) {
+        orderedIdList.add(child.child.key
+            .toString()
+            .replaceAll('[', '')
+            .replaceAll('<', '')
+            .replaceAll("'", '')
+            .replaceAll('>', '')
+            .replaceAll(']', '')
+            .toInt());
+      }
+    }
+
+    final spendItemsCollection = widget.isar.spendItems;
+
+    await widget.isar.writeTxn(() async {
+      for (var i = 0; i < orderedIdList.length; i++) {
+        final getSpendItem = await spendItemsCollection.filter().idEqualTo(orderedIdList[i]).findFirst();
+        if (getSpendItem != null) {
+          getSpendItem
+            ..spendItemName = spendItemNameMap[orderedIdList[i]].toString()
+            ..order = i;
+
+          await widget.isar.spendItems.put(getSpendItem);
+        }
+      }
+    });
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
+  ///
+  void _showColorPickerDialog({required int id}) {
+    if (spendItemColorMap[id] != null && spendItemColorMap[id] != '') {
+      mycolor = Color(spendItemColorMap[id]!.toInt());
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.blueGrey.withOpacity(0.3),
+          title: const Text('Pick a color!', style: TextStyle(fontSize: 12)),
+          content: BlockPicker(
+            availableColors: const [
+              Colors.white,
+              Colors.pinkAccent,
+              Colors.redAccent,
+              Colors.deepOrangeAccent,
+              Colors.orangeAccent,
+              Colors.amberAccent,
+              Colors.yellowAccent,
+              Colors.lightGreenAccent,
+              Colors.greenAccent,
+              Colors.tealAccent,
+              Colors.cyanAccent,
+              Colors.lightBlueAccent,
+              Colors.purpleAccent,
+              Color(0xFFFBB6CE),
+              Colors.grey,
+            ],
+            pickerColor: mycolor,
+            onColorChanged: (Color color) async {
+              mycolor = color;
+
+              final exColor = color.toString().split(' ');
+              var colorCode = '';
+              if (exColor.length == 3) {
+                colorCode = exColor[2].replaceAll('Color(', '').replaceAll(')', '');
+              } else {
+                colorCode = exColor[0].replaceAll('Color(', '').replaceAll(')', '');
+              }
+
+              await _updateColorCode(id: id, color: colorCode);
+
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  ///
+  Future<void> _showDefaultTimeDialog({required int id}) async {
+    final initialHour = (spendItemDefaultTimeMap[id] != null && spendItemDefaultTimeMap[id] != '')
+        ? spendItemDefaultTimeMap[id]!.split(':')[0].toInt()
+        : 8;
+
+    final selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: initialHour, minute: 0),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child ?? Container(),
+        );
+      },
+    );
+
+    if (selectedTime != null) {
+      final time = '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
+
+      await _updateDefaultTime(id: id, time: time);
+
+      Navigator.pop(context);
+      Navigator.pop(context);
+    }
+  }
+
+  ///
+  Future<void> _updateColorCode({required int id, required String color}) async {
+    final spendItemsCollection = widget.isar.spendItems;
+
+    final getSpendItem = await spendItemsCollection.filter().idEqualTo(id).findFirst();
+
+    if (getSpendItem != null) {
+      await widget.isar.writeTxn(() async {
+        getSpendItem.color = color;
+        await widget.isar.spendItems.put(getSpendItem);
+      });
+    }
+  }
+
+  ///
+  Future<void> _updateDefaultTime({required int id, required String time}) async {
+    final spendItemsCollection = widget.isar.spendItems;
+
+    final getSpendItem = await spendItemsCollection.filter().idEqualTo(id).findFirst();
+
+    if (getSpendItem != null) {
+      await widget.isar.writeTxn(() async {
+        getSpendItem.defaultTime = time;
+        await widget.isar.spendItems.put(getSpendItem);
+      });
+    }
   }
 }

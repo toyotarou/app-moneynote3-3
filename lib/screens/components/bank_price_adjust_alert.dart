@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
+import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
+import '../../collections/emoney_name.dart';
 import '../../extensions/extensions.dart';
 import '../../state/bank_price_adjust/bank_price_adjust_notifier.dart';
 import 'parts/error_dialog.dart';
@@ -18,10 +20,13 @@ class Deposit {
 }
 
 class BankPriceAdjustAlert extends ConsumerStatefulWidget {
-  const BankPriceAdjustAlert({super.key, required this.isar, required this.depositNameList});
+  const BankPriceAdjustAlert({super.key, required this.isar, this.bankNameList, this.emoneyNameList});
 
   final Isar isar;
-  final List<Deposit> depositNameList;
+
+  final List<BankName>? bankNameList;
+
+  final List<EmoneyName>? emoneyNameList;
 
   @override
   ConsumerState<BankPriceAdjustAlert> createState() => _BankPriceAdjustAlertState();
@@ -89,12 +94,19 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     final list = <Widget>[];
 
+    final depositNameList = <Deposit>[Deposit('', '')];
+
+    widget.bankNameList?.forEach((element) => depositNameList.add(
+          Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
+        ));
+
+    widget.emoneyNameList?.forEach(
+        (element) => depositNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName)));
+
     for (var i = 0; i < 10; i++) {
       list.add(DecoratedBox(
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
-          ],
+          boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
@@ -128,7 +140,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                           isExpanded: true,
                           dropdownColor: Colors.pinkAccent.withOpacity(0.1),
                           iconEnabledColor: Colors.white,
-                          items: widget.depositNameList.map((e) {
+                          items: depositNameList.map((e) {
                             return DropdownMenuItem(
                               value: e.flag,
                               child: Text(e.name, style: const TextStyle(fontSize: 12)),
@@ -174,6 +186,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
   ///
   Future<void> _showDP({required int pos}) async {
     final selectedDate = await showDatePicker(
+      barrierColor: Colors.transparent,
+      locale: const Locale('ja'),
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
@@ -205,7 +219,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
       //===============================================
       if (bankPriceAdjustState.adjustDate[i] != '日付' &&
           bankPriceAdjustState.adjustDeposit[i] != '' &&
-          bankPriceAdjustState.adjustPrice[i] != 0) {
+          bankPriceAdjustState.adjustPrice[i] >= 0) {
         final exDeposit = bankPriceAdjustState.adjustDeposit[i].split('-');
 
         list.add(
@@ -228,7 +242,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
         adjustDepositCount++;
       }
 
-      if (bankPriceAdjustState.adjustPrice[i] != 0) {
+      if (bankPriceAdjustState.adjustPrice[i] >= 0) {
         adjustPriceCount++;
       }
     }
@@ -274,9 +288,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
       if (getBankPrices.isNotEmpty) {
         await widget.isar.writeTxn(
           () async {
-            getBankPrices.forEach((element2) {
-              bankPricesCollection.delete(element2.id);
-            });
+            getBankPrices.forEach((element2) => bankPricesCollection.delete(element2.id));
           },
         );
       }
