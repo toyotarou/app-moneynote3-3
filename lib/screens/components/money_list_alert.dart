@@ -83,7 +83,10 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
                 children: [const Text('月間金額推移'), Text(widget.date.yyyymm)],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              Expanded(child: _dispDateMoneyList()),
+              if (widget.moneyList!.isNotEmpty) ...[Expanded(child: _dispDateMoneyList())],
+              if (widget.moneyList!.isEmpty) ...[
+                const Text('no data', style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
+              ],
             ],
           ),
         ),

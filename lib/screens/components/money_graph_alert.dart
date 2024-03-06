@@ -36,6 +36,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
   LineChartData _data = LineChartData();
 
+  bool _graphMaking = false;
+
   List<FlSpot> _flspots = [];
 
   Map<String, String> _dateMap = {};
@@ -101,45 +103,50 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               const SizedBox(height: 20),
-              Expanded(child: LineChart(_data)),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.indigo.withOpacity(0.3),
+              if (_graphMaking) ...[
+                Expanded(child: LineChart(_data)),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.indigo.withOpacity(0.3),
+                          ),
+                          onPressed: () => ref.read(graphWidthProvider.notifier).setGraphWidth(
+                                width: (graphWidthState == _minGraphRate)
+                                    ? (_flspots.length / 10).ceil().toDouble()
+                                    : _minGraphRate,
+                              ),
+                          child: const Text('width'),
                         ),
-                        onPressed: () => ref.read(graphWidthProvider.notifier).setGraphWidth(
-                              width: (graphWidthState == _minGraphRate)
-                                  ? (_flspots.length / 10).ceil().toDouble()
-                                  : _minGraphRate,
-                            ),
-                        child: const Text('width'),
-                      ),
-                      if (graphWidthState > _minGraphRate)
-                        Row(
-                          children: [
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                              onPressed: () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent),
-                              child: const Text('jump'),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
-                  if (graphWidthState > _minGraphRate)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                      onPressed: () => _scrollController.jumpTo(_scrollController.position.minScrollExtent),
-                      child: const Text('back'),
+                        if (graphWidthState > _minGraphRate)
+                          Row(
+                            children: [
+                              const SizedBox(width: 10),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
+                                onPressed: () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent),
+                                child: const Text('jump'),
+                              ),
+                            ],
+                          ),
+                      ],
                     ),
-                ],
-              ),
+                    if (graphWidthState > _minGraphRate)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
+                        onPressed: () => _scrollController.jumpTo(_scrollController.position.minScrollExtent),
+                        child: const Text('back'),
+                      ),
+                  ],
+                ),
+              ],
+              if (_graphMaking == false) ...[
+                const Text('no data', style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
+              ],
             ],
           ),
         ),
@@ -191,91 +198,96 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
       i++;
     });
 
-    final minValue = list.reduce(min);
-    final maxValue = list.reduce(max);
+    if (list.isNotEmpty) {
+      final minValue = list.reduce(min);
+      final maxValue = list.reduce(max);
 
-    final graphMin = ((minValue / warisuu).floor()) * warisuu;
-    final graphMax = ((maxValue / warisuu).ceil()) * warisuu;
+      final graphMin = ((minValue / warisuu).floor()) * warisuu;
+      final graphMax = ((maxValue / warisuu).ceil()) * warisuu;
 
-    _data = LineChartData(
-      ///
-      minX: 1,
-      maxX: _flspots.length.toDouble(),
-      //
-      minY: graphMin.toDouble(),
-      maxY: graphMax.toDouble(),
+      _data = LineChartData(
+        ///
+        minX: 1,
+        maxX: _flspots.length.toDouble(),
+        //
+        minY: graphMin.toDouble(),
+        maxY: graphMax.toDouble(),
 
-      ///
-      lineTouchData: LineTouchData(
-        touchTooltipData: LineTouchTooltipData(
-          tooltipBgColor: Colors.white.withOpacity(0.3),
-          getTooltipItems: _utility.getGraphToolTip,
+        ///
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            tooltipBgColor: Colors.white.withOpacity(0.3),
+            getTooltipItems: _utility.getGraphToolTip,
+          ),
         ),
-      ),
 
-      ///
-      gridData: _utility.getFlGridData(),
+        ///
+        gridData: _utility.getFlGridData(),
 
-      ///
-      titlesData: FlTitlesData(
-        //-------------------------// 上部の目盛り
-        topTitles: const AxisTitles(),
-        //-------------------------// 上部の目盛り
+        ///
+        titlesData: FlTitlesData(
+          //-------------------------// 上部の目盛り
+          topTitles: const AxisTitles(),
+          //-------------------------// 上部の目盛り
 
-        //-------------------------// 下部の目盛り
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 50,
-            getTitlesWidget: (value, meta) {
-              final year =
-                  DateTime.parse(_dateMap[value.toInt().toString()].toString()).year.toString().padLeft(2, '0');
-              final month =
-                  DateTime.parse(_dateMap[value.toInt().toString()].toString()).month.toString().padLeft(2, '0');
-              final day = DateTime.parse(_dateMap[value.toInt().toString()].toString()).day.toString().padLeft(2, '0');
-              final monthday = '$month-$day';
+          //-------------------------// 下部の目盛り
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 50,
+              getTitlesWidget: (value, meta) {
+                final year =
+                    DateTime.parse(_dateMap[value.toInt().toString()].toString()).year.toString().padLeft(2, '0');
+                final month =
+                    DateTime.parse(_dateMap[value.toInt().toString()].toString()).month.toString().padLeft(2, '0');
+                final day =
+                    DateTime.parse(_dateMap[value.toInt().toString()].toString()).day.toString().padLeft(2, '0');
+                final monthday = '$month-$day';
 
-              return SideTitleWidget(
-                axisSide: meta.axisSide,
-                child: DefaultTextStyle(
-                  style: const TextStyle(fontSize: 14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(year), Text(monthday)],
+                return SideTitleWidget(
+                  axisSide: meta.axisSide,
+                  child: DefaultTextStyle(
+                    style: const TextStyle(fontSize: 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [Text(year), Text(monthday)],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-        //-------------------------// 下部の目盛り
+          //-------------------------// 下部の目盛り
 
-        //-------------------------// 左側の目盛り
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: _showSideTitles(flag: 'left'),
-            reservedSize: _getLeftTitleWidth(),
-            getTitlesWidget: (value, meta) => Text(value.toInt().toString().toCurrency()),
+          //-------------------------// 左側の目盛り
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: _showSideTitles(flag: 'left'),
+              reservedSize: _getLeftTitleWidth(),
+              getTitlesWidget: (value, meta) => Text(value.toInt().toString().toCurrency()),
+            ),
           ),
-        ),
-        //-------------------------// 左側の目盛り
+          //-------------------------// 左側の目盛り
 
-        //-------------------------// 右側の目盛り
-        rightTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: _showSideTitles(flag: 'right'),
-            reservedSize: 100,
-            getTitlesWidget: (value, meta) => Text(value.toInt().toString().toCurrency()),
+          //-------------------------// 右側の目盛り
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: _showSideTitles(flag: 'right'),
+              reservedSize: 100,
+              getTitlesWidget: (value, meta) => Text(value.toInt().toString().toCurrency()),
+            ),
           ),
+          //-------------------------// 右側の目盛り
         ),
-        //-------------------------// 右側の目盛り
-      ),
 
-      ///
-      lineBarsData: [
-        LineChartBarData(spots: _flspots, barWidth: 5, isStrokeCapRound: true, color: Colors.yellowAccent),
-      ],
-    );
+        ///
+        lineBarsData: [
+          LineChartBarData(spots: _flspots, barWidth: 5, isStrokeCapRound: true, color: Colors.yellowAccent),
+        ],
+      );
+
+      _graphMaking = true;
+    }
   }
 
   ///
