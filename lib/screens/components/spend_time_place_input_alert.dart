@@ -6,22 +6,24 @@ import 'package:isar/isar.dart';
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
+import '../../state/app_params/app_params_notifier.dart';
 import '../../state/spend_time_places/spend_time_places_notifier.dart';
 import 'parts/error_dialog.dart';
 
 class SpendTimePlaceInputAlert extends ConsumerStatefulWidget {
-  const SpendTimePlaceInputAlert({
-    super.key,
-    required this.date,
-    required this.spend,
-    required this.isar,
-    this.spendTimePlaceList,
-  });
+  const SpendTimePlaceInputAlert(
+      {super.key,
+      required this.date,
+      required this.spend,
+      required this.isar,
+      this.spendTimePlaceList,
+      this.spendItemList});
 
   final DateTime date;
   final int spend;
   final Isar isar;
   final List<SpendTimePlace>? spendTimePlaceList;
+  final List<SpendItem>? spendItemList;
 
   @override
   ConsumerState<SpendTimePlaceInputAlert> createState() => _SpendTimePlaceInputAlertState();
@@ -70,8 +72,6 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     'プラス',
     '収入',
   ];
-
-  late List<SpendItem>? _spendItemList;
 
   ///
   @override
@@ -122,18 +122,13 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
   }
 
   ///
-  void _init() {
-    _makeSpendItemList();
-  }
-
-  ///
   @override
   Widget build(BuildContext context) {
-    Future(_init);
-
     final spendTimePlaceState = ref.watch(spendTimePlaceProvider);
 
     Future(() => ref.read(spendTimePlaceProvider.notifier).setBaseDiff(baseDiff: widget.spend.toString()));
+
+    final inputButtonClicked = ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -171,9 +166,16 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                       ),
                     ],
                   ),
-                  GestureDetector(
-                    onTap: _inputSpendTimePlace,
-                    child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6), size: 16),
+                  ElevatedButton(
+                    onPressed: inputButtonClicked
+                        ? null
+                        : () {
+                            ref.read(appParamProvider.notifier).setInputButtonClicked(flag: true);
+
+                            _inputSpendTimePlace();
+                          },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    child: const Text('input'),
                   ),
                 ],
               ),
@@ -376,34 +378,32 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
     return SingleChildScrollView(
       child: Column(
-        children: (_spendItemList!.isNotEmpty)
-            ? _spendItemList!.map((e) {
-                return GestureDetector(
-                  onTap: () async {
-                    await ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: false);
+        children: widget.spendItemList!.map((e) {
+          return GestureDetector(
+            onTap: () async {
+              await ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: false);
 
-                    await ref.read(spendTimePlaceProvider.notifier).setSpendItem(pos: itemPos, item: e.spendItemName);
+              await ref.read(spendTimePlaceProvider.notifier).setSpendItem(pos: itemPos, item: e.spendItemName);
 
-                    if (_timeUnknownItem.contains(e.spendItemName)) {
-                      await ref.read(spendTimePlaceProvider.notifier).setTime(pos: itemPos, time: '00:00');
-                    }
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.all(5),
-                    padding: const EdgeInsets.all(5),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: (e.spendItemName == spendItem[itemPos])
-                          ? Colors.yellowAccent.withOpacity(0.2)
-                          : Colors.blueGrey.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(e.spendItemName, style: const TextStyle(fontSize: 10)),
-                  ),
-                );
-              }).toList()
-            : [],
+              if (_timeUnknownItem.contains(e.spendItemName)) {
+                await ref.read(spendTimePlaceProvider.notifier).setTime(pos: itemPos, time: '00:00');
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              margin: const EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: (e.spendItemName == spendItem[itemPos])
+                    ? Colors.yellowAccent.withOpacity(0.2)
+                    : Colors.blueGrey.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(e.spendItemName, style: const TextStyle(fontSize: 10)),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -533,12 +533,5 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     if (mounted) {
       Navigator.pop(context);
     }
-  }
-
-  ///
-  Future<void> _makeSpendItemList() async {
-    final spendItemsCollection = widget.isar.spendItems;
-    final getSpendItems = await spendItemsCollection.where().findAll();
-    setState(() => _spendItemList = getSpendItems);
   }
 }
