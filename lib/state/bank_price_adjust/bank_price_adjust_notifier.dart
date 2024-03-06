@@ -6,7 +6,7 @@ final bankPriceAdjustProvider =
     StateNotifierProvider.autoDispose<BankPriceAdjustNotifier, BankPriceAdjustResponseState>((ref) {
   final adjustDate = List.generate(10, (index) => '日付');
   final adjustDeposit = List.generate(10, (index) => '');
-  final adjustPrice = List.generate(10, (index) => 0);
+  final adjustPrice = List.generate(10, (index) => -1);
 
   return BankPriceAdjustNotifier(
     BankPriceAdjustResponseState(adjustDate: adjustDate, adjustDeposit: adjustDeposit, adjustPrice: adjustPrice),
