@@ -367,10 +367,10 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
                 colorCode = exColor[0].replaceAll('Color(', '').replaceAll(')', '');
               }
 
-              await _updateColorCode(id: id, color: colorCode);
-
-              Navigator.pop(context);
-              Navigator.pop(context);
+              await _updateColorCode(id: id, color: colorCode).then((value) {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              });
             },
           ),
         );
@@ -398,10 +398,10 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     if (selectedTime != null) {
       final time = '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
 
-      await _updateDefaultTime(id: id, time: time);
-
-      Navigator.pop(context);
-      Navigator.pop(context);
+      await _updateDefaultTime(id: id, time: time).then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
     }
   }
 

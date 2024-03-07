@@ -29,6 +29,7 @@ import 'components/parts/menu_head_icon.dart';
 import 'components/parts/money_dialog.dart';
 import 'components/spend_item_history_alert.dart';
 import 'components/spend_item_input_alert.dart';
+import 'components/spend_item_re_input_alert.dart';
 import 'components/spend_monthly_list_alert.dart';
 import 'components/spend_yearly_block_alert.dart';
 
@@ -88,7 +89,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _makeMoneyList();
     _makeBankPriceList();
 
-    _makeMonthlySpendTimePlaceList();
+    _makeSpendTimePlaceList();
 
     _makeBankNameList();
 
@@ -492,6 +493,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
+              if (spendTypeBlankSpendTimePlaceList.isNotEmpty) ...[
+                GestureDetector(
+                  onTap: () async {
+                    await ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false).then((value) {
+                      MoneyDialog(
+                        context: context,
+                        widget: SpendItemReInputAlert(
+                          isar: widget.isar,
+                          spendItemList: _spendItemList ?? [],
+                          spendTypeBlankSpendTimePlaceList: spendTypeBlankSpendTimePlaceList,
+                        ),
+                      );
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      const MenuHeadIcon(),
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                          margin: const EdgeInsets.all(5),
+                          child: const Text('消費アイテム再設定'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
@@ -761,30 +791,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   ///
-  Future<void> _makeMonthlySpendTimePlaceList() async {
+  Future<void> _makeSpendTimePlaceList() async {
+    spendTypeBlankSpendTimePlaceList = [];
+
     final spendTimePlacesCollection = widget.isar.spendTimePlaces;
+
+    final getSpendTimePlaces = await spendTimePlacesCollection.where().sortByDate().findAll();
 
     final yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
 
-    final getSpendTimePlaces =
-        await spendTimePlacesCollection.filter().dateStartsWith(yearmonth!).sortByDate().findAll();
-
     if (mounted) {
       setState(() {
-        monthlySpendTimePlaceList = getSpendTimePlaces;
+        spendTimePlaceList = getSpendTimePlaces;
+
+        if (_spendItemList != null) {
+          final map = <String, List<SpendTimePlace>>{};
+          _spendItemList!.forEach((element) => map[element.spendItemName] = []);
+          getSpendTimePlaces.forEach((element) => map[element.spendType]?.add(element));
+          spendTimePlaceCountMap = map;
+        }
+
+        final list = <SpendTimePlace>[];
 
         final map = <String, List<int>>{};
 
         getSpendTimePlaces
-          ..forEach((element) => map[element.date] = [])
-          ..forEach((element) => map[element.date]?.add(element.price));
+          ..forEach((element) {
+            final exDate = element.date.split('-');
+            if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
+              map[element.date] = [];
+              list.add(element);
+            }
+
+            if (element.spendType == '') {
+              spendTypeBlankSpendTimePlaceList.add(element);
+            }
+          })
+          ..forEach((element) {
+            final exDate = element.date.split('-');
+            if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
+              map[element.date]?.add(element.price);
+            }
+          });
 
         map.forEach((key, value) {
           var sum = 0;
           value.forEach((element) => sum += element);
-
           monthlySpendTimePlaceSumMap[key] = sum;
         });
+
+        monthlySpendTimePlaceList = list;
       });
     }
   }

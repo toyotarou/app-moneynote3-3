@@ -39,9 +39,13 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   final TextEditingController _bankPriceEditingController = TextEditingController();
 
+  late Color contextBlue;
+
   ///
   @override
   Widget build(BuildContext context) {
+    contextBlue = Theme.of(context).colorScheme.primary;
+
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
@@ -233,7 +237,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                 Container(),
                 GestureDetector(
                   onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
-                  child: Text('delete', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                  child: Text('delete', style: TextStyle(fontSize: 12, color: contextBlue)),
                 ),
               ],
             ),
