@@ -527,6 +527,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget _getCalendar() {
+    monthlySpendMap = {};
+
     final holidayState = ref.watch(holidayProvider);
 
     if (holidayState.holidayMap.value != null) {
@@ -702,6 +704,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
       );
+
+      if (generateYmd != '') {
+        if (DateTime.parse('$generateYmd 00:00:00').isBefore(DateTime.now())) {
+          monthlySpendMap[generateYmd] = zenjitsuSum - dateSum;
+        }
+      }
     }
 
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: list);
@@ -786,34 +794,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final list = <Widget>[];
 
     if (monthlySpendTimePlaceList!.isNotEmpty) {
+      final spendItemColorMap = <String, String>{};
+      if (_spendItemList!.isNotEmpty) {
+        _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
+      }
+
       makeMonthlySpendItemSumMap(spendTimePlaceList: monthlySpendTimePlaceList!, spendItemList: _spendItemList)
           .forEach((key, value) {
+        final lineColor =
+            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
+
         list.add(Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(key),
-              Row(
-                children: [
-                  Text(value.toString().toCurrency()),
-                  const SizedBox(width: 20),
-                  GestureDetector(
-                    onTap: () => MoneyDialog(
-                      context: context,
-                      widget: SpendItemHistoryAlert(
-                        date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
-                        isar: widget.isar,
-                        item: key,
-                        sum: value,
+          child: DefaultTextStyle(
+            style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(key),
+                Row(
+                  children: [
+                    Text(value.toString().toCurrency()),
+                    const SizedBox(width: 20),
+                    GestureDetector(
+                      onTap: () => MoneyDialog(
+                        context: context,
+                        widget: SpendItemHistoryAlert(
+                          date:
+                              (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          isar: widget.isar,
+                          item: key,
+                          sum: value,
+                        ),
                       ),
+                      child: Icon(Icons.info_outline_rounded, color: Colors.greenAccent.withOpacity(0.6)),
                     ),
-                    child: Icon(Icons.info_outline_rounded, color: Colors.greenAccent.withOpacity(0.6)),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ));
       });

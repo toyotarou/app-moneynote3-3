@@ -658,6 +658,11 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     ];
 
     if (_spendTimePlaceList!.isNotEmpty) {
+      final spendItemColorMap = <String, String>{};
+      if (_spendItemList!.isNotEmpty) {
+        _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
+      }
+
       var sum = 0;
       makeMonthlySpendItemSumMap(spendItemList: _spendItemList, spendTimePlaceList: _spendTimePlaceList!)
           .forEach((key, value) => sum += value);
@@ -675,18 +680,18 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
       makeMonthlySpendItemSumMap(spendTimePlaceList: _spendTimePlaceList!, spendItemList: _spendItemList)
           .forEach((key, value) {
-        final dispItem = (key != '収入')
-            ? key
-            : (_incomeMap[widget.date.yyyymmdd] == null)
-                ? '$key(---)'
-                : '$key(${_incomeMap[widget.date.yyyymmdd]!.sourceName})';
+        final lineColor =
+            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
 
         list.add(Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [FittedBox(child: Text(dispItem)), Text(value.toString().toCurrency())],
+            children: [
+              FittedBox(child: Text(key, style: TextStyle(color: Color(lineColor!.toInt())))),
+              Text(value.toString().toCurrency(), style: TextStyle(color: Color(lineColor.toInt()))),
+            ],
           ),
         ));
       });

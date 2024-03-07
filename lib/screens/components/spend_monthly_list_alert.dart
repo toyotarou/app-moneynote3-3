@@ -104,6 +104,11 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
       _holidayMap = holidayState.holidayMap.value!;
     }
 
+    final spendItemColorMap = <String, String>{};
+    if (_spendItemList!.isNotEmpty) {
+      _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
+    }
+
     final roopNum = DateTime(widget.date.year, widget.date.month + 1, 0).day;
 
     for (var i = 1; i <= roopNum; i++) {
@@ -115,12 +120,18 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
 
       final list2 = <Widget>[];
       _monthlySpendTimePlaceMap[genDate]?.forEach((key, value) {
+        final lineColor =
+            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
+
         list2.add(Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text(key), Text(value.toString().toCurrency())],
+          child: DefaultTextStyle(
+            style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [Text(key), Text(value.toString().toCurrency())],
+            ),
           ),
         ));
       });
