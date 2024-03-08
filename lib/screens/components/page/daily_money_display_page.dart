@@ -643,7 +643,6 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                           spend: (_beforeMoneyTotal + beforeBankTotal!) - (_onedayMoneyTotal + onedayBankTotal!),
                           isar: widget.isar,
                           spendTimePlaceList: _spendTimePlaceList,
-                          spendItemList: _spendItemList,
                         ),
                       );
                     }

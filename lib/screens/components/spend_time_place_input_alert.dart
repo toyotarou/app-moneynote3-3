@@ -11,19 +11,18 @@ import '../../state/spend_time_places/spend_time_places_notifier.dart';
 import 'parts/error_dialog.dart';
 
 class SpendTimePlaceInputAlert extends ConsumerStatefulWidget {
-  const SpendTimePlaceInputAlert(
-      {super.key,
-      required this.date,
-      required this.spend,
-      required this.isar,
-      this.spendTimePlaceList,
-      this.spendItemList});
+  const SpendTimePlaceInputAlert({
+    super.key,
+    required this.date,
+    required this.spend,
+    required this.isar,
+    this.spendTimePlaceList,
+  });
 
   final DateTime date;
   final int spend;
   final Isar isar;
   final List<SpendTimePlace>? spendTimePlaceList;
-  final List<SpendItem>? spendItemList;
 
   @override
   ConsumerState<SpendTimePlaceInputAlert> createState() => _SpendTimePlaceInputAlertState();
@@ -42,36 +41,9 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
   final List<TextEditingController> _placeTecs = [];
   final List<TextEditingController> _priceTecs = [];
 
-  final List<String> _timeUnknownItem = [
-//    '食費',
-    '住居費',
-//    '交通費',
-//    '支払い',
-    'クレジット',
-//    '遊興費',
-//    '趣味',
-//    '交際費',
-//    '雑費',
-//    '教育費',
-//    '機材費',
-//    '被服費',
-//    '医療費',
-//    '美容費',
-//    '通信費',
-    '保険料',
-    '水道光熱費',
-    '共済代',
-    '投資',
-    '手数料',
-    '税金',
-    '年金',
-    '国民年金基金',
-    '健康保険代',
-    '利息',
-    '不明',
-    'プラス',
-    '収入',
-  ];
+  final List<String> _timeUnknownItem = [];
+
+  var _spendItemList = <SpendItem>[];
 
   ///
   @override
@@ -122,8 +94,15 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
   }
 
   ///
+  void _init() {
+    _makeSpendItemList();
+  }
+
+  ///
   @override
   Widget build(BuildContext context) {
+    Future(_init);
+
     final spendTimePlaceState = ref.watch(spendTimePlaceProvider);
 
     Future(() => ref.read(spendTimePlaceProvider.notifier).setBaseDiff(baseDiff: widget.spend.toString()));
@@ -378,7 +357,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
     return SingleChildScrollView(
       child: Column(
-        children: widget.spendItemList!.map((e) {
+        children: _spendItemList.map((e) {
           return GestureDetector(
             onTap: () async {
               await ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: false);
@@ -515,6 +494,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
+      await ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+
       return;
     }
 
@@ -532,6 +513,29 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
     if (mounted) {
       Navigator.pop(context);
+    }
+  }
+
+  ///
+  Future<void> _makeSpendItemList() async {
+    final spendItemsCollection = widget.isar.spendItems;
+    final getSpendItems = await spendItemsCollection.where().sortByOrder().findAll();
+
+    if (mounted) {
+      setState(() {
+        _spendItemList = getSpendItems;
+
+        if (getSpendItems.isNotEmpty) {
+          getSpendItems.forEach((element) {
+            if (element.defaultTime != '') {
+              final exDefaultTime = element.defaultTime.split(':');
+              if (exDefaultTime[0].toInt() == 0) {
+                _timeUnknownItem.add(element.spendItemName);
+              }
+            }
+          });
+        }
+      });
     }
   }
 }

@@ -192,79 +192,93 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     //==============================================
 
     for (var i = 0; i < 10; i++) {
-      list.add(DecoratedBox(
-        decoration: BoxDecoration(
-          boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-            child: Container(
-              width: context.screenSize.width,
-              margin: const EdgeInsets.all(5),
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
-              ),
-              child: Column(
-                children: [
-                  Row(
+      list.add(Stack(
+        children: [
+          Positioned(
+            bottom: 5,
+            right: 15,
+            child: Text(
+              (i + 1).toString().padLeft(2, '0'),
+              style: TextStyle(fontSize: 60, color: Colors.grey.withOpacity(0.3)),
+            ),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                child: Container(
+                  width: context.screenSize.width,
+                  margin: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+                  ),
+                  child: Column(
                     children: [
-                      GestureDetector(
-                        onTap: () => _showDP(pos: i),
-                        child: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => _showDP(pos: i),
+                            child: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                          ),
+                          const SizedBox(width: 10),
+                          SizedBox(
+                            width: context.screenSize.width / 6,
+                            child: Text(bankPriceAdjustState.adjustDate[i], style: const TextStyle(fontSize: 10)),
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: DropdownButton(
+                              isExpanded: true,
+                              dropdownColor: Colors.pinkAccent.withOpacity(0.1),
+                              iconEnabledColor: Colors.white,
+                              items: depositNameList.map((e) {
+                                return DropdownMenuItem(
+                                  value: e.flag,
+                                  child: Text(e.name, style: const TextStyle(fontSize: 12)),
+                                );
+                              }).toList(),
+                              value: bankPriceAdjustState.adjustDeposit[i],
+                              onChanged: (value) {
+                                ref.read(bankPriceAdjustProvider.notifier).setAdjustDeposit(pos: i, value: value!);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: context.screenSize.width / 6,
-                        child: Text(bankPriceAdjustState.adjustDate[i], style: const TextStyle(fontSize: 10)),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: DropdownButton(
-                          isExpanded: true,
-                          dropdownColor: Colors.pinkAccent.withOpacity(0.1),
-                          iconEnabledColor: Colors.white,
-                          items: depositNameList.map((e) {
-                            return DropdownMenuItem(
-                              value: e.flag,
-                              child: Text(e.name, style: const TextStyle(fontSize: 12)),
-                            );
-                          }).toList(),
-                          value: bankPriceAdjustState.adjustDeposit[i],
-                          onChanged: (value) {
-                            ref.read(bankPriceAdjustProvider.notifier).setAdjustDeposit(pos: i, value: value!);
-                          },
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller: _bankPriceTecs[i],
+                              decoration: const InputDecoration(labelText: '金額'),
+                              style: const TextStyle(fontSize: 13, color: Colors.white),
+                              onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                              onChanged: (value) {
+                                if (value != '') {
+                                  ref
+                                      .read(bankPriceAdjustProvider.notifier)
+                                      .setAdjustPrice(pos: i, value: value.toInt());
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          controller: _bankPriceTecs[i],
-                          decoration: const InputDecoration(labelText: '金額'),
-                          style: const TextStyle(fontSize: 13, color: Colors.white),
-                          onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
-                          onChanged: (value) {
-                            if (value != '') {
-                              ref.read(bankPriceAdjustProvider.notifier).setAdjustPrice(pos: i, value: value.toInt());
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ));
     }
 
@@ -356,6 +370,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
+
+      await ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
 
       return;
     }
