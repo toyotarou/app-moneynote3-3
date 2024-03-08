@@ -23,6 +23,7 @@ import 'components/deposit_tab_alert.dart';
 import 'components/income_input_alert.dart';
 import 'components/money_graph_alert.dart';
 import 'components/money_list_alert.dart';
+import 'components/money_score_list_alert.dart';
 import 'components/parts/back_ground_image.dart';
 import 'components/parts/custom_shape_clipper.dart';
 import 'components/parts/menu_head_icon.dart';
@@ -523,6 +524,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ],
               GestureDetector(
+                onTap: () => MoneyDialog(
+                  context: context,
+                  widget: MoneyScoreListAlert(
+                    isar: widget.isar,
+                    monthFirstDateList: monthFirstDateList,
+                    dateCurrencySumMap: dateCurrencySumMap,
+                    bankPriceTotalPadMap: bankPriceTotalPadMap,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('収支一覧'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
 
@@ -882,6 +907,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           isar: widget.isar,
                           item: key,
                           sum: value,
+                          from: 'home_screen',
                         ),
                       ),
                       child: Icon(Icons.info_outline_rounded, color: Colors.greenAccent.withOpacity(0.6)),

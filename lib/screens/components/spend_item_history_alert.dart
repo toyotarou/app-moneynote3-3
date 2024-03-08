@@ -12,12 +12,14 @@ class SpendItemHistoryAlert extends StatefulWidget {
     required this.item,
     required this.isar,
     required this.sum,
+    required this.from,
   });
 
   final DateTime date;
   final String item;
   final Isar isar;
   final int sum;
+  final String from;
 
   @override
   State<SpendItemHistoryAlert> createState() => _SpendItemHistoryAlertState();
@@ -60,8 +62,10 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
                   Row(
                     children: [
                       Text(widget.item),
-                      const SizedBox(width: 10),
-                      Text(widget.sum.toString().toCurrency()),
+                      if (widget.from == 'home_screen') ...[
+                        const SizedBox(width: 10),
+                        Text(widget.sum.toString().toCurrency()),
+                      ],
                     ],
                   ),
                 ],
@@ -92,25 +96,29 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
     final list = <Widget>[];
 
     for (var i = 0; i < _spendItemPlaceHistoryList!.length; i++) {
-      if (widget.date.month == DateTime.parse('${_spendItemPlaceHistoryList![i].date} 00:00:00').month) {
-        list.add(Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(_spendItemPlaceHistoryList![i].date),
-                  const SizedBox(width: 10),
-                  Text(_spendItemPlaceHistoryList![i].time),
-                ],
-              ),
-              Text(_spendItemPlaceHistoryList![i].price.toString().toCurrency()),
-            ],
-          ),
-        ));
+      if (widget.from == 'home_screen') {
+        if (widget.date.month != DateTime.parse('${_spendItemPlaceHistoryList![i].date} 00:00:00').month) {
+          continue;
+        }
       }
+
+      list.add(Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(_spendItemPlaceHistoryList![i].date),
+                const SizedBox(width: 10),
+                Text(_spendItemPlaceHistoryList![i].time),
+              ],
+            ),
+            Text(_spendItemPlaceHistoryList![i].price.toString().toCurrency()),
+          ],
+        ),
+      ));
     }
 
     return SingleChildScrollView(child: Column(children: list));

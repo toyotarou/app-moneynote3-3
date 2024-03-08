@@ -63,6 +63,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
             defaultTimeButtonPress: () => _showDefaultTimeDialog(id: element.id),
             defaultTime: defaultTime,
             spendTimePlaceCountMap: widget.spendTimePlaceCountMap,
+            isar: widget.isar,
           ),
         ),
       );
