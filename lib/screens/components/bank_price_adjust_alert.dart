@@ -192,25 +192,25 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     //==============================================
 
     for (var i = 0; i < 10; i++) {
-      list.add(Stack(
-        children: [
-          Positioned(
-            bottom: 5,
-            right: 15,
-            child: Text(
-              (i + 1).toString().padLeft(2, '0'),
-              style: TextStyle(fontSize: 60, color: Colors.grey.withOpacity(0.3)),
-            ),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-                child: Container(
+      list.add(DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 5,
+                  right: 15,
+                  child: Text(
+                    (i + 1).toString().padLeft(2, '0'),
+                    style: TextStyle(fontSize: 60, color: Colors.grey.withOpacity(0.3)),
+                  ),
+                ),
+                Container(
                   width: context.screenSize.width,
                   margin: const EdgeInsets.all(5),
                   padding: const EdgeInsets.all(5),
@@ -275,10 +275,10 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                     ],
                   ),
                 ),
-              ),
+              ],
             ),
           ),
-        ],
+        ),
       ));
     }
 
