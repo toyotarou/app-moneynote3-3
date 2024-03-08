@@ -92,6 +92,13 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   Widget _displayYearlySpendSumMap() {
     final list = <Widget>[];
 
+    final spendItemColorMap = <String, String>{};
+    if (_spendItemList!.isNotEmpty) {
+      _spendItemList!.forEach((element) {
+        spendItemColorMap[element.spendItemName] = element.color;
+      });
+    }
+
     final oneWidth = context.screenSize.width / 6;
 
     var allTotal = 0;
@@ -113,6 +120,9 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
       allTotal += sum;
 
       if (map.isNotEmpty) {
+        final lineColor =
+            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
+
         list.add(Container(
           width: context.screenSize.width,
           padding: const EdgeInsets.all(5),
@@ -123,9 +133,12 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
               stops: const [0.7, 1],
             ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text(key), Text(sum.toString().toCurrency())],
+          child: DefaultTextStyle(
+            style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [Text(key), Text(sum.toString().toCurrency())],
+            ),
           ),
         ));
 
