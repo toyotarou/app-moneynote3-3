@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/emoney_names_repository.dart';
 
 import '../../../collections/bank_name.dart';
 import '../../../collections/bank_price.dart';
@@ -18,6 +17,8 @@ import '../../../enums/deposit_type.dart';
 import '../../../extensions/extensions.dart';
 import '../../../repository/bank_names_repository.dart';
 import '../../../repository/bank_prices_repository.dart';
+import '../../../repository/emoney_names_repository.dart';
+import '../../../repository/incomes_repository.dart';
 import '../../../state/app_params/app_params_notifier.dart';
 import '../../../utilities/functions.dart';
 import '../../../utilities/utilities.dart';
@@ -694,14 +695,16 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
   ///
   Future<void> _makeIncomeMap() async {
-    final incomeCollection = widget.isar.incomes;
-
+    final param = <String, dynamic>{};
     final exDate = widget.date.yyyymmdd.split('-');
+    param['year'] = exDate[0];
+    param['month'] = exDate[1];
 
-    final getIncomes =
-        await incomeCollection.filter().dateStartsWith('${exDate[0]}-${exDate[1]}').sortByDate().findAll();
-
-    setState(() => getIncomes.forEach((element) => _incomeMap[element.date] = element));
+    await IncomesRepository().getSelectedIncomeList(isar: widget.isar, param: param).then((value) {
+      if (value!.isNotEmpty) {
+        setState(() => value.forEach((element) => _incomeMap[element.date] = element));
+      }
+    });
   }
 
   ///

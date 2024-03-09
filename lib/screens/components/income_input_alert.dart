@@ -7,6 +7,7 @@ import 'package:isar/isar.dart';
 
 import '../../collections/income.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/incomes_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import 'parts/error_dialog.dart';
 
@@ -156,22 +157,17 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
   Future<void> _makeIncomeList() async {
     _yearList = [];
 
-    final map = <String, String>{};
-
-    final incomesCollection = widget.isar.incomes;
-
-    final getIncomes = await incomesCollection.where().sortByDate().findAll();
-
-    if (mounted) {
+    await IncomesRepository().getIncomeList(isar: widget.isar).then((value) {
       setState(() {
-        _incomeList = getIncomes;
+        _incomeList = value;
 
-        if (_incomeList != null) {
+        if (value != null) {
+          final map = <String, String>{};
           _incomeList!.forEach((element) => map[element.date.split('-')[0]] = '');
           map.forEach((key, value) => _yearList.add(key));
         }
       });
-    }
+    });
   }
 
   ///
@@ -290,7 +286,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       ..sourceName = _incomeSourceEditingController.text
       ..price = _incomePriceEditingController.text.toInt();
 
-    await widget.isar.writeTxn(() async => widget.isar.incomes.put(income));
+    await IncomesRepository().inputIncome(isar: widget.isar, income: income);
 
     _incomeSourceEditingController.clear();
     _incomePriceEditingController.clear();
@@ -321,7 +317,10 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Future<void> _deleteIncome({required int id}) async {
-    final incomeCollection = widget.isar.incomes;
-    await widget.isar.writeTxn(() async => incomeCollection.delete(id));
+    await IncomesRepository().deleteIncome(isar: widget.isar, id: id);
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 }
