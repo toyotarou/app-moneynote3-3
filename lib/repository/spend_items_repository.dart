@@ -25,8 +25,14 @@ class SpendItemsRepository {
   }
 
   ///
-  Future<void> updateBankName({required Isar isar, required SpendItem spendItem}) async {
+  Future<void> updateSpendItem({required Isar isar, required SpendItem spendItem}) async {
     final spendItemsCollection = getCollection(isar: isar);
     await spendItemsCollection.put(spendItem);
+  }
+
+  ///
+  Future<void> deleteSpendItem({required Isar isar, required int id}) async {
+    final spendItemsCollection = getCollection(isar: isar);
+    await isar.writeTxn(() async => spendItemsCollection.delete(id));
   }
 }

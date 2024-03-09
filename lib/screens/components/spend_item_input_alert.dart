@@ -6,6 +6,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/spend_time_places_repository.dart';
 
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
@@ -35,8 +36,6 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   List<DragAndDropList> ddList = [];
 
   List<int> orderedIdList = [];
-
-  Map<int, String> spendItemNameMap = {};
 
   Color mycolor = Colors.white;
 
@@ -68,8 +67,6 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
           ),
         ),
       );
-
-      spendItemNameMap[element.id] = element.spendItemName;
 
       spendItemColorMap[element.id] = element.color;
 
@@ -252,39 +249,21 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   ///
   Future<void> _deleteSpendItem({required int id}) async {
-    final spendItemsCollection = widget.isar.spendItems; //TODO
+    await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((value) {
+      final param = <String, dynamic>{};
+      param['item'] = value!.spendItemName;
 
-    //-----------------------------------
+      SpendTimePlacesRepository().getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param).then((value2) {
+        final spendTimePriceList = <SpendTimePlace>[];
+        value2!.forEach((element) => spendTimePriceList.add(element..spendType = ''));
 
-    final getSpendItem = await spendItemsCollection.filter().idEqualTo(id).findFirst();
-
-    if (getSpendItem != null) {
-      final spendTimePlacesCollection = widget.isar.spendTimePlaces;
-
-      final getSpendTimePlaces =
-          await spendTimePlacesCollection.filter().spendTypeEqualTo(getSpendItem.spendItemName).findAll();
-
-      await widget.isar.writeTxn(() async {
-        getSpendTimePlaces.forEach((element) async {
-          final spendTimePlace = element
-            ..date = element.date
-            ..time = element.time
-            ..price = element.price
-            ..place = element.place
-            ..spendType = '';
-
-          await widget.isar.spendTimePlaces.put(spendTimePlace);
-        });
+        SpendTimePlacesRepository()
+            .updateSpendTimePriceList(isar: widget.isar, spendTimePriceList: spendTimePriceList)
+            .then((value3) => SpendItemsRepository()
+                .deleteSpendItem(isar: widget.isar, id: id)
+                .then((value4) => Navigator.pop(context)));
       });
-    }
-
-    //-----------------------------------
-
-    await widget.isar.writeTxn(() async => spendItemsCollection.delete(id));
-
-    if (mounted) {
-      Navigator.pop(context);
-    }
+    });
   }
 
   ///
@@ -304,24 +283,17 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       }
     }
 
-    final spendItemsCollection = widget.isar.spendItems; //TODO
-
     await widget.isar.writeTxn(() async {
       for (var i = 0; i < orderedIdList.length; i++) {
-        final getSpendItem = await spendItemsCollection.filter().idEqualTo(orderedIdList[i]).findFirst();
-        if (getSpendItem != null) {
-          getSpendItem
-            ..spendItemName = spendItemNameMap[orderedIdList[i]].toString()
-            ..order = i;
+        await SpendItemsRepository().getSpendItem(isar: widget.isar, id: orderedIdList[i]).then((value) {
+          value!.order = i;
 
-          await widget.isar.spendItems.put(getSpendItem); //TODO
-        }
+          SpendItemsRepository()
+              .updateSpendItem(isar: widget.isar, spendItem: value)
+              .then((value) => Navigator.pop(context));
+        });
       }
     });
-
-    if (mounted) {
-      Navigator.pop(context);
-    }
   }
 
   ///
@@ -410,7 +382,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((value) async {
         value!.color = color;
 
-        await SpendItemsRepository().updateBankName(isar: widget.isar, spendItem: value);
+        await SpendItemsRepository().updateSpendItem(isar: widget.isar, spendItem: value);
       });
     });
   }
@@ -421,7 +393,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((value) async {
         value!.defaultTime = time;
 
-        await SpendItemsRepository().updateBankName(isar: widget.isar, spendItem: value);
+        await SpendItemsRepository().updateSpendItem(isar: widget.isar, spendItem: value);
       });
     });
   }
