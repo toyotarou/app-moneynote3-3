@@ -6,7 +6,6 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/spend_time_places_repository.dart';
 
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
@@ -43,6 +42,8 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   Map<int, String> spendItemDefaultTimeMap = {};
 
+  Map<int, String> spendItemNameMap = {};
+
   ///
   @override
   void initState() {
@@ -71,6 +72,8 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       spendItemColorMap[element.id] = element.color;
 
       spendItemDefaultTimeMap[element.id] = element.defaultTime;
+
+      spendItemNameMap[element.id] = element.spendItemName;
     });
 
     ddList.add(DragAndDropList(children: spendItemDDItemList));
@@ -247,24 +250,91 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
 
+  // ///
+  // Future<void> _deleteSpendItem({required int id}) async {
+  //   await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((value) {
+  //     final param = <String, dynamic>{};
+  //     param['item'] = value!.spendItemName;
+  //
+  //     SpendTimePlacesRepository().getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param).then((value2) {
+  //       final spendTimePriceList = <SpendTimePlace>[];
+  //       value2!.forEach((element) => spendTimePriceList.add(element..spendType = ''));
+  //
+  //       SpendTimePlacesRepository()
+  //           .updateSpendTimePriceList(isar: widget.isar, spendTimePriceList: spendTimePriceList)
+  //           .then((value3) => SpendItemsRepository()
+  //               .deleteSpendItem(isar: widget.isar, id: id)
+  //               .then((value4) => Navigator.pop(context)));
+  //     });
+  //   });
+  // }
+
   ///
   Future<void> _deleteSpendItem({required int id}) async {
-    await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((value) {
-      final param = <String, dynamic>{};
-      param['item'] = value!.spendItemName;
+    final spendItemsCollection = widget.isar.spendItems; //TODO
 
-      SpendTimePlacesRepository().getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param).then((value2) {
-        final spendTimePriceList = <SpendTimePlace>[];
-        value2!.forEach((element) => spendTimePriceList.add(element..spendType = ''));
+    //-----------------------------------
 
-        SpendTimePlacesRepository()
-            .updateSpendTimePriceList(isar: widget.isar, spendTimePriceList: spendTimePriceList)
-            .then((value3) => SpendItemsRepository()
-                .deleteSpendItem(isar: widget.isar, id: id)
-                .then((value4) => Navigator.pop(context)));
+    final getSpendItem = await spendItemsCollection.filter().idEqualTo(id).findFirst();
+
+    if (getSpendItem != null) {
+      final spendTimePlacesCollection = widget.isar.spendTimePlaces;
+
+      final getSpendTimePlaces =
+          await spendTimePlacesCollection.filter().spendTypeEqualTo(getSpendItem.spendItemName).findAll();
+
+      await widget.isar.writeTxn(() async {
+        getSpendTimePlaces.forEach((element) async {
+          final spendTimePlace = element
+            ..date = element.date
+            ..time = element.time
+            ..price = element.price
+            ..place = element.place
+            ..spendType = '';
+
+          await widget.isar.spendTimePlaces.put(spendTimePlace);
+        });
       });
-    });
+    }
+
+    //-----------------------------------
+
+    await widget.isar.writeTxn(() async => spendItemsCollection.delete(id));
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
+
+  // ///
+  // Future<void> _settingReorderIds() async {
+  //   orderedIdList = [];
+  //
+  //   for (final value in ddList) {
+  //     for (final child in value.children) {
+  //       orderedIdList.add(child.child.key
+  //           .toString()
+  //           .replaceAll('[', '')
+  //           .replaceAll('<', '')
+  //           .replaceAll("'", '')
+  //           .replaceAll('>', '')
+  //           .replaceAll(']', '')
+  //           .toInt());
+  //     }
+  //   }
+  //
+  //   await widget.isar.writeTxn(() async {
+  //     for (var i = 0; i < orderedIdList.length; i++) {
+  //       await SpendItemsRepository().getSpendItem(isar: widget.isar, id: orderedIdList[i]).then((value) {
+  //         value!.order = i;
+  //
+  //         SpendItemsRepository()
+  //             .updateSpendItem(isar: widget.isar, spendItem: value)
+  //             .then((value) => Navigator.pop(context));
+  //       });
+  //     }
+  //   });
+  // }
 
   ///
   Future<void> _settingReorderIds() async {
@@ -283,17 +353,24 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       }
     }
 
+    final spendItemsCollection = widget.isar.spendItems;
+
     await widget.isar.writeTxn(() async {
       for (var i = 0; i < orderedIdList.length; i++) {
-        await SpendItemsRepository().getSpendItem(isar: widget.isar, id: orderedIdList[i]).then((value) {
-          value!.order = i;
+        final getSpendItem = await spendItemsCollection.filter().idEqualTo(orderedIdList[i]).findFirst();
+        if (getSpendItem != null) {
+          getSpendItem
+            ..spendItemName = spendItemNameMap[orderedIdList[i]].toString()
+            ..order = i;
 
-          SpendItemsRepository()
-              .updateSpendItem(isar: widget.isar, spendItem: value)
-              .then((value) => Navigator.pop(context));
-        });
+          await widget.isar.spendItems.put(getSpendItem);
+        }
       }
     });
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   ///

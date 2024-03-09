@@ -8,7 +8,6 @@ import 'package:isar/isar.dart';
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
-import '../../repository/spend_time_places_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import 'parts/error_dialog.dart';
 
@@ -177,6 +176,29 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
     }
   }
 
+  // ///
+  // Future<void> _updateSpendName() async {
+  //   if (reinputSpendNameMap.isEmpty) {
+  //     Future.delayed(
+  //       Duration.zero,
+  //       () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+  //     );
+  //
+  //     await ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+  //
+  //     return;
+  //   }
+  //
+  //   await widget.isar.writeTxn(() async {
+  //     await SpendTimePlacesRepository()
+  //         .updateSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTypeBlankSpendTimePlaceList)
+  //         .then((value) {
+  //       Navigator.pop(context);
+  //       Navigator.pop(context);
+  //     });
+  //   });
+  // }
+
   ///
   Future<void> _updateSpendName() async {
     if (reinputSpendNameMap.isEmpty) {
@@ -191,12 +213,15 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
     }
 
     await widget.isar.writeTxn(() async {
-      await SpendTimePlacesRepository()
-          .updateSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTypeBlankSpendTimePlaceList)
-          .then((value) {
-        Navigator.pop(context);
-        Navigator.pop(context);
+      widget.spendTypeBlankSpendTimePlaceList.forEach((element) async {
+        final spendTimePlace = element..spendType = reinputSpendNameMap[element.id]!;
+        await widget.isar.spendTimePlaces.put(spendTimePlace);
       });
     });
+
+    if (mounted) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+    }
   }
 }
