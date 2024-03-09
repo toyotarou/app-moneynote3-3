@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/emoney_names_repository.dart';
 
 import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/emoney_names_repository.dart';
 import 'emoney_name_input_alert.dart';
 import 'parts/money_dialog.dart';
 

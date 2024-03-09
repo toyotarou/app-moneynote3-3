@@ -397,9 +397,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     //---------------------------//
 
-    await BankPricesRepository().inputBankPriceList(isar: widget.isar, bankPriceList: list).then((value) async {
-      await ref.read(bankPriceAdjustProvider.notifier).clearInputValue().then((value) => Navigator.pop(context));
-    });
+    await BankPricesRepository().inputBankPriceList(isar: widget.isar, bankPriceList: list).then((value) async =>
+        ref.read(bankPriceAdjustProvider.notifier).clearInputValue().then((value) => Navigator.pop(context)));
   }
 }
 

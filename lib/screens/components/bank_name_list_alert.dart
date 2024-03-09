@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/bank_names_repository.dart';
 
 import '../../collections/bank_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/bank_names_repository.dart';
 import 'bank_name_input_alert.dart';
 import 'parts/money_dialog.dart';
 
@@ -74,11 +74,8 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
   }
 
   ///
-  Future<void> _makeBankNameList() async {
-    await BankNamesRepository()
-        .getBankNameList(isar: widget.isar)
-        .then((value) => setState(() => _bankNameList = value));
-  }
+  Future<void> _makeBankNameList() async =>
+      BankNamesRepository().getBankNameList(isar: widget.isar).then((value) => setState(() => _bankNameList = value));
 
   ///
   Future<List<Widget>> _displayBankNames() async {

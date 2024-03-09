@@ -317,5 +317,5 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Future<void> _deleteIncome({required int id}) async =>
-      await IncomesRepository().deleteIncome(isar: widget.isar, id: id).then((value) => Navigator.pop(context));
+      IncomesRepository().deleteIncome(isar: widget.isar, id: id).then((value) => Navigator.pop(context));
 }

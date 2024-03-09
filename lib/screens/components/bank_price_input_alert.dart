@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/bank_prices_repository.dart';
 
 import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
 import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/bank_prices_repository.dart';
 import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
@@ -267,5 +267,5 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   ///
   Future<void> _deleteBankPrice({required int id}) async =>
-      await BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id).then((value) => Navigator.pop(context));
+      BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id).then((value) => Navigator.pop(context));
 }

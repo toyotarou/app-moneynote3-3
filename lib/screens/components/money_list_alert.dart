@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/screens/components/parts/money_list_display_cell.dart';
 
 import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
@@ -12,6 +11,7 @@ import '../../extensions/extensions.dart';
 import '../../state/holidays/holidays_notifier.dart';
 import '../../utilities/functions.dart';
 import '../../utilities/utilities.dart';
+import 'parts/money_list_display_cell.dart';
 
 class MoneyListAlert extends ConsumerStatefulWidget {
   const MoneyListAlert({

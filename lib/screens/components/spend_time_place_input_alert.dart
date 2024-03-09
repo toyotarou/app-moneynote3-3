@@ -508,7 +508,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
     await SpendTimePlacesRepository().inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list).then(
         (value) async =>
-            await ref.read(spendTimePlaceProvider.notifier).clearInputValue().then((value) => Navigator.pop(context)));
+            ref.read(spendTimePlaceProvider.notifier).clearInputValue().then((value) => Navigator.pop(context)));
   }
 
   ///

@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/bank_names_repository.dart';
 
 import '../../collections/bank_name.dart';
 import '../../enums/account_type.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/bank_names_repository.dart';
 import '../../state/bank_names/bank_names_notifier.dart';
 import 'parts/error_dialog.dart';
 
@@ -341,9 +341,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
   }
 
   ///
-  Future<void> _deleteBankName() async {
-    await BankNamesRepository()
-        .deleteBankName(isar: widget.isar, id: widget.bankName!.id)
-        .then((value) => Navigator.pop(context));
-  }
+  Future<void> _deleteBankName() async => BankNamesRepository()
+      .deleteBankName(isar: widget.isar, id: widget.bankName!.id)
+      .then((value) => Navigator.pop(context));
 }
