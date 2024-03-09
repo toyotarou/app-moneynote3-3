@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/bank_names_repository.dart';
-import 'package:money_note/state/app_params/app_params_notifier.dart';
 
 import '../../../collections/bank_name.dart';
 import '../../../collections/bank_price.dart';
@@ -17,6 +15,9 @@ import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
 import '../../../enums/deposit_type.dart';
 import '../../../extensions/extensions.dart';
+import '../../../repository/bank_names_repository.dart';
+import '../../../repository/bank_prices_repository.dart';
+import '../../../state/app_params/app_params_notifier.dart';
 import '../../../utilities/functions.dart';
 import '../../../utilities/utilities.dart';
 import '../bank_price_input_alert.dart';
@@ -45,7 +46,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
   // ignore: use_late_for_private_fields_and_variables
   List<EmoneyName>? _emoneyNameList = [];
 
-  List<BankPrice>? _bankPriceList = [];
+  List<BankPrice>? bankPriceList = [];
   List<Money>? _moneyList = [];
   List<Money>? _beforeMoneyList = [];
   List<SpendTimePlace>? _spendTimePlaceList = [];
@@ -554,18 +555,16 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
   ///
   Future<void> _makeBankPriceList() async {
-    final bankPricesCollection = widget.isar.bankPrices;
+    await BankPricesRepository().getBankPriceList(isar: widget.isar).then((value) {
+      setState(() {
+        bankPriceList = value;
 
-    final getBankPrices = await bankPricesCollection.where().sortByDate().findAll();
-
-    setState(() {
-      _bankPriceList = getBankPrices;
-
-      if (_bankPriceList != null) {
-        final bankPriceMap = makeBankPriceMap(bankPriceList: _bankPriceList!);
-        _bankPricePadMap = bankPriceMap['bankPriceDatePadMap'];
-        _bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'];
-      }
+        if (value != null) {
+          final bankPriceMap = makeBankPriceMap(bankPriceList: value);
+          _bankPricePadMap = bankPriceMap['bankPriceDatePadMap'];
+          _bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'];
+        }
+      });
     });
   }
 

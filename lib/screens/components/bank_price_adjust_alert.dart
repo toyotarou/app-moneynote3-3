@@ -10,6 +10,7 @@ import '../../collections/bank_price.dart';
 import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/bank_prices_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import '../../state/bank_price_adjust/bank_price_adjust_notifier.dart';
 import 'bank_price_input_alert.dart';
@@ -377,7 +378,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     }
 
     //---------------------------//
-    final bankPricesCollection = widget.isar.bankPrices;
+    final bankPricesCollection = BankPricesRepository().getCollection(isar: widget.isar);
 
     insertBankPriceList.forEach((element) async {
       final exElement = element.split('|');
@@ -390,21 +391,13 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
           .findAll();
 
       if (getBankPrices.isNotEmpty) {
-        await widget.isar.writeTxn(
-          () async {
-            getBankPrices.forEach((element2) => bankPricesCollection.delete(element2.id));
-          },
-        );
+        await BankPricesRepository().deleteBankPriceList(isar: widget.isar, bankPriceList: getBankPrices);
       }
     });
 
     //---------------------------//
 
-    await widget.isar.writeTxn(() async {
-      for (final bankPrice in list) {
-        await widget.isar.bankPrices.put(bankPrice);
-      }
-    });
+    await BankPricesRepository().inputBankPriceList(isar: widget.isar, bankPriceList: list);
 
     await ref.read(bankPriceAdjustProvider.notifier).clearInputValue();
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/bank_prices_repository.dart';
 
 import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
@@ -160,7 +161,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     }
 
     //---------------------------//
-    final bankPricesCollection = widget.isar.bankPrices;
+    final bankPricesCollection = BankPricesRepository().getCollection(isar: widget.isar);
 
     final getBankPrices = await bankPricesCollection
         .filter()
@@ -170,9 +171,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
         .findAll();
 
     if (getBankPrices.isNotEmpty) {
-      await widget.isar.writeTxn(() async {
-        getBankPrices.forEach((element) => bankPricesCollection.delete(element.id));
-      });
+      await BankPricesRepository().deleteBankPriceList(isar: widget.isar, bankPriceList: getBankPrices);
     }
     //---------------------------//
 
@@ -182,24 +181,20 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       ..bankId = bankId
       ..price = _bankPriceEditingController.text.toInt();
 
-    await widget.isar.writeTxn(() async => widget.isar.bankPrices.put(bankPrice));
+    await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice);
 
     _bankPriceEditingController.clear();
   }
 
   ///
   Future<void> _makeBankPriceList() async {
-    final bankPricesCollection = widget.isar.bankPrices;
+    final param = <String, dynamic>{};
+    param['depositType'] = (widget.bankName != null) ? widget.bankName!.depositType : widget.emoneyName!.depositType;
+    param['bankId'] = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
-    final depositType = (widget.bankName != null) ? widget.bankName!.depositType : widget.emoneyName!.depositType;
-    final bankId = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
-
-    final getBankPrices =
-        await bankPricesCollection.filter().depositTypeEqualTo(depositType).bankIdEqualTo(bankId).findAll();
-
-    if (mounted) {
-      setState(() => bankPriceList = getBankPrices);
-    }
+    await BankPricesRepository().getSelectedBankPriceList(isar: widget.isar, param: param).then((value) {
+      setState(() => bankPriceList = value);
+    });
   }
 
   ///
@@ -272,7 +267,10 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   ///
   Future<void> _deleteBankPrice({required int id}) async {
-    final bankPriceCollection = widget.isar.bankPrices;
-    await widget.isar.writeTxn(() async => bankPriceCollection.delete(id));
+    await BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id);
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 }

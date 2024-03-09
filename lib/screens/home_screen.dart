@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/bank_names_repository.dart';
 
 import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
@@ -12,6 +11,8 @@ import '../collections/money.dart';
 import '../collections/spend_item.dart';
 import '../collections/spend_time_place.dart';
 import '../extensions/extensions.dart';
+import '../repository/bank_names_repository.dart';
+import '../repository/bank_prices_repository.dart';
 import '../state/app_params/app_params_notifier.dart';
 import '../state/calendars/calendars_notifier.dart';
 import '../state/holidays/holidays_notifier.dart';
@@ -799,21 +800,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeBankPriceList() async {
-    final bankPricesCollection = widget.isar.bankPrices;
-
-    final getBankPrices = await bankPricesCollection.where().sortByDate().findAll();
-
-    if (mounted) {
+    await BankPricesRepository().getBankPriceList(isar: widget.isar).then((value) {
       setState(() {
-        bankPriceList = getBankPrices;
+        bankPriceList = value;
 
-        if (bankPriceList != null) {
-          final bankPriceMap = makeBankPriceMap(bankPriceList: bankPriceList!);
+        if (value != null) {
+          final bankPriceMap = makeBankPriceMap(bankPriceList: value);
           bankPricePadMap = bankPriceMap['bankPriceDatePadMap'];
           bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'];
         }
       });
-    }
+    });
   }
 
   ///
