@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/bank_names_repository.dart';
 
 import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
@@ -931,15 +932,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _makeBankNameList() async {
     depoNameList = [];
 
-    final bankNamesCollection = widget.isar.bankNames;
-
-    final getBankNames = await bankNamesCollection.where().findAll();
-
-    if (mounted) {
+    await BankNamesRepository().getBankNameList(isar: widget.isar).then((value) {
       setState(() {
-        bankNameList = getBankNames;
+        bankNameList = value;
 
-        if (bankNameList!.isNotEmpty) {
+        if (value!.isNotEmpty) {
           bankNameList!.forEach(
             (element) => depoNameList.add(
               Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
@@ -947,7 +944,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           );
         }
       });
-    }
+    });
 
     await _makeEmoneyNameList();
   }

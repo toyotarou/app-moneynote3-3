@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/bank_names_repository.dart';
 import 'package:money_note/state/app_params/app_params_notifier.dart';
 
 import '../../../collections/bank_name.dart';
@@ -355,13 +356,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
   ///
   Future<void> _makeBankNameList() async {
-    final bankNamesCollection = widget.isar.bankNames;
-
-    final getBankNames = await bankNamesCollection.where().findAll();
-
-    if (mounted) {
-      setState(() => _bankNameList = getBankNames);
-    }
+    await BankNamesRepository().getBankNameList(isar: widget.isar).then((value) {
+      setState(() => _bankNameList = value);
+    });
   }
 
   ///

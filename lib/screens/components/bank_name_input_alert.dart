@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/bank_names_repository.dart';
 
 import '../../collections/bank_name.dart';
 import '../../enums/account_type.dart';
@@ -265,7 +266,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       ..accountNumber = _accountNumberEditingController.text
       ..depositType = widget.depositType.japanName;
 
-    await widget.isar.writeTxn(() async => widget.isar.bankNames.put(bankName));
+    await BankNamesRepository().inputBankName(isar: widget.isar, bankName: bankName);
 
     _bankNumberEditingController.clear();
     _bankNameEditingController.clear();
@@ -296,21 +297,19 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       return;
     }
 
-    final bankNameCollection = widget.isar.bankNames;
-
     await widget.isar.writeTxn(() async {
-      final bankName = await bankNameCollection.get(widget.bankName!.id);
+      await BankNamesRepository().getBankName(isar: widget.isar, id: widget.bankName!.id).then((value) async {
+        value!
+          ..bankNumber = _bankNumberEditingController.text
+          ..bankName = _bankNameEditingController.text
+          ..branchNumber = _branchNumberEditingController.text
+          ..branchName = _branchNameEditingController.text
+          ..accountType = accountType.japanName
+          ..accountNumber = _accountNumberEditingController.text
+          ..depositType = widget.depositType.japanName;
 
-      bankName!
-        ..bankNumber = _bankNumberEditingController.text
-        ..bankName = _bankNameEditingController.text
-        ..branchNumber = _branchNumberEditingController.text
-        ..branchName = _branchNameEditingController.text
-        ..accountType = accountType.japanName
-        ..accountNumber = _accountNumberEditingController.text
-        ..depositType = widget.depositType.japanName;
-
-      await bankNameCollection.put(bankName);
+        await BankNamesRepository().updateBankName(isar: widget.isar, bankName: value);
+      });
     });
 
     _bankNumberEditingController.clear();
@@ -347,9 +346,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _deleteBankName() async {
-    final bankNameCollection = widget.isar.bankNames;
-
-    await widget.isar.writeTxn(() async => bankNameCollection.delete(widget.bankName!.id));
+    await BankNamesRepository().deleteBankName(isar: widget.isar, id: widget.bankName!.id);
 
     if (mounted) {
       Navigator.pop(context);
