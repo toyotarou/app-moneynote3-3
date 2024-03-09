@@ -15,6 +15,7 @@ import '../repository/bank_names_repository.dart';
 import '../repository/bank_prices_repository.dart';
 import '../repository/emoney_names_repository.dart';
 import '../repository/moneys_repository.dart';
+import '../repository/spend_items_repository.dart';
 import '../state/app_params/app_params_notifier.dart';
 import '../state/calendars/calendars_notifier.dart';
 import '../state/holidays/holidays_notifier.dart';
@@ -982,11 +983,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeSpendItemList() async {
-    final spendItemsCollection = widget.isar.spendItems;
-    final getSpendItems = await spendItemsCollection.where().sortByOrder().findAll();
-
-    if (mounted) {
-      setState(() => _spendItemList = getSpendItems);
-    }
+    await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+      setState(() => _spendItemList = value);
+    });
   }
 }

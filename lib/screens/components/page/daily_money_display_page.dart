@@ -20,6 +20,7 @@ import '../../../repository/bank_prices_repository.dart';
 import '../../../repository/emoney_names_repository.dart';
 import '../../../repository/incomes_repository.dart';
 import '../../../repository/moneys_repository.dart';
+import '../../../repository/spend_items_repository.dart';
 import '../../../state/app_params/app_params_notifier.dart';
 import '../../../utilities/functions.dart';
 import '../../../utilities/utilities.dart';
@@ -351,13 +352,15 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     param['date'] = beforeDate.yyyymmdd;
 
     await MoneysRepository().getDateMoneyList(isar: widget.isar, param: param).then((value) {
-      setState(() {
-        _beforeMoneyList = value;
+      if (mounted) {
+        setState(() {
+          _beforeMoneyList = value;
 
-        if (value!.isNotEmpty) {
-          _beforeMoneyTotal = _utility.makeCurrencySum(money: value[0]);
-        }
-      });
+          if (value!.isNotEmpty) {
+            _beforeMoneyTotal = _utility.makeCurrencySum(money: value[0]);
+          }
+        });
+      }
     });
   }
 
@@ -713,11 +716,10 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
   ///
   Future<void> _makeSpendItemList() async {
-    final spendItemsCollection = widget.isar.spendItems;
-    final getSpendItems = await spendItemsCollection.where().sortByOrder().findAll();
-
-    if (mounted) {
-      setState(() => _spendItemList = getSpendItems);
-    }
+    await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+      if (mounted) {
+        setState(() => _spendItemList = value);
+      }
+    });
   }
 }

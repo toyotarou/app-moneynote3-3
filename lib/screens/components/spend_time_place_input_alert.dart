@@ -6,6 +6,7 @@ import 'package:isar/isar.dart';
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/spend_items_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import '../../state/spend_time_places/spend_time_places_notifier.dart';
 import 'parts/error_dialog.dart';
@@ -43,7 +44,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
   final List<String> _timeUnknownItem = [];
 
-  var _spendItemList = <SpendItem>[];
+  List<SpendItem>? _spendItemList = [];
 
   ///
   @override
@@ -357,32 +358,34 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
     return SingleChildScrollView(
       child: Column(
-        children: _spendItemList.map((e) {
-          return GestureDetector(
-            onTap: () async {
-              await ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: false);
+        children: (_spendItemList != null)
+            ? _spendItemList!.map((e) {
+                return GestureDetector(
+                  onTap: () async {
+                    await ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: false);
 
-              await ref.read(spendTimePlaceProvider.notifier).setSpendItem(pos: itemPos, item: e.spendItemName);
+                    await ref.read(spendTimePlaceProvider.notifier).setSpendItem(pos: itemPos, item: e.spendItemName);
 
-              if (_timeUnknownItem.contains(e.spendItemName)) {
-                await ref.read(spendTimePlaceProvider.notifier).setTime(pos: itemPos, time: '00:00');
-              }
-            },
-            child: Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(5),
-              padding: const EdgeInsets.all(5),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: (e.spendItemName == spendItem[itemPos])
-                    ? Colors.yellowAccent.withOpacity(0.2)
-                    : Colors.blueGrey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(e.spendItemName, style: const TextStyle(fontSize: 10)),
-            ),
-          );
-        }).toList(),
+                    if (_timeUnknownItem.contains(e.spendItemName)) {
+                      await ref.read(spendTimePlaceProvider.notifier).setTime(pos: itemPos, time: '00:00');
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: (e.spendItemName == spendItem[itemPos])
+                          ? Colors.yellowAccent.withOpacity(0.2)
+                          : Colors.blueGrey.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(e.spendItemName, style: const TextStyle(fontSize: 10)),
+                  ),
+                );
+              }).toList()
+            : [],
       ),
     );
   }
@@ -518,24 +521,19 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
   ///
   Future<void> _makeSpendItemList() async {
-    final spendItemsCollection = widget.isar.spendItems;
-    final getSpendItems = await spendItemsCollection.where().sortByOrder().findAll();
+    await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+      _spendItemList = value;
 
-    if (mounted) {
-      setState(() {
-        _spendItemList = getSpendItems;
-
-        if (getSpendItems.isNotEmpty) {
-          getSpendItems.forEach((element) {
-            if (element.defaultTime != '') {
-              final exDefaultTime = element.defaultTime.split(':');
-              if (exDefaultTime[0].toInt() == 0) {
-                _timeUnknownItem.add(element.spendItemName);
-              }
+      if (value!.isNotEmpty) {
+        value.forEach((element) {
+          if (element.defaultTime != '') {
+            final exDefaultTime = element.defaultTime.split(':');
+            if (exDefaultTime[0].toInt() == 0) {
+              _timeUnknownItem.add(element.spendItemName);
             }
-          });
-        }
-      });
-    }
+          }
+        });
+      }
+    });
   }
 }

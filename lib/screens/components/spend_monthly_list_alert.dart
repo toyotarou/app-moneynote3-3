@@ -6,6 +6,7 @@ import 'package:isar/isar.dart';
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/spend_items_repository.dart';
 import '../../state/holidays/holidays_notifier.dart';
 import '../../utilities/functions.dart';
 import '../../utilities/utilities.dart';
@@ -170,8 +171,8 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
 
   ///
   Future<void> _makeSpendItemList() async {
-    final spendItemsCollection = widget.isar.spendItems;
-    final getSpendItems = await spendItemsCollection.where().sortByOrder().findAll();
-    setState(() => _spendItemList = getSpendItems);
+    await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+      setState(() => _spendItemList = value);
+    });
   }
 }

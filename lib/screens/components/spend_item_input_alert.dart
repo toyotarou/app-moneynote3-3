@@ -10,6 +10,7 @@ import 'package:isar/isar.dart';
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/spend_items_repository.dart';
 import 'parts/error_dialog.dart';
 import 'parts/spend_item_card.dart';
 
@@ -210,13 +211,10 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       ..defaultTime = '08:00'
       ..color = '0xffffffff';
 
-    await widget.isar.writeTxn(() async => widget.isar.spendItems.put(spendItem));
-
-    _spendItemEditingController.clear();
-
-    if (mounted) {
+    await SpendItemsRepository().inputSpendItem(isar: widget.isar, spendItem: spendItem).then((value) {
+      _spendItemEditingController.clear();
       Navigator.pop(context);
-    }
+    });
   }
 
   ///
@@ -254,7 +252,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   ///
   Future<void> _deleteSpendItem({required int id}) async {
-    final spendItemsCollection = widget.isar.spendItems;
+    final spendItemsCollection = widget.isar.spendItems; //TODO
 
     //-----------------------------------
 
@@ -306,7 +304,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       }
     }
 
-    final spendItemsCollection = widget.isar.spendItems;
+    final spendItemsCollection = widget.isar.spendItems; //TODO
 
     await widget.isar.writeTxn(() async {
       for (var i = 0; i < orderedIdList.length; i++) {
@@ -316,7 +314,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
             ..spendItemName = spendItemNameMap[orderedIdList[i]].toString()
             ..order = i;
 
-          await widget.isar.spendItems.put(getSpendItem);
+          await widget.isar.spendItems.put(getSpendItem); //TODO
         }
       }
     });
@@ -408,29 +406,23 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   ///
   Future<void> _updateColorCode({required int id, required String color}) async {
-    final spendItemsCollection = widget.isar.spendItems;
+    await widget.isar.writeTxn(() async {
+      await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((value) async {
+        value!.color = color;
 
-    final getSpendItem = await spendItemsCollection.filter().idEqualTo(id).findFirst();
-
-    if (getSpendItem != null) {
-      await widget.isar.writeTxn(() async {
-        getSpendItem.color = color;
-        await widget.isar.spendItems.put(getSpendItem);
+        await SpendItemsRepository().updateBankName(isar: widget.isar, spendItem: value);
       });
-    }
+    });
   }
 
   ///
   Future<void> _updateDefaultTime({required int id, required String time}) async {
-    final spendItemsCollection = widget.isar.spendItems;
+    await widget.isar.writeTxn(() async {
+      await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((value) async {
+        value!.defaultTime = time;
 
-    final getSpendItem = await spendItemsCollection.filter().idEqualTo(id).findFirst();
-
-    if (getSpendItem != null) {
-      await widget.isar.writeTxn(() async {
-        getSpendItem.defaultTime = time;
-        await widget.isar.spendItems.put(getSpendItem);
+        await SpendItemsRepository().updateBankName(isar: widget.isar, spendItem: value);
       });
-    }
+    });
   }
 }
