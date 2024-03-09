@@ -7,6 +7,7 @@ import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
+import '../../repository/spend_time_places_repository.dart';
 import '../../state/holidays/holidays_notifier.dart';
 import '../../utilities/functions.dart';
 import '../../utilities/utilities.dart';
@@ -25,7 +26,7 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   final Utility _utility = Utility();
 
   // ignore: use_late_for_private_fields_and_variables
-  List<SpendTimePlace>? _monthlySpendTimePlaceList = [];
+  List<SpendTimePlace>? monthlySpendTimePlaceList = [];
 
   final Map<String, Map<String, int>> _monthlySpendTimePlaceMap = {};
 
@@ -76,23 +77,24 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
 
   ///
   Future<void> _makeMonthlySpendTimePlaceList() async {
-    final spendTimePlacesCollection = widget.isar.spendTimePlaces;
+    final param = <String, dynamic>{};
+    param['date'] = widget.date.yyyymm;
 
-    final getSpendTimePlaces =
-        await spendTimePlacesCollection.filter().dateStartsWith(widget.date.yyyymm).sortByDate().findAll();
-
-    if (mounted) {
+    await SpendTimePlacesRepository().getDateSpendTimePlaceList(isar: widget.isar, param: param).then((value) {
       setState(() {
-        _monthlySpendTimePlaceList = getSpendTimePlaces;
+        monthlySpendTimePlaceList = value;
 
-        final map = <String, List<SpendTimePlace>>{};
-        _monthlySpendTimePlaceList!.forEach((element) => map[element.date] = []);
-        _monthlySpendTimePlaceList!.forEach((element) => map[element.date]?.add(element));
+        if (value!.isNotEmpty) {
+          final map = <String, List<SpendTimePlace>>{};
+          value
+            ..forEach((element) => map[element.date] = [])
+            ..forEach((element) => map[element.date]?.add(element));
 
-        map.forEach((key, value) => _monthlySpendTimePlaceMap[key] =
-            makeMonthlySpendItemSumMap(spendTimePlaceList: value, spendItemList: _spendItemList));
+          map.forEach((key, value) => _monthlySpendTimePlaceMap[key] =
+              makeMonthlySpendItemSumMap(spendTimePlaceList: value, spendItemList: _spendItemList));
+        }
       });
-    }
+    });
   }
 
   ///

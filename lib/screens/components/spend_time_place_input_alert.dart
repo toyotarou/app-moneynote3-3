@@ -7,6 +7,7 @@ import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
+import '../../repository/spend_time_places_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import '../../state/spend_time_places/spend_time_places_notifier.dart';
 import 'parts/error_dialog.dart';
@@ -502,21 +503,16 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
       return;
     }
 
-    final spendTimePlaceCollection = widget.isar.spendTimePlaces;
-    await widget.isar.writeTxn(
-        () async => widget.spendTimePlaceList?.forEach((element) => spendTimePlaceCollection.delete(element.id)));
+    await SpendTimePlacesRepository()
+        .deleteSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList);
 
-    await widget.isar.writeTxn(() async {
-      for (final spendTimePlace in list) {
-        await widget.isar.spendTimePlaces.put(spendTimePlace);
-      }
+    await SpendTimePlacesRepository()
+        .inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list)
+        .then((value) async {
+      await ref.read(spendTimePlaceProvider.notifier).clearInputValue().then((value) {
+        Navigator.pop(context);
+      });
     });
-
-    await ref.read(spendTimePlaceProvider.notifier).clearInputValue();
-
-    if (mounted) {
-      Navigator.pop(context);
-    }
   }
 
   ///

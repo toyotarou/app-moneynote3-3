@@ -21,6 +21,7 @@ import '../../../repository/emoney_names_repository.dart';
 import '../../../repository/incomes_repository.dart';
 import '../../../repository/moneys_repository.dart';
 import '../../../repository/spend_items_repository.dart';
+import '../../../repository/spend_time_places_repository.dart';
 import '../../../state/app_params/app_params_notifier.dart';
 import '../../../utilities/functions.dart';
 import '../../../utilities/utilities.dart';
@@ -588,13 +589,12 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
   ///
   Future<void> _makeSpendTimePlaceList() async {
-    final spendTimePlacesCollection = widget.isar.spendTimePlaces;
+    final param = <String, dynamic>{};
+    param['date'] = widget.date.yyyymmdd;
 
-    final getSpendTimePlaces = await spendTimePlacesCollection.filter().dateEqualTo(widget.date.yyyymmdd).findAll();
-
-    if (mounted) {
-      setState(() => _spendTimePlaceList = getSpendTimePlaces);
-    }
+    await SpendTimePlacesRepository().getDateSpendTimePlaceList(isar: widget.isar, param: param).then((value) {
+      setState(() => _spendTimePlaceList = value);
+    });
   }
 
   ///

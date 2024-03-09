@@ -7,6 +7,7 @@ import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
+import '../../repository/spend_time_places_repository.dart';
 import '../../utilities/functions.dart';
 
 class SpendYearlyBlockAlert extends ConsumerStatefulWidget {
@@ -21,7 +22,7 @@ class SpendYearlyBlockAlert extends ConsumerStatefulWidget {
 
 class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   // ignore: use_late_for_private_fields_and_variables
-  List<SpendTimePlace>? _yearlySpendTimePlaceList = [];
+  List<SpendTimePlace>? yearlySpendTimePlaceList = [];
 
   Map<String, List<int>> _yearlySpendSumMap = {};
 
@@ -70,23 +71,18 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
   ///
   Future<void> _makeYearlySpendSumMap() async {
-    final spendTimePlacesCollection = widget.isar.spendTimePlaces;
+    final param = <String, dynamic>{};
+    param['date'] = widget.date.yyyy;
 
-    final getSpendTimePlaces =
-        await spendTimePlacesCollection.filter().dateStartsWith(widget.date.yyyy).sortByDate().findAll();
-
-    if (mounted) {
+    await SpendTimePlacesRepository().getDateSpendTimePlaceList(isar: widget.isar, param: param).then((value) {
       setState(() {
-        _yearlySpendTimePlaceList = getSpendTimePlaces;
+        yearlySpendTimePlaceList = value;
 
-        if (_yearlySpendTimePlaceList != null) {
-          _yearlySpendSumMap = makeYearlySpendItemSumMap(
-            spendItemList: _spendItemList,
-            spendTimePlaceList: _yearlySpendTimePlaceList!,
-          );
+        if (value != null) {
+          _yearlySpendSumMap = makeYearlySpendItemSumMap(spendItemList: _spendItemList, spendTimePlaceList: value);
         }
       });
-    }
+    });
   }
 
   ///

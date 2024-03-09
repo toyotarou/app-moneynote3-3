@@ -4,6 +4,7 @@ import 'package:isar/isar.dart';
 
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/spend_time_places_repository.dart';
 
 class SpendItemHistoryAlert extends StatefulWidget {
   const SpendItemHistoryAlert({
@@ -81,14 +82,12 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
 
   ///
   Future<void> _makeSpendItemPlaceHistoryList() async {
-    final spendTimePlacesCollection = widget.isar.spendTimePlaces;
+    final param = <String, dynamic>{};
+    param['item'] = widget.item;
 
-    final getSpendTimePlaces =
-        await spendTimePlacesCollection.filter().spendTypeEqualTo(widget.item).sortByDate().findAll();
-
-    if (mounted) {
-      setState(() => _spendItemPlaceHistoryList = getSpendTimePlaces);
-    }
+    await SpendTimePlacesRepository().getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param).then((value) {
+      setState(() => _spendItemPlaceHistoryList = value);
+    });
   }
 
   ///

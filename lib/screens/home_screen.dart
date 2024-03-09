@@ -16,6 +16,7 @@ import '../repository/bank_prices_repository.dart';
 import '../repository/emoney_names_repository.dart';
 import '../repository/moneys_repository.dart';
 import '../repository/spend_items_repository.dart';
+import '../repository/spend_time_places_repository.dart';
 import '../state/app_params/app_params_notifier.dart';
 import '../state/calendars/calendars_notifier.dart';
 import '../state/holidays/holidays_notifier.dart';
@@ -817,55 +818,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _makeSpendTimePlaceList() async {
     spendTypeBlankSpendTimePlaceList = [];
 
-    final spendTimePlacesCollection = widget.isar.spendTimePlaces;
-
-    final getSpendTimePlaces = await spendTimePlacesCollection.where().sortByDate().findAll();
-
-    final yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
-
-    if (mounted) {
+    await SpendTimePlacesRepository().getSpendTimePlaceList(isar: widget.isar).then((value) {
       setState(() {
-        spendTimePlaceList = getSpendTimePlaces;
+        spendTimePlaceList = value;
 
-        if (_spendItemList != null) {
-          final map = <String, List<SpendTimePlace>>{};
-          _spendItemList!.forEach((element) => map[element.spendItemName] = []);
-          getSpendTimePlaces.forEach((element) => map[element.spendType]?.add(element));
-          spendTimePlaceCountMap = map;
-        }
+        if (value!.isNotEmpty) {
+          final yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
 
-        final list = <SpendTimePlace>[];
+          if (_spendItemList != null) {
+            final map = <String, List<SpendTimePlace>>{};
+            _spendItemList!.forEach((element) => map[element.spendItemName] = []);
+            value.forEach((element) => map[element.spendType]?.add(element));
+            spendTimePlaceCountMap = map;
+          }
 
-        final map = <String, List<int>>{};
+          final list = <SpendTimePlace>[];
 
-        getSpendTimePlaces
-          ..forEach((element) {
-            final exDate = element.date.split('-');
-            if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
-              map[element.date] = [];
-              list.add(element);
-            }
+          final map = <String, List<int>>{};
 
-            if (element.spendType == '') {
-              spendTypeBlankSpendTimePlaceList.add(element);
-            }
-          })
-          ..forEach((element) {
-            final exDate = element.date.split('-');
-            if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
-              map[element.date]?.add(element.price);
-            }
+          value
+            ..forEach((element) {
+              final exDate = element.date.split('-');
+              if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
+                map[element.date] = [];
+                list.add(element);
+              }
+
+              if (element.spendType == '') {
+                spendTypeBlankSpendTimePlaceList.add(element);
+              }
+            })
+            ..forEach((element) {
+              final exDate = element.date.split('-');
+              if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
+                map[element.date]?.add(element.price);
+              }
+            });
+
+          map.forEach((key, value) {
+            var sum = 0;
+            value.forEach((element) => sum += element);
+            monthlySpendTimePlaceSumMap[key] = sum;
           });
 
-        map.forEach((key, value) {
-          var sum = 0;
-          value.forEach((element) => sum += element);
-          monthlySpendTimePlaceSumMap[key] = sum;
-        });
-
-        monthlySpendTimePlaceList = list;
+          monthlySpendTimePlaceList = list;
+        }
       });
-    }
+    });
   }
 
   ///

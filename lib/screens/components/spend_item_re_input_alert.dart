@@ -8,6 +8,7 @@ import 'package:isar/isar.dart';
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/spend_time_places_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import 'parts/error_dialog.dart';
 
@@ -190,15 +191,12 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
     }
 
     await widget.isar.writeTxn(() async {
-      widget.spendTypeBlankSpendTimePlaceList.forEach((element) async {
-        final spendTimePlace = element..spendType = reinputSpendNameMap[element.id]!;
-        await widget.isar.spendTimePlaces.put(spendTimePlace);
+      await SpendTimePlacesRepository()
+          .updateSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTypeBlankSpendTimePlaceList)
+          .then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
       });
     });
-
-    if (mounted) {
-      Navigator.pop(context);
-      Navigator.pop(context);
-    }
   }
 }
