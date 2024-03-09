@@ -19,6 +19,7 @@ import '../../../repository/bank_names_repository.dart';
 import '../../../repository/bank_prices_repository.dart';
 import '../../../repository/emoney_names_repository.dart';
 import '../../../repository/incomes_repository.dart';
+import '../../../repository/moneys_repository.dart';
 import '../../../state/app_params/app_params_notifier.dart';
 import '../../../utilities/functions.dart';
 import '../../../utilities/utilities.dart';
@@ -324,36 +325,39 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
   ///
   Future<void> _makeMoneyList() async {
-    final moneyCollection = widget.isar.moneys;
+    final param = <String, dynamic>{};
+    param['date'] = widget.date.yyyymmdd;
 
-    final getMoneys = await moneyCollection.filter().dateEqualTo(widget.date.yyyymmdd).findAll();
+    await MoneysRepository().getDateMoneyList(isar: widget.isar, param: param).then((value) {
+      setState(() {
+        _moneyList = value;
 
-    setState(() {
-      _moneyList = getMoneys;
-
-      if (_moneyList!.isNotEmpty) {
-        _onedayMoneyTotal = _utility.makeCurrencySum(money: _moneyList![0]);
-      }
+        if (value!.isNotEmpty) {
+          _onedayMoneyTotal = _utility.makeCurrencySum(money: value[0]);
+        }
+      });
     });
   }
 
   ///
   Future<void> _makeBeforeMoneyList() async {
-    final moneyCollection = widget.isar.moneys;
+    final param = <String, dynamic>{};
 
     final oneday = widget.date.yyyymmdd;
 
     final beforeDate =
         DateTime(oneday.split('-')[0].toInt(), oneday.split('-')[1].toInt(), oneday.split('-')[2].toInt() - 1);
 
-    final getBeforeDateMoneys = await moneyCollection.filter().dateEqualTo(beforeDate.yyyymmdd).findAll();
+    param['date'] = beforeDate.yyyymmdd;
 
-    setState(() {
-      _beforeMoneyList = getBeforeDateMoneys;
+    await MoneysRepository().getDateMoneyList(isar: widget.isar, param: param).then((value) {
+      setState(() {
+        _beforeMoneyList = value;
 
-      if (_beforeMoneyList!.isNotEmpty) {
-        _beforeMoneyTotal = _utility.makeCurrencySum(money: _beforeMoneyList![0]);
-      }
+        if (value!.isNotEmpty) {
+          _beforeMoneyTotal = _utility.makeCurrencySum(money: value[0]);
+        }
+      });
     });
   }
 
@@ -700,7 +704,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     param['year'] = exDate[0];
     param['month'] = exDate[1];
 
-    await IncomesRepository().getSelectedIncomeList(isar: widget.isar, param: param).then((value) {
+    await IncomesRepository().getYearMonthIncomeList(isar: widget.isar, param: param).then((value) {
       if (value!.isNotEmpty) {
         setState(() => value.forEach((element) => _incomeMap[element.date] = element));
       }

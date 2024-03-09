@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/emoney_names_repository.dart';
 
 import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
@@ -14,6 +13,8 @@ import '../collections/spend_time_place.dart';
 import '../extensions/extensions.dart';
 import '../repository/bank_names_repository.dart';
 import '../repository/bank_prices_repository.dart';
+import '../repository/emoney_names_repository.dart';
+import '../repository/moneys_repository.dart';
 import '../state/app_params/app_params_notifier.dart';
 import '../state/calendars/calendars_notifier.dart';
 import '../state/holidays/holidays_notifier.dart';
@@ -775,28 +776,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeMoneyList() async {
-    final moneyCollection = widget.isar.moneys;
-
-    final getMoneys = await moneyCollection.where().sortByDate().findAll();
-
-    if (mounted) {
+    await MoneysRepository().getMoneyList(isar: widget.isar).then((value) {
       setState(() {
-        moneyList = getMoneys;
+        moneyList = value;
 
-        if (moneyList!.isNotEmpty) {
-          moneyList!.forEach((element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element));
-          moneyList!.forEach((element) => moneyMap[element.date] = element);
-          moneyList!.forEach((element) {
-            final exDate = element.date.split('-');
-            if (exDate[2].toInt() == 1) {
-              if (!monthFirstDateList.contains(element.date)) {
-                monthFirstDateList.add(element.date);
+        if (value!.isNotEmpty) {
+          value
+            ..forEach((element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element))
+            ..forEach((element) => moneyMap[element.date] = element)
+            ..forEach((element) {
+              final exDate = element.date.split('-');
+              if (exDate[2].toInt() == 1) {
+                if (!monthFirstDateList.contains(element.date)) {
+                  monthFirstDateList.add(element.date);
+                }
               }
-            }
-          });
+            });
         }
       });
-    }
+    });
   }
 
   ///

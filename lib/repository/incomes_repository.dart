@@ -13,7 +13,7 @@ class IncomesRepository {
   }
 
   ///
-  Future<List<Income>?> getSelectedIncomeList({required Isar isar, required Map<String, dynamic> param}) async {
+  Future<List<Income>?> getYearMonthIncomeList({required Isar isar, required Map<String, dynamic> param}) async {
     final incomesCollection = getCollection(isar: isar);
     return incomesCollection.filter().dateStartsWith('${param['year']}-${param['month']}').sortByDate().findAll();
   }

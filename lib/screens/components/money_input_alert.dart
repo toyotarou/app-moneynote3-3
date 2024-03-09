@@ -7,6 +7,7 @@ import 'package:isar/isar.dart';
 
 import '../../collections/money.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/moneys_repository.dart';
 import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
@@ -210,7 +211,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.toInt()
       ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.toInt();
 
-    await widget.isar.writeTxn(() async => widget.isar.moneys.put(money));
+    await MoneysRepository().inputMoney(isar: widget.isar, money: money);
 
     _tecYen10000.clear();
     _tecYen5000.clear();
@@ -248,25 +249,23 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       return;
     }
 
-    final moneyCollection = widget.isar.moneys;
-
     await widget.isar.writeTxn(() async {
-      final money = await moneyCollection.get(widget.onedayMoneyList![0].id);
+      await MoneysRepository().getMoney(isar: widget.isar, id: widget.onedayMoneyList![0].id).then((value) async {
+        value!
+          ..date = widget.date.yyyymmdd
+          ..yen_10000 = (_tecYen10000.text == '') ? 0 : _tecYen10000.text.toInt()
+          ..yen_5000 = (_tecYen5000.text == '') ? 0 : _tecYen5000.text.toInt()
+          ..yen_2000 = (_tecYen2000.text == '') ? 0 : _tecYen2000.text.toInt()
+          ..yen_1000 = (_tecYen1000.text == '') ? 0 : _tecYen1000.text.toInt()
+          ..yen_500 = (_tecYen500.text == '') ? 0 : _tecYen500.text.toInt()
+          ..yen_100 = (_tecYen100.text == '') ? 0 : _tecYen100.text.toInt()
+          ..yen_50 = (_tecYen50.text == '') ? 0 : _tecYen50.text.toInt()
+          ..yen_10 = (_tecYen10.text == '') ? 0 : _tecYen10.text.toInt()
+          ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.toInt()
+          ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.toInt();
 
-      money!
-        ..date = widget.date.yyyymmdd
-        ..yen_10000 = (_tecYen10000.text == '') ? 0 : _tecYen10000.text.toInt()
-        ..yen_5000 = (_tecYen5000.text == '') ? 0 : _tecYen5000.text.toInt()
-        ..yen_2000 = (_tecYen2000.text == '') ? 0 : _tecYen2000.text.toInt()
-        ..yen_1000 = (_tecYen1000.text == '') ? 0 : _tecYen1000.text.toInt()
-        ..yen_500 = (_tecYen500.text == '') ? 0 : _tecYen500.text.toInt()
-        ..yen_100 = (_tecYen100.text == '') ? 0 : _tecYen100.text.toInt()
-        ..yen_50 = (_tecYen50.text == '') ? 0 : _tecYen50.text.toInt()
-        ..yen_10 = (_tecYen10.text == '') ? 0 : _tecYen10.text.toInt()
-        ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.toInt()
-        ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.toInt();
-
-      await moneyCollection.put(money);
+        await MoneysRepository().updateMoney(isar: widget.isar, money: value);
+      });
     });
 
     _tecYen10000.clear();
