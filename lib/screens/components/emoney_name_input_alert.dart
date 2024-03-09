@@ -196,8 +196,8 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   Future<void> _deleteEmoneyName() async {
-    await EmoneyNamesRepository().deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id).then((value) {
-      Navigator.pop(context);
-    });
+    await EmoneyNamesRepository()
+        .deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id)
+        .then((value) => Navigator.pop(context));
   }
 }

@@ -191,9 +191,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   }
 
   ///
-  Future<void> _makeSpendItemList() async {
-    await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
-      setState(() => _spendItemList = value);
-    });
-  }
+  Future<void> _makeSpendItemList() async => await SpendItemsRepository()
+      .getSpendItemList(isar: widget.isar)
+      .then((value) => setState(() => _spendItemList = value));
 }

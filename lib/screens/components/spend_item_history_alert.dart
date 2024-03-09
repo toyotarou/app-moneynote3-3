@@ -85,9 +85,9 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
     final param = <String, dynamic>{};
     param['item'] = widget.item;
 
-    await SpendTimePlacesRepository().getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param).then((value) {
-      setState(() => _spendItemPlaceHistoryList = value);
-    });
+    await SpendTimePlacesRepository()
+        .getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param)
+        .then((value) => setState(() => _spendItemPlaceHistoryList = value));
   }
 
   ///

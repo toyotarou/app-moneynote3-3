@@ -366,11 +366,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
   }
 
   ///
-  Future<void> _makeBankNameList() async {
-    await BankNamesRepository().getBankNameList(isar: widget.isar).then((value) {
-      setState(() => _bankNameList = value);
-    });
-  }
+  Future<void> _makeBankNameList() async => await BankNamesRepository()
+      .getBankNameList(isar: widget.isar)
+      .then((value) => setState(() => _bankNameList = value));
 
   ///
   Widget _displayBankNames() {
@@ -464,11 +462,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
   }
 
   ///
-  Future<void> _makeEmoneyNameList() async {
-    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) {
-      setState(() => _emoneyNameList = value);
-    });
-  }
+  Future<void> _makeEmoneyNameList() async => await EmoneyNamesRepository()
+      .getEmoneyNameList(isar: widget.isar)
+      .then((value) => setState(() => _emoneyNameList = value));
 
   ///
   Widget _displayEmoneyNames() {
@@ -592,9 +588,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     final param = <String, dynamic>{};
     param['date'] = widget.date.yyyymmdd;
 
-    await SpendTimePlacesRepository().getDateSpendTimePlaceList(isar: widget.isar, param: param).then((value) {
-      setState(() => _spendTimePlaceList = value);
-    });
+    await SpendTimePlacesRepository()
+        .getDateSpendTimePlaceList(isar: widget.isar, param: param)
+        .then((value) => setState(() => _spendTimePlaceList = value));
   }
 
   ///

@@ -81,9 +81,9 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
 
   ///
   Future<void> _makeEmoneyNameList() async {
-    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) {
-      setState(() => _emoneyNameList = value);
-    });
+    await EmoneyNamesRepository()
+        .getEmoneyNameList(isar: widget.isar)
+        .then((value) => setState(() => _emoneyNameList = value));
   }
 
   ///

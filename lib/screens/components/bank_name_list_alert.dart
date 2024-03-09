@@ -75,9 +75,9 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
 
   ///
   Future<void> _makeBankNameList() async {
-    await BankNamesRepository().getBankNameList(isar: widget.isar).then((value) {
-      setState(() => _bankNameList = value);
-    });
+    await BankNamesRepository()
+        .getBankNameList(isar: widget.isar)
+        .then((value) => setState(() => _bankNameList = value));
   }
 
   ///

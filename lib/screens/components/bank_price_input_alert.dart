@@ -181,9 +181,9 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       ..bankId = bankId
       ..price = _bankPriceEditingController.text.toInt();
 
-    await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice).then((value) {
-      _bankPriceEditingController.clear();
-    });
+    await BankPricesRepository()
+        .inputBankPrice(isar: widget.isar, bankPrice: bankPrice)
+        .then((value) => _bankPriceEditingController.clear());
   }
 
   ///
@@ -192,9 +192,9 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     param['depositType'] = (widget.bankName != null) ? widget.bankName!.depositType : widget.emoneyName!.depositType;
     param['bankId'] = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
-    await BankPricesRepository().getSelectedBankPriceList(isar: widget.isar, param: param).then((value) {
-      setState(() => bankPriceList = value);
-    });
+    await BankPricesRepository()
+        .getSelectedBankPriceList(isar: widget.isar, param: param)
+        .then((value) => setState(() => bankPriceList = value));
   }
 
   ///
@@ -266,9 +266,6 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   }
 
   ///
-  Future<void> _deleteBankPrice({required int id}) async {
-    await BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id).then((value) {
-      Navigator.pop(context);
-    });
-  }
+  Future<void> _deleteBankPrice({required int id}) async =>
+      await BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id).then((value) => Navigator.pop(context));
 }

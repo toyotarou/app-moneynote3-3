@@ -342,8 +342,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _deleteBankName() async {
-    await BankNamesRepository().deleteBankName(isar: widget.isar, id: widget.bankName!.id).then((value) {
-      Navigator.pop(context);
-    });
+    await BankNamesRepository()
+        .deleteBankName(isar: widget.isar, id: widget.bankName!.id)
+        .then((value) => Navigator.pop(context));
   }
 }
