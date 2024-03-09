@@ -4,9 +4,7 @@ import '../collections/bank_name.dart';
 
 class BankNamesRepository {
   ///
-  IsarCollection<BankName> getCollection({required Isar isar}) {
-    return isar.bankNames;
-  }
+  IsarCollection<BankName> getCollection({required Isar isar}) => isar.bankNames;
 
   ///
   Future<BankName?> getBankName({required Isar isar, required int id}) async {

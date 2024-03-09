@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/emoney_names_repository.dart';
 
 import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
@@ -80,15 +81,9 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
 
   ///
   Future<void> _makeEmoneyNameList() async {
-    final emoneyNamesCollection = widget.isar.emoneyNames;
-
-    final getEmoneyNames = await emoneyNamesCollection.where().findAll();
-
-    if (mounted) {
-      setState(() {
-        _emoneyNameList = getEmoneyNames;
-      });
-    }
+    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) {
+      setState(() => _emoneyNameList = value);
+    });
   }
 
   ///

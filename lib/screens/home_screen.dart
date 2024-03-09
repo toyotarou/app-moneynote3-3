@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/emoney_names_repository.dart';
 
 import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
@@ -934,7 +935,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         bankNameList = value;
 
         if (value!.isNotEmpty) {
-          bankNameList!.forEach(
+          value.forEach(
             (element) => depoNameList.add(
               Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
             ),
@@ -948,21 +949,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeEmoneyNameList() async {
-    final emoneyNamesCollection = widget.isar.emoneyNames;
-
-    final getEmoneyNames = await emoneyNamesCollection.where().findAll();
-
-    if (mounted) {
+    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) {
       setState(() {
-        emoneyNameList = getEmoneyNames;
+        emoneyNameList = value;
 
-        if (emoneyNameList!.isNotEmpty) {
-          emoneyNameList!.forEach(
+        if (value!.isNotEmpty) {
+          value.forEach(
             (element) => depoNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName)),
           );
         }
       });
-    }
+    });
   }
 
   ///

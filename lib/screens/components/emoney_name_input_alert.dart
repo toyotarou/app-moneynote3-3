@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/emoney_names_repository.dart';
 
 import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
@@ -113,7 +114,6 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
               border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: TextField(
-              keyboardType: TextInputType.number,
               controller: _emoneyNameEditingController,
               decoration: const InputDecoration(labelText: '電子マネー名称'),
               style: const TextStyle(fontSize: 13, color: Colors.white),
@@ -140,7 +140,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       ..emoneyName = _emoneyNameEditingController.text
       ..depositType = widget.depositType.japanName;
 
-    await widget.isar.writeTxn(() async => widget.isar.emoneyNames.put(emoneyName));
+    await EmoneyNamesRepository().inputEmoneyName(isar: widget.isar, emoneyName: emoneyName);
 
     _emoneyNameEditingController.clear();
 
@@ -160,16 +160,14 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       return;
     }
 
-    final emoneyNameCollection = widget.isar.emoneyNames;
-
     await widget.isar.writeTxn(() async {
-      final emoneyName = await emoneyNameCollection.get(widget.emoneyName!.id);
+      await EmoneyNamesRepository().getEmoneyName(isar: widget.isar, id: widget.emoneyName!.id).then((value) async {
+        value!
+          ..emoneyName = _emoneyNameEditingController.text
+          ..depositType = widget.depositType.japanName;
 
-      emoneyName!
-        ..emoneyName = _emoneyNameEditingController.text
-        ..depositType = widget.depositType.japanName;
-
-      await emoneyNameCollection.put(emoneyName);
+        await EmoneyNamesRepository().updateEmoneyName(isar: widget.isar, emoneyName: value);
+      });
     });
 
     _emoneyNameEditingController.clear();
@@ -202,9 +200,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   Future<void> _deleteEmoneyName() async {
-    final emoneyNameCollection = widget.isar.emoneyNames;
-
-    await widget.isar.writeTxn(() async => emoneyNameCollection.delete(widget.emoneyName!.id));
+    await EmoneyNamesRepository().deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id);
 
     if (mounted) {
       Navigator.pop(context);

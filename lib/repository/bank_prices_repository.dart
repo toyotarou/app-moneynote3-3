@@ -4,9 +4,7 @@ import '../collections/bank_price.dart';
 
 class BankPricesRepository {
   ///
-  IsarCollection<BankPrice> getCollection({required Isar isar}) {
-    return isar.bankPrices;
-  }
+  IsarCollection<BankPrice> getCollection({required Isar isar}) => isar.bankPrices;
 
   ///
   Future<List<BankPrice>?> getBankPriceList({required Isar isar}) async {
