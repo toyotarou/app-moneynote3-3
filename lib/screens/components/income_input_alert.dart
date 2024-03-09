@@ -56,7 +56,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('収入履歴登録'), Text(widget.date.yyyymmdd)],
+                children: [const Text('収入履歴登録'), Text(widget.date.yyyymm)],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
@@ -78,6 +78,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Widget _displayInputParts() {
+    final incomeInputDate = ref.watch(appParamProvider.select((value) => value.incomeInputDate));
+
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: [
@@ -98,7 +100,21 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
               border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: _showDP,
+                      child: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                    ),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                      width: context.screenSize.width / 6,
+                      child: Text(incomeInputDate, style: const TextStyle(fontSize: 10)),
+                    ),
+                  ],
+                ),
                 TextField(
                   keyboardType: TextInputType.number,
                   controller: _incomePriceEditingController,
@@ -118,6 +134,22 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
         ),
       ),
     );
+  }
+
+  ///
+  Future<void> _showDP() async {
+    final selectedDate = await showDatePicker(
+      barrierColor: Colors.transparent,
+      locale: const Locale('ja'),
+      context: context,
+      initialDate: DateTime(widget.date.year, widget.date.month),
+      firstDate: DateTime(widget.date.year, widget.date.month),
+      lastDate: DateTime(widget.date.year, widget.date.month + 1, 0),
+    );
+
+    if (selectedDate != null) {
+      await ref.read(appParamProvider.notifier).setIncomeInputDate(date: selectedDate.yyyymmdd);
+    }
   }
 
   ///
@@ -251,8 +283,10 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       return;
     }
 
+    final incomeInputDate = ref.watch(appParamProvider.select((value) => value.incomeInputDate));
+
     final income = Income()
-      ..date = widget.date.yyyymmdd
+      ..date = incomeInputDate
       ..sourceName = _incomeSourceEditingController.text
       ..price = _incomePriceEditingController.text.toInt();
 
@@ -260,6 +294,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
     _incomeSourceEditingController.clear();
     _incomePriceEditingController.clear();
+
+    await ref.read(appParamProvider.notifier).setIncomeInputDate(date: '');
   }
 
   ///

@@ -23,5 +23,8 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
       state = state.copyWith(sameMonthIncomeDeleteFlag: flag);
 
   ///
+  Future<void> setIncomeInputDate({required String date}) async => state = state.copyWith(incomeInputDate: date);
+
+  ///
   Future<void> setInputButtonClicked({required bool flag}) async => state = state.copyWith(inputButtonClicked: flag);
 }
