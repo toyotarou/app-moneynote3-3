@@ -140,13 +140,11 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       ..emoneyName = _emoneyNameEditingController.text
       ..depositType = widget.depositType.japanName;
 
-    await EmoneyNamesRepository().inputEmoneyName(isar: widget.isar, emoneyName: emoneyName);
+    await EmoneyNamesRepository().inputEmoneyName(isar: widget.isar, emoneyName: emoneyName).then((value) {
+      _emoneyNameEditingController.clear();
 
-    _emoneyNameEditingController.clear();
-
-    if (mounted) {
       Navigator.pop(context);
-    }
+    });
   }
 
   ///
@@ -166,15 +164,13 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
           ..emoneyName = _emoneyNameEditingController.text
           ..depositType = widget.depositType.japanName;
 
-        await EmoneyNamesRepository().updateEmoneyName(isar: widget.isar, emoneyName: value);
+        await EmoneyNamesRepository().updateEmoneyName(isar: widget.isar, emoneyName: value).then((value) {
+          _emoneyNameEditingController.clear();
+
+          Navigator.pop(context);
+        });
       });
     });
-
-    _emoneyNameEditingController.clear();
-
-    if (mounted) {
-      Navigator.pop(context);
-    }
   }
 
   ///
@@ -200,10 +196,8 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   Future<void> _deleteEmoneyName() async {
-    await EmoneyNamesRepository().deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id);
-
-    if (mounted) {
+    await EmoneyNamesRepository().deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id).then((value) {
       Navigator.pop(context);
-    }
+    });
   }
 }

@@ -286,12 +286,12 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       ..sourceName = _incomeSourceEditingController.text
       ..price = _incomePriceEditingController.text.toInt();
 
-    await IncomesRepository().inputIncome(isar: widget.isar, income: income);
+    await IncomesRepository().inputIncome(isar: widget.isar, income: income).then((value) async {
+      _incomeSourceEditingController.clear();
+      _incomePriceEditingController.clear();
 
-    _incomeSourceEditingController.clear();
-    _incomePriceEditingController.clear();
-
-    await ref.read(appParamProvider.notifier).setIncomeInputDate(date: '');
+      await ref.read(appParamProvider.notifier).setIncomeInputDate(date: '');
+    });
   }
 
   ///
@@ -317,10 +317,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Future<void> _deleteIncome({required int id}) async {
-    await IncomesRepository().deleteIncome(isar: widget.isar, id: id);
-
-    if (mounted) {
+    await IncomesRepository().deleteIncome(isar: widget.isar, id: id).then((value) {
       Navigator.pop(context);
-    }
+    });
   }
 }

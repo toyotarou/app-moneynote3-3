@@ -181,9 +181,9 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       ..bankId = bankId
       ..price = _bankPriceEditingController.text.toInt();
 
-    await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice);
-
-    _bankPriceEditingController.clear();
+    await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice).then((value) {
+      _bankPriceEditingController.clear();
+    });
   }
 
   ///
@@ -267,10 +267,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   ///
   Future<void> _deleteBankPrice({required int id}) async {
-    await BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id);
-
-    if (mounted) {
+    await BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id).then((value) {
       Navigator.pop(context);
-    }
+    });
   }
 }

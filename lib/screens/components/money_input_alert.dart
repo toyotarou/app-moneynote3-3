@@ -211,22 +211,20 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.toInt()
       ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.toInt();
 
-    await MoneysRepository().inputMoney(isar: widget.isar, money: money);
+    await MoneysRepository().inputMoney(isar: widget.isar, money: money).then((value) {
+      _tecYen10000.clear();
+      _tecYen5000.clear();
+      _tecYen2000.clear();
+      _tecYen1000.clear();
+      _tecYen500.clear();
+      _tecYen100.clear();
+      _tecYen50.clear();
+      _tecYen10.clear();
+      _tecYen5.clear();
+      _tecYen1.clear();
 
-    _tecYen10000.clear();
-    _tecYen5000.clear();
-    _tecYen2000.clear();
-    _tecYen1000.clear();
-    _tecYen500.clear();
-    _tecYen100.clear();
-    _tecYen50.clear();
-    _tecYen10.clear();
-    _tecYen5.clear();
-    _tecYen1.clear();
-
-    if (mounted) {
       Navigator.pop(context);
-    }
+    });
   }
 
   ///
@@ -264,24 +262,22 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
           ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.toInt()
           ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.toInt();
 
-        await MoneysRepository().updateMoney(isar: widget.isar, money: value);
+        await MoneysRepository().updateMoney(isar: widget.isar, money: value).then((value) {
+          _tecYen10000.clear();
+          _tecYen5000.clear();
+          _tecYen2000.clear();
+          _tecYen1000.clear();
+          _tecYen500.clear();
+          _tecYen100.clear();
+          _tecYen50.clear();
+          _tecYen10.clear();
+          _tecYen5.clear();
+          _tecYen1.clear();
+
+          Navigator.pop(context);
+        });
       });
     });
-
-    _tecYen10000.clear();
-    _tecYen5000.clear();
-    _tecYen2000.clear();
-    _tecYen1000.clear();
-    _tecYen500.clear();
-    _tecYen100.clear();
-    _tecYen50.clear();
-    _tecYen10.clear();
-    _tecYen5.clear();
-    _tecYen1.clear();
-
-    if (mounted) {
-      Navigator.pop(context);
-    }
   }
 
   ///

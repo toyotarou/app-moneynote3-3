@@ -266,17 +266,15 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       ..accountNumber = _accountNumberEditingController.text
       ..depositType = widget.depositType.japanName;
 
-    await BankNamesRepository().inputBankName(isar: widget.isar, bankName: bankName);
+    await BankNamesRepository().inputBankName(isar: widget.isar, bankName: bankName).then((value) {
+      _bankNumberEditingController.clear();
+      _bankNameEditingController.clear();
+      _branchNumberEditingController.clear();
+      _branchNameEditingController.clear();
+      _accountNumberEditingController.clear();
 
-    _bankNumberEditingController.clear();
-    _bankNameEditingController.clear();
-    _branchNumberEditingController.clear();
-    _branchNameEditingController.clear();
-    _accountNumberEditingController.clear();
-
-    if (mounted) {
       Navigator.pop(context);
-    }
+    });
   }
 
   ///
@@ -308,19 +306,17 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
           ..accountNumber = _accountNumberEditingController.text
           ..depositType = widget.depositType.japanName;
 
-        await BankNamesRepository().updateBankName(isar: widget.isar, bankName: value);
+        await BankNamesRepository().updateBankName(isar: widget.isar, bankName: value).then((value) {
+          _bankNumberEditingController.clear();
+          _bankNameEditingController.clear();
+          _branchNumberEditingController.clear();
+          _branchNameEditingController.clear();
+          _accountNumberEditingController.clear();
+
+          Navigator.pop(context);
+        });
       });
     });
-
-    _bankNumberEditingController.clear();
-    _bankNameEditingController.clear();
-    _branchNumberEditingController.clear();
-    _branchNameEditingController.clear();
-    _accountNumberEditingController.clear();
-
-    if (mounted) {
-      Navigator.pop(context);
-    }
   }
 
   ///
@@ -346,10 +342,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _deleteBankName() async {
-    await BankNamesRepository().deleteBankName(isar: widget.isar, id: widget.bankName!.id);
-
-    if (mounted) {
+    await BankNamesRepository().deleteBankName(isar: widget.isar, id: widget.bankName!.id).then((value) {
       Navigator.pop(context);
-    }
+    });
   }
 }
