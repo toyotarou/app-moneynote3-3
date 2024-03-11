@@ -20,6 +20,7 @@ class BankPricesRepository {
         .filter()
         .depositTypeEqualTo(param['depositType'])
         .bankIdEqualTo(param['bankId'])
+        .sortByDate()
         .findAll();
   }
 

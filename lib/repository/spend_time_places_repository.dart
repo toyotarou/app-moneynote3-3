@@ -16,7 +16,7 @@ class SpendTimePlacesRepository {
   Future<List<SpendTimePlace>?> getDateSpendTimePlaceList(
       {required Isar isar, required Map<String, dynamic> param}) async {
     final spendTimePlacesCollection = getCollection(isar: isar);
-    return spendTimePlacesCollection.filter().dateStartsWith(param['date']).sortByDate().findAll();
+    return spendTimePlacesCollection.filter().dateStartsWith(param['date']).sortByDate().thenByTime().findAll();
   }
 
   ///

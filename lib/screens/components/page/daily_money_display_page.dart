@@ -366,9 +366,8 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
   }
 
   ///
-  Future<void> _makeBankNameList() async =>  BankNamesRepository()
-      .getBankNameList(isar: widget.isar)
-      .then((value) => setState(() => _bankNameList = value));
+  Future<void> _makeBankNameList() async =>
+      BankNamesRepository().getBankNameList(isar: widget.isar).then((value) => setState(() => _bankNameList = value));
 
   ///
   Widget _displayBankNames() {
@@ -462,7 +461,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
   }
 
   ///
-  Future<void> _makeEmoneyNameList() async =>  EmoneyNamesRepository()
+  Future<void> _makeEmoneyNameList() async => EmoneyNamesRepository()
       .getEmoneyNameList(isar: widget.isar)
       .then((value) => setState(() => _emoneyNameList = value));
 
