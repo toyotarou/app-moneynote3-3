@@ -10,6 +10,7 @@ import '../../repository/spend_items_repository.dart';
 import '../../repository/spend_time_places_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import '../../state/spend_time_places/spend_time_places_notifier.dart';
+import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 class SpendTimePlaceInputAlert extends ConsumerStatefulWidget {
@@ -30,8 +31,7 @@ class SpendTimePlaceInputAlert extends ConsumerStatefulWidget {
   ConsumerState<SpendTimePlaceInputAlert> createState() => _SpendTimePlaceInputAlertState();
 }
 
-class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAlert>
-    with SingleTickerProviderStateMixin {
+class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAlert> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   ///
@@ -249,18 +249,14 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                           flex: 2,
                           child: GestureDetector(
                             onTap: () {
-                              ref
-                                  .read(spendTimePlaceProvider.notifier)
-                                  .setBlinkingFlag(blinkingFlag: !spendTimePlaceState.blinkingFlag);
+                              ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: !spendTimePlaceState.blinkingFlag);
 
                               ref.read(spendTimePlaceProvider.notifier).setItemPos(pos: i);
                             },
                             child: Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
-                                color: (item != '項目名')
-                                    ? Colors.yellowAccent.withOpacity(0.2)
-                                    : const Color(0xFFfffacd).withOpacity(0.1),
+                                color: (item != '項目名') ? Colors.yellowAccent.withOpacity(0.2) : const Color(0xFFfffacd).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(item),
@@ -275,9 +271,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                               padding: const EdgeInsets.all(5),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: (time != '時間')
-                                    ? Colors.greenAccent.withOpacity(0.2)
-                                    : const Color(0xFF90ee90).withOpacity(0.1),
+                                color: (time != '時間') ? Colors.greenAccent.withOpacity(0.2) : const Color(0xFF90ee90).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(time, style: const TextStyle(fontSize: 10)),
@@ -377,9 +371,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                     padding: const EdgeInsets.all(5),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: (e.spendItemName == spendItem[itemPos])
-                          ? Colors.yellowAccent.withOpacity(0.2)
-                          : Colors.blueGrey.withOpacity(0.2),
+                      color: (e.spendItemName == spendItem[itemPos]) ? Colors.yellowAccent.withOpacity(0.2) : Colors.blueGrey.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(e.spendItemName, style: const TextStyle(fontSize: 10)),
@@ -439,9 +431,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
           spendTimePlaceState.spendTime[i] != '時間' &&
           spendTimePlaceState.spendPlace[i] != '' &&
           spendTimePlaceState.spendPrice[i] != 0) {
-        final price = (spendTimePlaceState.minusCheck[i])
-            ? spendTimePlaceState.spendPrice[i] * -1
-            : spendTimePlaceState.spendPrice[i];
+        final price = (spendTimePlaceState.minusCheck[i]) ? spendTimePlaceState.spendPrice[i] * -1 : spendTimePlaceState.spendPrice[i];
 
         list.add(
           SpendTimePlace()
@@ -490,6 +480,19 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     }
     ////////////////////////// 同数チェック
 
+    if (errFlg == false) {
+      list.forEach((element) {
+        [
+          [element.price, 10],
+          [element.place, 30]
+        ].forEach((element2) {
+          if (checkInputValueLengthCheck(value: element2[0].toString(), length: element2[1] as int) == false) {
+            errFlg = true;
+          }
+        });
+      });
+    }
+
     final diff = spendTimePlaceState.diff;
 
     if (diff != 0 || errFlg) {
@@ -503,12 +506,11 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
       return;
     }
 
-    await SpendTimePlacesRepository()
-        .deleteSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList);
+    await SpendTimePlacesRepository().deleteSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList);
 
-    await SpendTimePlacesRepository().inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list).then(
-        (value) async =>
-            ref.read(spendTimePlaceProvider.notifier).clearInputValue().then((value) => Navigator.pop(context)));
+    await SpendTimePlacesRepository()
+        .inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list)
+        .then((value) async => ref.read(spendTimePlaceProvider.notifier).clearInputValue().then((value) => Navigator.pop(context)));
   }
 
   ///

@@ -9,6 +9,7 @@ import '../../collections/income.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/incomes_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
+import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 class IncomeInputAlert extends ConsumerStatefulWidget {
@@ -238,6 +239,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -246,18 +248,13 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
                   Text(element.price.toString().toCurrency()),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () async => _showDeleteDialog(id: element.id),
-                    child: Text(
-                      'delete',
-                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
-                  Text(element.sourceName),
-                ],
+              Text(element.sourceName, maxLines: 1, overflow: TextOverflow.ellipsis),
+              GestureDetector(
+                onTap: () async => _showDeleteDialog(id: element.id),
+                child: Text(
+                  'delete',
+                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                ),
               ),
             ],
           ),
@@ -270,7 +267,24 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Future<void> _insertIncome() async {
+    var errFlg = false;
+
     if (_incomePriceEditingController.text == '' || _incomeSourceEditingController.text == '') {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_incomePriceEditingController.text, 10],
+        [_incomeSourceEditingController.text, 30]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),

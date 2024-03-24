@@ -132,8 +132,7 @@ flutter: {2023-12-17: 300000, 2023-12-18: 300000, 2023-12-19: 300000, 2023-12-20
 }
 
 ///
-Map<String, int> makeMonthlySpendItemSumMap(
-    {required List<SpendTimePlace> spendTimePlaceList, List<SpendItem>? spendItemList}) {
+Map<String, int> makeMonthlySpendItemSumMap({required List<SpendTimePlace> spendTimePlaceList, List<SpendItem>? spendItemList}) {
   final monthlySpendItemSumMap = <String, int>{};
 
   final list = <String>[];
@@ -163,8 +162,7 @@ Map<String, int> makeMonthlySpendItemSumMap(
 }
 
 ///
-Map<String, List<int>> makeYearlySpendItemSumMap(
-    {required List<SpendTimePlace> spendTimePlaceList, List<SpendItem>? spendItemList}) {
+Map<String, List<int>> makeYearlySpendItemSumMap({required List<SpendTimePlace> spendTimePlaceList, List<SpendItem>? spendItemList}) {
   final list = <String>[];
 
   if (spendItemList!.isNotEmpty) {
@@ -189,8 +187,7 @@ Map<String, List<int>> makeYearlySpendItemSumMap(
 
   final map2 = <String, Map<String, int>>{};
 
-  map.forEach(
-      (key, value) => map2[key] = makeMonthlySpendItemSumMap(spendTimePlaceList: value, spendItemList: spendItemList));
+  map.forEach((key, value) => map2[key] = makeMonthlySpendItemSumMap(spendTimePlaceList: value, spendItemList: spendItemList));
 
   /*
 
@@ -212,9 +209,8 @@ print(map2);
   list.forEach((element) => map3[element] = []);
 
   for (var i = 1; i <= 12; i++) {
-    list.forEach((element) => map3[element]?.add((map2[i.toString().padLeft(2, '0')]?[element] != null)
-        ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt()
-        : 0));
+    list.forEach((element) =>
+        map3[element]?.add((map2[i.toString().padLeft(2, '0')]?[element] != null) ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt() : 0));
   }
 
   /*
@@ -229,4 +225,9 @@ print(map2);
   */
 
   return map3;
+}
+
+///
+bool checkInputValueLengthCheck({required String value, required int length}) {
+  return value.length <= length;
 }

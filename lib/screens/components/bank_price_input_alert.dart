@@ -11,6 +11,7 @@ import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/bank_prices_repository.dart';
+import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
@@ -63,25 +64,21 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
             children: [
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (widget.bankName != null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${widget.bankName!.bankName} ${widget.bankName!.branchName}'),
-                        Text('${widget.bankName!.accountType} ${widget.bankName!.accountNumber}'),
-                      ],
-                    ),
-                  if (widget.emoneyName != null) Text(widget.emoneyName!.emoneyName),
-                  Text(widget.date.yyyymmdd),
-                ],
-              ),
-              Divider(
-                color: Colors.white.withOpacity(0.4),
-                thickness: 5,
-              ),
+              Text(widget.date.yyyymmdd),
+              if (widget.bankName != null) ...[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.bankName!.bankName, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(widget.bankName!.branchName, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text('${widget.bankName!.accountType} ${widget.bankName!.accountNumber}'),
+                  ],
+                ),
+              ],
+              if (widget.emoneyName != null) ...[
+                Text(widget.emoneyName!.emoneyName, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ],
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,7 +148,23 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   Future<void> _insertBankMoney() async {
     final bankId = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
+    var errFlg = false;
+
     if (_bankPriceEditingController.text == '' && bankId > 0) {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_bankPriceEditingController.text, 10]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
@@ -181,9 +194,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       ..bankId = bankId
       ..price = _bankPriceEditingController.text.toInt();
 
-    await BankPricesRepository()
-        .inputBankPrice(isar: widget.isar, bankPrice: bankPrice)
-        .then((value) => _bankPriceEditingController.clear());
+    await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice).then((value) => _bankPriceEditingController.clear());
   }
 
   ///
@@ -192,9 +203,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     param['depositType'] = (widget.bankName != null) ? widget.bankName!.depositType : widget.emoneyName!.depositType;
     param['bankId'] = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
-    await BankPricesRepository()
-        .getSelectedBankPriceList(isar: widget.isar, param: param)
-        .then((value) => setState(() => bankPriceList = value));
+    await BankPricesRepository().getSelectedBankPriceList(isar: widget.isar, param: param).then((value) => setState(() => bankPriceList = value));
   }
 
   ///

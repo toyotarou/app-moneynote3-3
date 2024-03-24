@@ -11,6 +11,7 @@ import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/bank_names_repository.dart';
 import '../../state/bank_names/bank_names_notifier.dart';
+import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 class BankNameInputAlert extends ConsumerStatefulWidget {
@@ -89,9 +90,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                               onTap: () {
                                 switch (widget.bankName!.accountType) {
                                   case '普通口座':
-                                    ref
-                                        .read(bankNamesProvider.notifier)
-                                        .setAccountType(accountType: AccountType.normal);
+                                    ref.read(bankNamesProvider.notifier).setAccountType(accountType: AccountType.normal);
                                     break;
                                   case '定期口座':
                                     ref.read(bankNamesProvider.notifier).setAccountType(accountType: AccountType.fixed);
@@ -108,8 +107,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                             const SizedBox(height: 10),
                             GestureDetector(
                               onTap: _showDeleteDialog,
-                              child: Text('金融機関を削除する',
-                                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                              child: Text('金融機関を削除する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
                             ),
                           ],
                         )
@@ -210,9 +208,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                             child: Text(e.japanName, style: const TextStyle(fontSize: 12)),
                           );
                         }).toList(),
-                        value: (_selectedAccountType != AccountType.blank)
-                            ? _selectedAccountType
-                            : bankNamesSettingState.accountType,
+                        value: (_selectedAccountType != AccountType.blank) ? _selectedAccountType : bankNamesSettingState.accountType,
                         onChanged: (value) {
                           ref.read(bankNamesProvider.notifier).setAccountType(accountType: value!);
                         },
@@ -243,12 +239,32 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
   Future<void> _inputBankName() async {
     final accountType = ref.watch(bankNamesProvider.select((value) => value.accountType));
 
+    var errFlg = false;
+
     if (_bankNumberEditingController.text == '' ||
         _bankNameEditingController.text == '' ||
         _branchNumberEditingController.text == '' ||
         _branchNameEditingController.text == '' ||
         _accountNumberEditingController.text == '' ||
         (accountType == AccountType.blank)) {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_bankNumberEditingController.text, 4],
+        [_bankNameEditingController.text, 30],
+        [_branchNumberEditingController.text, 3],
+        [_branchNameEditingController.text, 30],
+        [_accountNumberEditingController.text, 7]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
@@ -281,12 +297,32 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
   Future<void> _updateBankName() async {
     final accountType = ref.watch(bankNamesProvider.select((value) => value.accountType));
 
+    var errFlg = false;
+
     if (_bankNumberEditingController.text == '' ||
         _bankNameEditingController.text == '' ||
         _branchNumberEditingController.text == '' ||
         _branchNameEditingController.text == '' ||
         _accountNumberEditingController.text == '' ||
         (accountType == AccountType.blank)) {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_bankNumberEditingController.text, 4],
+        [_bankNameEditingController.text, 30],
+        [_branchNumberEditingController.text, 3],
+        [_branchNameEditingController.text, 30],
+        [_accountNumberEditingController.text, 7]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
@@ -341,7 +377,6 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
   }
 
   ///
-  Future<void> _deleteBankName() async => BankNamesRepository()
-      .deleteBankName(isar: widget.isar, id: widget.bankName!.id)
-      .then((value) => Navigator.pop(context));
+  Future<void> _deleteBankName() async =>
+      BankNamesRepository().deleteBankName(isar: widget.isar, id: widget.bankName!.id).then((value) => Navigator.pop(context));
 }

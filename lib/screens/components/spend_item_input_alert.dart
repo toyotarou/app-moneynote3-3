@@ -11,12 +11,12 @@ import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
+import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 import 'parts/spend_item_card.dart';
 
 class SpendItemInputAlert extends ConsumerStatefulWidget {
-  const SpendItemInputAlert(
-      {super.key, required this.isar, required this.spendItemList, required this.spendTimePlaceCountMap});
+  const SpendItemInputAlert({super.key, required this.isar, required this.spendItemList, required this.spendTimePlaceCountMap});
 
   final Isar isar;
 
@@ -196,7 +196,23 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   ///
   Future<void> _inputSpendItem() async {
+    var errFlg = false;
+
     if (_spendItemEditingController.text == '') {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_spendItemEditingController.text, 20]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
@@ -274,11 +290,9 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     //-----------------------------------
     final spendTimePlacesCollection = widget.isar.spendTimePlaces;
 
-    final getSpendTimePlaces =
-        await spendTimePlacesCollection.filter().spendTypeEqualTo(spendItemNameMap[id]!).findAll();
+    final getSpendTimePlaces = await spendTimePlacesCollection.filter().spendTypeEqualTo(spendItemNameMap[id]!).findAll();
 
-    await widget.isar.writeTxn(() async =>
-        getSpendTimePlaces.forEach((element) async => widget.isar.spendTimePlaces.put(element..spendType = '')));
+    await widget.isar.writeTxn(() async => getSpendTimePlaces.forEach((element) async => widget.isar.spendTimePlaces.put(element..spendType = '')));
     //-----------------------------------
 
     final spendItemsCollection = widget.isar.spendItems; //TODO
@@ -325,14 +339,8 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
     for (final value in ddList) {
       for (final child in value.children) {
-        orderedIdList.add(child.child.key
-            .toString()
-            .replaceAll('[', '')
-            .replaceAll('<', '')
-            .replaceAll("'", '')
-            .replaceAll('>', '')
-            .replaceAll(']', '')
-            .toInt());
+        orderedIdList.add(
+            child.child.key.toString().replaceAll('[', '').replaceAll('<', '').replaceAll("'", '').replaceAll('>', '').replaceAll(']', '').toInt());
       }
     }
 
@@ -411,9 +419,8 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   ///
   Future<void> _showDefaultTimeDialog({required int id}) async {
-    final initialHour = (spendItemDefaultTimeMap[id] != null && spendItemDefaultTimeMap[id] != '')
-        ? spendItemDefaultTimeMap[id]!.split(':')[0].toInt()
-        : 8;
+    final initialHour =
+        (spendItemDefaultTimeMap[id] != null && spendItemDefaultTimeMap[id] != '') ? spendItemDefaultTimeMap[id]!.split(':')[0].toInt() : 8;
 
     final selectedTime = await showTimePicker(
       context: context,

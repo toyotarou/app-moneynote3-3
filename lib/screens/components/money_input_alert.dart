@@ -8,6 +8,7 @@ import 'package:isar/isar.dart';
 import '../../collections/money.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/moneys_repository.dart';
+import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
@@ -86,19 +87,16 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
                 children: [
                   GestureDetector(
                     onTap: _callBeforeDateData,
-                    child:
-                        Text('前日データ呼び出し', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                    child: Text('前日データ呼び出し', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
                   ),
                   (widget.onedayMoneyList!.isNotEmpty)
                       ? GestureDetector(
                           onTap: _updateMoney,
-                          child: Text('マネーデータを更新する',
-                              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                          child: Text('マネーデータを更新する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
                         )
                       : GestureDetector(
                           onTap: _insertMoney,
-                          child: Text('マネーデータを追加する',
-                              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                          child: Text('マネーデータを追加する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
                         ),
                 ],
               ),
@@ -180,6 +178,8 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
   ///
   Future<void> _insertMoney() async {
+    var errFlg = false;
+
     if (_tecYen10000.text == '' ||
         _tecYen5000.text == '' ||
         _tecYen2000.text == '' ||
@@ -190,6 +190,29 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
         _tecYen10.text == '' ||
         _tecYen5.text == '' ||
         _tecYen1.text == '') {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_tecYen10000.text, 3],
+        [_tecYen5000.text, 3],
+        [_tecYen2000.text, 3],
+        [_tecYen1000.text, 3],
+        [_tecYen500.text, 3],
+        [_tecYen100.text, 3],
+        [_tecYen50.text, 3],
+        [_tecYen10.text, 3],
+        [_tecYen5.text, 3],
+        [_tecYen1.text, 3],
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
@@ -229,6 +252,8 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
   ///
   Future<void> _updateMoney() async {
+    var errFlg = false;
+
     if (_tecYen10000.text == '' ||
         _tecYen5000.text == '' ||
         _tecYen2000.text == '' ||
@@ -239,6 +264,29 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
         _tecYen10.text == '' ||
         _tecYen5.text == '' ||
         _tecYen1.text == '') {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_tecYen10000.text, 3],
+        [_tecYen5000.text, 3],
+        [_tecYen2000.text, 3],
+        [_tecYen1000.text, 3],
+        [_tecYen500.text, 3],
+        [_tecYen100.text, 3],
+        [_tecYen50.text, 3],
+        [_tecYen10.text, 3],
+        [_tecYen5.text, 3],
+        [_tecYen1.text, 3],
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),

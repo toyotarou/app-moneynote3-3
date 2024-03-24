@@ -13,6 +13,7 @@ import '../../extensions/extensions.dart';
 import '../../repository/bank_prices_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import '../../state/bank_price_adjust/bank_price_adjust_notifier.dart';
+import '../../utilities/functions.dart';
 import 'bank_price_input_alert.dart';
 import 'parts/error_dialog.dart';
 import 'parts/money_dialog.dart';
@@ -167,9 +168,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                 }
               },
               child: CircleAvatar(
-                backgroundColor: (element.type == DepositType.bank)
-                    ? Colors.blueAccent.withOpacity(0.2)
-                    : Colors.greenAccent.withOpacity(0.2),
+                backgroundColor: (element.type == DepositType.bank) ? Colors.blueAccent.withOpacity(0.2) : Colors.greenAccent.withOpacity(0.2),
                 child: Container(
                   alignment: Alignment.center,
                   child: Text(
@@ -264,9 +263,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                               onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                               onChanged: (value) {
                                 if (value != '') {
-                                  ref
-                                      .read(bankPriceAdjustProvider.notifier)
-                                      .setAdjustPrice(pos: i, value: value.toInt());
+                                  ref.read(bankPriceAdjustProvider.notifier).setAdjustPrice(pos: i, value: value.toInt());
                                 }
                               },
                             ),
@@ -320,9 +317,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     for (var i = 0; i < 10; i++) {
       //===============================================
-      if (bankPriceAdjustState.adjustDate[i] != '日付' &&
-          bankPriceAdjustState.adjustDeposit[i] != '' &&
-          bankPriceAdjustState.adjustPrice[i] >= 0) {
+      if (bankPriceAdjustState.adjustDate[i] != '日付' && bankPriceAdjustState.adjustDeposit[i] != '' && bankPriceAdjustState.adjustPrice[i] >= 0) {
         final exDeposit = bankPriceAdjustState.adjustDeposit[i].split('-');
 
         list.add(
@@ -366,6 +361,18 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     }
     ////////////////////////// 同数チェック
 
+    if (errFlg == false) {
+      list.forEach((element) {
+        [
+          [element.price, 10]
+        ].forEach((element2) {
+          if (checkInputValueLengthCheck(value: element2[0].toString(), length: element2[1]) == false) {
+            errFlg = true;
+          }
+        });
+      });
+    }
+
     if (errFlg) {
       Future.delayed(
         Duration.zero,
@@ -397,8 +404,9 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     //---------------------------//
 
-    await BankPricesRepository().inputBankPriceList(isar: widget.isar, bankPriceList: list).then((value) async =>
-        ref.read(bankPriceAdjustProvider.notifier).clearInputValue().then((value) => Navigator.pop(context)));
+    await BankPricesRepository()
+        .inputBankPriceList(isar: widget.isar, bankPriceList: list)
+        .then((value) async => ref.read(bankPriceAdjustProvider.notifier).clearInputValue().then((value) => Navigator.pop(context)));
   }
 }
 

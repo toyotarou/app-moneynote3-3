@@ -9,6 +9,7 @@ import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/emoney_names_repository.dart';
+import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
@@ -67,14 +68,12 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
                           children: [
                             GestureDetector(
                               onTap: _updateEmoneyName,
-                              child: Text('電子マネーを更新する',
-                                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                              child: Text('電子マネーを更新する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
                             ),
                             const SizedBox(height: 10),
                             GestureDetector(
                               onTap: _showDeleteDialog,
-                              child: Text('電子マネーを削除する',
-                                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                              child: Text('電子マネーを削除する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
                             ),
                           ],
                         )
@@ -126,7 +125,23 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   Future<void> _inputEmoneyName() async {
+    var errFlg = false;
+
     if (_emoneyNameEditingController.text == '') {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_emoneyNameEditingController.text, 30]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
@@ -148,7 +163,23 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   Future<void> _updateEmoneyName() async {
+    var errFlg = false;
+
     if (_emoneyNameEditingController.text == '') {
+      errFlg = true;
+    }
+
+    if (errFlg == false) {
+      [
+        [_emoneyNameEditingController.text, 30]
+      ].forEach((element) {
+        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+          errFlg = true;
+        }
+      });
+    }
+
+    if (errFlg) {
       Future.delayed(
         Duration.zero,
         () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
@@ -194,7 +225,6 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
   }
 
   ///
-  Future<void> _deleteEmoneyName() async => EmoneyNamesRepository()
-      .deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id)
-      .then((value) => Navigator.pop(context));
+  Future<void> _deleteEmoneyName() async =>
+      EmoneyNamesRepository().deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id).then((value) => Navigator.pop(context));
 }
