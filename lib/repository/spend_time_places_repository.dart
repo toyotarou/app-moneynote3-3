@@ -9,21 +9,19 @@ class SpendTimePlacesRepository {
   ///
   Future<List<SpendTimePlace>?> getSpendTimePlaceList({required Isar isar}) async {
     final spendTimePlacesCollection = getCollection(isar: isar);
-    return spendTimePlacesCollection.where().sortByDate().findAll();
+    return spendTimePlacesCollection.where().sortByDate().thenByTime().findAll();
   }
 
   ///
-  Future<List<SpendTimePlace>?> getDateSpendTimePlaceList(
-      {required Isar isar, required Map<String, dynamic> param}) async {
+  Future<List<SpendTimePlace>?> getDateSpendTimePlaceList({required Isar isar, required Map<String, dynamic> param}) async {
     final spendTimePlacesCollection = getCollection(isar: isar);
     return spendTimePlacesCollection.filter().dateStartsWith(param['date']).sortByDate().thenByTime().findAll();
   }
 
   ///
-  Future<List<SpendTimePlace>?> getSpendTypeSpendTimePlaceList(
-      {required Isar isar, required Map<String, dynamic> param}) async {
+  Future<List<SpendTimePlace>?> getSpendTypeSpendTimePlaceList({required Isar isar, required Map<String, dynamic> param}) async {
     final spendTimePlacesCollection = getCollection(isar: isar);
-    return spendTimePlacesCollection.filter().spendTypeEqualTo(param['item']).sortByDate().findAll();
+    return spendTimePlacesCollection.filter().spendTypeEqualTo(param['item']).sortByDate().thenByTime().findAll();
   }
 
   ///
