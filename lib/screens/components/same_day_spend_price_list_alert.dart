@@ -34,20 +34,20 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(width: context.screenSize.width),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('同日消費比較'), Container()],
-              ),
+              Container(width: context.screenSize.width),
+              const Text('同日消費比較'),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: _displaySameDaySpendPriceList()),
-                    Container(width: 60, alignment: Alignment.topRight, child: Expanded(child: _displayDayList())),
-                  ],
+                child: SizedBox(
+                  width: context.screenSize.width,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _displaySameDaySpendPriceList()),
+                      Container(width: 60, alignment: Alignment.topRight, child: _displayDayList()),
+                    ],
+                  ),
                 ),
               ),
             ],
