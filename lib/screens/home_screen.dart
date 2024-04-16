@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -34,6 +35,7 @@ import 'components/parts/back_ground_image.dart';
 import 'components/parts/custom_shape_clipper.dart';
 import 'components/parts/menu_head_icon.dart';
 import 'components/parts/money_dialog.dart';
+import 'components/same_day_spend_price_list_alert.dart';
 import 'components/spend_item_history_alert.dart';
 import 'components/spend_item_input_alert.dart';
 import 'components/spend_item_re_input_alert.dart';
@@ -131,9 +133,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? null : _goNextMonth,
               icon: Icon(
                 Icons.arrow_forward_ios,
-                color: (DateTime.now().yyyymm == calendarState.baseYearMonth)
-                    ? Colors.grey.withOpacity(0.6)
-                    : Colors.white.withOpacity(0.8),
+                color: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? Colors.grey.withOpacity(0.6) : Colors.white.withOpacity(0.8),
                 size: 14,
               ),
             ),
@@ -191,8 +191,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     var minusVal = 0;
 
     if (monthlySpendTimePlaceList!.isNotEmpty) {
-      makeMonthlySpendItemSumMap(spendTimePlaceList: monthlySpendTimePlaceList!, spendItemList: _spendItemList)
-          .forEach((key, value) {
+      makeMonthlySpendItemSumMap(spendTimePlaceList: monthlySpendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
         if (value > 0) {
           plusVal += value;
         }
@@ -278,11 +277,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final lastMonthLastDate = DateTime(exYm[0].toInt(), exYm[1].toInt(), 0).yyyymmdd;
 
-    final kurikoshiMoney =
-        (moneyMap[lastMonthLastDate] != null) ? _utility.makeCurrencySum(money: moneyMap[lastMonthLastDate]) : 0;
+    final kurikoshiMoney = (moneyMap[lastMonthLastDate] != null) ? _utility.makeCurrencySum(money: moneyMap[lastMonthLastDate]) : 0;
 
-    final bankPriceTotal =
-        (bankPriceTotalPadMap[lastMonthLastDate] != null) ? bankPriceTotalPadMap[lastMonthLastDate]! : 0;
+    final bankPriceTotal = (bankPriceTotalPadMap[lastMonthLastDate] != null) ? bankPriceTotalPadMap[lastMonthLastDate]! : 0;
 
     final kurikoshi = (kurikoshiMoney != 0 && bankPriceTotal != 0) ? (kurikoshiMoney + bankPriceTotal) : 0;
 
@@ -319,8 +316,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const SizedBox(height: 5),
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.yellowAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
+                            decoration: BoxDecoration(color: Colors.yellowAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
                             child: Text(kurikoshi.toString().toCurrency()),
                           ),
                           const SizedBox(height: 5),
@@ -331,6 +327,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 Row(
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        MoneyDialog(
+                          context: context,
+                          widget: SameDaySpendPriceListAlert(isar: widget.isar, spendTimePlaceList: spendTimePlaceList ?? []),
+                        );
+                      },
+                      child: Icon(FontAwesomeIcons.diamond, color: Colors.white.withOpacity(0.6), size: 16),
+                    ),
+                    const SizedBox(width: 20),
                     GestureDetector(
                       onTap: () {
                         final spendMapMonthly = <String, int>{};
@@ -344,9 +350,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         MoneyDialog(
                           context: context,
                           widget: MoneyGraphAlert(
-                            date: (widget.baseYm != null)
-                                ? DateTime.parse('${widget.baseYm}-01 00:00:00')
-                                : DateTime.now(),
+                            date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
                             isar: widget.isar,
                             monthlyDateSumMap: dateCurrencySumMap,
                             bankPriceTotalPadMap: bankPriceTotalPadMap,
@@ -362,8 +366,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         context: context,
                         widget: MoneyListAlert(
                           isar: widget.isar,
-                          date:
-                              (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
                           moneyList: moneyList,
                           bankNameList: bankNameList,
                           emoneyNameList: emoneyNameList,
@@ -429,8 +432,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                   MoneyDialog(
                     context: context,
-                    widget: BankPriceAdjustAlert(
-                        isar: widget.isar, bankNameList: bankNameList, emoneyNameList: emoneyNameList),
+                    widget: BankPriceAdjustAlert(isar: widget.isar, bankNameList: bankNameList, emoneyNameList: emoneyNameList),
                   );
                 },
                 child: Row(
@@ -635,13 +637,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final list = <Widget>[];
 
     for (var i = week * 7; i < ((week + 1) * 7); i++) {
-      final generateYmd = (_calendarDays[i] == '')
-          ? ''
-          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).yyyymmdd;
+      final generateYmd =
+          (_calendarDays[i] == '') ? '' : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).yyyymmdd;
 
-      final youbiStr = (_calendarDays[i] == '')
-          ? ''
-          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).youbiStr;
+      final youbiStr =
+          (_calendarDays[i] == '') ? '' : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).youbiStr;
 
       var dateDiff = 0;
       var dateSum = 0;
@@ -656,9 +656,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       //-----------------------------------------------//
       var zenjitsuSum = 0;
-      final zenjitsu = (_calendarDays[i] == '')
-          ? ''
-          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt() - 1).yyyymmdd;
+      final zenjitsu =
+          (_calendarDays[i] == '') ? '' : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt() - 1).yyyymmdd;
 
       if (zenjitsu != '') {
         if (dateCurrencySumMap[zenjitsu] != null && bankPriceTotalPadMap[zenjitsu] != null) {
@@ -672,8 +671,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       var inputedFlag = false;
 
-      if ((monthlySpendTimePlaceSumMap[generateYmd] != null &&
-              (zenjitsuSum - dateSum) == monthlySpendTimePlaceSumMap[generateYmd]) ||
+      if ((monthlySpendTimePlaceSumMap[generateYmd] != null && (zenjitsuSum - dateSum) == monthlySpendTimePlaceSumMap[generateYmd]) ||
           (zenjitsuSum - dateSum) == 0) {
         inputedFlag = true;
       }
@@ -687,8 +685,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ? null
                 : () => MoneyDialog(
                       context: context,
-                      widget: DailyMoneyDisplayAlert(
-                          date: DateTime.parse('$generateYmd 00:00:00'), isar: widget.isar, moneyMap: moneyMap),
+                      widget: DailyMoneyDisplayAlert(date: DateTime.parse('$generateYmd 00:00:00'), isar: widget.isar, moneyMap: moneyMap),
                     ),
             child: Container(
               margin: const EdgeInsets.all(1),
@@ -725,9 +722,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         width: 10,
                                         height: 10,
                                         decoration: BoxDecoration(
-                                          color: inputedFlag
-                                              ? Colors.yellowAccent.withOpacity(0.3)
-                                              : Colors.black.withOpacity(0.3),
+                                          color: inputedFlag ? Colors.yellowAccent.withOpacity(0.3) : Colors.black.withOpacity(0.3),
                                           borderRadius: BorderRadius.circular(10),
                                         ),
                                       ),
@@ -744,9 +739,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(),
-                                  (dateDiff > 0 || dateSum == 0)
-                                      ? Container()
-                                      : Text((zenjitsuSum - dateSum).toString().toCurrency()),
+                                  (dateDiff > 0 || dateSum == 0) ? Container() : Text((zenjitsuSum - dateSum).toString().toCurrency()),
                                 ],
                               ),
                               Row(
@@ -877,10 +870,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
       }
 
-      makeMonthlySpendItemSumMap(spendTimePlaceList: monthlySpendTimePlaceList!, spendItemList: _spendItemList)
-          .forEach((key, value) {
-        final lineColor =
-            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
+      makeMonthlySpendItemSumMap(spendTimePlaceList: monthlySpendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
+        final lineColor = (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
 
         list.add(Container(
           padding: const EdgeInsets.all(10),
@@ -899,8 +890,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       onTap: () => MoneyDialog(
                         context: context,
                         widget: SpendItemHistoryAlert(
-                          date:
-                              (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
                           isar: widget.isar,
                           item: key,
                           sum: value,
@@ -919,8 +909,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return SingleChildScrollView(
-      child: DefaultTextStyle(
-          style: const TextStyle(fontSize: 10), child: Column(mainAxisSize: MainAxisSize.min, children: list)),
+      child: DefaultTextStyle(style: const TextStyle(fontSize: 10), child: Column(mainAxisSize: MainAxisSize.min, children: list)),
     );
   }
 
@@ -933,11 +922,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         bankNameList = value;
 
         if (value!.isNotEmpty) {
-          value.forEach(
-            (element) => depoNameList.add(
-              Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
-            ),
-          );
+          value.forEach((element) => depoNameList.add(Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}')));
         }
       });
     });
@@ -952,9 +937,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         emoneyNameList = value;
 
         if (value!.isNotEmpty) {
-          value.forEach(
-            (element) => depoNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName)),
-          );
+          value.forEach((element) => depoNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName)));
         }
       });
     });

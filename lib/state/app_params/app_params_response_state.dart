@@ -11,5 +11,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default(false) bool sameMonthIncomeDeleteFlag,
     @Default('') String incomeInputDate,
     @Default(false) bool inputButtonClicked,
+    @Default(0) int sameDaySelectedDay,
   }) = _AppParamsResponseState;
 }
