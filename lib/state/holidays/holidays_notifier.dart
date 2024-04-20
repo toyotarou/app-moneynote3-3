@@ -19,7 +19,7 @@ class HolidayNotifier extends StateNotifier<HolidaysResponseState> {
 
       final holiday = holidayFromJson(response.body);
 
-      state = state.copyWith(holidayMap: AsyncValue.data(holiday as Map<String, String>));
+      state = state.copyWith(holidayMap: AsyncValue.data(holiday));
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       // ignore: only_throw_errors
