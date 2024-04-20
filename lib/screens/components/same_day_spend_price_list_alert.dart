@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
@@ -18,8 +19,13 @@ class SameDaySpendPriceListAlert extends ConsumerStatefulWidget {
 }
 
 class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceListAlert> {
+  final autoScrollController = AutoScrollController();
+
+  ///
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async => autoScrollController.scrollToIndex(DateTime.now().day));
+
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
@@ -64,19 +70,24 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
     final sameDaySelectedDay = ref.watch(appParamProvider.select((value) => value.sameDaySelectedDay));
 
     for (var i = 1; i <= 31; i++) {
-      list.add(Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        child: GestureDetector(
-          onTap: () => ref.read(appParamProvider.notifier).setSameDaySelectedDay(day: i),
-          child: CircleAvatar(
-            backgroundColor: (sameDaySelectedDay == i) ? Colors.orangeAccent.withOpacity(0.3) : Colors.black,
-            child: Text(i.toString(), style: const TextStyle(fontSize: 12, color: Colors.white)),
+      list.add(AutoScrollTag(
+        key: ValueKey(i),
+        index: i,
+        controller: autoScrollController,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 5),
+          child: GestureDetector(
+            onTap: () => ref.read(appParamProvider.notifier).setSameDaySelectedDay(day: i),
+            child: CircleAvatar(
+              backgroundColor: (sameDaySelectedDay == i) ? Colors.orangeAccent.withOpacity(0.3) : Colors.black,
+              child: Text(i.toString(), style: const TextStyle(fontSize: 12, color: Colors.white)),
+            ),
           ),
         ),
       ));
     }
 
-    return SingleChildScrollView(child: Column(children: list));
+    return SingleChildScrollView(controller: autoScrollController, child: Column(children: list));
   }
 
   ///
