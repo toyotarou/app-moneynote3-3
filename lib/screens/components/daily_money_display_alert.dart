@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/utilities/utilities.dart';
 
 import '../../collections/money.dart';
 import '../../extensions/extensions.dart';
@@ -14,18 +15,30 @@ class TabInfo {
 }
 
 class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
-  const DailyMoneyDisplayAlert({super.key, required this.date, required this.isar, required this.moneyMap});
+  const DailyMoneyDisplayAlert({
+    super.key,
+    required this.date,
+    required this.isar,
+    required this.moneyMap,
+    required this.bankPricePadMap,
+    required this.bankPriceTotalPadMap,
+  });
 
   final DateTime date;
   final Isar isar;
 
   final Map<String, Money> moneyMap;
 
+  final Map<String, Map<String, int>> bankPricePadMap;
+  final Map<String, int> bankPriceTotalPadMap;
+
   @override
   ConsumerState<DailyMoneyDisplayAlert> createState() => _DailyMoneyDisplayAlertState();
 }
 
 class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert> {
+  final Utility _utility = Utility();
+
   List<TabInfo> _tabs = [];
 
   ///
@@ -62,7 +75,15 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
     _tabs = [
       TabInfo(
         '${widget.date.yyyymmdd} (${widget.date.youbiStr.substring(0, 3)})',
-        DailyMoneyDisplayPage(date: widget.date, isar: widget.isar),
+        DailyMoneyDisplayPage(
+          date: widget.date,
+          isar: widget.isar,
+          moneyList: (widget.moneyMap[widget.date.yyyymmdd] != null) ? [widget.moneyMap[widget.date.yyyymmdd]!] : [],
+          onedayMoneyTotal:
+              (widget.moneyMap[widget.date.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[widget.date.yyyymmdd]) : 0,
+          bankPricePadMap: widget.bankPricePadMap,
+          bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
+        ),
       ),
     ];
 
@@ -75,7 +96,14 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
         _tabs.add(
           TabInfo(
             '${day.yyyymmdd} ($youbi)',
-            DailyMoneyDisplayPage(date: day, isar: widget.isar),
+            DailyMoneyDisplayPage(
+              date: day,
+              isar: widget.isar,
+              moneyList: [widget.moneyMap[day.yyyymmdd]!],
+              onedayMoneyTotal: _utility.makeCurrencySum(money: widget.moneyMap[day.yyyymmdd]),
+              bankPricePadMap: widget.bankPricePadMap,
+              bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
+            ),
           ),
         );
       }

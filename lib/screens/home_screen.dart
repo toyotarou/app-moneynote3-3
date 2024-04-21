@@ -685,7 +685,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ? null
                 : () => MoneyDialog(
                       context: context,
-                      widget: DailyMoneyDisplayAlert(date: DateTime.parse('$generateYmd 00:00:00'), isar: widget.isar, moneyMap: moneyMap),
+                      widget: DailyMoneyDisplayAlert(
+                        date: DateTime.parse('$generateYmd 00:00:00'),
+                        isar: widget.isar,
+                        moneyMap: moneyMap,
+                        bankPricePadMap: bankPricePadMap,
+                        bankPriceTotalPadMap: bankPriceTotalPadMap,
+                      ),
                     ),
             child: Container(
               margin: const EdgeInsets.all(1),
