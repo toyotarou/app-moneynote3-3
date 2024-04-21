@@ -695,6 +695,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             (spendTimePlaceList != null) ? spendTimePlaceList!.where((element) => element.date == generateYmd).toList() : [],
                         bankNameList: bankNameList ?? [],
                         emoneyNameList: emoneyNameList ?? [],
+                        spendItemList: _spendItemList ?? [],
                       ),
                     ),
             child: Container(

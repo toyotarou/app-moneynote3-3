@@ -5,6 +5,7 @@ import 'package:isar/isar.dart';
 import '../../collections/bank_name.dart';
 import '../../collections/emoney_name.dart';
 import '../../collections/money.dart';
+import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../utilities/utilities.dart';
@@ -28,6 +29,7 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
     required this.spendTimePlaceList,
     required this.bankNameList,
     required this.emoneyNameList,
+    required this.spendItemList,
   });
 
   final DateTime date;
@@ -42,6 +44,8 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
 
   final List<BankName> bankNameList;
   final List<EmoneyName> emoneyNameList;
+
+  final List<SpendItem> spendItemList;
 
   @override
   ConsumerState<DailyMoneyDisplayAlert> createState() => _DailyMoneyDisplayAlertState();
@@ -97,6 +101,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
           spendTimePlaceList: widget.spendTimePlaceList,
           bankNameList: widget.bankNameList,
           emoneyNameList: widget.emoneyNameList,
+          spendItemList: widget.spendItemList,
         ),
       ),
     ];
@@ -120,6 +125,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
               spendTimePlaceList: widget.spendTimePlaceList,
               bankNameList: widget.bankNameList,
               emoneyNameList: widget.emoneyNameList,
+              spendItemList: widget.spendItemList,
             ),
           ),
         );

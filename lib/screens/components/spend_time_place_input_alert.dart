@@ -507,14 +507,13 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     }
 
     await SpendTimePlacesRepository().deleteSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList).then((value) async {
-      await SpendTimePlacesRepository().inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list);
+      await SpendTimePlacesRepository().inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list).then((value2) async {
+        await ref.read(spendTimePlaceProvider.notifier).clearInputValue().then((value3) async {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        });
+      });
     });
-
-    // await SpendTimePlacesRepository().inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list).then(
-    //       (value) async => ref.read(spendTimePlaceProvider.notifier).clearInputValue().then(
-    //             (value) async => Navigator.pop(context),
-    //           ),
-    //     );
   }
 
   ///

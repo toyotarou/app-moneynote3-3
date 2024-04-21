@@ -17,7 +17,6 @@ import '../../../extensions/extensions.dart';
 import '../../../repository/emoney_names_repository.dart';
 import '../../../repository/incomes_repository.dart';
 import '../../../repository/moneys_repository.dart';
-import '../../../repository/spend_items_repository.dart';
 import '../../../state/app_params/app_params_notifier.dart';
 import '../../../utilities/functions.dart';
 import '../../../utilities/utilities.dart';
@@ -40,6 +39,7 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
     required this.spendTimePlaceList,
     required this.bankNameList,
     required this.emoneyNameList,
+    required this.spendItemList,
   });
 
   final DateTime date;
@@ -55,6 +55,8 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
 
   final List<BankName> bankNameList;
   final List<EmoneyName> emoneyNameList;
+
+  final List<SpendItem> spendItemList;
 
   @override
   ConsumerState<DailyMoneyDisplayPage> createState() => _DailyMoneyDisplayAlertState();
@@ -84,7 +86,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
   final Map<String, Income> _incomeMap = {};
 
-  List<SpendItem>? _spendItemList = [];
+//  List<SpendItem>? _spendItemList = [];
 
   ///
   void _init() {
@@ -95,7 +97,8 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 //    _makeSpendTimePlaceList();
 
 //    _makeBankNameList();
-    _makeSpendItemList();
+
+//    _makeSpendItemList();
 
     /////
 
@@ -667,12 +670,13 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
     if (widget.spendTimePlaceList.isNotEmpty) {
       final spendItemColorMap = <String, String>{};
-      if (_spendItemList!.isNotEmpty) {
-        _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
+      if (widget.spendItemList.isNotEmpty) {
+        widget.spendItemList.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
       }
 
       var sum = 0;
-      makeMonthlySpendItemSumMap(spendItemList: _spendItemList, spendTimePlaceList: widget.spendTimePlaceList).forEach((key, value) => sum += value);
+      makeMonthlySpendItemSumMap(spendItemList: widget.spendItemList, spendTimePlaceList: widget.spendTimePlaceList)
+          .forEach((key, value) => sum += value);
 
       list.add(Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -685,7 +689,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
         ),
       ));
 
-      makeMonthlySpendItemSumMap(spendTimePlaceList: widget.spendTimePlaceList, spendItemList: _spendItemList).forEach((key, value) {
+      makeMonthlySpendItemSumMap(spendTimePlaceList: widget.spendTimePlaceList, spendItemList: widget.spendItemList).forEach((key, value) {
         final lineColor = (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
 
         list.add(Container(
@@ -719,12 +723,12 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     });
   }
 
-  ///
-  Future<void> _makeSpendItemList() async {
-    await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
-      if (mounted) {
-        setState(() => _spendItemList = value);
-      }
-    });
-  }
+// ///
+// Future<void> _makeSpendItemList() async {
+//   await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+//     if (mounted) {
+//       setState(() => _spendItemList = value);
+//     }
+//   });
+// }
 }
