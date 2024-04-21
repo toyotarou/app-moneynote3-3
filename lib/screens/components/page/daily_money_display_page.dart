@@ -14,12 +14,10 @@ import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
 import '../../../enums/deposit_type.dart';
 import '../../../extensions/extensions.dart';
-import '../../../repository/bank_names_repository.dart';
 import '../../../repository/emoney_names_repository.dart';
 import '../../../repository/incomes_repository.dart';
 import '../../../repository/moneys_repository.dart';
 import '../../../repository/spend_items_repository.dart';
-import '../../../repository/spend_time_places_repository.dart';
 import '../../../state/app_params/app_params_notifier.dart';
 import '../../../utilities/functions.dart';
 import '../../../utilities/utilities.dart';
@@ -39,6 +37,9 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
     required this.onedayMoneyTotal,
     required this.bankPricePadMap,
     required this.bankPriceTotalPadMap,
+    required this.spendTimePlaceList,
+    required this.bankNameList,
+    required this.emoneyNameList,
   });
 
   final DateTime date;
@@ -50,6 +51,11 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
   final Map<String, Map<String, int>> bankPricePadMap;
   final Map<String, int> bankPriceTotalPadMap;
 
+  final List<SpendTimePlace> spendTimePlaceList;
+
+  final List<BankName> bankNameList;
+  final List<EmoneyName> emoneyNameList;
+
   @override
   ConsumerState<DailyMoneyDisplayPage> createState() => _DailyMoneyDisplayAlertState();
 }
@@ -58,7 +64,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
   final Utility _utility = Utility();
 
   // ignore: use_late_for_private_fields_and_variables
-  List<BankName>? _bankNameList = [];
+//  List<BankName>? _bankNameList = [];
 
   // ignore: use_late_for_private_fields_and_variables
   List<EmoneyName>? _emoneyNameList = [];
@@ -67,7 +73,8 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
 //  List<Money>? _moneyList = [];
   List<Money>? _beforeMoneyList = [];
-  List<SpendTimePlace>? _spendTimePlaceList = [];
+
+//  List<SpendTimePlace>? _spendTimePlaceList = [];
 
   // Map<String, Map<String, int>> _bankPricePadMap = {};
   // Map<String, int> _bankPriceTotalPadMap = {};
@@ -84,9 +91,10 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 //    _makeMoneyList();
 
 //    _makeBankPriceList();
-    _makeSpendTimePlaceList();
 
-    _makeBankNameList();
+//    _makeSpendTimePlaceList();
+
+//    _makeBankNameList();
     _makeSpendItemList();
 
     /////
@@ -373,9 +381,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     });
   }
 
-  ///
-  Future<void> _makeBankNameList() async =>
-      BankNamesRepository().getBankNameList(isar: widget.isar).then((value) => setState(() => _bankNameList = value));
+  // ///
+  // Future<void> _makeBankNameList() async =>
+  //     BankNamesRepository().getBankNameList(isar: widget.isar).then((value) => setState(() => _bankNameList = value));
 
   ///
   Widget _displayBankNames() {
@@ -390,7 +398,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
       )
     ];
 
-    if (_bankNameList!.isEmpty) {
+    if (widget.bankNameList.isEmpty) {
       list.add(Column(
         children: [
           const SizedBox(height: 10),
@@ -402,9 +410,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
       final list2 = <Widget>[];
 
       var sum = 0;
-      for (var i = 0; i < _bankNameList!.length; i++) {
-        if (widget.bankPricePadMap['${_bankNameList![i].depositType}-${_bankNameList![i].id}'] != null) {
-          final bankPriceMap = widget.bankPricePadMap['${_bankNameList![i].depositType}-${_bankNameList![i].id}'];
+      for (var i = 0; i < widget.bankNameList.length; i++) {
+        if (widget.bankPricePadMap['${widget.bankNameList[i].depositType}-${widget.bankNameList[i].id}'] != null) {
+          final bankPriceMap = widget.bankPricePadMap['${widget.bankNameList[i].depositType}-${widget.bankNameList[i].id}'];
           if (bankPriceMap![widget.date.yyyymmdd] != null) {
             sum += bankPriceMap[widget.date.yyyymmdd]!;
           }
@@ -422,7 +430,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
         ),
       ));
 
-      for (var i = 0; i < _bankNameList!.length; i++) {
+      for (var i = 0; i < widget.bankNameList.length; i++) {
         list2.add(
           Container(
             padding: const EdgeInsets.all(10),
@@ -434,15 +442,15 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_bankNameList![i].bankName, maxLines: 2, overflow: TextOverflow.ellipsis),
-                      Text(_bankNameList![i].branchName, maxLines: 2, overflow: TextOverflow.ellipsis),
+                      Text(widget.bankNameList[i].bankName, maxLines: 2, overflow: TextOverflow.ellipsis),
+                      Text(widget.bankNameList[i].branchName, maxLines: 2, overflow: TextOverflow.ellipsis),
                     ],
                   ),
                 ),
                 Row(
                   children: [
                     Text(
-                      _getListPrice(depositType: _bankNameList![i].depositType, id: _bankNameList![i].id).toString().toCurrency(),
+                      _getListPrice(depositType: widget.bankNameList[i].depositType, id: widget.bankNameList[i].id).toString().toCurrency(),
                     ),
                     const SizedBox(width: 20),
                     GestureDetector(
@@ -452,7 +460,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                           date: widget.date,
                           isar: widget.isar,
                           depositType: DepositType.bank,
-                          bankName: _bankNameList![i],
+                          bankName: widget.bankNameList[i],
                         ),
                       ),
                       child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
@@ -590,15 +598,15 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     return listPrice;
   }
 
-  ///
-  Future<void> _makeSpendTimePlaceList() async {
-    final param = <String, dynamic>{};
-    param['date'] = widget.date.yyyymmdd;
-
-    await SpendTimePlacesRepository()
-        .getDateSpendTimePlaceList(isar: widget.isar, param: param)
-        .then((value) => setState(() => _spendTimePlaceList = value));
-  }
+  // ///
+  // Future<void> _makeSpendTimePlaceList() async {
+  //   final param = <String, dynamic>{};
+  //   param['date'] = widget.date.yyyymmdd;
+  //
+  //   await SpendTimePlacesRepository()
+  //       .getDateSpendTimePlaceList(isar: widget.isar, param: param)
+  //       .then((value) => setState(() => _spendTimePlaceList = value));
+  // }
 
   ///
   Widget _displaySpendTimePlaceList() {
@@ -643,7 +651,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                           date: widget.date,
                           spend: (_beforeMoneyTotal + beforeBankTotal!) - (widget.onedayMoneyTotal + onedayBankTotal!),
                           isar: widget.isar,
-                          spendTimePlaceList: _spendTimePlaceList,
+                          spendTimePlaceList: widget.spendTimePlaceList,
                         ),
                       );
                     }
@@ -657,14 +665,14 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
       ),
     ];
 
-    if (_spendTimePlaceList!.isNotEmpty) {
+    if (widget.spendTimePlaceList.isNotEmpty) {
       final spendItemColorMap = <String, String>{};
       if (_spendItemList!.isNotEmpty) {
         _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
       }
 
       var sum = 0;
-      makeMonthlySpendItemSumMap(spendItemList: _spendItemList, spendTimePlaceList: _spendTimePlaceList!).forEach((key, value) => sum += value);
+      makeMonthlySpendItemSumMap(spendItemList: _spendItemList, spendTimePlaceList: widget.spendTimePlaceList).forEach((key, value) => sum += value);
 
       list.add(Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -677,7 +685,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
         ),
       ));
 
-      makeMonthlySpendItemSumMap(spendTimePlaceList: _spendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
+      makeMonthlySpendItemSumMap(spendTimePlaceList: widget.spendTimePlaceList, spendItemList: _spendItemList).forEach((key, value) {
         final lineColor = (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
 
         list.add(Container(

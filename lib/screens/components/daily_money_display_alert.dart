@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/utilities/utilities.dart';
 
+import '../../collections/bank_name.dart';
+import '../../collections/emoney_name.dart';
 import '../../collections/money.dart';
+import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
+import '../../utilities/utilities.dart';
 import 'page/daily_money_display_page.dart';
 
 class TabInfo {
@@ -22,6 +25,9 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
     required this.moneyMap,
     required this.bankPricePadMap,
     required this.bankPriceTotalPadMap,
+    required this.spendTimePlaceList,
+    required this.bankNameList,
+    required this.emoneyNameList,
   });
 
   final DateTime date;
@@ -31,6 +37,11 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
 
   final Map<String, Map<String, int>> bankPricePadMap;
   final Map<String, int> bankPriceTotalPadMap;
+
+  final List<SpendTimePlace> spendTimePlaceList;
+
+  final List<BankName> bankNameList;
+  final List<EmoneyName> emoneyNameList;
 
   @override
   ConsumerState<DailyMoneyDisplayAlert> createState() => _DailyMoneyDisplayAlertState();
@@ -83,6 +94,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
               (widget.moneyMap[widget.date.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[widget.date.yyyymmdd]) : 0,
           bankPricePadMap: widget.bankPricePadMap,
           bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
+          spendTimePlaceList: widget.spendTimePlaceList,
+          bankNameList: widget.bankNameList,
+          emoneyNameList: widget.emoneyNameList,
         ),
       ),
     ];
@@ -103,6 +117,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
               onedayMoneyTotal: _utility.makeCurrencySum(money: widget.moneyMap[day.yyyymmdd]),
               bankPricePadMap: widget.bankPricePadMap,
               bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
+              spendTimePlaceList: widget.spendTimePlaceList,
+              bankNameList: widget.bankNameList,
+              emoneyNameList: widget.emoneyNameList,
             ),
           ),
         );
