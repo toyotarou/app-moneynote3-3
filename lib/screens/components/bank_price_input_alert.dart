@@ -198,6 +198,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       _bankPriceEditingController.clear();
 
       Navigator.pop(context);
+      Navigator.pop(context);
     });
   }
 
@@ -279,6 +280,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   }
 
   ///
-  Future<void> _deleteBankPrice({required int id}) async =>
-      BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id).then((value) => Navigator.pop(context));
+  Future<void> _deleteBankPrice({required int id}) async => BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id).then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
 }
