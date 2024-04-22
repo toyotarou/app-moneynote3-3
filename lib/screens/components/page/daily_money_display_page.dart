@@ -8,18 +8,13 @@ import 'package:isar/isar.dart';
 
 import '../../../collections/bank_name.dart';
 import '../../../collections/emoney_name.dart';
-import '../../../collections/income.dart';
 import '../../../collections/money.dart';
 import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
 import '../../../enums/deposit_type.dart';
 import '../../../extensions/extensions.dart';
-import '../../../repository/emoney_names_repository.dart';
-import '../../../repository/incomes_repository.dart';
-import '../../../repository/moneys_repository.dart';
 import '../../../state/app_params/app_params_notifier.dart';
 import '../../../utilities/functions.dart';
-import '../../../utilities/utilities.dart';
 import '../bank_price_input_alert.dart';
 import '../money_input_alert.dart';
 import '../parts/bank_emoney_blank_message.dart';
@@ -68,57 +63,9 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
 }
 
 class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> {
-  final Utility _utility = Utility();
-
-  // ignore: use_late_for_private_fields_and_variables
-//  List<BankName>? _bankNameList = [];
-
-  // ignore: use_late_for_private_fields_and_variables
-//  List<EmoneyName>? _emoneyNameList = [];
-
-//  List<BankPrice>? bankPriceList = [];
-
-//  List<Money>? _moneyList = [];
-//   List<Money>? _beforeMoneyList = [];
-//
-// //  List<SpendTimePlace>? _spendTimePlaceList = [];
-//
-//   // Map<String, Map<String, int>> _bankPricePadMap = {};
-//   // Map<String, int> _bankPriceTotalPadMap = {};
-//
-// //  int _onedayMoneyTotal = 0;
-//   int _beforeMoneyTotal = 0;
-
-//  final Map<String, Income> _incomeMap = {};
-
-//  List<SpendItem>? _spendItemList = [];
-
-  ///
-  void _init() {
-//    _makeMoneyList();
-
-//    _makeBankPriceList();
-
-//    _makeSpendTimePlaceList();
-
-//    _makeBankNameList();
-
-//    _makeSpendItemList();
-
-    /////
-
-//    _makeEmoneyNameList();
-
-//    _makeBeforeMoneyList();
-
-//    _makeIncomeMap();
-  }
-
   ///
   @override
   Widget build(BuildContext context) {
-    Future(_init);
-
     final oneday = widget.date.yyyymmdd;
 
     final beforeDate = DateTime(oneday.split('-')[0].toInt(), oneday.split('-')[1].toInt(), oneday.split('-')[2].toInt() - 1);
@@ -350,49 +297,6 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     );
   }
 
-  // ///
-  // Future<void> _makeMoneyList() async {
-  //   final param = <String, dynamic>{};
-  //   param['date'] = widget.date.yyyymmdd;
-  //
-  //   await MoneysRepository().getDateMoneyList(isar: widget.isar, param: param).then((value) {
-  //     setState(() {
-  //       _moneyList = value;
-  //
-  //       if (value!.isNotEmpty) {
-  //         _onedayMoneyTotal = _utility.makeCurrencySum(money: value[0]);
-  //       }
-  //     });
-  //   });
-  // }
-
-  // ///
-  // Future<void> _makeBeforeMoneyList() async {
-  //   final param = <String, dynamic>{};
-  //
-  //   final oneday = widget.date.yyyymmdd;
-  //
-  //   final beforeDate = DateTime(oneday.split('-')[0].toInt(), oneday.split('-')[1].toInt(), oneday.split('-')[2].toInt() - 1);
-  //
-  //   param['date'] = beforeDate.yyyymmdd;
-  //
-  //   await MoneysRepository().getDateMoneyList(isar: widget.isar, param: param).then((value) {
-  //     if (mounted) {
-  //       setState(() {
-  //         _beforeMoneyList = value;
-  //
-  //         if (value!.isNotEmpty) {
-  //           _beforeMoneyTotal = _utility.makeCurrencySum(money: value[0]);
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-
-  // ///
-  // Future<void> _makeBankNameList() async =>
-  //     BankNamesRepository().getBankNameList(isar: widget.isar).then((value) => setState(() => _bankNameList = value));
-
   ///
   Widget _displayBankNames() {
     final list = <Widget>[
@@ -487,10 +391,6 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     return Column(children: list);
   }
 
-  // ///
-  // Future<void> _makeEmoneyNameList() async =>
-  //     EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) => setState(() => _emoneyNameList = value));
-
   ///
   Widget _displayEmoneyNames() {
     final list = <Widget>[
@@ -578,21 +478,6 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     return Column(children: list);
   }
 
-  // ///
-  // Future<void> _makeBankPriceList() async {
-  //   await BankPricesRepository().getBankPriceList(isar: widget.isar).then((value) {
-  //     setState(() {
-  //       bankPriceList = value;
-  //
-  //       if (value != null) {
-  //         final bankPriceMap = makeBankPriceMap(bankPriceList: value);
-  //         _bankPricePadMap = bankPriceMap['bankPriceDatePadMap'];
-  //         _bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'];
-  //       }
-  //     });
-  //   });
-  // }
-
   ///
   int _getListPrice({required String depositType, required int id}) {
     var listPrice = 0;
@@ -605,16 +490,6 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
     return listPrice;
   }
-
-  // ///
-  // Future<void> _makeSpendTimePlaceList() async {
-  //   final param = <String, dynamic>{};
-  //   param['date'] = widget.date.yyyymmdd;
-  //
-  //   await SpendTimePlacesRepository()
-  //       .getDateSpendTimePlaceList(isar: widget.isar, param: param)
-  //       .then((value) => setState(() => _spendTimePlaceList = value));
-  // }
 
   ///
   Widget _displaySpendTimePlaceList() {
@@ -713,27 +588,4 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
     return Column(mainAxisSize: MainAxisSize.min, children: list);
   }
-
-// ///
-// Future<void> _makeIncomeMap() async {
-//   final param = <String, dynamic>{};
-//   final exDate = widget.date.yyyymmdd.split('-');
-//   param['year'] = exDate[0];
-//   param['month'] = exDate[1];
-//
-//   await IncomesRepository().getYearMonthIncomeList(isar: widget.isar, param: param).then((value) {
-//     if (value!.isNotEmpty) {
-//       setState(() => value.forEach((element) => _incomeMap[element.date] = element));
-//     }
-//   });
-// }
-
-// ///
-// Future<void> _makeSpendItemList() async {
-//   await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
-//     if (mounted) {
-//       setState(() => _spendItemList = value);
-//     }
-//   });
-// }
 }

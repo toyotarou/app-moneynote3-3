@@ -116,7 +116,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
 
       final youbi = day.youbiStr.substring(0, 3);
 
-      var beforeDay = DateTime(day.year, day.month, day.day - 1);
+      final beforeDay = DateTime(day.year, day.month, day.day - 1);
 
       if (widget.moneyMap[day.yyyymmdd] != null) {
         _tabs.add(
