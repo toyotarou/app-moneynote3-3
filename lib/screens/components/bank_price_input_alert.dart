@@ -194,7 +194,11 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       ..bankId = bankId
       ..price = _bankPriceEditingController.text.toInt();
 
-    await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice).then((value) => _bankPriceEditingController.clear());
+    await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice).then((value) {
+      _bankPriceEditingController.clear();
+
+      Navigator.pop(context);
+    });
   }
 
   ///

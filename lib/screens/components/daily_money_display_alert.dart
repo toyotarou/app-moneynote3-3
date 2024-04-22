@@ -87,6 +87,8 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
 
   ///
   void _makeTab() {
+    final beforeDate = DateTime(widget.date.year, widget.date.month, widget.date.day - 1);
+
     _tabs = [
       TabInfo(
         '${widget.date.yyyymmdd} (${widget.date.youbiStr.substring(0, 3)})',
@@ -96,6 +98,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
           moneyList: (widget.moneyMap[widget.date.yyyymmdd] != null) ? [widget.moneyMap[widget.date.yyyymmdd]!] : [],
           onedayMoneyTotal:
               (widget.moneyMap[widget.date.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[widget.date.yyyymmdd]) : 0,
+          beforeMoneyList: (widget.moneyMap[beforeDate.yyyymmdd] != null) ? [widget.moneyMap[beforeDate.yyyymmdd]!] : [],
+          beforeMoneyTotal:
+              (widget.moneyMap[beforeDate.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[beforeDate.yyyymmdd]) : 0,
           bankPricePadMap: widget.bankPricePadMap,
           bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
           spendTimePlaceList: widget.spendTimePlaceList,
@@ -111,6 +116,8 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
 
       final youbi = day.youbiStr.substring(0, 3);
 
+      var beforeDay = DateTime(day.year, day.month, day.day - 1);
+
       if (widget.moneyMap[day.yyyymmdd] != null) {
         _tabs.add(
           TabInfo(
@@ -120,6 +127,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
               isar: widget.isar,
               moneyList: [widget.moneyMap[day.yyyymmdd]!],
               onedayMoneyTotal: _utility.makeCurrencySum(money: widget.moneyMap[day.yyyymmdd]),
+              beforeMoneyList: (widget.moneyMap[beforeDay.yyyymmdd] != null) ? [widget.moneyMap[beforeDay.yyyymmdd]!] : [],
+              beforeMoneyTotal:
+                  (widget.moneyMap[beforeDay.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[beforeDay.yyyymmdd]) : 0,
               bankPricePadMap: widget.bankPricePadMap,
               bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
               spendTimePlaceList: widget.spendTimePlaceList,

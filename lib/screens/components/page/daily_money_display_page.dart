@@ -34,6 +34,8 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
     required this.isar,
     required this.moneyList,
     required this.onedayMoneyTotal,
+    required this.beforeMoneyList,
+    required this.beforeMoneyTotal,
     required this.bankPricePadMap,
     required this.bankPriceTotalPadMap,
     required this.spendTimePlaceList,
@@ -47,6 +49,9 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
 
   final List<Money> moneyList;
   final int onedayMoneyTotal;
+
+  final List<Money> beforeMoneyList;
+  final int beforeMoneyTotal;
 
   final Map<String, Map<String, int>> bankPricePadMap;
   final Map<String, int> bankPriceTotalPadMap;
@@ -69,22 +74,22 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 //  List<BankName>? _bankNameList = [];
 
   // ignore: use_late_for_private_fields_and_variables
-  List<EmoneyName>? _emoneyNameList = [];
+//  List<EmoneyName>? _emoneyNameList = [];
 
 //  List<BankPrice>? bankPriceList = [];
 
 //  List<Money>? _moneyList = [];
-  List<Money>? _beforeMoneyList = [];
+//   List<Money>? _beforeMoneyList = [];
+//
+// //  List<SpendTimePlace>? _spendTimePlaceList = [];
+//
+//   // Map<String, Map<String, int>> _bankPricePadMap = {};
+//   // Map<String, int> _bankPriceTotalPadMap = {};
+//
+// //  int _onedayMoneyTotal = 0;
+//   int _beforeMoneyTotal = 0;
 
-//  List<SpendTimePlace>? _spendTimePlaceList = [];
-
-  // Map<String, Map<String, int>> _bankPricePadMap = {};
-  // Map<String, int> _bankPriceTotalPadMap = {};
-
-//  int _onedayMoneyTotal = 0;
-  int _beforeMoneyTotal = 0;
-
-  final Map<String, Income> _incomeMap = {};
+//  final Map<String, Income> _incomeMap = {};
 
 //  List<SpendItem>? _spendItemList = [];
 
@@ -102,11 +107,11 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
 
     /////
 
-    _makeEmoneyNameList();
+//    _makeEmoneyNameList();
 
-    _makeBeforeMoneyList();
+//    _makeBeforeMoneyList();
 
-    _makeIncomeMap();
+//    _makeIncomeMap();
   }
 
   ///
@@ -121,7 +126,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     final onedayBankTotal = (widget.bankPriceTotalPadMap[oneday] != null) ? widget.bankPriceTotalPadMap[oneday] : 0;
     final beforeBankTotal = (widget.bankPriceTotalPadMap[beforeDate.yyyymmdd] != null) ? widget.bankPriceTotalPadMap[beforeDate.yyyymmdd] : 0;
 
-    final spendDiff = (_beforeMoneyTotal + beforeBankTotal!) - (widget.onedayMoneyTotal + onedayBankTotal!);
+    final spendDiff = (widget.beforeMoneyTotal + beforeBankTotal!) - (widget.onedayMoneyTotal + onedayBankTotal!);
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -170,7 +175,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     final onedayBankTotal = (widget.bankPriceTotalPadMap[oneday] != null) ? widget.bankPriceTotalPadMap[oneday] : 0;
     final beforeBankTotal = (widget.bankPriceTotalPadMap[beforeDate.yyyymmdd] != null) ? widget.bankPriceTotalPadMap[beforeDate.yyyymmdd] : 0;
 
-    final beforeTotal = _beforeMoneyTotal + beforeBankTotal!;
+    final beforeTotal = widget.beforeMoneyTotal + beforeBankTotal!;
     final onedayTotal = widget.onedayMoneyTotal + onedayBankTotal!;
 
     return DecoratedBox(
@@ -228,7 +233,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                           _getBubbleComment(beforeTotal: beforeTotal, onedayTotal: onedayTotal),
                           const SizedBox(width: 10),
                           Text(
-                            ((_beforeMoneyTotal + beforeBankTotal) - (widget.onedayMoneyTotal + onedayBankTotal)).toString().toCurrency(),
+                            ((widget.beforeMoneyTotal + beforeBankTotal) - (widget.onedayMoneyTotal + onedayBankTotal)).toString().toCurrency(),
                             style: TextStyle(color: (widget.onedayMoneyTotal == 0) ? const Color(0xFFFBB6CE) : Colors.white),
                           ),
                         ],
@@ -297,7 +302,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                     date: widget.date,
                     isar: widget.isar,
                     onedayMoneyList: widget.moneyList,
-                    beforedayMoneyList: _beforeMoneyList,
+                    beforedayMoneyList: widget.beforeMoneyList,
                   ),
                 ),
                 child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
@@ -361,28 +366,28 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
   //   });
   // }
 
-  ///
-  Future<void> _makeBeforeMoneyList() async {
-    final param = <String, dynamic>{};
-
-    final oneday = widget.date.yyyymmdd;
-
-    final beforeDate = DateTime(oneday.split('-')[0].toInt(), oneday.split('-')[1].toInt(), oneday.split('-')[2].toInt() - 1);
-
-    param['date'] = beforeDate.yyyymmdd;
-
-    await MoneysRepository().getDateMoneyList(isar: widget.isar, param: param).then((value) {
-      if (mounted) {
-        setState(() {
-          _beforeMoneyList = value;
-
-          if (value!.isNotEmpty) {
-            _beforeMoneyTotal = _utility.makeCurrencySum(money: value[0]);
-          }
-        });
-      }
-    });
-  }
+  // ///
+  // Future<void> _makeBeforeMoneyList() async {
+  //   final param = <String, dynamic>{};
+  //
+  //   final oneday = widget.date.yyyymmdd;
+  //
+  //   final beforeDate = DateTime(oneday.split('-')[0].toInt(), oneday.split('-')[1].toInt(), oneday.split('-')[2].toInt() - 1);
+  //
+  //   param['date'] = beforeDate.yyyymmdd;
+  //
+  //   await MoneysRepository().getDateMoneyList(isar: widget.isar, param: param).then((value) {
+  //     if (mounted) {
+  //       setState(() {
+  //         _beforeMoneyList = value;
+  //
+  //         if (value!.isNotEmpty) {
+  //           _beforeMoneyTotal = _utility.makeCurrencySum(money: value[0]);
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
 
   // ///
   // Future<void> _makeBankNameList() async =>
@@ -482,9 +487,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     return Column(children: list);
   }
 
-  ///
-  Future<void> _makeEmoneyNameList() async =>
-      EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) => setState(() => _emoneyNameList = value));
+  // ///
+  // Future<void> _makeEmoneyNameList() async =>
+  //     EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) => setState(() => _emoneyNameList = value));
 
   ///
   Widget _displayEmoneyNames() {
@@ -499,7 +504,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
       )
     ];
 
-    if (_emoneyNameList!.isEmpty) {
+    if (widget.emoneyNameList.isEmpty) {
       list.add(Column(
         children: [
           const SizedBox(height: 10),
@@ -511,9 +516,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
       final list2 = <Widget>[];
 
       var sum = 0;
-      for (var i = 0; i < _emoneyNameList!.length; i++) {
-        if (widget.bankPricePadMap['${_emoneyNameList![i].depositType}-${_emoneyNameList![i].id}'] != null) {
-          final bankPriceMap = widget.bankPricePadMap['${_emoneyNameList![i].depositType}-${_emoneyNameList![i].id}'];
+      for (var i = 0; i < widget.emoneyNameList.length; i++) {
+        if (widget.bankPricePadMap['${widget.emoneyNameList[i].depositType}-${widget.emoneyNameList[i].id}'] != null) {
+          final bankPriceMap = widget.bankPricePadMap['${widget.emoneyNameList[i].depositType}-${widget.emoneyNameList[i].id}'];
 
           if (bankPriceMap![widget.date.yyyymmdd] != null) {
             sum += bankPriceMap[widget.date.yyyymmdd]!;
@@ -532,7 +537,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
         ),
       ));
 
-      for (var i = 0; i < _emoneyNameList!.length; i++) {
+      for (var i = 0; i < widget.emoneyNameList.length; i++) {
         list2.add(
           Container(
             padding: const EdgeInsets.all(10),
@@ -540,11 +545,11 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: Text(_emoneyNameList![i].emoneyName, maxLines: 2, overflow: TextOverflow.ellipsis)),
+                Expanded(child: Text(widget.emoneyNameList[i].emoneyName, maxLines: 2, overflow: TextOverflow.ellipsis)),
                 Row(
                   children: [
                     Text(
-                      _getListPrice(depositType: _emoneyNameList![i].depositType, id: _emoneyNameList![i].id).toString().toCurrency(),
+                      _getListPrice(depositType: widget.emoneyNameList[i].depositType, id: widget.emoneyNameList[i].id).toString().toCurrency(),
                     ),
                     const SizedBox(width: 20),
                     GestureDetector(
@@ -554,7 +559,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                           date: widget.date,
                           isar: widget.isar,
                           depositType: DepositType.emoney,
-                          emoneyName: _emoneyNameList![i],
+                          emoneyName: widget.emoneyNameList[i],
                         ),
                       ),
                       child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
@@ -652,7 +657,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                         context: context,
                         widget: SpendTimePlaceInputAlert(
                           date: widget.date,
-                          spend: (_beforeMoneyTotal + beforeBankTotal!) - (widget.onedayMoneyTotal + onedayBankTotal!),
+                          spend: (widget.beforeMoneyTotal + beforeBankTotal!) - (widget.onedayMoneyTotal + onedayBankTotal!),
                           isar: widget.isar,
                           spendTimePlaceList: widget.spendTimePlaceList,
                         ),
@@ -709,19 +714,19 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     return Column(mainAxisSize: MainAxisSize.min, children: list);
   }
 
-  ///
-  Future<void> _makeIncomeMap() async {
-    final param = <String, dynamic>{};
-    final exDate = widget.date.yyyymmdd.split('-');
-    param['year'] = exDate[0];
-    param['month'] = exDate[1];
-
-    await IncomesRepository().getYearMonthIncomeList(isar: widget.isar, param: param).then((value) {
-      if (value!.isNotEmpty) {
-        setState(() => value.forEach((element) => _incomeMap[element.date] = element));
-      }
-    });
-  }
+// ///
+// Future<void> _makeIncomeMap() async {
+//   final param = <String, dynamic>{};
+//   final exDate = widget.date.yyyymmdd.split('-');
+//   param['year'] = exDate[0];
+//   param['month'] = exDate[1];
+//
+//   await IncomesRepository().getYearMonthIncomeList(isar: widget.isar, param: param).then((value) {
+//     if (value!.isNotEmpty) {
+//       setState(() => value.forEach((element) => _incomeMap[element.date] = element));
+//     }
+//   });
+// }
 
 // ///
 // Future<void> _makeSpendItemList() async {

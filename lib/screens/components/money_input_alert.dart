@@ -247,6 +247,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       _tecYen1.clear();
 
       Navigator.pop(context);
+      Navigator.pop(context);
     });
   }
 
