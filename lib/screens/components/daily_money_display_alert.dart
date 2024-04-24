@@ -26,10 +26,11 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
     required this.moneyMap,
     required this.bankPricePadMap,
     required this.bankPriceTotalPadMap,
-    required this.spendTimePlaceList,
     required this.bankNameList,
     required this.emoneyNameList,
     required this.spendItemList,
+    required this.thisMonthSpendTimePlaceList,
+    required this.prevMonthSpendTimePlaceList,
   });
 
   final DateTime date;
@@ -40,7 +41,8 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
   final Map<String, Map<String, int>> bankPricePadMap;
   final Map<String, int> bankPriceTotalPadMap;
 
-  final List<SpendTimePlace> spendTimePlaceList;
+  final List<SpendTimePlace> thisMonthSpendTimePlaceList;
+  final List<SpendTimePlace> prevMonthSpendTimePlaceList;
 
   final List<BankName> bankNameList;
   final List<EmoneyName> emoneyNameList;
@@ -55,6 +57,20 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
   final Utility _utility = Utility();
 
   List<TabInfo> _tabs = [];
+
+  Map<String, List<SpendTimePlace>> monthlySpendTimePlaceMap = {};
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    widget.prevMonthSpendTimePlaceList.forEach((element) => monthlySpendTimePlaceMap[element.date] = []);
+    widget.thisMonthSpendTimePlaceList.forEach((element) => monthlySpendTimePlaceMap[element.date] = []);
+
+    widget.prevMonthSpendTimePlaceList.forEach((element) => monthlySpendTimePlaceMap[element.date]?.add(element));
+    widget.thisMonthSpendTimePlaceList.forEach((element) => monthlySpendTimePlaceMap[element.date]?.add(element));
+  }
 
   ///
   @override
@@ -87,31 +103,9 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
 
   ///
   void _makeTab() {
-    final beforeDate = DateTime(widget.date.year, widget.date.month, widget.date.day - 1);
+    _tabs = [];
 
-    _tabs = [
-      TabInfo(
-        '${widget.date.yyyymmdd} (${widget.date.youbiStr.substring(0, 3)})',
-        DailyMoneyDisplayPage(
-          date: widget.date,
-          isar: widget.isar,
-          moneyList: (widget.moneyMap[widget.date.yyyymmdd] != null) ? [widget.moneyMap[widget.date.yyyymmdd]!] : [],
-          onedayMoneyTotal:
-              (widget.moneyMap[widget.date.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[widget.date.yyyymmdd]) : 0,
-          beforeMoneyList: (widget.moneyMap[beforeDate.yyyymmdd] != null) ? [widget.moneyMap[beforeDate.yyyymmdd]!] : [],
-          beforeMoneyTotal:
-              (widget.moneyMap[beforeDate.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[beforeDate.yyyymmdd]) : 0,
-          bankPricePadMap: widget.bankPricePadMap,
-          bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
-          spendTimePlaceList: widget.spendTimePlaceList,
-          bankNameList: widget.bankNameList,
-          emoneyNameList: widget.emoneyNameList,
-          spendItemList: widget.spendItemList,
-        ),
-      ),
-    ];
-
-    for (var i = 1; i < 7; i++) {
+    for (var i = 0; i < 7; i++) {
       final day = widget.date.add(Duration(days: i * -1));
 
       final youbi = day.youbiStr.substring(0, 3);
@@ -132,7 +126,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
                   (widget.moneyMap[beforeDay.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[beforeDay.yyyymmdd]) : 0,
               bankPricePadMap: widget.bankPricePadMap,
               bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
-              spendTimePlaceList: widget.spendTimePlaceList,
+              spendTimePlaceList: (monthlySpendTimePlaceMap[day.yyyymmdd] != null) ? monthlySpendTimePlaceMap[day.yyyymmdd]! : [],
               bankNameList: widget.bankNameList,
               emoneyNameList: widget.emoneyNameList,
               spendItemList: widget.spendItemList,

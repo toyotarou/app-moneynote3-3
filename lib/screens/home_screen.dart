@@ -72,8 +72,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   List<BankPrice>? bankPriceList = [];
 
-  List<SpendTimePlace>? monthlySpendTimePlaceList = [];
-  List<SpendTimePlace>? spendTimePlaceList = [];
+  List<SpendTimePlace>? allSpendTimePlaceList = [];
+  List<SpendTimePlace>? thisMonthSpendTimePlaceList = [];
+  List<SpendTimePlace>? prevMonthSpendTimePlaceList = [];
+
   Map<String, List<SpendTimePlace>> spendTimePlaceCountMap = {};
   List<SpendTimePlace> spendTypeBlankSpendTimePlaceList = [];
 
@@ -190,8 +192,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     var plusVal = 0;
     var minusVal = 0;
 
-    if (monthlySpendTimePlaceList!.isNotEmpty) {
-      makeMonthlySpendItemSumMap(spendTimePlaceList: monthlySpendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
+    if (thisMonthSpendTimePlaceList!.isNotEmpty) {
+      makeMonthlySpendItemSumMap(spendTimePlaceList: thisMonthSpendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
         if (value > 0) {
           plusVal += value;
         }
@@ -331,7 +333,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       onTap: () {
                         MoneyDialog(
                           context: context,
-                          widget: SameDaySpendPriceListAlert(isar: widget.isar, spendTimePlaceList: spendTimePlaceList ?? []),
+                          widget: SameDaySpendPriceListAlert(isar: widget.isar, spendTimePlaceList: allSpendTimePlaceList ?? []),
                         );
                       },
                       child: Icon(FontAwesomeIcons.diamond, color: Colors.white.withOpacity(0.6), size: 16),
@@ -691,11 +693,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         moneyMap: moneyMap,
                         bankPricePadMap: bankPricePadMap,
                         bankPriceTotalPadMap: bankPriceTotalPadMap,
-                        spendTimePlaceList:
-                            (spendTimePlaceList != null) ? spendTimePlaceList!.where((element) => element.date == generateYmd).toList() : [],
                         bankNameList: bankNameList ?? [],
                         emoneyNameList: emoneyNameList ?? [],
                         spendItemList: _spendItemList ?? [],
+                        thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? [],
+                        prevMonthSpendTimePlaceList: prevMonthSpendTimePlaceList ?? [],
                       ),
                     ),
             child: Container(
@@ -824,10 +826,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     await SpendTimePlacesRepository().getSpendTimePlaceList(isar: widget.isar).then((value) {
       setState(() {
-        spendTimePlaceList = value;
+        allSpendTimePlaceList = value;
 
         if (value!.isNotEmpty) {
           final yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
+
+          final prevYearMonth = DateTime(yearmonth!.split('-')[0].toInt(), yearmonth.split('-')[1].toInt() - 1).yyyymm;
 
           if (_spendItemList != null) {
             final map = <String, List<SpendTimePlace>>{};
@@ -837,25 +841,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           }
 
           final list = <SpendTimePlace>[];
+          final list2 = <SpendTimePlace>[];
 
           final map = <String, List<int>>{};
 
           value
             ..forEach((element) {
               final exDate = element.date.split('-');
+
               if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
                 map[element.date] = [];
-                list.add(element);
-              }
-
-              if (element.spendType == '') {
-                spendTypeBlankSpendTimePlaceList.add(element);
               }
             })
             ..forEach((element) {
               final exDate = element.date.split('-');
+
               if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
                 map[element.date]?.add(element.price);
+
+                list.add(element);
+              }
+
+              if ('${exDate[0]}-${exDate[1]}' == prevYearMonth) {
+                list2.add(element);
+              }
+
+              if (element.spendType == '') {
+                spendTypeBlankSpendTimePlaceList.add(element);
               }
             });
 
@@ -865,7 +877,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             monthlySpendTimePlaceSumMap[key] = sum;
           });
 
-          monthlySpendTimePlaceList = list;
+          thisMonthSpendTimePlaceList = list;
+
+          prevMonthSpendTimePlaceList = list2;
         }
       });
     });
@@ -875,13 +889,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _displayMonthlySpendTimePlaceList() {
     final list = <Widget>[];
 
-    if (monthlySpendTimePlaceList!.isNotEmpty) {
+    if (thisMonthSpendTimePlaceList!.isNotEmpty) {
       final spendItemColorMap = <String, String>{};
       if (_spendItemList!.isNotEmpty) {
         _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
       }
 
-      makeMonthlySpendItemSumMap(spendTimePlaceList: monthlySpendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
+      makeMonthlySpendItemSumMap(spendTimePlaceList: thisMonthSpendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
         final lineColor = (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
 
         list.add(Container(
