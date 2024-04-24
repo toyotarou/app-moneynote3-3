@@ -103,9 +103,31 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
 
   ///
   void _makeTab() {
-    _tabs = [];
+    final beforeDate = DateTime(widget.date.year, widget.date.month, widget.date.day - 1);
 
-    for (var i = 0; i < 7; i++) {
+    _tabs = [
+      TabInfo(
+        '${widget.date.yyyymmdd} (${widget.date.youbiStr.substring(0, 3)})',
+        DailyMoneyDisplayPage(
+          date: widget.date,
+          isar: widget.isar,
+          moneyList: (widget.moneyMap[widget.date.yyyymmdd] != null) ? [widget.moneyMap[widget.date.yyyymmdd]!] : [],
+          onedayMoneyTotal:
+              (widget.moneyMap[widget.date.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[widget.date.yyyymmdd]) : 0,
+          beforeMoneyList: (widget.moneyMap[beforeDate.yyyymmdd] != null) ? [widget.moneyMap[beforeDate.yyyymmdd]!] : [],
+          beforeMoneyTotal:
+              (widget.moneyMap[beforeDate.yyyymmdd] != null) ? _utility.makeCurrencySum(money: widget.moneyMap[beforeDate.yyyymmdd]) : 0,
+          bankPricePadMap: widget.bankPricePadMap,
+          bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
+          spendTimePlaceList: (monthlySpendTimePlaceMap[widget.date.yyyymmdd] != null) ? monthlySpendTimePlaceMap[widget.date.yyyymmdd]! : [],
+          bankNameList: widget.bankNameList,
+          emoneyNameList: widget.emoneyNameList,
+          spendItemList: widget.spendItemList,
+        ),
+      ),
+    ];
+
+    for (var i = 1; i < 7; i++) {
       final day = widget.date.add(Duration(days: i * -1));
 
       final youbi = day.youbiStr.substring(0, 3);
