@@ -23,6 +23,7 @@ class BankPriceInputAlert extends ConsumerStatefulWidget {
     required this.depositType,
     this.bankName,
     this.emoneyName,
+    required this.from,
   });
 
   final DateTime date;
@@ -31,6 +32,8 @@ class BankPriceInputAlert extends ConsumerStatefulWidget {
 
   BankName? bankName;
   EmoneyName? emoneyName;
+
+  final String from;
 
   @override
   ConsumerState<BankPriceInputAlert> createState() => _BankPriceInputAlertState();
@@ -79,14 +82,16 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                 Text(widget.emoneyName!.emoneyName, maxLines: 1, overflow: TextOverflow.ellipsis),
               ],
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              _displayInputParts(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(),
-                  TextButton(onPressed: _insertBankMoney, child: const Text('残高を入力する')),
-                ],
-              ),
+              if (widget.from != 'BankPriceAdjustAlert') ...[
+                _displayInputParts(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(),
+                    TextButton(onPressed: _insertBankMoney, child: const Text('残高を入力する')),
+                  ],
+                ),
+              ],
               FutureBuilder<List<Widget>>(
                 future: _displayBankPrices(),
                 builder: (context, snapshot) {

@@ -152,6 +152,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                       isar: widget.isar,
                       depositType: DepositType.bank,
                       bankName: bankNameMap[element.id],
+                      from: 'BankPriceAdjustAlert',
                     ),
                   );
                 }
@@ -163,6 +164,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                       isar: widget.isar,
                       depositType: DepositType.emoney,
                       emoneyName: emoneyNameMap[element.id],
+                      from: 'BankPriceAdjustAlert',
                     ),
                   );
                 }
