@@ -27,6 +27,7 @@ import 'components/___dummy_data_input_alert.dart';
 import 'components/bank_price_adjust_alert.dart';
 import 'components/daily_money_display_alert.dart';
 import 'components/deposit_tab_alert.dart';
+import 'components/download_data_list_alert.dart';
 import 'components/income_input_alert.dart';
 import 'components/money_graph_alert.dart';
 import 'components/money_list_alert.dart';
@@ -552,6 +553,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('収支一覧'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  MoneyDialog(
+                    context: context,
+                    widget: DownloadDataListAlert(
+                      isar: widget.isar,
+                      moneyMap: moneyMap,
+                      allSpendTimePlaceList: allSpendTimePlaceList??[],
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('データダウンロード'),
                       ),
                     ),
                   ],

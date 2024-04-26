@@ -1,0 +1,1 @@
+enum DateDownloadDateType { start, end }
