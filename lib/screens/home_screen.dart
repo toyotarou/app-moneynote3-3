@@ -373,7 +373,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           moneyList: moneyList,
                           bankNameList: bankNameList,
                           emoneyNameList: emoneyNameList,
-                          bankPriceList: bankPriceList,
+                          bankPricePadMap: bankPricePadMap,
                         ),
                       ),
                       child: Icon(Icons.list, color: Colors.white.withOpacity(0.8)),
@@ -565,7 +565,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     widget: DownloadDataListAlert(
                       isar: widget.isar,
                       moneyMap: moneyMap,
-                      allSpendTimePlaceList: allSpendTimePlaceList??[],
+                      allSpendTimePlaceList: allSpendTimePlaceList ?? [],
                     ),
                   );
                 },

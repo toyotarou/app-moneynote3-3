@@ -9,7 +9,6 @@ import '../../collections/emoney_name.dart';
 import '../../collections/money.dart';
 import '../../extensions/extensions.dart';
 import '../../state/holidays/holidays_notifier.dart';
-import '../../utilities/functions.dart';
 import '../../utilities/utilities.dart';
 import 'parts/money_list_display_cell.dart';
 
@@ -21,7 +20,7 @@ class MoneyListAlert extends ConsumerStatefulWidget {
     this.moneyList,
     this.bankNameList,
     this.emoneyNameList,
-    this.bankPriceList,
+    required this.bankPricePadMap,
   });
 
   final DateTime date;
@@ -32,7 +31,7 @@ class MoneyListAlert extends ConsumerStatefulWidget {
   final List<BankName>? bankNameList;
   final List<EmoneyName>? emoneyNameList;
 
-  final List<BankPrice>? bankPriceList;
+  final Map<String, Map<String, int>> bankPricePadMap;
 
   @override
   ConsumerState<MoneyListAlert> createState() => _MoneyListAlertState();
@@ -42,8 +41,6 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
   final Utility _utility = Utility();
 
   final Map<String, Money> _dateMoneyMap = {};
-
-  Map<String, Map<String, int>> _bankPricePadMap = {};
 
   Map<String, String> _holidayMap = {};
 
@@ -55,8 +52,6 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     super.initState();
 
     _makeDateMoneyMap();
-
-    _makeBankPricePadMap();
   }
 
   ///
@@ -92,14 +87,6 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         ),
       ),
     );
-  }
-
-  ///
-  void _makeBankPricePadMap() {
-    if (widget.bankPriceList != null) {
-      final bankPriceMap = makeBankPriceMap(bankPriceList: widget.bankPriceList!);
-      _bankPricePadMap = bankPriceMap['bankPriceDatePadMap'];
-    }
   }
 
   ///
@@ -391,7 +378,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     return (widget.bankNameList!.isNotEmpty)
         ? Row(
             children: widget.bankNameList!.map((e) {
-              final bankPricePadData = _bankPricePadMap['${e.depositType}-${e.id}'];
+              final bankPricePadData = widget.bankPricePadMap['${e.depositType}-${e.id}'];
 
               if (bankPricePadData == null) {
                 return MoneyListDisplayCell(
@@ -404,9 +391,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
               }
 
               return MoneyListDisplayCell(
-                widget: Text((bankPricePadData[date.yyyymmdd] != null)
-                    ? bankPricePadData[date.yyyymmdd].toString().toCurrency()
-                    : 0.toString()),
+                widget: Text((bankPricePadData[date.yyyymmdd] != null) ? bankPricePadData[date.yyyymmdd].toString().toCurrency() : 0.toString()),
                 width: 100,
                 color: Colors.transparent,
                 borderColor: Colors.white.withOpacity(0.2),
@@ -438,7 +423,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     return (widget.emoneyNameList!.isNotEmpty)
         ? Row(
             children: widget.emoneyNameList!.map((e) {
-              final bankPricePadData = _bankPricePadMap['${e.depositType}-${e.id}'];
+              final bankPricePadData = widget.bankPricePadMap['${e.depositType}-${e.id}'];
 
               if (bankPricePadData == null) {
                 return MoneyListDisplayCell(
@@ -451,9 +436,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
               }
 
               return MoneyListDisplayCell(
-                widget: Text((bankPricePadData[date.yyyymmdd] != null)
-                    ? bankPricePadData[date.yyyymmdd].toString().toCurrency()
-                    : 0.toString()),
+                widget: Text((bankPricePadData[date.yyyymmdd] != null) ? bankPricePadData[date.yyyymmdd].toString().toCurrency() : 0.toString()),
                 width: 100,
                 color: Colors.transparent,
                 borderColor: Colors.white.withOpacity(0.2),
