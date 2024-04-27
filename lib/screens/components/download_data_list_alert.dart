@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/bank_name.dart';
@@ -39,14 +43,27 @@ class DownloadDataListAlert extends ConsumerStatefulWidget {
 class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   Map<String, List<SpendTimePlace>> spendTimePlaceMap = {};
 
+  List<String> outputValuesList = [];
+
+  String externalStoragePublicDirectoryPath = '';
+
   ///
   @override
   void initState() {
     super.initState();
 
     widget.allSpendTimePlaceList.forEach((element) => spendTimePlaceMap[element.date] = []);
-
     widget.allSpendTimePlaceList.forEach((element) => spendTimePlaceMap[element.date]?.add(element));
+
+    getPublicDirectoryPath();
+  }
+
+  ///
+  Future<void> getPublicDirectoryPath() async {
+    final path = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+    setState(() {
+      externalStoragePublicDirectoryPath = path;
+    });
   }
 
   ///
@@ -82,7 +99,11 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                     child: Row(
                       children: [
                         IconButton(
-                          onPressed: () => _showDP(pos: DateDownloadDateType.start),
+                          onPressed: () {
+                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.none);
+
+                            _showDP(pos: DateDownloadDateType.start);
+                          },
                           icon: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
                         ),
                         Column(
@@ -98,7 +119,11 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () => _showDP(pos: DateDownloadDateType.end),
+                        onPressed: () {
+                          ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.none);
+
+                          _showDP(pos: DateDownloadDateType.end);
+                        },
                         icon: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
                       ),
                       Column(
@@ -112,10 +137,13 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               Row(
                 children: [
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.money)
+                            ? Colors.yellowAccent.withOpacity(0.3)
+                            : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
                       if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                        getErrorDialog();
+                        getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
                         return;
                       }
 
@@ -125,10 +153,13 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.bank)
+                            ? Colors.yellowAccent.withOpacity(0.3)
+                            : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
                       if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                        getErrorDialog();
+                        getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
                         return;
                       }
 
@@ -138,16 +169,29 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.spend)
+                            ? Colors.yellowAccent.withOpacity(0.3)
+                            : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
                       if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                        getErrorDialog();
+                        getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
                         return;
                       }
 
                       ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spend);
                     },
                     child: const Text('spend', style: TextStyle(fontSize: 10)),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(),
+                  TextButton(
+                    onPressed: outputCsv,
+                    child: const Text('CSVを出力する'),
                   ),
                 ],
               ),
@@ -160,10 +204,10 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   }
 
   ///
-  void getErrorDialog() {
+  void getErrorDialog({required String title, required String content}) {
     Future.delayed(
       Duration.zero,
-      () => error_dialog(context: context, title: '選択できません。', content: '日付を正しく入力してください。'),
+      () => error_dialog(context: context, title: title, content: content),
     );
   }
 
@@ -200,13 +244,15 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       //=====================//
       final dateList = <String>[];
 
-      final dateDiff =
-          DateTime.parse('${dataDownloadState.endDate} 00:00:00').difference(DateTime.parse('${dataDownloadState.startDate} 00:00:00')).inDays;
+      if (dataDownloadState.endDate != '' && dataDownloadState.startDate != '') {
+        final dateDiff =
+            DateTime.parse('${dataDownloadState.endDate} 00:00:00').difference(DateTime.parse('${dataDownloadState.startDate} 00:00:00')).inDays;
 
-      for (var i = 0; i <= dateDiff; i++) {
-        final day = DateTime.parse('${dataDownloadState.startDate} 00:00:00').add(Duration(days: i));
+        for (var i = 0; i <= dateDiff; i++) {
+          final day = DateTime.parse('${dataDownloadState.startDate} 00:00:00').add(Duration(days: i));
 
-        dateList.add(day.yyyymmdd);
+          dateList.add(day.yyyymmdd);
+        }
       }
       //=====================//
 
@@ -215,6 +261,8 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           break;
 
         case DateDownloadDataType.money:
+          outputValuesList = [];
+
           widget.moneyMap.forEach((key, value) {
             if (dateList.contains(key)) {
               list.add(Row(
@@ -232,23 +280,49 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                   getDataCell(data: value.yen_1.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
                 ],
               ));
+
+              outputValuesList.add([
+                value.date,
+                value.yen_10000.toString(),
+                value.yen_5000.toString(),
+                value.yen_2000.toString(),
+                value.yen_1000.toString(),
+                value.yen_500.toString(),
+                value.yen_100.toString(),
+                value.yen_50.toString(),
+                value.yen_10.toString(),
+                value.yen_5.toString(),
+                value.yen_1.toString(),
+              ].join(','));
             }
           });
           break;
 
         case DateDownloadDataType.bank:
+          outputValuesList = [];
+
           dateList.forEach((element) {
             list.add(
               Row(children: [
                 getDataCell(data: element, width: 100, alignment: Alignment.topLeft),
-                Row(children: widget.bankNameList.map((e) => _getBankPriceListData(date: element, bankName: e)).toList()),
-                Row(children: widget.emoneyNameList.map((e) => _getBankPriceListData(date: element, emoneyName: e)).toList())
+                Row(children: widget.bankNameList.map((e) => _displayBankPriceListData(date: element, bankName: e)).toList()),
+                Row(children: widget.emoneyNameList.map((e) => _displayBankPriceListData(date: element, emoneyName: e)).toList())
               ]),
             );
+
+            final outVal = <String>[element];
+            widget.bankNameList
+                .forEach((element2) => outVal.add(_getBankPriceData(deposit: '${element2.depositType}-${element2.id}', date: element).toString()));
+            widget.emoneyNameList
+                .forEach((element2) => outVal.add(_getBankPriceData(deposit: '${element2.depositType}-${element2.id}', date: element).toString()));
+
+            outputValuesList.add(outVal.join(','));
           });
           break;
 
         case DateDownloadDataType.spend:
+          outputValuesList = [];
+
           spendTimePlaceMap.forEach((key, value) {
             if (dateList.contains(key)) {
               value.forEach((element) {
@@ -261,6 +335,8 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                     getDataCell(data: element.place, width: 200, alignment: Alignment.topLeft),
                   ],
                 ));
+
+                outputValuesList.add([element.date, element.time, element.spendType, element.price.toString(), element.place].join(','));
               });
             }
           });
@@ -276,7 +352,19 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   }
 
   ///
-  Widget _getBankPriceListData({required String date, BankName? bankName, EmoneyName? emoneyName}) {
+  int _getBankPriceData({required String deposit, required String date}) {
+    var dispPrice = 0;
+    if (widget.bankPricePadMap[deposit] != null) {
+      if (widget.bankPricePadMap[deposit]![date] != null) {
+        dispPrice = widget.bankPricePadMap[deposit]![date]!;
+      }
+    }
+
+    return dispPrice;
+  }
+
+  ///
+  Widget _displayBankPriceListData({required String date, BankName? bankName, EmoneyName? emoneyName}) {
     var deposit = '';
 
     if (bankName != null) {
@@ -287,13 +375,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       deposit = '${emoneyName.depositType}-${emoneyName.id}';
     }
 
-    if (widget.bankPricePadMap[deposit] != null) {
-      if (widget.bankPricePadMap[deposit]![date] != null) {
-        return getDataCell(data: widget.bankPricePadMap[deposit]![date].toString().toCurrency(), width: 70, alignment: Alignment.topRight);
-      }
-    }
-
-    return Container();
+    return getDataCell(data: _getBankPriceData(date: date, deposit: deposit).toString().toCurrency(), width: 70, alignment: Alignment.topRight);
   }
 
   ///
@@ -305,5 +387,31 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
       child: Text(data),
     );
+  }
+
+  ///
+  Future<void> outputCsv() async {
+    if (outputValuesList.isEmpty) {
+      getErrorDialog(title: '出力できません。', content: '出力するデータを正しく選択してください。');
+
+      return;
+    }
+
+    var dataType = ref.watch(dataDownloadProvider.select((value) => value.dataType));
+
+    final now = DateTime.now();
+    final timeFormat = DateFormat('HHmmss');
+    final currentTime = timeFormat.format(now);
+
+    final year = now.year.toString();
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+
+    final dateStr = '${dataType!.japanName}_${year}${month}${day}$currentTime';
+    final sendFileName = '$dateStr.csv';
+
+    final exFilePath = '$externalStoragePublicDirectoryPath/$sendFileName';
+    final textFilePath = File(exFilePath);
+    await textFilePath.writeAsString(outputValuesList.join('\n'));
   }
 }
