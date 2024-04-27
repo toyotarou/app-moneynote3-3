@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:charset_converter/charset_converter.dart';
 import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -413,5 +414,13 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
     final exFilePath = '$externalStoragePublicDirectoryPath/$sendFileName';
     final textFilePath = File(exFilePath);
     await textFilePath.writeAsString(outputValuesList.join('\n'));
+
+    //
+    // CharsetConverter.decode('Shift_JIS', outputValuesList.join('\n'))
+    // await textFilePath.writeAsString(CharsetConverter.decode('Shift_JIS', outputValuesList.join('\n')));
+
+    //  final result = await CharsetConverter.encode(charset, input!)
+
+//    await textFilePath.writeAsString(CharsetConverter.encode('Shift_JIS', outputValuesList.join('\n')) as String);
   }
 }
