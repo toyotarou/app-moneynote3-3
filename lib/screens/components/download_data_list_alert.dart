@@ -398,7 +398,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       return;
     }
 
-    var dataType = ref.watch(dataDownloadProvider.select((value) => value.dataType));
+    final dataType = ref.watch(dataDownloadProvider.select((value) => value.dataType));
 
     final now = DateTime.now();
     final timeFormat = DateFormat('HHmmss');
@@ -408,19 +408,17 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
     final month = now.month.toString().padLeft(2, '0');
     final day = now.day.toString().padLeft(2, '0');
 
-    final dateStr = '${dataType!.japanName}_${year}${month}${day}$currentTime';
+    final dateStr = '${dataType!.japanName}_$year$month$day$currentTime';
     final sendFileName = '$dateStr.csv';
 
     final exFilePath = '$externalStoragePublicDirectoryPath/$sendFileName';
     final textFilePath = File(exFilePath);
-    await textFilePath.writeAsString(outputValuesList.join('\n'));
 
-    //
-    // CharsetConverter.decode('Shift_JIS', outputValuesList.join('\n'))
-    // await textFilePath.writeAsString(CharsetConverter.decode('Shift_JIS', outputValuesList.join('\n')));
+    final contents = outputValuesList.join('\n');
 
-    //  final result = await CharsetConverter.encode(charset, input!)
+    final encoded = await CharsetConverter.encode('Shift_JIS', contents);
+    await textFilePath.writeAsBytes(encoded);
 
-//    await textFilePath.writeAsString(CharsetConverter.encode('Shift_JIS', outputValuesList.join('\n')) as String);
+    getErrorDialog(title: '出力しました。', content: 'ダウンロードフォルダにCSVを作成しました。');
   }
 }
