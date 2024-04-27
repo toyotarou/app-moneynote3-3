@@ -566,6 +566,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       isar: widget.isar,
                       moneyMap: moneyMap,
                       allSpendTimePlaceList: allSpendTimePlaceList ?? [],
+                      bankNameList: bankNameList ?? [],
+                      emoneyNameList: emoneyNameList ?? [],
+                      bankPricePadMap: bankPricePadMap,
                     ),
                   );
                 },

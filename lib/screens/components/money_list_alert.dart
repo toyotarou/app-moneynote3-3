@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/bank_name.dart';
-import '../../collections/bank_price.dart';
 import '../../collections/emoney_name.dart';
 import '../../collections/money.dart';
 import '../../extensions/extensions.dart';

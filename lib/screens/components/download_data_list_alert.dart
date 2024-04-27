@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
+import '../../collections/bank_name.dart';
+import '../../collections/emoney_name.dart';
 import '../../collections/money.dart';
 import '../../collections/spend_time_place.dart';
 import '../../enums/data_download_data_type.dart';
@@ -12,11 +14,22 @@ import '../../state/data_download/data_download_notifier.dart';
 import 'parts/error_dialog.dart';
 
 class DownloadDataListAlert extends ConsumerStatefulWidget {
-  const DownloadDataListAlert({super.key, required this.isar, required this.moneyMap, required this.allSpendTimePlaceList});
+  const DownloadDataListAlert({
+    super.key,
+    required this.isar,
+    required this.moneyMap,
+    required this.allSpendTimePlaceList,
+    required this.bankNameList,
+    required this.emoneyNameList,
+    required this.bankPricePadMap,
+  });
 
   final Isar isar;
   final Map<String, Money> moneyMap;
   final List<SpendTimePlace> allSpendTimePlaceList;
+  final List<BankName> bankNameList;
+  final List<EmoneyName> emoneyNameList;
+  final Map<String, Map<String, int>> bankPricePadMap;
 
   ///
   @override
@@ -102,34 +115,39 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
                       if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                        Future.delayed(
-                          Duration.zero,
-                          () => error_dialog(context: context, title: '選択できません。', content: '日付を正しく入力してください。'),
-                        );
-
+                        getErrorDialog();
                         return;
                       }
 
                       ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.money);
                     },
-                    child: const Text('マネーデータ', style: TextStyle(fontSize: 10)),
+                    child: const Text('money', style: TextStyle(fontSize: 10)),
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
                       if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                        Future.delayed(
-                          Duration.zero,
-                          () => error_dialog(context: context, title: '選択できません。', content: '日付を正しく入力してください。'),
-                        );
+                        getErrorDialog();
+                        return;
+                      }
 
+                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bank);
+                    },
+                    child: const Text('bank', style: TextStyle(fontSize: 10)),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    onPressed: () {
+                      if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
+                        getErrorDialog();
                         return;
                       }
 
                       ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spend);
                     },
-                    child: const Text('スペンドデータ', style: TextStyle(fontSize: 10)),
+                    child: const Text('spend', style: TextStyle(fontSize: 10)),
                   ),
                 ],
               ),
@@ -138,6 +156,14 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           ),
         ),
       ),
+    );
+  }
+
+  ///
+  void getErrorDialog() {
+    Future.delayed(
+      Duration.zero,
+      () => error_dialog(context: context, title: '選択できません。', content: '日付を正しく入力してください。'),
     );
   }
 
@@ -185,6 +211,9 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       //=====================//
 
       switch (dataDownloadState.dataType!) {
+        case DateDownloadDataType.none:
+          break;
+
         case DateDownloadDataType.money:
           widget.moneyMap.forEach((key, value) {
             if (dateList.contains(key)) {
@@ -204,6 +233,18 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                 ],
               ));
             }
+          });
+          break;
+
+        case DateDownloadDataType.bank:
+          dateList.forEach((element) {
+            list.add(
+              Row(children: [
+                getDataCell(data: element, width: 100, alignment: Alignment.topLeft),
+                Row(children: widget.bankNameList.map((e) => _getBankPriceListData(date: element, bankName: e)).toList()),
+                Row(children: widget.emoneyNameList.map((e) => _getBankPriceListData(date: element, emoneyName: e)).toList())
+              ]),
+            );
           });
           break;
 
@@ -232,6 +273,27 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(physics: const BouncingScrollPhysics(), child: Column(children: list)),
     );
+  }
+
+  ///
+  Widget _getBankPriceListData({required String date, BankName? bankName, EmoneyName? emoneyName}) {
+    var deposit = '';
+
+    if (bankName != null) {
+      deposit = '${bankName.depositType}-${bankName.id}';
+    }
+
+    if (emoneyName != null) {
+      deposit = '${emoneyName.depositType}-${emoneyName.id}';
+    }
+
+    if (widget.bankPricePadMap[deposit] != null) {
+      if (widget.bankPricePadMap[deposit]![date] != null) {
+        return getDataCell(data: widget.bankPricePadMap[deposit]![date].toString().toCurrency(), width: 70, alignment: Alignment.topRight);
+      }
+    }
+
+    return Container();
   }
 
   ///
