@@ -147,6 +147,22 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       initialDate: DateTime(widget.date.year, widget.date.month),
       firstDate: DateTime(widget.date.year, widget.date.month),
       lastDate: DateTime(widget.date.year, widget.date.month + 1, 0),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            scaffoldBackgroundColor: Colors.black.withOpacity(0.1),
+            canvasColor: Colors.black.withOpacity(0.1),
+            cardColor: Colors.black.withOpacity(0.1),
+            dividerColor: Colors.indigo,
+            primaryColor: Colors.black.withOpacity(0.1),
+            secondaryHeaderColor: Colors.black.withOpacity(0.1),
+            dialogBackgroundColor: Colors.black.withOpacity(0.1),
+            primaryColorDark: Colors.black.withOpacity(0.1),
+            highlightColor: Colors.black.withOpacity(0.1),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (selectedDate != null) {
