@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -29,7 +30,8 @@ void main() async {
     SpendItemSchema,
   ], directory: dir.path);
 
-  runApp(ProviderScope(child: MyApp(isar: isar)));
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((_) => runApp(ProviderScope(child: MyApp(isar: isar))));
 }
 
 class MyApp extends ConsumerWidget {
