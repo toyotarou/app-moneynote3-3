@@ -303,7 +303,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                             decoration: const InputDecoration(
                               isDense: true,
                               contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                              hintText: '金額',
+                              hintText: '金額(10桁以内)',
                               filled: true,
                               border: OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
@@ -325,7 +325,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                       decoration: const InputDecoration(
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                        hintText: '場所',
+                        hintText: '場所(30文字以内)',
                         filled: true,
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),

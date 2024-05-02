@@ -184,7 +184,14 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
             ),
             child: TextField(
               controller: _spendItemEditingController,
-              decoration: const InputDecoration(labelText: '消費アイテム'),
+              decoration: const InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                hintText: '消費アイテム(20文字以内)',
+                filled: true,
+                border: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+              ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
               onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
             ),
@@ -266,25 +273,6 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
 
-  // ///
-  // Future<void> _deleteSpendItem({required int id}) async {
-  //   await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((value) {
-  //     final param = <String, dynamic>{};
-  //     param['item'] = value!.spendItemName;
-  //
-  //     SpendTimePlacesRepository().getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param).then((value2) {
-  //       final spendTimePriceList = <SpendTimePlace>[];
-  //       value2!.forEach((element) => spendTimePriceList.add(element..spendType = ''));
-  //
-  //       SpendTimePlacesRepository()
-  //           .updateSpendTimePriceList(isar: widget.isar, spendTimePriceList: spendTimePriceList)
-  //           .then((value3) => SpendItemsRepository()
-  //               .deleteSpendItem(isar: widget.isar, id: id)
-  //               .then((value4) => Navigator.pop(context)));
-  //     });
-  //   });
-  // }
-
   ///
   Future<void> _deleteSpendItem({required int id}) async {
     //-----------------------------------
@@ -302,36 +290,6 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       Navigator.pop(context);
     }
   }
-
-  // ///
-  // Future<void> _settingReorderIds() async {
-  //   orderedIdList = [];
-  //
-  //   for (final value in ddList) {
-  //     for (final child in value.children) {
-  //       orderedIdList.add(child.child.key
-  //           .toString()
-  //           .replaceAll('[', '')
-  //           .replaceAll('<', '')
-  //           .replaceAll("'", '')
-  //           .replaceAll('>', '')
-  //           .replaceAll(']', '')
-  //           .toInt());
-  //     }
-  //   }
-  //
-  //   await widget.isar.writeTxn(() async {
-  //     for (var i = 0; i < orderedIdList.length; i++) {
-  //       await SpendItemsRepository().getSpendItem(isar: widget.isar, id: orderedIdList[i]).then((value) {
-  //         value!.order = i;
-  //
-  //         SpendItemsRepository()
-  //             .updateSpendItem(isar: widget.isar, spendItem: value)
-  //             .then((value) => Navigator.pop(context));
-  //       });
-  //     }
-  //   });
-  // }
 
   ///
   Future<void> _settingReorderIds() async {

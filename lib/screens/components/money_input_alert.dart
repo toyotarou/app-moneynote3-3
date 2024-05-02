@@ -169,7 +169,14 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       child: TextField(
         keyboardType: TextInputType.number,
         controller: tec,
-        decoration: InputDecoration(labelText: name),
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          hintText: '$name(3桁以内)',
+          filled: true,
+          border: const OutlineInputBorder(),
+          focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+        ),
         style: const TextStyle(fontSize: 13, color: Colors.white),
         onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
       ),

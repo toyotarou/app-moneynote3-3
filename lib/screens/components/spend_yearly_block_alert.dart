@@ -107,18 +107,20 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
       var sum = 0;
 
       value.forEach((element) {
-        if (element > 0) {
-          map[element] = '';
+        // if (element > 0) {
+        //   map[element] = '';
+        //
+        //   sum += element;
+        // }
 
-          sum += element;
-        }
+        map[element] = '';
+        sum += element;
       });
 
       allTotal += sum;
 
       if (map.isNotEmpty) {
-        final lineColor =
-            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
+        final lineColor = (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
 
         list.add(Container(
           width: context.screenSize.width,
@@ -191,7 +193,6 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   }
 
   ///
-  Future<void> _makeSpendItemList() async => SpendItemsRepository()
-      .getSpendItemList(isar: widget.isar)
-      .then((value) => setState(() => _spendItemList = value));
+  Future<void> _makeSpendItemList() async =>
+      SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) => setState(() => _spendItemList = value));
 }

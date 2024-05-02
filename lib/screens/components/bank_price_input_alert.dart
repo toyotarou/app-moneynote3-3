@@ -139,7 +139,14 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
             child: TextField(
               keyboardType: TextInputType.number,
               controller: _bankPriceEditingController,
-              decoration: const InputDecoration(labelText: '金額'),
+              decoration: const InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                hintText: '金額(10桁以内)',
+                filled: true,
+                border: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+              ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
               onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
             ),

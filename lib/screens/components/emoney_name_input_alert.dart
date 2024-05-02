@@ -113,7 +113,14 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
             ),
             child: TextField(
               controller: _emoneyNameEditingController,
-              decoration: const InputDecoration(labelText: '電子マネー名称'),
+              decoration: const InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                hintText: '電子マネー名称(30文字以内)',
+                filled: true,
+                border: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+              ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
               onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
             ),
