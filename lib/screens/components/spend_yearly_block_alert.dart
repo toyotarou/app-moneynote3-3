@@ -9,6 +9,8 @@ import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
 import '../../repository/spend_time_places_repository.dart';
 import '../../utilities/functions.dart';
+import 'parts/money_dialog.dart';
+import 'spend_yearly_graph_alert.dart';
 
 class SpendYearlyBlockAlert extends ConsumerStatefulWidget {
   const SpendYearlyBlockAlert({super.key, required this.date, required this.isar});
@@ -100,6 +102,8 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
     var allTotal = 0;
     var spendTotal = 0;
+    final spendTotalMap = <String, int>{};
+
     _yearlySpendSumMap.forEach((key, value) {
       final list2 = <Widget>[];
 
@@ -122,6 +126,8 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
       if (sum >= 0) {
         spendTotal += sum;
+
+        spendTotalMap[key] = sum;
       }
 
       if (map.isNotEmpty) {
@@ -188,7 +194,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(),
+                  const Text('Total', style: TextStyle(color: Colors.yellowAccent)),
                   Text(allTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
                 ],
               ),
@@ -199,7 +205,20 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(),
+                  Row(
+                    children: [
+                      const Text('Spend Total', style: TextStyle(color: Colors.lightBlueAccent)),
+                      const SizedBox(width: 20),
+                      GestureDetector(
+                        onTap: () => MoneyDialog(
+                          context: context,
+                          widget: SpendYearlyGraphAlert(spendTotal: spendTotal, spendTotalMap: spendTotalMap),
+                          clearBarrierColor: true,
+                        ),
+                        child: const Icon(Icons.pie_chart, color: Colors.lightBlueAccent, size: 15),
+                      ),
+                    ],
+                  ),
                   Text(spendTotal.toString().toCurrency(), style: const TextStyle(color: Colors.lightBlueAccent)),
                 ],
               ),
