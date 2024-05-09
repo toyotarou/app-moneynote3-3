@@ -99,6 +99,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
     final oneWidth = context.screenSize.width / 6;
 
     var allTotal = 0;
+    var spendTotal = 0;
     _yearlySpendSumMap.forEach((key, value) {
       final list2 = <Widget>[];
 
@@ -118,6 +119,10 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
       });
 
       allTotal += sum;
+
+      if (sum >= 0) {
+        spendTotal += sum;
+      }
 
       if (map.isNotEmpty) {
         final lineColor = (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
@@ -175,16 +180,31 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
     list
       ..add(const SizedBox(height: 20))
       ..add(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          decoration: BoxDecoration(color: Colors.yellowAccent.withOpacity(0.1)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(),
-              Text(allTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-            ],
-          ),
+        Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              decoration: BoxDecoration(color: Colors.yellowAccent.withOpacity(0.1)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(),
+                  Text(allTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(),
+                  Text(spendTotal.toString().toCurrency(), style: const TextStyle(color: Colors.lightBlueAccent)),
+                ],
+              ),
+            ),
+          ],
         ),
       )
       ..add(const SizedBox(height: 20));
