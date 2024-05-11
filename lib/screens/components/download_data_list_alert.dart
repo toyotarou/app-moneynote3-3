@@ -416,7 +416,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               '\'${element.branchNumber}',
               element.branchName,
               element.accountType,
-              element.accountNumber
+              '\'${element.accountNumber}',
             ].join(','));
           });
 
