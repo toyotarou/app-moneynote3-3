@@ -569,6 +569,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       bankNameList: bankNameList ?? [],
                       emoneyNameList: emoneyNameList ?? [],
                       bankPricePadMap: bankPricePadMap,
+                      spendItem: _spendItemList ?? [],
                     ),
                   );
                 },

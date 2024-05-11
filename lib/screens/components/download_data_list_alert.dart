@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/collections/spend_item.dart';
 
 import '../../collections/bank_name.dart';
 import '../../collections/emoney_name.dart';
@@ -27,6 +28,7 @@ class DownloadDataListAlert extends ConsumerStatefulWidget {
     required this.bankNameList,
     required this.emoneyNameList,
     required this.bankPricePadMap,
+    required this.spendItem,
   });
 
   final Isar isar;
@@ -35,6 +37,7 @@ class DownloadDataListAlert extends ConsumerStatefulWidget {
   final List<BankName> bankNameList;
   final List<EmoneyName> emoneyNameList;
   final Map<String, Map<String, int>> bankPricePadMap;
+  final List<SpendItem> spendItem;
 
   ///
   @override
@@ -95,78 +98,15 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
                 children: [
-                  SizedBox(
-                    width: context.screenSize.width * 0.3,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.none);
-
-                            _showDP(pos: DateDownloadDateType.start);
-                          },
-                          icon: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [const Text('Start'), Text(dataDownloadState.startDate)],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  const Text('〜'),
-                  const SizedBox(width: 20),
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.none);
-
-                          _showDP(pos: DateDownloadDateType.end);
-                        },
-                        icon: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [const Text('End'), Text(dataDownloadState.endDate)],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.money)
+                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.spend)
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
-                      if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                        getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
-                        return;
-                      }
-
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.money);
+                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bankName);
                     },
-                    child: const Text('money', style: TextStyle(fontSize: 10)),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.bank)
-                            ? Colors.yellowAccent.withOpacity(0.3)
-                            : Colors.pinkAccent.withOpacity(0.2)),
-                    onPressed: () {
-                      if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                        getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
-                        return;
-                      }
-
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bank);
-                    },
-                    child: const Text('bank', style: TextStyle(fontSize: 10)),
+                    child: const Text('bank emoney name', style: TextStyle(fontSize: 10)),
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
@@ -175,16 +115,112 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
-                      if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                        getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
-                        return;
-                      }
-
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spend);
+                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spendItem);
                     },
-                    child: const Text('spend', style: TextStyle(fontSize: 10)),
+                    child: const Text('spend item', style: TextStyle(fontSize: 10)),
                   ),
                 ],
+              ),
+              Container(
+                margin: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.4))),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: context.screenSize.width * 0.3,
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.none);
+
+                                  _showDP(pos: DateDownloadDateType.start);
+                                },
+                                icon: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [const Text('Start'), Text(dataDownloadState.startDate)],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Text('〜'),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.none);
+
+                                _showDP(pos: DateDownloadDateType.end);
+                              },
+                              icon: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [const Text('End'), Text(dataDownloadState.endDate)],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.money)
+                                  ? Colors.yellowAccent.withOpacity(0.3)
+                                  : Colors.pinkAccent.withOpacity(0.2)),
+                          onPressed: () {
+                            if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
+                              getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
+                              return;
+                            }
+
+                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.money);
+                          },
+                          child: const Text('money', style: TextStyle(fontSize: 10)),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.bank)
+                                  ? Colors.yellowAccent.withOpacity(0.3)
+                                  : Colors.pinkAccent.withOpacity(0.2)),
+                          onPressed: () {
+                            if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
+                              getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
+                              return;
+                            }
+
+                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bank);
+                          },
+                          child: const Text('bank', style: TextStyle(fontSize: 10)),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.spend)
+                                  ? Colors.yellowAccent.withOpacity(0.3)
+                                  : Colors.pinkAccent.withOpacity(0.2)),
+                          onPressed: () {
+                            if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
+                              getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
+                              return;
+                            }
+
+                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spend);
+                          },
+                          child: const Text('spend', style: TextStyle(fontSize: 10)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -358,13 +394,74 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             }
           });
           break;
+
+        case DateDownloadDataType.bankName:
+          outputValuesList = [];
+
+          widget.bankNameList.forEach((element) {
+            list.add(Row(
+              children: [
+                getDataCell(data: element.bankNumber, width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.bankName, width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.branchNumber, width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.branchName, width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.accountType, width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.accountNumber, width: 100, alignment: Alignment.topLeft),
+              ],
+            ));
+
+            outputValuesList.add([
+              '\'${element.bankNumber}',
+              element.bankName,
+              '\'${element.branchNumber}',
+              element.branchName,
+              element.accountType,
+              element.accountNumber
+            ].join(','));
+          });
+
+          widget.emoneyNameList.forEach((element) {
+            list.add(Row(
+              children: [
+                getDataCell(data: element.emoneyName, width: 100, alignment: Alignment.topLeft),
+              ],
+            ));
+
+            outputValuesList.add([element.emoneyName].join(','));
+          });
+
+          break;
+
+        case DateDownloadDataType.spendItem:
+          outputValuesList = [];
+
+          widget.spendItem.forEach((element) {
+            list.add(Row(
+              children: [
+                getDataCell(data: element.spendItemName, width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.order.toString(), width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.color, width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.defaultTime, width: 100, alignment: Alignment.topLeft),
+              ],
+            ));
+
+            outputValuesList.add([element.spendItemName, element.order.toString(), '\'${element.color}', element.defaultTime].join(','));
+          });
+
+          break;
       }
     }
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(physics: const BouncingScrollPhysics(), child: Column(children: list)),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: list,
+        ),
+      ),
     );
   }
 
