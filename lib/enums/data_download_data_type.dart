@@ -1,4 +1,4 @@
-enum DateDownloadDataType { none, money, bank, spend, bankName, spendItem }
+enum DateDownloadDataType { none, money, bank, spend, bankName, spendItem, income }
 
 extension DateDownloadDataTypeExtension on DateDownloadDataType {
   String get japanName {
@@ -20,6 +20,9 @@ extension DateDownloadDataTypeExtension on DateDownloadDataType {
 
       case DateDownloadDataType.spendItem:
         return 'spendItem';
+
+      case DateDownloadDataType.income:
+        return 'income';
     }
   }
 }

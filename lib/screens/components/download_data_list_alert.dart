@@ -7,11 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/collections/spend_item.dart';
+import 'package:money_note/collections/income.dart';
 
 import '../../collections/bank_name.dart';
 import '../../collections/emoney_name.dart';
 import '../../collections/money.dart';
+import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../enums/data_download_data_type.dart';
 import '../../enums/data_download_date_type.dart';
@@ -29,6 +30,7 @@ class DownloadDataListAlert extends ConsumerStatefulWidget {
     required this.emoneyNameList,
     required this.bankPricePadMap,
     required this.spendItem,
+    required this.incomeList,
   });
 
   final Isar isar;
@@ -38,6 +40,7 @@ class DownloadDataListAlert extends ConsumerStatefulWidget {
   final List<EmoneyName> emoneyNameList;
   final Map<String, Map<String, int>> bankPricePadMap;
   final List<SpendItem> spendItem;
+  final List<Income> incomeList;
 
   ///
   @override
@@ -100,24 +103,35 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.spend)
+                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.bankName)
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
                       ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bankName);
                     },
-                    child: const Text('bank emoney name', style: TextStyle(fontSize: 10)),
+                    child: const Text('bank name', style: TextStyle(fontSize: 10)),
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.spend)
+                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.spendItem)
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
                       ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spendItem);
                     },
                     child: const Text('spend item', style: TextStyle(fontSize: 10)),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.income)
+                            ? Colors.yellowAccent.withOpacity(0.3)
+                            : Colors.pinkAccent.withOpacity(0.2)),
+                    onPressed: () {
+                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.income);
+                    },
+                    child: const Text('income', style: TextStyle(fontSize: 10)),
                   ),
                 ],
               ),
@@ -446,6 +460,23 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             ));
 
             outputValuesList.add([element.spendItemName, element.order.toString(), '\'${element.color}', element.defaultTime].join(','));
+          });
+
+          break;
+
+        case DateDownloadDataType.income:
+          outputValuesList = [];
+
+          widget.incomeList.forEach((element) {
+            list.add(Row(
+              children: [
+                getDataCell(data: element.date, width: 100, alignment: Alignment.topLeft),
+                getDataCell(data: element.sourceName, width: 200, alignment: Alignment.topLeft),
+                getDataCell(data: element.price.toString(), width: 100, alignment: Alignment.topRight),
+              ],
+            ));
+
+            outputValuesList.add([element.date, element.sourceName, element.price].join(','));
           });
 
           break;

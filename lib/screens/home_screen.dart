@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/repository/incomes_repository.dart';
 
 import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
 import '../collections/emoney_name.dart';
+import '../collections/income.dart';
 import '../collections/money.dart';
 import '../collections/spend_item.dart';
 import '../collections/spend_time_place.dart';
@@ -96,6 +98,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Map<String, int> monthlySpendMap = {};
 
+  List<Income>? _incomeList = [];
+
   ///
   void _init() {
     _makeMoneyList();
@@ -106,6 +110,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _makeBankNameList();
 
     _makeSpendItemList();
+
+    _makeIncomeList();
   }
 
   ///
@@ -570,6 +576,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       emoneyNameList: emoneyNameList ?? [],
                       bankPricePadMap: bankPricePadMap,
                       spendItem: _spendItemList ?? [],
+                      incomeList: _incomeList ?? [],
                     ),
                   );
                 },
@@ -1019,9 +1026,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   ///
-  Future<void> _makeSpendItemList() async {
-    await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
-      setState(() => _spendItemList = value);
-    });
-  }
+  Future<void> _makeSpendItemList() async =>
+      SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) => setState(() => _spendItemList = value));
+
+  ///
+  Future<void> _makeIncomeList() async => IncomesRepository().getIncomeList(isar: widget.isar).then((value) => setState(() => _incomeList = value));
 }
