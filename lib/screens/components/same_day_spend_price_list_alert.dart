@@ -112,20 +112,49 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
     });
 
     final spendTimePlacePriceMap = <String, int>{};
+
+    final eachMonthMinusPriceMap = <String, int>{};
+
     spendTimePlaceMap.forEach((key, value) {
       var sum = 0;
-      value.forEach((element) => sum += element.price);
+      var sum2 = 0;
+      value.forEach((element) {
+        sum += element.price;
+
+        if (element.price > 0) {
+          sum2 += element.price;
+        }
+      });
 
       spendTimePlacePriceMap[key] = sum;
+
+      eachMonthMinusPriceMap[key] = sum2;
     });
 
     spendTimePlacePriceMap.forEach((key, value) {
       list.add(Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text(key), Text(value.toString().toCurrency())],
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(key),
+                Text(value.toString().toCurrency()),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(''),
+                Text(
+                  (eachMonthMinusPriceMap[key] != null) ? eachMonthMinusPriceMap[key].toString().toCurrency() : 0.toString(),
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ],
         ),
       ));
     });
