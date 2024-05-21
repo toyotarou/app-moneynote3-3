@@ -219,7 +219,11 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                               onTap: () => MoneyDialog(
                                 context: context,
                                 widget: SpendYearlyGraphAlert(
-                                    spendTotal: spendTotal, spendTotalMap: spendTotalMap, amari: amari, spendItemList: _spendItemList ?? []),
+                                  spendTotal: spendTotal,
+                                  spendTotalMap: spendTotalMap,
+                                  amari: amari,
+                                  spendItemList: _spendItemList ?? [],
+                                ),
                                 clearBarrierColor: true,
                               ),
                               child: const Icon(Icons.pie_chart, color: Colors.lightBlueAccent, size: 15),

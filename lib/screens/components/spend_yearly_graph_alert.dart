@@ -6,7 +6,13 @@ import '../../collections/spend_item.dart';
 import '../../extensions/extensions.dart';
 
 class SpendYearlyGraphAlert extends StatefulWidget {
-  const SpendYearlyGraphAlert({super.key, required this.spendTotal, required this.spendTotalMap, required this.amari, required this.spendItemList});
+  const SpendYearlyGraphAlert({
+    super.key,
+    required this.spendTotal,
+    required this.spendTotalMap,
+    required this.amari,
+    required this.spendItemList,
+  });
 
   final int spendTotal;
   final Map<String, int> spendTotalMap;
