@@ -20,12 +20,6 @@ class SpendTimePlacesResponseState with _$SpendTimePlacesResponseState {
     @Default(false) bool blinkingFlag,
 
     //
-    // //
-    // @Default(AsyncValue<List<SpendTimePlace>>.loading()) AsyncValue<List<SpendTimePlace>> spendTimePlaceList,
-
-    // //
-    // @Default(AsyncValue<Map<String, int>>.loading()) AsyncValue<Map<String, int>> monthlySpendItemSumMap,
-    //
-    //
+    @Default('') String spendTimePlaceItemChangeDate,
   }) = _SpendTimePlacesResponseState;
 }

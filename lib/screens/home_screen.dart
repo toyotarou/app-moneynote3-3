@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/repository/incomes_repository.dart';
 
 import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
@@ -17,6 +16,7 @@ import '../extensions/extensions.dart';
 import '../repository/bank_names_repository.dart';
 import '../repository/bank_prices_repository.dart';
 import '../repository/emoney_names_repository.dart';
+import '../repository/incomes_repository.dart';
 import '../repository/moneys_repository.dart';
 import '../repository/spend_items_repository.dart';
 import '../repository/spend_time_places_repository.dart';

@@ -24,7 +24,8 @@ mixin _$SpendTimePlacesResponseState {
   List<String> get spendPlace => throw _privateConstructorUsedError;
   List<int> get spendPrice => throw _privateConstructorUsedError;
   List<bool> get minusCheck => throw _privateConstructorUsedError; //
-  bool get blinkingFlag => throw _privateConstructorUsedError;
+  bool get blinkingFlag => throw _privateConstructorUsedError; //
+  String get spendTimePlaceItemChangeDate => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SpendTimePlacesResponseStateCopyWith<SpendTimePlacesResponseState>
@@ -48,7 +49,8 @@ abstract class $SpendTimePlacesResponseStateCopyWith<$Res> {
       List<String> spendPlace,
       List<int> spendPrice,
       List<bool> minusCheck,
-      bool blinkingFlag});
+      bool blinkingFlag,
+      String spendTimePlaceItemChangeDate});
 }
 
 /// @nodoc
@@ -74,6 +76,7 @@ class _$SpendTimePlacesResponseStateCopyWithImpl<$Res,
     Object? spendPrice = null,
     Object? minusCheck = null,
     Object? blinkingFlag = null,
+    Object? spendTimePlaceItemChangeDate = null,
   }) {
     return _then(_value.copyWith(
       itemPos: null == itemPos
@@ -112,6 +115,10 @@ class _$SpendTimePlacesResponseStateCopyWithImpl<$Res,
           ? _value.blinkingFlag
           : blinkingFlag // ignore: cast_nullable_to_non_nullable
               as bool,
+      spendTimePlaceItemChangeDate: null == spendTimePlaceItemChangeDate
+          ? _value.spendTimePlaceItemChangeDate
+          : spendTimePlaceItemChangeDate // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -134,7 +141,8 @@ abstract class _$$SpendTimePlacesResponseStateImplCopyWith<$Res>
       List<String> spendPlace,
       List<int> spendPrice,
       List<bool> minusCheck,
-      bool blinkingFlag});
+      bool blinkingFlag,
+      String spendTimePlaceItemChangeDate});
 }
 
 /// @nodoc
@@ -159,6 +167,7 @@ class __$$SpendTimePlacesResponseStateImplCopyWithImpl<$Res>
     Object? spendPrice = null,
     Object? minusCheck = null,
     Object? blinkingFlag = null,
+    Object? spendTimePlaceItemChangeDate = null,
   }) {
     return _then(_$SpendTimePlacesResponseStateImpl(
       itemPos: null == itemPos
@@ -197,6 +206,10 @@ class __$$SpendTimePlacesResponseStateImplCopyWithImpl<$Res>
           ? _value.blinkingFlag
           : blinkingFlag // ignore: cast_nullable_to_non_nullable
               as bool,
+      spendTimePlaceItemChangeDate: null == spendTimePlaceItemChangeDate
+          ? _value.spendTimePlaceItemChangeDate
+          : spendTimePlaceItemChangeDate // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -214,7 +227,8 @@ class _$SpendTimePlacesResponseStateImpl
       final List<String> spendPlace = const [],
       final List<int> spendPrice = const [],
       final List<bool> minusCheck = const [],
-      this.blinkingFlag = false})
+      this.blinkingFlag = false,
+      this.spendTimePlaceItemChangeDate = ''})
       : _spendItem = spendItem,
         _spendTime = spendTime,
         _spendPlace = spendPlace,
@@ -282,10 +296,14 @@ class _$SpendTimePlacesResponseStateImpl
   @override
   @JsonKey()
   final bool blinkingFlag;
+//
+  @override
+  @JsonKey()
+  final String spendTimePlaceItemChangeDate;
 
   @override
   String toString() {
-    return 'SpendTimePlacesResponseState(itemPos: $itemPos, diff: $diff, baseDiff: $baseDiff, spendItem: $spendItem, spendTime: $spendTime, spendPlace: $spendPlace, spendPrice: $spendPrice, minusCheck: $minusCheck, blinkingFlag: $blinkingFlag)';
+    return 'SpendTimePlacesResponseState(itemPos: $itemPos, diff: $diff, baseDiff: $baseDiff, spendItem: $spendItem, spendTime: $spendTime, spendPlace: $spendPlace, spendPrice: $spendPrice, minusCheck: $minusCheck, blinkingFlag: $blinkingFlag, spendTimePlaceItemChangeDate: $spendTimePlaceItemChangeDate)';
   }
 
   @override
@@ -308,7 +326,11 @@ class _$SpendTimePlacesResponseStateImpl
             const DeepCollectionEquality()
                 .equals(other._minusCheck, _minusCheck) &&
             (identical(other.blinkingFlag, blinkingFlag) ||
-                other.blinkingFlag == blinkingFlag));
+                other.blinkingFlag == blinkingFlag) &&
+            (identical(other.spendTimePlaceItemChangeDate,
+                    spendTimePlaceItemChangeDate) ||
+                other.spendTimePlaceItemChangeDate ==
+                    spendTimePlaceItemChangeDate));
   }
 
   @override
@@ -322,7 +344,8 @@ class _$SpendTimePlacesResponseStateImpl
       const DeepCollectionEquality().hash(_spendPlace),
       const DeepCollectionEquality().hash(_spendPrice),
       const DeepCollectionEquality().hash(_minusCheck),
-      blinkingFlag);
+      blinkingFlag,
+      spendTimePlaceItemChangeDate);
 
   @JsonKey(ignore: true)
   @override
@@ -336,15 +359,17 @@ class _$SpendTimePlacesResponseStateImpl
 abstract class _SpendTimePlacesResponseState
     implements SpendTimePlacesResponseState {
   const factory _SpendTimePlacesResponseState(
-      {final int itemPos,
-      final int diff,
-      final String baseDiff,
-      final List<String> spendItem,
-      final List<String> spendTime,
-      final List<String> spendPlace,
-      final List<int> spendPrice,
-      final List<bool> minusCheck,
-      final bool blinkingFlag}) = _$SpendTimePlacesResponseStateImpl;
+          {final int itemPos,
+          final int diff,
+          final String baseDiff,
+          final List<String> spendItem,
+          final List<String> spendTime,
+          final List<String> spendPlace,
+          final List<int> spendPrice,
+          final List<bool> minusCheck,
+          final bool blinkingFlag,
+          final String spendTimePlaceItemChangeDate}) =
+      _$SpendTimePlacesResponseStateImpl;
 
   @override
   int get itemPos;
@@ -364,6 +389,8 @@ abstract class _SpendTimePlacesResponseState
   List<bool> get minusCheck;
   @override //
   bool get blinkingFlag;
+  @override //
+  String get spendTimePlaceItemChangeDate;
   @override
   @JsonKey(ignore: true)
   _$$SpendTimePlacesResponseStateImplCopyWith<

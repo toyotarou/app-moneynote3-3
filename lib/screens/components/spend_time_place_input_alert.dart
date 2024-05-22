@@ -12,6 +12,8 @@ import '../../state/app_params/app_params_notifier.dart';
 import '../../state/spend_time_places/spend_time_places_notifier.dart';
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
+import 'parts/money_dialog.dart';
+import 'spend_time_place_item_modify_alert.dart';
 
 class SpendTimePlaceInputAlert extends ConsumerStatefulWidget {
   const SpendTimePlaceInputAlert({
@@ -333,7 +335,34 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                       style: const TextStyle(fontSize: 12),
                       onChanged: (value) => ref.read(spendTimePlaceProvider.notifier).setPlace(pos: i, place: value),
                       onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
-                    )
+                    ),
+                    if (i < widget.spendTimePlaceList!.length) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(),
+                            GestureDetector(
+                              onTap: () {
+                                MoneyDialog(
+                                  context: context,
+                                  widget: SpendTimePlaceItemModifyAlert(
+                                    isar: widget.isar,
+                                    spendTimePlace: widget.spendTimePlaceList![i],
+                                  ),
+                                  clearBarrierColor: true,
+                                );
+                              },
+                              child: Text(
+                                'modify',
+                                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -371,7 +400,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                     padding: const EdgeInsets.all(5),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: (e.spendItemName == spendItem[itemPos]) ? Colors.yellowAccent.withOpacity(0.2) : Colors.blueGrey.withOpacity(0.2),
+                      color:
+                          (e.spendItemName == spendItem[itemPos]) ? Colors.yellowAccent.withOpacity(0.2) : Colors.blueGrey.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(e.spendItemName, style: const TextStyle(fontSize: 10)),
@@ -506,7 +536,9 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
       return;
     }
 
-    await SpendTimePlacesRepository().deleteSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList).then((value) async {
+    await SpendTimePlacesRepository()
+        .deleteSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList)
+        .then((value) async {
       await SpendTimePlacesRepository().inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list).then((value2) async {
         await ref.read(spendTimePlaceProvider.notifier).clearInputValue().then((value3) async {
           Navigator.pop(context);
