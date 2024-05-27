@@ -33,7 +33,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     super.initState();
 
     if (widget.emoneyName != null) {
-      _emoneyNameEditingController.text = widget.emoneyName!.emoneyName;
+      _emoneyNameEditingController.text = widget.emoneyName!.emoneyName.trim();
     }
   }
 

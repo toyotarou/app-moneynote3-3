@@ -40,11 +40,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     super.initState();
 
     if (widget.bankName != null) {
-      _bankNumberEditingController.text = widget.bankName!.bankNumber;
-      _bankNameEditingController.text = widget.bankName!.bankName;
-      _branchNumberEditingController.text = widget.bankName!.branchNumber;
-      _branchNameEditingController.text = widget.bankName!.branchName;
-      _accountNumberEditingController.text = widget.bankName!.accountNumber;
+      _bankNumberEditingController.text = widget.bankName!.bankNumber.trim();
+      _bankNameEditingController.text = widget.bankName!.bankName.trim();
+      _branchNumberEditingController.text = widget.bankName!.branchNumber.trim();
+      _branchNameEditingController.text = widget.bankName!.branchName.trim();
+      _accountNumberEditingController.text = widget.bankName!.accountNumber.trim();
 
       switch (widget.bankName!.accountType) {
         case '普通口座':
@@ -276,11 +276,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
     var errFlg = false;
 
-    if (_bankNumberEditingController.text == '' ||
-        _bankNameEditingController.text == '' ||
-        _branchNumberEditingController.text == '' ||
-        _branchNameEditingController.text == '' ||
-        _accountNumberEditingController.text == '' ||
+    if (_bankNumberEditingController.text.trim() == '' ||
+        _bankNameEditingController.text.trim() == '' ||
+        _branchNumberEditingController.text.trim() == '' ||
+        _branchNameEditingController.text.trim() == '' ||
+        _accountNumberEditingController.text.trim() == '' ||
         (accountType == AccountType.blank)) {
       errFlg = true;
     }
@@ -334,11 +334,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
     var errFlg = false;
 
-    if (_bankNumberEditingController.text == '' ||
-        _bankNameEditingController.text == '' ||
-        _branchNumberEditingController.text == '' ||
-        _branchNameEditingController.text == '' ||
-        _accountNumberEditingController.text == '' ||
+    if (_bankNumberEditingController.text.trim() == '' ||
+        _bankNameEditingController.text.trim() == '' ||
+        _branchNumberEditingController.text.trim() == '' ||
+        _branchNameEditingController.text.trim() == '' ||
+        _accountNumberEditingController.text.trim() == '' ||
         (accountType == AccountType.blank)) {
       errFlg = true;
     }
