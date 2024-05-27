@@ -287,11 +287,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
     if (errFlg == false) {
       [
-        [_bankNumberEditingController.text, 4],
-        [_bankNameEditingController.text, 30],
-        [_branchNumberEditingController.text, 3],
-        [_branchNameEditingController.text, 30],
-        [_accountNumberEditingController.text, 7]
+        [_bankNumberEditingController.text.trim(), 4],
+        [_bankNameEditingController.text.trim(), 30],
+        [_branchNumberEditingController.text.trim(), 3],
+        [_branchNameEditingController.text.trim(), 30],
+        [_accountNumberEditingController.text.trim(), 7]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -309,12 +309,12 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     final bankName = BankName()
-      ..bankNumber = _bankNumberEditingController.text
-      ..bankName = _bankNameEditingController.text
-      ..branchNumber = _branchNumberEditingController.text
-      ..branchName = _branchNameEditingController.text
+      ..bankNumber = _bankNumberEditingController.text.trim()
+      ..bankName = _bankNameEditingController.text.trim()
+      ..branchNumber = _branchNumberEditingController.text.trim()
+      ..branchName = _branchNameEditingController.text.trim()
       ..accountType = accountType.japanName
-      ..accountNumber = _accountNumberEditingController.text
+      ..accountNumber = _accountNumberEditingController.text.trim()
       ..depositType = widget.depositType.japanName;
 
     await BankNamesRepository().inputBankName(isar: widget.isar, bankName: bankName).then((value) {
@@ -345,11 +345,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
     if (errFlg == false) {
       [
-        [_bankNumberEditingController.text, 4],
-        [_bankNameEditingController.text, 30],
-        [_branchNumberEditingController.text, 3],
-        [_branchNameEditingController.text, 30],
-        [_accountNumberEditingController.text, 7]
+        [_bankNumberEditingController.text.trim(), 4],
+        [_bankNameEditingController.text.trim(), 30],
+        [_branchNumberEditingController.text.trim(), 3],
+        [_branchNameEditingController.text.trim(), 30],
+        [_accountNumberEditingController.text.trim(), 7]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -369,12 +369,12 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     await widget.isar.writeTxn(() async {
       await BankNamesRepository().getBankName(isar: widget.isar, id: widget.bankName!.id).then((value) async {
         value!
-          ..bankNumber = _bankNumberEditingController.text
-          ..bankName = _bankNameEditingController.text
-          ..branchNumber = _branchNumberEditingController.text
-          ..branchName = _branchNameEditingController.text
+          ..bankNumber = _bankNumberEditingController.text.trim()
+          ..bankName = _bankNameEditingController.text.trim()
+          ..branchNumber = _branchNumberEditingController.text.trim()
+          ..branchName = _branchNameEditingController.text.trim()
           ..accountType = accountType.japanName
-          ..accountNumber = _accountNumberEditingController.text
+          ..accountNumber = _accountNumberEditingController.text.trim()
           ..depositType = widget.depositType.japanName;
 
         await BankNamesRepository().updateBankName(isar: widget.isar, bankName: value).then((value) {

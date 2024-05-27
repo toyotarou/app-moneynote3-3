@@ -205,13 +205,13 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   Future<void> _inputSpendItem() async {
     var errFlg = false;
 
-    if (_spendItemEditingController.text == '') {
+    if (_spendItemEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_spendItemEditingController.text, 20]
+        [_spendItemEditingController.text.trim(), 20]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -229,7 +229,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     }
 
     final spendItem = SpendItem()
-      ..spendItemName = _spendItemEditingController.text
+      ..spendItemName = _spendItemEditingController.text.trim()
       ..order = widget.spendItemList.length + 1
       ..defaultTime = '08:00'
       ..color = '0xffffffff';

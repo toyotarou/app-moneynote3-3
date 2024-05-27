@@ -134,13 +134,13 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
   Future<void> _inputEmoneyName() async {
     var errFlg = false;
 
-    if (_emoneyNameEditingController.text == '') {
+    if (_emoneyNameEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_emoneyNameEditingController.text, 30]
+        [_emoneyNameEditingController.text.trim(), 30]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -158,7 +158,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     }
 
     final emoneyName = EmoneyName()
-      ..emoneyName = _emoneyNameEditingController.text
+      ..emoneyName = _emoneyNameEditingController.text.trim()
       ..depositType = widget.depositType.japanName;
 
     await EmoneyNamesRepository().inputEmoneyName(isar: widget.isar, emoneyName: emoneyName).then((value) {
@@ -172,13 +172,13 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
   Future<void> _updateEmoneyName() async {
     var errFlg = false;
 
-    if (_emoneyNameEditingController.text == '') {
+    if (_emoneyNameEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_emoneyNameEditingController.text, 30]
+        [_emoneyNameEditingController.text.trim(), 30]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -198,7 +198,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     await widget.isar.writeTxn(() async {
       await EmoneyNamesRepository().getEmoneyName(isar: widget.isar, id: widget.emoneyName!.id).then((value) async {
         value!
-          ..emoneyName = _emoneyNameEditingController.text
+          ..emoneyName = _emoneyNameEditingController.text.trim()
           ..depositType = widget.depositType.japanName;
 
         await EmoneyNamesRepository().updateEmoneyName(isar: widget.isar, emoneyName: value).then((value) {

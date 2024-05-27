@@ -43,16 +43,16 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     super.initState();
 
     if (widget.onedayMoneyList!.isNotEmpty) {
-      _tecYen10000.text = widget.onedayMoneyList![0].yen_10000.toString();
-      _tecYen5000.text = widget.onedayMoneyList![0].yen_5000.toString();
-      _tecYen2000.text = widget.onedayMoneyList![0].yen_2000.toString();
-      _tecYen1000.text = widget.onedayMoneyList![0].yen_1000.toString();
-      _tecYen500.text = widget.onedayMoneyList![0].yen_500.toString();
-      _tecYen100.text = widget.onedayMoneyList![0].yen_100.toString();
-      _tecYen50.text = widget.onedayMoneyList![0].yen_50.toString();
-      _tecYen10.text = widget.onedayMoneyList![0].yen_10.toString();
-      _tecYen5.text = widget.onedayMoneyList![0].yen_5.toString();
-      _tecYen1.text = widget.onedayMoneyList![0].yen_1.toString();
+      _tecYen10000.text = widget.onedayMoneyList![0].yen_10000.toString().trim();
+      _tecYen5000.text = widget.onedayMoneyList![0].yen_5000.toString().trim();
+      _tecYen2000.text = widget.onedayMoneyList![0].yen_2000.toString().trim();
+      _tecYen1000.text = widget.onedayMoneyList![0].yen_1000.toString().trim();
+      _tecYen500.text = widget.onedayMoneyList![0].yen_500.toString().trim();
+      _tecYen100.text = widget.onedayMoneyList![0].yen_100.toString().trim();
+      _tecYen50.text = widget.onedayMoneyList![0].yen_50.toString().trim();
+      _tecYen10.text = widget.onedayMoneyList![0].yen_10.toString().trim();
+      _tecYen5.text = widget.onedayMoneyList![0].yen_5.toString().trim();
+      _tecYen1.text = widget.onedayMoneyList![0].yen_1.toString().trim();
     }
   }
 
@@ -195,16 +195,16 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
     if (errFlg == false) {
       [
-        [_tecYen10000.text, 3],
-        [_tecYen5000.text, 3],
-        [_tecYen2000.text, 3],
-        [_tecYen1000.text, 3],
-        [_tecYen500.text, 3],
-        [_tecYen100.text, 3],
-        [_tecYen50.text, 3],
-        [_tecYen10.text, 3],
-        [_tecYen5.text, 3],
-        [_tecYen1.text, 3],
+        [_tecYen10000.text.trim(), 3],
+        [_tecYen5000.text.trim(), 3],
+        [_tecYen2000.text.trim(), 3],
+        [_tecYen1000.text.trim(), 3],
+        [_tecYen500.text.trim(), 3],
+        [_tecYen100.text.trim(), 3],
+        [_tecYen50.text.trim(), 3],
+        [_tecYen10.text.trim(), 3],
+        [_tecYen5.text.trim(), 3],
+        [_tecYen1.text.trim(), 3],
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -223,16 +223,16 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
     final money = Money()
       ..date = widget.date.yyyymmdd
-      ..yen_10000 = (_tecYen10000.text == '') ? 0 : _tecYen10000.text.toInt()
-      ..yen_5000 = (_tecYen5000.text == '') ? 0 : _tecYen5000.text.toInt()
-      ..yen_2000 = (_tecYen2000.text == '') ? 0 : _tecYen2000.text.toInt()
-      ..yen_1000 = (_tecYen1000.text == '') ? 0 : _tecYen1000.text.toInt()
-      ..yen_500 = (_tecYen500.text == '') ? 0 : _tecYen500.text.toInt()
-      ..yen_100 = (_tecYen100.text == '') ? 0 : _tecYen100.text.toInt()
-      ..yen_50 = (_tecYen50.text == '') ? 0 : _tecYen50.text.toInt()
-      ..yen_10 = (_tecYen10.text == '') ? 0 : _tecYen10.text.toInt()
-      ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.toInt()
-      ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.toInt();
+      ..yen_10000 = (_tecYen10000.text == '') ? 0 : _tecYen10000.text.trim().toInt()
+      ..yen_5000 = (_tecYen5000.text == '') ? 0 : _tecYen5000.text.trim().toInt()
+      ..yen_2000 = (_tecYen2000.text == '') ? 0 : _tecYen2000.text.trim().toInt()
+      ..yen_1000 = (_tecYen1000.text == '') ? 0 : _tecYen1000.text.trim().toInt()
+      ..yen_500 = (_tecYen500.text == '') ? 0 : _tecYen500.text.trim().toInt()
+      ..yen_100 = (_tecYen100.text == '') ? 0 : _tecYen100.text.trim().toInt()
+      ..yen_50 = (_tecYen50.text == '') ? 0 : _tecYen50.text.trim().toInt()
+      ..yen_10 = (_tecYen10.text == '') ? 0 : _tecYen10.text.trim().toInt()
+      ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.trim().toInt()
+      ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.trim().toInt();
 
     await MoneysRepository().inputMoney(isar: widget.isar, money: money).then((value) {
       _tecYen10000.clear();
@@ -270,16 +270,16 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
     if (errFlg == false) {
       [
-        [_tecYen10000.text, 3],
-        [_tecYen5000.text, 3],
-        [_tecYen2000.text, 3],
-        [_tecYen1000.text, 3],
-        [_tecYen500.text, 3],
-        [_tecYen100.text, 3],
-        [_tecYen50.text, 3],
-        [_tecYen10.text, 3],
-        [_tecYen5.text, 3],
-        [_tecYen1.text, 3],
+        [_tecYen10000.text.trim(), 3],
+        [_tecYen5000.text.trim(), 3],
+        [_tecYen2000.text.trim(), 3],
+        [_tecYen1000.text.trim(), 3],
+        [_tecYen500.text.trim(), 3],
+        [_tecYen100.text.trim(), 3],
+        [_tecYen50.text.trim(), 3],
+        [_tecYen10.text.trim(), 3],
+        [_tecYen5.text.trim(), 3],
+        [_tecYen1.text.trim(), 3],
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -300,16 +300,16 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       await MoneysRepository().getMoney(isar: widget.isar, id: widget.onedayMoneyList![0].id).then((value) async {
         value!
           ..date = widget.date.yyyymmdd
-          ..yen_10000 = (_tecYen10000.text == '') ? 0 : _tecYen10000.text.toInt()
-          ..yen_5000 = (_tecYen5000.text == '') ? 0 : _tecYen5000.text.toInt()
-          ..yen_2000 = (_tecYen2000.text == '') ? 0 : _tecYen2000.text.toInt()
-          ..yen_1000 = (_tecYen1000.text == '') ? 0 : _tecYen1000.text.toInt()
-          ..yen_500 = (_tecYen500.text == '') ? 0 : _tecYen500.text.toInt()
-          ..yen_100 = (_tecYen100.text == '') ? 0 : _tecYen100.text.toInt()
-          ..yen_50 = (_tecYen50.text == '') ? 0 : _tecYen50.text.toInt()
-          ..yen_10 = (_tecYen10.text == '') ? 0 : _tecYen10.text.toInt()
-          ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.toInt()
-          ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.toInt();
+          ..yen_10000 = (_tecYen10000.text == '') ? 0 : _tecYen10000.text.trim().toInt()
+          ..yen_5000 = (_tecYen5000.text == '') ? 0 : _tecYen5000.text.trim().toInt()
+          ..yen_2000 = (_tecYen2000.text == '') ? 0 : _tecYen2000.text.trim().toInt()
+          ..yen_1000 = (_tecYen1000.text == '') ? 0 : _tecYen1000.text.trim().toInt()
+          ..yen_500 = (_tecYen500.text == '') ? 0 : _tecYen500.text.trim().toInt()
+          ..yen_100 = (_tecYen100.text == '') ? 0 : _tecYen100.text.trim().toInt()
+          ..yen_50 = (_tecYen50.text == '') ? 0 : _tecYen50.text.trim().toInt()
+          ..yen_10 = (_tecYen10.text == '') ? 0 : _tecYen10.text.trim().toInt()
+          ..yen_5 = (_tecYen5.text == '') ? 0 : _tecYen5.text.trim().toInt()
+          ..yen_1 = (_tecYen1.text == '') ? 0 : _tecYen1.text.trim().toInt();
 
         await MoneysRepository().updateMoney(isar: widget.isar, money: value).then((value) {
           _tecYen10000.clear();

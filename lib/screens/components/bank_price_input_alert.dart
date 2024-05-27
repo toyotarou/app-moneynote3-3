@@ -162,13 +162,13 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
     var errFlg = false;
 
-    if (_bankPriceEditingController.text == '' && bankId > 0) {
+    if (_bankPriceEditingController.text.trim() == '' && bankId > 0) {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_bankPriceEditingController.text, 10]
+        [_bankPriceEditingController.text.trim(), 10]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -204,7 +204,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       ..date = widget.date.yyyymmdd
       ..depositType = widget.depositType.japanName
       ..bankId = bankId
-      ..price = _bankPriceEditingController.text.toInt();
+      ..price = _bankPriceEditingController.text.trim().toInt();
 
     await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice).then((value) {
       _bankPriceEditingController.clear();
@@ -220,7 +220,9 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     param['depositType'] = (widget.bankName != null) ? widget.bankName!.depositType : widget.emoneyName!.depositType;
     param['bankId'] = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
-    await BankPricesRepository().getSelectedBankPriceList(isar: widget.isar, param: param).then((value) => setState(() => bankPriceList = value));
+    await BankPricesRepository()
+        .getSelectedBankPriceList(isar: widget.isar, param: param)
+        .then((value) => setState(() => bankPriceList = value));
   }
 
   ///

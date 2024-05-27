@@ -299,14 +299,14 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
   Future<void> _insertIncome() async {
     var errFlg = false;
 
-    if (_incomePriceEditingController.text == '' || _incomeSourceEditingController.text == '') {
+    if (_incomePriceEditingController.text.trim() == '' || _incomeSourceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (errFlg == false) {
       [
-        [_incomePriceEditingController.text, 10],
-        [_incomeSourceEditingController.text, 30]
+        [_incomePriceEditingController.text.trim(), 10],
+        [_incomeSourceEditingController.text.trim(), 30]
       ].forEach((element) {
         if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
           errFlg = true;
@@ -327,8 +327,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
     final income = Income()
       ..date = incomeInputDate
-      ..sourceName = _incomeSourceEditingController.text
-      ..price = _incomePriceEditingController.text.toInt();
+      ..sourceName = _incomeSourceEditingController.text.trim()
+      ..price = _incomePriceEditingController.text.trim().toInt();
 
     await IncomesRepository().inputIncome(isar: widget.isar, income: income).then((value) async {
       _incomeSourceEditingController.clear();
