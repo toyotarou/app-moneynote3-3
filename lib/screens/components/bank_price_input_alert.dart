@@ -170,7 +170,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       [
         [_bankPriceEditingController.text.trim(), 10]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int) == false) {
           errFlg = true;
         }
       });
@@ -217,7 +217,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   ///
   Future<void> _makeBankPriceList() async {
     final param = <String, dynamic>{};
-    param['depositType'] = (widget.bankName != null) ? widget.bankName!.depositType : widget.emoneyName!.depositType;
+    param['depositType'] = (widget.bankName != null) ? widget.bankName!.depositType.trim() : widget.emoneyName!.depositType.trim();
     param['bankId'] = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
     await BankPricesRepository()

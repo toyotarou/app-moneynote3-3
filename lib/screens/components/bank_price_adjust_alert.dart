@@ -170,7 +170,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                 }
               },
               child: CircleAvatar(
-                backgroundColor: (element.type == DepositType.bank) ? Colors.blueAccent.withOpacity(0.2) : Colors.greenAccent.withOpacity(0.2),
+                backgroundColor:
+                    (element.type == DepositType.bank) ? Colors.blueAccent.withOpacity(0.2) : Colors.greenAccent.withOpacity(0.2),
                 child: Container(
                   alignment: Alignment.center,
                   child: Text(
@@ -272,7 +273,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                               onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                               onChanged: (value) {
                                 if (value != '') {
-                                  ref.read(bankPriceAdjustProvider.notifier).setAdjustPrice(pos: i, value: value.toInt());
+                                  ref.read(bankPriceAdjustProvider.notifier).setAdjustPrice(pos: i, value: value.trim().toInt());
                                 }
                               },
                             ),
@@ -342,7 +343,9 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     for (var i = 0; i < 10; i++) {
       //===============================================
-      if (bankPriceAdjustState.adjustDate[i] != '日付' && bankPriceAdjustState.adjustDeposit[i] != '' && bankPriceAdjustState.adjustPrice[i] >= 0) {
+      if (bankPriceAdjustState.adjustDate[i] != '日付' &&
+          bankPriceAdjustState.adjustDeposit[i] != '' &&
+          bankPriceAdjustState.adjustPrice[i] >= 0) {
         final exDeposit = bankPriceAdjustState.adjustDeposit[i].split('-');
 
         list.add(
@@ -391,7 +394,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
         [
           [element.price, 10]
         ].forEach((element2) {
-          if (checkInputValueLengthCheck(value: element2[0].toString(), length: element2[1]) == false) {
+          if (checkInputValueLengthCheck(value: element2[0].toString().trim(), length: element2[1]) == false) {
             errFlg = true;
           }
         });

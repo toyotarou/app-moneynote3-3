@@ -88,11 +88,11 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
       );
 
       for (var i = 0; i < widget.spendTimePlaceList!.length; i++) {
-        _placeTecs[i].text = widget.spendTimePlaceList![i].place;
+        _placeTecs[i].text = widget.spendTimePlaceList![i].place.trim();
 
-        _priceTecs[i].text = (widget.spendTimePlaceList![i].price > 0)
-            ? widget.spendTimePlaceList![i].price.toString()
-            : (widget.spendTimePlaceList![i].price * -1).toString();
+        _priceTecs[i].text = (widget.spendTimePlaceList![i].price.toString().trim().toInt() > 0)
+            ? widget.spendTimePlaceList![i].price.toString().trim()
+            : (widget.spendTimePlaceList![i].price * -1).toString().trim();
       }
     }
   }
@@ -333,7 +333,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
                       ),
                       style: const TextStyle(fontSize: 12),
-                      onChanged: (value) => ref.read(spendTimePlaceProvider.notifier).setPlace(pos: i, place: value),
+                      onChanged: (value) => ref.read(spendTimePlaceProvider.notifier).setPlace(pos: i, place: value.trim()),
                       onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                     ),
                     if (i < widget.spendTimePlaceList!.length) ...[
@@ -457,19 +457,19 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
     for (var i = 0; i < 20; i++) {
       //===============================================
-      if (spendTimePlaceState.spendItem[i] != '項目名' &&
-          spendTimePlaceState.spendTime[i] != '時間' &&
-          spendTimePlaceState.spendPlace[i] != '' &&
-          spendTimePlaceState.spendPrice[i] != 0) {
+      if (spendTimePlaceState.spendItem[i].trim() != '項目名' &&
+          spendTimePlaceState.spendTime[i].trim() != '時間' &&
+          spendTimePlaceState.spendPlace[i].trim() != '' &&
+          spendTimePlaceState.spendPrice[i].toString().trim() != 0) {
         final price = (spendTimePlaceState.minusCheck[i]) ? spendTimePlaceState.spendPrice[i] * -1 : spendTimePlaceState.spendPrice[i];
 
         list.add(
           SpendTimePlace()
             ..date = widget.date.yyyymmdd
-            ..spendType = spendTimePlaceState.spendItem[i]
-            ..time = spendTimePlaceState.spendTime[i]
+            ..spendType = spendTimePlaceState.spendItem[i].trim()
+            ..time = spendTimePlaceState.spendTime[i].trim()
             ..price = price
-            ..place = spendTimePlaceState.spendPlace[i],
+            ..place = spendTimePlaceState.spendPlace[i].trim(),
         );
       }
       //===============================================
@@ -513,10 +513,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     if (errFlg == false) {
       list.forEach((element) {
         [
-          [element.price, 10],
-          [element.place, 30]
+          [element.price.toString().trim(), 10],
+          [element.place.trim(), 30]
         ].forEach((element2) {
-          if (checkInputValueLengthCheck(value: element2[0].toString(), length: element2[1] as int) == false) {
+          if (checkInputValueLengthCheck(value: element2[0].toString().trim(), length: element2[1] as int) == false) {
             errFlg = true;
           }
         });

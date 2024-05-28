@@ -142,7 +142,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       [
         [_emoneyNameEditingController.text.trim(), 30]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int) == false) {
           errFlg = true;
         }
       });
@@ -180,7 +180,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       [
         [_emoneyNameEditingController.text.trim(), 30]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int) == false) {
           errFlg = true;
         }
       });

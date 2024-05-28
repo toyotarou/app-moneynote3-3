@@ -213,7 +213,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       [
         [_spendItemEditingController.text.trim(), 20]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int) == false) {
           errFlg = true;
         }
       });
@@ -280,7 +280,8 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
     final getSpendTimePlaces = await spendTimePlacesCollection.filter().spendTypeEqualTo(spendItemNameMap[id]!).findAll();
 
-    await widget.isar.writeTxn(() async => getSpendTimePlaces.forEach((element) async => widget.isar.spendTimePlaces.put(element..spendType = '')));
+    await widget.isar
+        .writeTxn(() async => getSpendTimePlaces.forEach((element) async => widget.isar.spendTimePlaces.put(element..spendType = '')));
     //-----------------------------------
 
     final spendItemsCollection = widget.isar.spendItems; //TODO
@@ -297,8 +298,14 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
     for (final value in ddList) {
       for (final child in value.children) {
-        orderedIdList.add(
-            child.child.key.toString().replaceAll('[', '').replaceAll('<', '').replaceAll("'", '').replaceAll('>', '').replaceAll(']', '').toInt());
+        orderedIdList.add(child.child.key
+            .toString()
+            .replaceAll('[', '')
+            .replaceAll('<', '')
+            .replaceAll("'", '')
+            .replaceAll('>', '')
+            .replaceAll(']', '')
+            .toInt());
       }
     }
 
