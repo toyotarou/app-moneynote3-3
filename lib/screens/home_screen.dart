@@ -142,7 +142,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? null : _goNextMonth,
               icon: Icon(
                 Icons.arrow_forward_ios,
-                color: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? Colors.grey.withOpacity(0.6) : Colors.white.withOpacity(0.8),
+                color:
+                    (DateTime.now().yyyymm == calendarState.baseYearMonth) ? Colors.grey.withOpacity(0.6) : Colors.white.withOpacity(0.8),
                 size: 14,
               ),
             ),
@@ -695,8 +696,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       //-----------------------------------------------//
       var zenjitsuSum = 0;
-      final zenjitsu =
-          (_calendarDays[i] == '') ? '' : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt() - 1).yyyymmdd;
+      final zenjitsu = (_calendarDays[i] == '')
+          ? ''
+          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt() - 1).yyyymmdd;
 
       if (zenjitsu != '') {
         if (dateCurrencySumMap[zenjitsu] != null && bankPriceTotalPadMap[zenjitsu] != null) {
@@ -822,38 +824,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   Future<void> _makeMoneyList() async {
     await MoneysRepository().getMoneyList(isar: widget.isar).then((value) {
-      setState(() {
-        moneyList = value;
+      if (mounted) {
+        setState(() {
+          moneyList = value;
 
-        if (value!.isNotEmpty) {
-          value
-            ..forEach((element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element))
-            ..forEach((element) => moneyMap[element.date] = element)
-            ..forEach((element) {
-              final exDate = element.date.split('-');
-              if (exDate[2].toInt() == 1) {
-                if (!monthFirstDateList.contains(element.date)) {
-                  monthFirstDateList.add(element.date);
+          if (value!.isNotEmpty) {
+            value
+              ..forEach((element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element))
+              ..forEach((element) => moneyMap[element.date] = element)
+              ..forEach((element) {
+                final exDate = element.date.split('-');
+                if (exDate[2].toInt() == 1) {
+                  if (!monthFirstDateList.contains(element.date)) {
+                    monthFirstDateList.add(element.date);
+                  }
                 }
-              }
-            });
-        }
-      });
+              });
+          }
+        });
+      }
     });
   }
 
   ///
   Future<void> _makeBankPriceList() async {
     await BankPricesRepository().getBankPriceList(isar: widget.isar).then((value) {
-      setState(() {
-        bankPriceList = value;
+      if (mounted) {
+        setState(() {
+          bankPriceList = value;
 
-        if (value != null) {
-          final bankPriceMap = makeBankPriceMap(bankPriceList: value);
-          bankPricePadMap = bankPriceMap['bankPriceDatePadMap'];
-          bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'];
-        }
-      });
+          if (value != null) {
+            final bankPriceMap = makeBankPriceMap(bankPriceList: value);
+            bankPricePadMap = bankPriceMap['bankPriceDatePadMap'];
+            bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'];
+          }
+        });
+      }
     });
   }
 
@@ -862,63 +868,65 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     spendTypeBlankSpendTimePlaceList = [];
 
     await SpendTimePlacesRepository().getSpendTimePlaceList(isar: widget.isar).then((value) {
-      setState(() {
-        allSpendTimePlaceList = value;
+      if (mounted) {
+        setState(() {
+          allSpendTimePlaceList = value;
 
-        if (value!.isNotEmpty) {
-          final yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
+          if (value!.isNotEmpty) {
+            final yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
 
-          final prevYearMonth = DateTime(yearmonth!.split('-')[0].toInt(), yearmonth.split('-')[1].toInt() - 1).yyyymm;
+            final prevYearMonth = DateTime(yearmonth!.split('-')[0].toInt(), yearmonth.split('-')[1].toInt() - 1).yyyymm;
 
-          if (_spendItemList != null) {
-            final map = <String, List<SpendTimePlace>>{};
-            _spendItemList!.forEach((element) => map[element.spendItemName] = []);
-            value.forEach((element) => map[element.spendType]?.add(element));
-            spendTimePlaceCountMap = map;
-          }
+            if (_spendItemList != null) {
+              final map = <String, List<SpendTimePlace>>{};
+              _spendItemList!.forEach((element) => map[element.spendItemName] = []);
+              value.forEach((element) => map[element.spendType]?.add(element));
+              spendTimePlaceCountMap = map;
+            }
 
-          final list = <SpendTimePlace>[];
-          final list2 = <SpendTimePlace>[];
+            final list = <SpendTimePlace>[];
+            final list2 = <SpendTimePlace>[];
 
-          final map = <String, List<int>>{};
+            final map = <String, List<int>>{};
 
-          value
-            ..forEach((element) {
-              final exDate = element.date.split('-');
+            value
+              ..forEach((element) {
+                final exDate = element.date.split('-');
 
-              if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
-                map[element.date] = [];
-              }
-            })
-            ..forEach((element) {
-              final exDate = element.date.split('-');
+                if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
+                  map[element.date] = [];
+                }
+              })
+              ..forEach((element) {
+                final exDate = element.date.split('-');
 
-              if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
-                map[element.date]?.add(element.price);
+                if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
+                  map[element.date]?.add(element.price);
 
-                list.add(element);
-              }
+                  list.add(element);
+                }
 
-              if ('${exDate[0]}-${exDate[1]}' == prevYearMonth) {
-                list2.add(element);
-              }
+                if ('${exDate[0]}-${exDate[1]}' == prevYearMonth) {
+                  list2.add(element);
+                }
 
-              if (element.spendType == '') {
-                spendTypeBlankSpendTimePlaceList.add(element);
-              }
+                if (element.spendType == '') {
+                  spendTypeBlankSpendTimePlaceList.add(element);
+                }
+              });
+
+            map.forEach((key, value) {
+              var sum = 0;
+              value.forEach((element) => sum += element);
+              monthlySpendTimePlaceSumMap[key] = sum;
             });
 
-          map.forEach((key, value) {
-            var sum = 0;
-            value.forEach((element) => sum += element);
-            monthlySpendTimePlaceSumMap[key] = sum;
-          });
+            thisMonthSpendTimePlaceList = list;
 
-          thisMonthSpendTimePlaceList = list;
-
-          prevMonthSpendTimePlaceList = list2;
-        }
-      });
+            prevMonthSpendTimePlaceList = list2;
+          }
+        });
+      }
     });
   }
 
@@ -980,13 +988,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     depoNameList = [];
 
     await BankNamesRepository().getBankNameList(isar: widget.isar).then((value) {
-      setState(() {
-        bankNameList = value;
+      if (mounted) {
+        setState(() {
+          bankNameList = value;
 
-        if (value!.isNotEmpty) {
-          value.forEach((element) => depoNameList.add(Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}')));
-        }
-      });
+          if (value!.isNotEmpty) {
+            value.forEach((element) =>
+                depoNameList.add(Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}')));
+          }
+        });
+      }
     });
 
     await _makeEmoneyNameList();
@@ -995,13 +1006,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   Future<void> _makeEmoneyNameList() async {
     await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) {
-      setState(() {
-        emoneyNameList = value;
+      if (mounted) {
+        setState(() {
+          emoneyNameList = value;
 
-        if (value!.isNotEmpty) {
-          value.forEach((element) => depoNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName)));
-        }
-      });
+          if (value!.isNotEmpty) {
+            value.forEach((element) => depoNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName)));
+          }
+        });
+      }
     });
   }
 
@@ -1026,9 +1039,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   ///
-  Future<void> _makeSpendItemList() async =>
-      SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) => setState(() => _spendItemList = value));
+  Future<void> _makeSpendItemList() async => SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+        if (mounted) {
+          setState(() => _spendItemList = value);
+        }
+      });
 
   ///
-  Future<void> _makeIncomeList() async => IncomesRepository().getIncomeList(isar: widget.isar).then((value) => setState(() => _incomeList = value));
+  Future<void> _makeIncomeList() async => IncomesRepository().getIncomeList(isar: widget.isar).then((value) {
+        if (mounted) {
+          setState(() => _incomeList = value);
+        }
+      });
 }
