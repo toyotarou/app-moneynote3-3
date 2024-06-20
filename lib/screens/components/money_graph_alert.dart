@@ -53,7 +53,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
     final graphWidthState = ref.watch(graphWidthProvider);
 
-    final displayGraphFlag = ref.watch(moneyGraphProvider.select((value) => value.displayGraphFlag));
+    final displayGraphFlag =
+        ref.watch(moneyGraphProvider.select((value) => value.displayGraphFlag));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -74,7 +75,9 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                   Column(
                     children: [
                       GestureDetector(
-                        onTap: () => ref.read(moneyGraphProvider.notifier).setDisplayGraphFlag(flag: 'total'),
+                        onTap: () => ref
+                            .read(moneyGraphProvider.notifier)
+                            .setDisplayGraphFlag(flag: 'total'),
                         child: Text(
                           '所持金額',
                           style: TextStyle(
@@ -86,7 +89,9 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                       ),
                       const SizedBox(height: 5),
                       GestureDetector(
-                        onTap: () => ref.read(moneyGraphProvider.notifier).setDisplayGraphFlag(flag: 'spend'),
+                        onTap: () => ref
+                            .read(moneyGraphProvider.notifier)
+                            .setDisplayGraphFlag(flag: 'spend'),
                         child: Text(
                           '使用金額',
                           style: TextStyle(
@@ -115,7 +120,9 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.indigo.withOpacity(0.3),
                           ),
-                          onPressed: () => ref.read(graphWidthProvider.notifier).setGraphWidth(
+                          onPressed: () => ref
+                              .read(graphWidthProvider.notifier)
+                              .setGraphWidth(
                                 width: (graphWidthState == _minGraphRate)
                                     ? (_flspots.length / 10).ceil().toDouble()
                                     : _minGraphRate,
@@ -127,8 +134,11 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                             children: [
                               const SizedBox(width: 10),
                               ElevatedButton(
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                                onPressed: () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Colors.pinkAccent.withOpacity(0.3)),
+                                onPressed: () => _scrollController.jumpTo(
+                                    _scrollController.position.maxScrollExtent),
                                 child: const Text('jump'),
                               ),
                             ],
@@ -137,15 +147,19 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                     ),
                     if (graphWidthState > _minGraphRate)
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.3)),
-                        onPressed: () => _scrollController.jumpTo(_scrollController.position.minScrollExtent),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Colors.pinkAccent.withOpacity(0.3)),
+                        onPressed: () => _scrollController
+                            .jumpTo(_scrollController.position.minScrollExtent),
                         child: const Text('back'),
                       ),
                   ],
                 ),
               ],
               if (_graphMaking == false) ...[
-                const Text('no data', style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
+                const Text('no data',
+                    style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
               ],
             ],
           ),
@@ -158,7 +172,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
   void _setChartData() {
     final map = <String, int>{};
 
-    final displayGraphFlag = ref.watch(moneyGraphProvider.select((value) => value.displayGraphFlag));
+    final displayGraphFlag =
+        ref.watch(moneyGraphProvider.select((value) => value.displayGraphFlag));
 
     var warisuu = 500000;
 
@@ -236,12 +251,21 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
               showTitles: true,
               reservedSize: 50,
               getTitlesWidget: (value, meta) {
-                final year =
-                    DateTime.parse(_dateMap[value.toInt().toString()].toString()).year.toString().padLeft(2, '0');
-                final month =
-                    DateTime.parse(_dateMap[value.toInt().toString()].toString()).month.toString().padLeft(2, '0');
-                final day =
-                    DateTime.parse(_dateMap[value.toInt().toString()].toString()).day.toString().padLeft(2, '0');
+                final year = DateTime.parse(
+                        _dateMap[value.toInt().toString()].toString())
+                    .year
+                    .toString()
+                    .padLeft(2, '0');
+                final month = DateTime.parse(
+                        _dateMap[value.toInt().toString()].toString())
+                    .month
+                    .toString()
+                    .padLeft(2, '0');
+                final day = DateTime.parse(
+                        _dateMap[value.toInt().toString()].toString())
+                    .day
+                    .toString()
+                    .padLeft(2, '0');
                 final monthday = '$month-$day';
 
                 return SideTitleWidget(
@@ -264,7 +288,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
             sideTitles: SideTitles(
               showTitles: _showSideTitles(flag: 'left'),
               reservedSize: _getLeftTitleWidth(),
-              getTitlesWidget: (value, meta) => Text(value.toInt().toString().toCurrency()),
+              getTitlesWidget: (value, meta) =>
+                  Text(value.toInt().toString().toCurrency()),
             ),
           ),
           //-------------------------// 左側の目盛り
@@ -274,7 +299,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
             sideTitles: SideTitles(
               showTitles: _showSideTitles(flag: 'right'),
               reservedSize: 100,
-              getTitlesWidget: (value, meta) => Text(value.toInt().toString().toCurrency()),
+              getTitlesWidget: (value, meta) =>
+                  Text(value.toInt().toString().toCurrency()),
             ),
           ),
           //-------------------------// 右側の目盛り
@@ -282,7 +308,11 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
         ///
         lineBarsData: [
-          LineChartBarData(spots: _flspots, barWidth: 5, isStrokeCapRound: true, color: Colors.yellowAccent),
+          LineChartBarData(
+              spots: _flspots,
+              barWidth: 5,
+              isStrokeCapRound: true,
+              color: Colors.yellowAccent),
         ],
       );
 
@@ -332,7 +362,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 ///
 ////////////////////////////////////////////////////////////
 final graphWidthProvider =
-    StateNotifierProvider.autoDispose<GraphWidthStateNotifier, double>((ref) => GraphWidthStateNotifier());
+    StateNotifierProvider.autoDispose<GraphWidthStateNotifier, double>(
+        (ref) => GraphWidthStateNotifier());
 
 class GraphWidthStateNotifier extends StateNotifier<double> {
   GraphWidthStateNotifier() : super(0.6);

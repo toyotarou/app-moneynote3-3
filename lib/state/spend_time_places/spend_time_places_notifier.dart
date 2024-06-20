@@ -4,7 +4,8 @@ import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import 'spend_time_places_response_state.dart';
 
-final spendTimePlaceProvider = StateNotifierProvider.autoDispose<SpendTimePlaceNotifier, SpendTimePlacesResponseState>((ref) {
+final spendTimePlaceProvider = StateNotifierProvider.autoDispose<
+    SpendTimePlaceNotifier, SpendTimePlacesResponseState>((ref) {
   final spendTime = List.generate(20, (index) => '時間');
   final spendPlace = List.generate(20, (index) => '');
   final spendItem = List.generate(20, (index) => '項目名');
@@ -22,17 +23,21 @@ final spendTimePlaceProvider = StateNotifierProvider.autoDispose<SpendTimePlaceN
   );
 });
 
-class SpendTimePlaceNotifier extends StateNotifier<SpendTimePlacesResponseState> {
+class SpendTimePlaceNotifier
+    extends StateNotifier<SpendTimePlacesResponseState> {
   SpendTimePlaceNotifier(super.state);
 
   ///
-  Future<void> setBaseDiff({required String baseDiff}) async => state = state.copyWith(baseDiff: baseDiff);
+  Future<void> setBaseDiff({required String baseDiff}) async =>
+      state = state.copyWith(baseDiff: baseDiff);
 
   ///
-  Future<void> setBlinkingFlag({required bool blinkingFlag}) async => state = state.copyWith(blinkingFlag: blinkingFlag);
+  Future<void> setBlinkingFlag({required bool blinkingFlag}) async =>
+      state = state.copyWith(blinkingFlag: blinkingFlag);
 
   ///
-  Future<void> setItemPos({required int pos}) async => state = state.copyWith(itemPos: pos);
+  Future<void> setItemPos({required int pos}) async =>
+      state = state.copyWith(itemPos: pos);
 
   ///
   Future<void> setSpendItem({required int pos, required String item}) async {
@@ -141,7 +146,9 @@ class SpendTimePlaceNotifier extends StateNotifier<SpendTimePlacesResponseState>
   }
 
   ///
-  Future<void> setUpdateSpendTimePlace({required List<SpendTimePlace> updateSpendTimePlace, required int baseDiff}) async {
+  Future<void> setUpdateSpendTimePlace(
+      {required List<SpendTimePlace> updateSpendTimePlace,
+      required int baseDiff}) async {
     try {
       final spendItem = <String>[...state.spendItem];
       final spendTime = <String>[...state.spendTime];
@@ -180,5 +187,6 @@ class SpendTimePlaceNotifier extends StateNotifier<SpendTimePlacesResponseState>
   }
 
   ///
-  Future<void> setSpendTimePlaceItemChangeDate({required String date}) async => state = state.copyWith(spendTimePlaceItemChangeDate: date);
+  Future<void> setSpendTimePlaceItemChangeDate({required String date}) async =>
+      state = state.copyWith(spendTimePlaceItemChangeDate: date);
 }

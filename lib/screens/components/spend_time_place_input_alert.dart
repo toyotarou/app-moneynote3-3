@@ -30,10 +30,13 @@ class SpendTimePlaceInputAlert extends ConsumerStatefulWidget {
   final List<SpendTimePlace>? spendTimePlaceList;
 
   @override
-  ConsumerState<SpendTimePlaceInputAlert> createState() => _SpendTimePlaceInputAlertState();
+  ConsumerState<SpendTimePlaceInputAlert> createState() =>
+      _SpendTimePlaceInputAlertState();
 }
 
-class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAlert> with SingleTickerProviderStateMixin {
+class _SpendTimePlaceInputAlertState
+    extends ConsumerState<SpendTimePlaceInputAlert>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   ///
@@ -90,9 +93,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
       for (var i = 0; i < widget.spendTimePlaceList!.length; i++) {
         _placeTecs[i].text = widget.spendTimePlaceList![i].place.trim();
 
-        _priceTecs[i].text = (widget.spendTimePlaceList![i].price.toString().trim().toInt() > 0)
-            ? widget.spendTimePlaceList![i].price.toString().trim()
-            : (widget.spendTimePlaceList![i].price * -1).toString().trim();
+        _priceTecs[i].text =
+            (widget.spendTimePlaceList![i].price.toString().trim().toInt() > 0)
+                ? widget.spendTimePlaceList![i].price.toString().trim()
+                : (widget.spendTimePlaceList![i].price * -1).toString().trim();
       }
     }
   }
@@ -109,9 +113,12 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
     final spendTimePlaceState = ref.watch(spendTimePlaceProvider);
 
-    Future(() => ref.read(spendTimePlaceProvider.notifier).setBaseDiff(baseDiff: widget.spend.toString()));
+    Future(() => ref
+        .read(spendTimePlaceProvider.notifier)
+        .setBaseDiff(baseDiff: widget.spend.toString()));
 
-    final inputButtonClicked = ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
+    final inputButtonClicked =
+        ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -144,7 +151,9 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                                 ? ''
                                 : spendTimePlaceState.baseDiff.toCurrency(),
                         style: TextStyle(
-                          color: (spendTimePlaceState.diff == 0) ? Colors.yellowAccent : Colors.white,
+                          color: (spendTimePlaceState.diff == 0)
+                              ? Colors.yellowAccent
+                              : Colors.white,
                         ),
                       ),
                     ],
@@ -153,11 +162,14 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                     onPressed: inputButtonClicked
                         ? null
                         : () {
-                            ref.read(appParamProvider.notifier).setInputButtonClicked(flag: true);
+                            ref
+                                .read(appParamProvider.notifier)
+                                .setInputButtonClicked(flag: true);
 
                             _inputSpendTimePlace();
                           },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     child: const Text('input'),
                   ),
                 ],
@@ -171,12 +183,14 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                       Expanded(child: _displayInputParts()),
                       (spendTimePlaceState.blinkingFlag)
                           ? DecoratedBoxTransition(
-                              decoration: _decorationTween.animate(_animationController),
+                              decoration: _decorationTween
+                                  .animate(_animationController),
                               child: SizedBox(
                                 width: 90,
                                 child: Container(
                                   margin: const EdgeInsets.all(5),
-                                  decoration: const BoxDecoration(color: Colors.black),
+                                  decoration:
+                                      const BoxDecoration(color: Colors.black),
                                   child: _spendItemSetPanel(),
                                 ),
                               ),
@@ -185,7 +199,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                               width: 90,
                               child: Container(
                                 margin: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(color: Colors.transparent),
+                                decoration: const BoxDecoration(
+                                    color: Colors.transparent),
                                 child: _spendItemSetPanel(),
                               ),
                             ),
@@ -216,7 +231,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
         DecoratedBox(
           decoration: BoxDecoration(
             boxShadow: [
-              BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
+              BoxShadow(
+                  blurRadius: 24,
+                  spreadRadius: 16,
+                  color: Colors.black.withOpacity(0.2)),
             ],
           ),
           child: Stack(
@@ -226,7 +244,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                 right: 15,
                 child: Text(
                   (i + 1).toString().padLeft(2, '0'),
-                  style: TextStyle(fontSize: 60, color: Colors.grey.withOpacity(0.3)),
+                  style: TextStyle(
+                      fontSize: 60, color: Colors.grey.withOpacity(0.3)),
                 ),
               ),
               Container(
@@ -237,7 +256,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                   color: Colors.white.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: (item != '項目名' && time != '時間' && price != 0 && place != '')
+                    color: (item != '項目名' &&
+                            time != '時間' &&
+                            price != 0 &&
+                            place != '')
                         ? Colors.orangeAccent.withOpacity(0.4)
                         : Colors.white.withOpacity(0.2),
                     width: 2,
@@ -251,14 +273,22 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                           flex: 2,
                           child: GestureDetector(
                             onTap: () {
-                              ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: !spendTimePlaceState.blinkingFlag);
+                              ref
+                                  .read(spendTimePlaceProvider.notifier)
+                                  .setBlinkingFlag(
+                                      blinkingFlag:
+                                          !spendTimePlaceState.blinkingFlag);
 
-                              ref.read(spendTimePlaceProvider.notifier).setItemPos(pos: i);
+                              ref
+                                  .read(spendTimePlaceProvider.notifier)
+                                  .setItemPos(pos: i);
                             },
                             child: Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
-                                color: (item != '項目名') ? Colors.yellowAccent.withOpacity(0.2) : const Color(0xFFfffacd).withOpacity(0.1),
+                                color: (item != '項目名')
+                                    ? Colors.yellowAccent.withOpacity(0.2)
+                                    : const Color(0xFFfffacd).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(item),
@@ -273,17 +303,21 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                               padding: const EdgeInsets.all(5),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: (time != '時間') ? Colors.greenAccent.withOpacity(0.2) : const Color(0xFF90ee90).withOpacity(0.1),
+                                color: (time != '時間')
+                                    ? Colors.greenAccent.withOpacity(0.2)
+                                    : const Color(0xFF90ee90).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Text(time, style: const TextStyle(fontSize: 10)),
+                              child: Text(time,
+                                  style: const TextStyle(fontSize: 10)),
                             ),
                           ),
                         ),
                         const SizedBox(width: 10),
                         GestureDetector(
                           onTap: () => _clearOneBox(pos: i),
-                          child: const Icon(Icons.close, color: Colors.redAccent),
+                          child:
+                              const Icon(Icons.close, color: Colors.redAccent),
                         ),
                       ],
                     ),
@@ -291,10 +325,14 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: () => ref.read(spendTimePlaceProvider.notifier).setMinusCheck(pos: i),
+                          onTap: () => ref
+                              .read(spendTimePlaceProvider.notifier)
+                              .setMinusCheck(pos: i),
                           child: Icon(
                             Icons.remove,
-                            color: (spendTimePlaceState.minusCheck[i]) ? Colors.redAccent : Colors.white,
+                            color: (spendTimePlaceState.minusCheck[i])
+                                ? Colors.redAccent
+                                : Colors.white,
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -304,19 +342,26 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                             controller: _priceTecs[i],
                             decoration: const InputDecoration(
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 4),
                               hintText: '金額(10桁以内)',
                               filled: true,
                               border: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.white54)),
                             ),
                             style: const TextStyle(fontSize: 12),
                             onChanged: (value) {
-                              if (value != '') {
-                                ref.read(spendTimePlaceProvider.notifier).setSpendPrice(pos: i, price: value.toInt());
-                              }
+                              ref
+                                  .read(spendTimePlaceProvider.notifier)
+                                  .setSpendPrice(
+                                    pos: i,
+                                    price: (value == '') ? 0 : value.toInt(),
+                                  );
                             },
-                            onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                            onTapOutside: (event) =>
+                                FocusManager.instance.primaryFocus?.unfocus(),
                           ),
                         ),
                       ],
@@ -326,15 +371,20 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                       controller: _placeTecs[i],
                       decoration: const InputDecoration(
                         isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                         hintText: '場所(30文字以内)',
                         filled: true,
                         border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white54)),
                       ),
                       style: const TextStyle(fontSize: 12),
-                      onChanged: (value) => ref.read(spendTimePlaceProvider.notifier).setPlace(pos: i, place: value.trim()),
-                      onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                      onChanged: (value) => ref
+                          .read(spendTimePlaceProvider.notifier)
+                          .setPlace(pos: i, place: value.trim()),
+                      onTapOutside: (event) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
                     ),
                     if (i < widget.spendTimePlaceList!.length) ...[
                       Container(
@@ -349,14 +399,18 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                                   context: context,
                                   widget: SpendTimePlaceItemModifyAlert(
                                     isar: widget.isar,
-                                    spendTimePlace: widget.spendTimePlaceList![i],
+                                    spendTimePlace:
+                                        widget.spendTimePlaceList![i],
                                   ),
                                   clearBarrierColor: true,
                                 );
                               },
                               child: Text(
                                 'modify',
-                                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
                               ),
                             ),
                           ],
@@ -377,8 +431,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
   ///
   Widget _spendItemSetPanel() {
-    final itemPos = ref.watch(spendTimePlaceProvider.select((value) => value.itemPos));
-    final spendItem = ref.watch(spendTimePlaceProvider.select((value) => value.spendItem));
+    final itemPos =
+        ref.watch(spendTimePlaceProvider.select((value) => value.itemPos));
+    final spendItem =
+        ref.watch(spendTimePlaceProvider.select((value) => value.spendItem));
 
     return SingleChildScrollView(
       child: Column(
@@ -386,12 +442,18 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
             ? _spendItemList!.map((e) {
                 return GestureDetector(
                   onTap: () async {
-                    await ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: false);
+                    await ref
+                        .read(spendTimePlaceProvider.notifier)
+                        .setBlinkingFlag(blinkingFlag: false);
 
-                    await ref.read(spendTimePlaceProvider.notifier).setSpendItem(pos: itemPos, item: e.spendItemName);
+                    await ref
+                        .read(spendTimePlaceProvider.notifier)
+                        .setSpendItem(pos: itemPos, item: e.spendItemName);
 
                     if (_timeUnknownItem.contains(e.spendItemName)) {
-                      await ref.read(spendTimePlaceProvider.notifier).setTime(pos: itemPos, time: '00:00');
+                      await ref
+                          .read(spendTimePlaceProvider.notifier)
+                          .setTime(pos: itemPos, time: '00:00');
                     }
                   },
                   child: Container(
@@ -400,11 +462,13 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                     padding: const EdgeInsets.all(5),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color:
-                          (e.spendItemName == spendItem[itemPos]) ? Colors.yellowAccent.withOpacity(0.2) : Colors.blueGrey.withOpacity(0.2),
+                      color: (e.spendItemName == spendItem[itemPos])
+                          ? Colors.yellowAccent.withOpacity(0.2)
+                          : Colors.blueGrey.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(e.spendItemName, style: const TextStyle(fontSize: 10)),
+                    child: Text(e.spendItemName,
+                        style: const TextStyle(fontSize: 10)),
                   ),
                 );
               }).toList()
@@ -427,8 +491,11 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     );
 
     if (selectedTime != null) {
-      final time = '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
-      await ref.read(spendTimePlaceProvider.notifier).setTime(pos: pos, time: time);
+      final time =
+          '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
+      await ref
+          .read(spendTimePlaceProvider.notifier)
+          .setTime(pos: pos, time: time);
     }
   }
 
@@ -461,7 +528,9 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
           spendTimePlaceState.spendTime[i].trim() != '時間' &&
           spendTimePlaceState.spendPlace[i].trim() != '' &&
           spendTimePlaceState.spendPrice[i].toString().trim() != 0) {
-        final price = (spendTimePlaceState.minusCheck[i]) ? spendTimePlaceState.spendPrice[i] * -1 : spendTimePlaceState.spendPrice[i];
+        final price = (spendTimePlaceState.minusCheck[i])
+            ? spendTimePlaceState.spendPrice[i] * -1
+            : spendTimePlaceState.spendPrice[i];
 
         list.add(
           SpendTimePlace()
@@ -516,7 +585,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
           [element.price.toString().trim(), 10],
           [element.place.trim(), 30]
         ].forEach((element2) {
-          if (checkInputValueLengthCheck(value: element2[0].toString().trim(), length: element2[1] as int) == false) {
+          if (checkInputValueLengthCheck(
+                  value: element2[0].toString().trim(),
+                  length: element2[1] as int) ==
+              false) {
             errFlg = true;
           }
         });
@@ -528,19 +600,28 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     if (diff != 0 || errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
-      await ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+      await ref
+          .read(appParamProvider.notifier)
+          .setInputButtonClicked(flag: false);
 
       return;
     }
 
     await SpendTimePlacesRepository()
-        .deleteSpendTimePriceList(isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList)
+        .deleteSpendTimePriceList(
+            isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList)
         .then((value) async {
-      await SpendTimePlacesRepository().inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list).then((value2) async {
-        await ref.read(spendTimePlaceProvider.notifier).clearInputValue().then((value3) async {
+      await SpendTimePlacesRepository()
+          .inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list)
+          .then((value2) async {
+        await ref
+            .read(spendTimePlaceProvider.notifier)
+            .clearInputValue()
+            .then((value3) async {
           Navigator.pop(context);
           Navigator.pop(context);
         });
@@ -550,7 +631,9 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
   ///
   Future<void> _makeSpendItemList() async {
-    await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+    await SpendItemsRepository()
+        .getSpendItemList(isar: widget.isar)
+        .then((value) {
       _spendItemList = value;
 
       if (value!.isNotEmpty) {
