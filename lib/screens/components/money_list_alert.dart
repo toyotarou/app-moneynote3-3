@@ -43,8 +43,6 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
 
   Map<String, String> _holidayMap = {};
 
-  final int _midashiDivide = 35;
-
   ///
   @override
   void initState() {
@@ -77,9 +75,12 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
                 children: [const Text('月間金額推移'), Text(widget.date.yyyymm)],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              if (widget.moneyList!.isNotEmpty) ...[Expanded(child: _dispDateMoneyList())],
+              if (widget.moneyList!.isNotEmpty) ...[
+                Expanded(child: _dispDateMoneyList())
+              ],
               if (widget.moneyList!.isEmpty) ...[
-                const Text('no data', style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
+                const Text('no data',
+                    style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
               ],
             ],
           ),
@@ -126,38 +127,76 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     ];
     //---------------------// 見出し行
 
-    _dateMoneyMap.forEach((key, value) {
-      final genDate = DateTime.parse('$key 00:00:00');
+    final list2 = <Widget>[];
 
-      if (widget.date.yyyymm == genDate.yyyymm) {
-        list.add(DecoratedBox(
-          decoration: BoxDecoration(
-            color: _utility.getYoubiColor(date: genDate.yyyymmdd, youbiStr: genDate.youbiStr, holidayMap: _holidayMap),
-          ),
-          child: Row(
+    _dateMoneyMap
+      ..forEach((key, value) {
+        final genDate = DateTime.parse('$key 00:00:00');
+
+        if (widget.date.yyyymm == genDate.yyyymm) {
+          list.add(DecoratedBox(
+            decoration: BoxDecoration(
+              color: _utility.getYoubiColor(
+                  date: genDate.yyyymmdd,
+                  youbiStr: genDate.youbiStr,
+                  holidayMap: _holidayMap),
+            ),
+            child: Row(
+              children: [
+                const SizedBox(height: 20, width: 100),
+                const SizedBox(width: 10),
+                _displayCurrencyList(value: value),
+                const SizedBox(width: 10),
+                _displayBankList(date: genDate),
+                const SizedBox(width: 10),
+                _displayEmoneyList(date: genDate),
+              ],
+            ),
+          ));
+        }
+      })
+      ..forEach((key, value) {
+        final genDate = DateTime.parse('$key 00:00:00');
+
+        if (widget.date.yyyymm == genDate.yyyymm) {
+          list2.add(DecoratedBox(
+            decoration: BoxDecoration(
+              color: _utility.getYoubiColor(
+                  date: genDate.yyyymmdd,
+                  youbiStr: genDate.youbiStr,
+                  holidayMap: _holidayMap),
+            ),
+            child: Row(
+              children: [
+                _displayDate(date: genDate),
+              ],
+            ),
+          ));
+        }
+      });
+
+    return Stack(
+      children: [
+        DefaultTextStyle(
+          style: const TextStyle(fontSize: 10),
+          child: Column(
             children: [
-              _displayDate(date: genDate),
-              const SizedBox(width: 10),
-              _displayCurrencyList(value: value),
-              const SizedBox(width: 10),
-              _displayBankList(date: genDate),
-              const SizedBox(width: 10),
-              _displayEmoneyList(date: genDate),
+              const SizedBox(height: 36),
+              Column(children: list2),
             ],
           ),
-        ));
-      }
-    });
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DefaultTextStyle(
-        style: const TextStyle(fontSize: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: list,
         ),
-      ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DefaultTextStyle(
+            style: const TextStyle(fontSize: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: list,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -176,7 +215,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
   Widget _displayCurrencyMidashi() {
     const width = 70;
     final color = Colors.yellowAccent.withOpacity(0.1);
-    final minHeight = context.screenSize.height / _midashiDivide;
+    const minHeight = 30.0;
 
     return Row(
       children: [
@@ -269,6 +308,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     return MoneyListDisplayCell(
       widget: Text('${date.yyyymmdd}（${date.youbiStr.substring(0, 3)}）'),
       width: 100,
+      minHeight: 15,
       color: Colors.transparent,
       borderColor: Colors.white.withOpacity(0.2),
       alignment: Alignment.topLeft,
@@ -280,11 +320,14 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     const width = 70;
     const color = Colors.transparent;
 
+    const minHeight = 15.0;
+
     return Row(
       children: [
         MoneyListDisplayCell(
           widget: Text(value.yen_10000.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -292,6 +335,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_5000.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -299,6 +343,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_2000.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -306,6 +351,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_1000.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -313,6 +359,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_500.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -320,6 +367,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_100.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -327,6 +375,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_50.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -334,6 +383,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_10.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -341,6 +391,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_5.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -348,6 +399,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         MoneyListDisplayCell(
           widget: Text(value.yen_1.toString().toCurrency()),
           width: width.toDouble(),
+          minHeight: minHeight,
           color: color,
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.topRight,
@@ -363,7 +415,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         return MoneyListDisplayCell(
           widget: Column(children: [Text(e.bankName), Text(e.branchName)]),
           width: 100,
-          minHeight: context.screenSize.height / _midashiDivide,
+          minHeight: 30,
           color: Colors.yellowAccent.withOpacity(0.1),
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.center,
@@ -374,15 +426,19 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
 
   ///
   Widget _displayBankList({required DateTime date}) {
+    const minHeight = 15.0;
+
     return (widget.bankNameList!.isNotEmpty)
         ? Row(
             children: widget.bankNameList!.map((e) {
-              final bankPricePadData = widget.bankPricePadMap['${e.depositType}-${e.id}'];
+              final bankPricePadData =
+                  widget.bankPricePadMap['${e.depositType}-${e.id}'];
 
               if (bankPricePadData == null) {
                 return MoneyListDisplayCell(
                   widget: const Text('0'),
                   width: 100,
+                  minHeight: minHeight,
                   color: Colors.transparent,
                   borderColor: Colors.white.withOpacity(0.2),
                   alignment: Alignment.topRight,
@@ -390,8 +446,11 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
               }
 
               return MoneyListDisplayCell(
-                widget: Text((bankPricePadData[date.yyyymmdd] != null) ? bankPricePadData[date.yyyymmdd].toString().toCurrency() : 0.toString()),
+                widget: Text((bankPricePadData[date.yyyymmdd] != null)
+                    ? bankPricePadData[date.yyyymmdd].toString().toCurrency()
+                    : 0.toString()),
                 width: 100,
+                minHeight: minHeight,
                 color: Colors.transparent,
                 borderColor: Colors.white.withOpacity(0.2),
                 alignment: Alignment.topRight,
@@ -408,7 +467,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         return MoneyListDisplayCell(
           widget: Text(e.emoneyName),
           width: 100,
-          minHeight: context.screenSize.height / _midashiDivide,
+          minHeight: 30,
           color: Colors.yellowAccent.withOpacity(0.1),
           borderColor: Colors.white.withOpacity(0.2),
           alignment: Alignment.center,
@@ -419,15 +478,19 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
 
   ///
   Widget _displayEmoneyList({required DateTime date}) {
+    const minHeight = 15.0;
+
     return (widget.emoneyNameList!.isNotEmpty)
         ? Row(
             children: widget.emoneyNameList!.map((e) {
-              final bankPricePadData = widget.bankPricePadMap['${e.depositType}-${e.id}'];
+              final bankPricePadData =
+                  widget.bankPricePadMap['${e.depositType}-${e.id}'];
 
               if (bankPricePadData == null) {
                 return MoneyListDisplayCell(
                   widget: const Text('0'),
                   width: 100,
+                  minHeight: minHeight,
                   color: Colors.transparent,
                   borderColor: Colors.white.withOpacity(0.2),
                   alignment: Alignment.topRight,
@@ -435,8 +498,11 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
               }
 
               return MoneyListDisplayCell(
-                widget: Text((bankPricePadData[date.yyyymmdd] != null) ? bankPricePadData[date.yyyymmdd].toString().toCurrency() : 0.toString()),
+                widget: Text((bankPricePadData[date.yyyymmdd] != null)
+                    ? bankPricePadData[date.yyyymmdd].toString().toCurrency()
+                    : 0.toString()),
                 width: 100,
+                minHeight: minHeight,
                 color: Colors.transparent,
                 borderColor: Colors.white.withOpacity(0.2),
                 alignment: Alignment.topRight,

@@ -309,10 +309,10 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         ///
         lineBarsData: [
           LineChartBarData(
-              spots: _flspots,
-              barWidth: 5,
-              isStrokeCapRound: true,
-              color: Colors.yellowAccent),
+            spots: _flspots,
+            color: Colors.yellowAccent,
+            dotData: const FlDotData(show: false),
+          ),
         ],
       );
 

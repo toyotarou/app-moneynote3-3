@@ -527,7 +527,7 @@ class _SpendTimePlaceInputAlertState
       if (spendTimePlaceState.spendItem[i].trim() != '項目名' &&
           spendTimePlaceState.spendTime[i].trim() != '時間' &&
           spendTimePlaceState.spendPlace[i].trim() != '' &&
-          spendTimePlaceState.spendPrice[i].toString().trim() != 0) {
+          spendTimePlaceState.spendPrice[i].toString().trim() != '') {
         final price = (spendTimePlaceState.minusCheck[i])
             ? spendTimePlaceState.spendPrice[i] * -1
             : spendTimePlaceState.spendPrice[i];
