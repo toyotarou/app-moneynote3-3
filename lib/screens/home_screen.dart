@@ -4,46 +4,45 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-
-import '../collections/bank_name.dart';
-import '../collections/bank_price.dart';
-import '../collections/emoney_name.dart';
-import '../collections/income.dart';
-import '../collections/money.dart';
-import '../collections/spend_item.dart';
-import '../collections/spend_time_place.dart';
-import '../extensions/extensions.dart';
-import '../repository/bank_names_repository.dart';
-import '../repository/bank_prices_repository.dart';
-import '../repository/emoney_names_repository.dart';
-import '../repository/incomes_repository.dart';
-import '../repository/moneys_repository.dart';
-import '../repository/spend_items_repository.dart';
-import '../repository/spend_time_places_repository.dart';
-import '../state/app_params/app_params_notifier.dart';
-import '../state/calendars/calendars_notifier.dart';
-import '../state/holidays/holidays_notifier.dart';
-import '../utilities/functions.dart';
-import '../utilities/utilities.dart';
-import 'components/___dummy_data_input_alert.dart';
-import 'components/bank_price_adjust_alert.dart';
-import 'components/daily_money_display_alert.dart';
-import 'components/deposit_tab_alert.dart';
-import 'components/download_data_list_alert.dart';
-import 'components/income_input_alert.dart';
-import 'components/money_graph_alert.dart';
-import 'components/money_list_alert.dart';
-import 'components/money_score_list_alert.dart';
-import 'components/parts/back_ground_image.dart';
-import 'components/parts/custom_shape_clipper.dart';
-import 'components/parts/menu_head_icon.dart';
-import 'components/parts/money_dialog.dart';
-import 'components/same_day_spend_price_list_alert.dart';
-import 'components/spend_item_history_alert.dart';
-import 'components/spend_item_input_alert.dart';
-import 'components/spend_item_re_input_alert.dart';
-import 'components/spend_monthly_list_alert.dart';
-import 'components/spend_yearly_block_alert.dart';
+import 'package:money_note/collections/bank_name.dart';
+import 'package:money_note/collections/bank_price.dart';
+import 'package:money_note/collections/emoney_name.dart';
+import 'package:money_note/collections/income.dart';
+import 'package:money_note/collections/money.dart';
+import 'package:money_note/collections/spend_item.dart';
+import 'package:money_note/collections/spend_time_place.dart';
+import 'package:money_note/extensions/extensions.dart';
+import 'package:money_note/repository/bank_names_repository.dart';
+import 'package:money_note/repository/bank_prices_repository.dart';
+import 'package:money_note/repository/emoney_names_repository.dart';
+import 'package:money_note/repository/incomes_repository.dart';
+import 'package:money_note/repository/moneys_repository.dart';
+import 'package:money_note/repository/spend_items_repository.dart';
+import 'package:money_note/repository/spend_time_places_repository.dart';
+import 'package:money_note/screens/components/___dummy_data_input_alert.dart';
+import 'package:money_note/screens/components/bank_price_adjust_alert.dart';
+import 'package:money_note/screens/components/daily_money_display_alert.dart';
+import 'package:money_note/screens/components/deposit_tab_alert.dart';
+import 'package:money_note/screens/components/download_data_list_alert.dart';
+import 'package:money_note/screens/components/income_input_alert.dart';
+import 'package:money_note/screens/components/money_graph_alert.dart';
+import 'package:money_note/screens/components/money_list_alert.dart';
+import 'package:money_note/screens/components/money_score_list_alert.dart';
+import 'package:money_note/screens/components/parts/back_ground_image.dart';
+import 'package:money_note/screens/components/parts/custom_shape_clipper.dart';
+import 'package:money_note/screens/components/parts/menu_head_icon.dart';
+import 'package:money_note/screens/components/parts/money_dialog.dart';
+import 'package:money_note/screens/components/same_day_spend_price_list_alert.dart';
+import 'package:money_note/screens/components/spend_item_history_alert.dart';
+import 'package:money_note/screens/components/spend_item_input_alert.dart';
+import 'package:money_note/screens/components/spend_item_re_input_alert.dart';
+import 'package:money_note/screens/components/spend_monthly_list_alert.dart';
+import 'package:money_note/screens/components/spend_yearly_block_alert.dart';
+import 'package:money_note/state/app_params/app_params_notifier.dart';
+import 'package:money_note/state/calendars/calendars_notifier.dart';
+import 'package:money_note/state/holidays/holidays_notifier.dart';
+import 'package:money_note/utilities/functions.dart';
+import 'package:money_note/utilities/utilities.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends ConsumerStatefulWidget {
@@ -58,7 +57,15 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   DateTime _calendarMonthFirst = DateTime.now();
-  final List<String> _youbiList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  final List<String> _youbiList = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+  ];
   List<String> _calendarDays = [];
 
   Map<String, String> _holidayMap = {};
@@ -120,7 +127,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Future(_init);
 
     if (widget.baseYm != null) {
-      Future(() => ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm));
+      Future(() => ref
+          .read(calendarProvider.notifier)
+          .setCalendarYearMonth(baseYm: widget.baseYm));
     }
 
     final calendarState = ref.watch(calendarProvider);
@@ -136,14 +145,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(width: 10),
             IconButton(
               onPressed: _goPrevMonth,
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white.withOpacity(0.8), size: 14),
+              icon: Icon(Icons.arrow_back_ios,
+                  color: Colors.white.withOpacity(0.8), size: 14),
             ),
             IconButton(
-              onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? null : _goNextMonth,
+              onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth)
+                  ? null
+                  : _goNextMonth,
               icon: Icon(
                 Icons.arrow_forward_ios,
-                color:
-                    (DateTime.now().yyyymm == calendarState.baseYearMonth) ? Colors.grey.withOpacity(0.6) : Colors.white.withOpacity(0.8),
+                color: (DateTime.now().yyyymm == calendarState.baseYearMonth)
+                    ? Colors.grey.withOpacity(0.6)
+                    : Colors.white.withOpacity(0.8),
                 size: 14,
               ),
             ),
@@ -154,7 +167,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-            icon: Icon(Icons.settings, color: Colors.white.withOpacity(0.6), size: 20),
+            icon: Icon(Icons.settings,
+                color: Colors.white.withOpacity(0.6), size: 20),
           )
         ],
       ),
@@ -168,7 +182,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               width: context.screenSize.width * 0.9,
               margin: const EdgeInsets.only(top: 5, left: 6),
               color: const Color(0xFFFBB6CE).withOpacity(0.6),
-              child: Text('■', style: TextStyle(color: Colors.white.withOpacity(0.1))),
+              child: Text('■',
+                  style: TextStyle(color: Colors.white.withOpacity(0.1))),
             ),
           ),
           Container(
@@ -181,7 +196,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 _displayKurikoshiPrice(),
                 ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: context.screenSize.height * 0.45),
+                  constraints: BoxConstraints(
+                      minHeight: context.screenSize.height * 0.45),
                   child: _getCalendar(),
                 ),
                 _displayMonthSum(),
@@ -201,7 +217,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     var minusVal = 0;
 
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
-      makeMonthlySpendItemSumMap(spendTimePlaceList: thisMonthSpendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
+      makeMonthlySpendItemSumMap(
+              spendTimePlaceList: thisMonthSpendTimePlaceList!,
+              spendItemList: _spendItemList)
+          .forEach((key, value) {
         if (value > 0) {
           plusVal += value;
         }
@@ -227,13 +246,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       context: context,
                       widget: SpendMonthlyListAlert(
                         isar: widget.isar,
-                        date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                        date: (widget.baseYm != null)
+                            ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                            : DateTime.now(),
                       ),
                     );
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_month_rounded, color: Colors.white.withOpacity(0.8)),
+                      Icon(Icons.calendar_month_rounded,
+                          color: Colors.white.withOpacity(0.8)),
                       const Text('日別'),
                     ],
                   ),
@@ -244,14 +266,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     MoneyDialog(
                       context: context,
                       widget: SpendYearlyBlockAlert(
-                        date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                        date: (widget.baseYm != null)
+                            ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                            : DateTime.now(),
                         isar: widget.isar,
                       ),
                     );
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_month_rounded, color: Colors.white.withOpacity(0.8)),
+                      Icon(Icons.calendar_month_rounded,
+                          color: Colors.white.withOpacity(0.8)),
                       const Text('年間'),
                     ],
                   ),
@@ -261,11 +286,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             RichText(
               text: TextSpan(
                 text: plusVal.toString().toCurrency(),
-                style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                style:
+                    const TextStyle(color: Colors.yellowAccent, fontSize: 12),
                 children: <TextSpan>[
-                  const TextSpan(text: ' + ', style: TextStyle(color: Colors.white)),
-                  TextSpan(text: minusVal.toString().toCurrency(), style: const TextStyle(color: Colors.greenAccent)),
-                  const TextSpan(text: ' = ', style: TextStyle(color: Colors.white)),
+                  const TextSpan(
+                      text: ' + ', style: TextStyle(color: Colors.white)),
+                  TextSpan(
+                      text: minusVal.toString().toCurrency(),
+                      style: const TextStyle(color: Colors.greenAccent)),
+                  const TextSpan(
+                      text: ' = ', style: TextStyle(color: Colors.white)),
                   TextSpan(
                     text: (plusVal + minusVal).toString().toCurrency(),
                     style: const TextStyle(color: Colors.orangeAccent),
@@ -283,21 +313,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _displayKurikoshiPrice() {
     //=================================
 
-    final exYm = (widget.baseYm != null) ? widget.baseYm!.split('-') : DateTime.now().yyyymm.split('-');
+    final exYm = (widget.baseYm != null)
+        ? widget.baseYm!.split('-')
+        : DateTime.now().yyyymm.split('-');
 
-    final lastMonthLastDate = DateTime(exYm[0].toInt(), exYm[1].toInt(), 0).yyyymmdd;
+    final lastMonthLastDate =
+        DateTime(exYm[0].toInt(), exYm[1].toInt(), 0).yyyymmdd;
 
-    final kurikoshiMoney = (moneyMap[lastMonthLastDate] != null) ? _utility.makeCurrencySum(money: moneyMap[lastMonthLastDate]) : 0;
+    final kurikoshiMoney = (moneyMap[lastMonthLastDate] != null)
+        ? _utility.makeCurrencySum(money: moneyMap[lastMonthLastDate])
+        : 0;
 
-    final bankPriceTotal = (bankPriceTotalPadMap[lastMonthLastDate] != null) ? bankPriceTotalPadMap[lastMonthLastDate]! : 0;
+    final bankPriceTotal = (bankPriceTotalPadMap[lastMonthLastDate] != null)
+        ? bankPriceTotalPadMap[lastMonthLastDate]!
+        : 0;
 
-    final kurikoshi = (kurikoshiMoney != 0 && bankPriceTotal != 0) ? (kurikoshiMoney + bankPriceTotal) : 0;
+    final kurikoshi = (kurikoshiMoney != 0 && bankPriceTotal != 0)
+        ? (kurikoshiMoney + bankPriceTotal)
+        : 0;
 
     //=================================
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
+        boxShadow: [
+          BoxShadow(
+              blurRadius: 24,
+              spreadRadius: 16,
+              color: Colors.black.withOpacity(0.2))
+        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -309,7 +353,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border:
+                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -325,8 +370,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const Text('繰越'),
                           const SizedBox(height: 5),
                           Container(
-                            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                            decoration: BoxDecoration(color: Colors.yellowAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.yellowAccent.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(10)),
                             child: Text(kurikoshi.toString().toCurrency()),
                           ),
                           const SizedBox(height: 5),
@@ -341,10 +389,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       onTap: () {
                         MoneyDialog(
                           context: context,
-                          widget: SameDaySpendPriceListAlert(isar: widget.isar, spendTimePlaceList: allSpendTimePlaceList ?? []),
+                          widget: SameDaySpendPriceListAlert(
+                              isar: widget.isar,
+                              spendTimePlaceList: allSpendTimePlaceList ?? []),
                         );
                       },
-                      child: Icon(FontAwesomeIcons.diamond, color: Colors.white.withOpacity(0.6), size: 16),
+                      child: Icon(FontAwesomeIcons.diamond,
+                          color: Colors.white.withOpacity(0.6), size: 16),
                     ),
                     const SizedBox(width: 20),
                     GestureDetector(
@@ -360,7 +411,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         MoneyDialog(
                           context: context,
                           widget: MoneyGraphAlert(
-                            date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                            date: (widget.baseYm != null)
+                                ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                                : DateTime.now(),
                             isar: widget.isar,
                             monthlyDateSumMap: dateCurrencySumMap,
                             bankPriceTotalPadMap: bankPriceTotalPadMap,
@@ -368,7 +421,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         );
                       },
-                      child: Icon(Icons.show_chart, color: Colors.white.withOpacity(0.8)),
+                      child: Icon(Icons.show_chart,
+                          color: Colors.white.withOpacity(0.8)),
                     ),
                     const SizedBox(width: 20),
                     GestureDetector(
@@ -376,14 +430,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         context: context,
                         widget: MoneyListAlert(
                           isar: widget.isar,
-                          date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          date: (widget.baseYm != null)
+                              ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                              : DateTime.now(),
                           moneyList: moneyList,
                           bankNameList: bankNameList,
                           emoneyNameList: emoneyNameList,
                           bankPricePadMap: bankPricePadMap,
                         ),
                       ),
-                      child: Icon(Icons.list, color: Colors.white.withOpacity(0.8)),
+                      child: Icon(Icons.list,
+                          color: Colors.white.withOpacity(0.8)),
                     ),
                     const SizedBox(width: 10),
                   ],
@@ -411,24 +468,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 60),
               if (!isRelease)
                 GestureDetector(
-                  onTap: () => MoneyDialog(context: context, widget: DummyDataInputAlert(isar: widget.isar)),
+                  onTap: () => MoneyDialog(
+                      context: context,
+                      widget: DummyDataInputAlert(isar: widget.isar)),
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                     margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.4))),
+                    decoration: BoxDecoration(
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.4))),
                     child: const Text('dummy data'),
                   ),
                 ),
               GestureDetector(
-                onTap: () => MoneyDialog(context: context, widget: DepositTabAlert(isar: widget.isar)),
+                onTap: () => MoneyDialog(
+                    context: context,
+                    widget: DepositTabAlert(isar: widget.isar)),
                 child: Row(
                   children: [
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('金融機関、電子マネー名称登録'),
                       ),
@@ -438,11 +503,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+                  ref
+                      .read(appParamProvider.notifier)
+                      .setInputButtonClicked(flag: false);
 
                   MoneyDialog(
                     context: context,
-                    widget: BankPriceAdjustAlert(isar: widget.isar, bankNameList: bankNameList, emoneyNameList: emoneyNameList),
+                    widget: BankPriceAdjustAlert(
+                        isar: widget.isar,
+                        bankNameList: bankNameList,
+                        emoneyNameList: emoneyNameList),
                   );
                 },
                 child: Row(
@@ -451,7 +521,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('金融機関、電子マネー金額修正'),
                       ),
@@ -461,13 +532,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () async {
-                  await ref.read(appParamProvider.notifier).setSelectedIncomeYear(year: '');
+                  await ref
+                      .read(appParamProvider.notifier)
+                      .setSelectedIncomeYear(year: '');
 
                   if (mounted) {
                     await MoneyDialog(
                       context: context,
                       widget: IncomeInputAlert(
-                        date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                        date: (widget.baseYm != null)
+                            ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                            : DateTime.now(),
                         isar: widget.isar,
                       ),
                     );
@@ -479,7 +554,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('収入管理'),
                       ),
@@ -504,7 +580,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('消費アイテム管理'),
                       ),
@@ -515,13 +592,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               if (spendTypeBlankSpendTimePlaceList.isNotEmpty) ...[
                 GestureDetector(
                   onTap: () async {
-                    await ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false).then((value) {
+                    await ref
+                        .read(appParamProvider.notifier)
+                        .setInputButtonClicked(flag: false)
+                        .then((value) {
                       MoneyDialog(
                         context: context,
                         widget: SpendItemReInputAlert(
                           isar: widget.isar,
                           spendItemList: _spendItemList ?? [],
-                          spendTypeBlankSpendTimePlaceList: spendTypeBlankSpendTimePlaceList,
+                          spendTypeBlankSpendTimePlaceList:
+                              spendTypeBlankSpendTimePlaceList,
                         ),
                       );
                     });
@@ -532,7 +613,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Expanded(
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 3),
                           margin: const EdgeInsets.all(5),
                           child: const Text('消費アイテム再設定'),
                         ),
@@ -557,7 +639,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('収支一覧'),
                       ),
@@ -587,7 +670,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('データダウンロード'),
                       ),
@@ -603,7 +687,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     context: context,
                     applicationIcon: const FlutterLogo(),
                     applicationName: 'Money Note',
-                    applicationLegalese: '\u{a9} ${DateTime.now().year} toyohide',
+                    applicationLegalese:
+                        '\u{a9} ${DateTime.now().year} toyohide',
                     applicationVersion: '1.0',
                   );
                 },
@@ -613,7 +698,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Expanded(
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('ライセンス表示'),
                       ),
@@ -640,9 +726,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final calendarState = ref.watch(calendarProvider);
 
-    _calendarMonthFirst = DateTime.parse('${calendarState.baseYearMonth}-01 00:00:00');
+    _calendarMonthFirst =
+        DateTime.parse('${calendarState.baseYearMonth}-01 00:00:00');
 
-    final monthEnd = DateTime.parse('${calendarState.nextYearMonth}-00 00:00:00');
+    final monthEnd =
+        DateTime.parse('${calendarState.nextYearMonth}-00 00:00:00');
 
     final diff = monthEnd.difference(_calendarMonthFirst).inDays;
     final monthDaysNum = diff + 1;
@@ -669,7 +757,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       list.add(_getCalendarRow(week: i));
     }
 
-    return DefaultTextStyle(style: const TextStyle(fontSize: 10), child: Column(children: list));
+    return DefaultTextStyle(
+        style: const TextStyle(fontSize: 10), child: Column(children: list));
   }
 
   ///
@@ -677,11 +766,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final list = <Widget>[];
 
     for (var i = week * 7; i < ((week + 1) * 7); i++) {
-      final generateYmd =
-          (_calendarDays[i] == '') ? '' : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).yyyymmdd;
+      final generateYmd = (_calendarDays[i] == '')
+          ? ''
+          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
+                  _calendarDays[i].toInt())
+              .yyyymmdd;
 
-      final youbiStr =
-          (_calendarDays[i] == '') ? '' : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt()).youbiStr;
+      final youbiStr = (_calendarDays[i] == '')
+          ? ''
+          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
+                  _calendarDays[i].toInt())
+              .youbiStr;
 
       var dateDiff = 0;
       var dateSum = 0;
@@ -689,8 +784,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final genDate = DateTime.parse('$generateYmd 00:00:00');
         dateDiff = genDate.difference(DateTime.now()).inSeconds;
 
-        if (dateCurrencySumMap[generateYmd] != null && bankPriceTotalPadMap[generateYmd] != null) {
-          dateSum = dateCurrencySumMap[generateYmd]! + bankPriceTotalPadMap[generateYmd]!;
+        if (dateCurrencySumMap[generateYmd] != null &&
+            bankPriceTotalPadMap[generateYmd] != null) {
+          dateSum = dateCurrencySumMap[generateYmd]! +
+              bankPriceTotalPadMap[generateYmd]!;
         }
       }
 
@@ -698,11 +795,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       var zenjitsuSum = 0;
       final zenjitsu = (_calendarDays[i] == '')
           ? ''
-          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month, _calendarDays[i].toInt() - 1).yyyymmdd;
+          : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
+                  _calendarDays[i].toInt() - 1)
+              .yyyymmdd;
 
       if (zenjitsu != '') {
-        if (dateCurrencySumMap[zenjitsu] != null && bankPriceTotalPadMap[zenjitsu] != null) {
-          zenjitsuSum = dateCurrencySumMap[zenjitsu]! + bankPriceTotalPadMap[zenjitsu]!;
+        if (dateCurrencySumMap[zenjitsu] != null &&
+            bankPriceTotalPadMap[zenjitsu] != null) {
+          zenjitsuSum =
+              dateCurrencySumMap[zenjitsu]! + bankPriceTotalPadMap[zenjitsu]!;
         }
       }
 
@@ -712,7 +813,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       var inputedFlag = false;
 
-      if ((monthlySpendTimePlaceSumMap[generateYmd] != null && (zenjitsuSum - dateSum) == monthlySpendTimePlaceSumMap[generateYmd]) ||
+      if ((monthlySpendTimePlaceSumMap[generateYmd] != null &&
+              (zenjitsuSum - dateSum) ==
+                  monthlySpendTimePlaceSumMap[generateYmd]) ||
           (zenjitsuSum - dateSum) == 0) {
         inputedFlag = true;
       }
@@ -735,8 +838,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         bankNameList: bankNameList ?? [],
                         emoneyNameList: emoneyNameList ?? [],
                         spendItemList: _spendItemList ?? [],
-                        thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? [],
-                        prevMonthSpendTimePlaceList: prevMonthSpendTimePlaceList ?? [],
+                        thisMonthSpendTimePlaceList:
+                            thisMonthSpendTimePlaceList ?? [],
+                        prevMonthSpendTimePlaceList:
+                            prevMonthSpendTimePlaceList ?? [],
                       ),
                     ),
             child: Container(
@@ -755,7 +860,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ? Colors.transparent
                     : (dateDiff > 0)
                         ? Colors.white.withOpacity(0.1)
-                        : _utility.getYoubiColor(date: generateYmd, youbiStr: youbiStr, holidayMap: _holidayMap),
+                        : _utility.getYoubiColor(
+                            date: generateYmd,
+                            youbiStr: youbiStr,
+                            holidayMap: _holidayMap),
               ),
               child: (_calendarDays[i] == '')
                   ? const Text('')
@@ -774,8 +882,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         width: 10,
                                         height: 10,
                                         decoration: BoxDecoration(
-                                          color: inputedFlag ? Colors.yellowAccent.withOpacity(0.3) : Colors.black.withOpacity(0.3),
-                                          borderRadius: BorderRadius.circular(10),
+                                          color: inputedFlag
+                                              ? Colors.yellowAccent
+                                                  .withOpacity(0.3)
+                                              : Colors.black.withOpacity(0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
                                       ),
                                     ],
@@ -784,21 +896,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                         const SizedBox(height: 5),
                         ConstrainedBox(
-                          constraints: BoxConstraints(minHeight: context.screenSize.height / 25),
+                          constraints: BoxConstraints(
+                              minHeight: context.screenSize.height / 25),
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(),
-                                  (dateDiff > 0 || dateSum == 0) ? Container() : Text((zenjitsuSum - dateSum).toString().toCurrency()),
+                                  (dateDiff > 0 || dateSum == 0)
+                                      ? Container()
+                                      : Text((zenjitsuSum - dateSum)
+                                          .toString()
+                                          .toCurrency()),
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(),
-                                  (dateDiff > 0 || dateSum == 0) ? Container() : Text(dateSum.toString().toCurrency()),
+                                  (dateDiff > 0 || dateSum == 0)
+                                      ? Container()
+                                      : Text(dateSum.toString().toCurrency()),
                                 ],
                               ),
                             ],
@@ -830,7 +951,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           if (value!.isNotEmpty) {
             value
-              ..forEach((element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element))
+              ..forEach((element) => dateCurrencySumMap[element.date] =
+                  _utility.makeCurrencySum(money: element))
               ..forEach((element) => moneyMap[element.date] = element)
               ..forEach((element) {
                 final exDate = element.date.split('-');
@@ -848,7 +970,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeBankPriceList() async {
-    await BankPricesRepository().getBankPriceList(isar: widget.isar).then((value) {
+    await BankPricesRepository()
+        .getBankPriceList(isar: widget.isar)
+        .then((value) {
       if (mounted) {
         setState(() {
           bankPriceList = value;
@@ -867,19 +991,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _makeSpendTimePlaceList() async {
     spendTypeBlankSpendTimePlaceList = [];
 
-    await SpendTimePlacesRepository().getSpendTimePlaceList(isar: widget.isar).then((value) {
+    await SpendTimePlacesRepository()
+        .getSpendTimePlaceList(isar: widget.isar)
+        .then((value) {
       if (mounted) {
         setState(() {
           allSpendTimePlaceList = value;
 
           if (value!.isNotEmpty) {
-            final yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
+            final yearmonth =
+                (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
 
-            final prevYearMonth = DateTime(yearmonth!.split('-')[0].toInt(), yearmonth.split('-')[1].toInt() - 1).yyyymm;
+            final prevYearMonth = DateTime(yearmonth!.split('-')[0].toInt(),
+                    yearmonth.split('-')[1].toInt() - 1)
+                .yyyymm;
 
             if (_spendItemList != null) {
               final map = <String, List<SpendTimePlace>>{};
-              _spendItemList!.forEach((element) => map[element.spendItemName] = []);
+              _spendItemList!
+                  .forEach((element) => map[element.spendItemName] = []);
               value.forEach((element) => map[element.spendType]?.add(element));
               spendTimePlaceCountMap = map;
             }
@@ -937,15 +1067,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
       final spendItemColorMap = <String, String>{};
       if (_spendItemList!.isNotEmpty) {
-        _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
+        _spendItemList!.forEach((element) =>
+            spendItemColorMap[element.spendItemName] = element.color);
       }
 
-      makeMonthlySpendItemSumMap(spendTimePlaceList: thisMonthSpendTimePlaceList!, spendItemList: _spendItemList).forEach((key, value) {
-        final lineColor = (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
+      makeMonthlySpendItemSumMap(
+              spendTimePlaceList: thisMonthSpendTimePlaceList!,
+              spendItemList: _spendItemList)
+          .forEach((key, value) {
+        final lineColor =
+            (spendItemColorMap[key] != null && spendItemColorMap[key] != '')
+                ? spendItemColorMap[key]
+                : '0xffffffff';
 
         list.add(Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: DefaultTextStyle(
             style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
             child: Row(
@@ -960,14 +1099,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       onTap: () => MoneyDialog(
                         context: context,
                         widget: SpendItemHistoryAlert(
-                          date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          date: (widget.baseYm != null)
+                              ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                              : DateTime.now(),
                           isar: widget.isar,
                           item: key,
                           sum: value,
                           from: 'home_screen',
                         ),
                       ),
-                      child: Icon(Icons.info_outline_rounded, color: Colors.greenAccent.withOpacity(0.6)),
+                      child: Icon(Icons.info_outline_rounded,
+                          color: Colors.greenAccent.withOpacity(0.6)),
                     ),
                   ],
                 ),
@@ -979,7 +1121,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return SingleChildScrollView(
-      child: DefaultTextStyle(style: const TextStyle(fontSize: 10), child: Column(mainAxisSize: MainAxisSize.min, children: list)),
+      child: DefaultTextStyle(
+          style: const TextStyle(fontSize: 10),
+          child: Column(mainAxisSize: MainAxisSize.min, children: list)),
     );
   }
 
@@ -987,14 +1131,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _makeBankNameList() async {
     depoNameList = [];
 
-    await BankNamesRepository().getBankNameList(isar: widget.isar).then((value) {
+    await BankNamesRepository()
+        .getBankNameList(isar: widget.isar)
+        .then((value) {
       if (mounted) {
         setState(() {
           bankNameList = value;
 
           if (value!.isNotEmpty) {
-            value.forEach((element) =>
-                depoNameList.add(Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}')));
+            value.forEach((element) => depoNameList.add(Deposit(
+                '${element.depositType}-${element.id}',
+                '${element.bankName} ${element.branchName}')));
           }
         });
       }
@@ -1005,13 +1152,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeEmoneyNameList() async {
-    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((value) {
+    await EmoneyNamesRepository()
+        .getEmoneyNameList(isar: widget.isar)
+        .then((value) {
       if (mounted) {
         setState(() {
           emoneyNameList = value;
 
           if (value!.isNotEmpty) {
-            value.forEach((element) => depoNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName)));
+            value.forEach((element) => depoNameList.add(Deposit(
+                '${element.depositType}-${element.id}', element.emoneyName)));
           }
         });
       }
@@ -1024,7 +1174,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen(isar: widget.isar, baseYm: calendarState.prevYearMonth)),
+      MaterialPageRoute(
+          builder: (context) => HomeScreen(
+              isar: widget.isar, baseYm: calendarState.prevYearMonth)),
     );
   }
 
@@ -1034,19 +1186,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen(isar: widget.isar, baseYm: calendarState.nextYearMonth)),
+      MaterialPageRoute(
+          builder: (context) => HomeScreen(
+              isar: widget.isar, baseYm: calendarState.nextYearMonth)),
     );
   }
 
   ///
-  Future<void> _makeSpendItemList() async => SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+  Future<void> _makeSpendItemList() async =>
+      SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
         if (mounted) {
           setState(() => _spendItemList = value);
         }
       });
 
   ///
-  Future<void> _makeIncomeList() async => IncomesRepository().getIncomeList(isar: widget.isar).then((value) {
+  Future<void> _makeIncomeList() async =>
+      IncomesRepository().getIncomeList(isar: widget.isar).then((value) {
         if (mounted) {
           setState(() => _incomeList = value);
         }
