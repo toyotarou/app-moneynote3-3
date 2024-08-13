@@ -217,16 +217,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     var minusVal = 0;
 
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
-      makeMonthlySpendItemSumMap(
-              spendTimePlaceList: thisMonthSpendTimePlaceList!,
-              spendItemList: _spendItemList)
-          .forEach((key, value) {
-        if (value > 0) {
-          plusVal += value;
-        }
-
-        if (value < 0) {
-          minusVal += value;
+      thisMonthSpendTimePlaceList!.forEach((element) {
+        if (element.price > 0) {
+          minusVal += element.price;
+        } else {
+          plusVal += element.price;
         }
       });
     }
@@ -285,14 +280,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             RichText(
               text: TextSpan(
-                text: plusVal.toString().toCurrency(),
+                text: minusVal.toString().toCurrency(),
                 style:
                     const TextStyle(color: Colors.yellowAccent, fontSize: 12),
                 children: <TextSpan>[
                   const TextSpan(
                       text: ' + ', style: TextStyle(color: Colors.white)),
                   TextSpan(
-                      text: minusVal.toString().toCurrency(),
+                      text: plusVal.toString().toCurrency(),
                       style: const TextStyle(color: Colors.greenAccent)),
                   const TextSpan(
                       text: ' = ', style: TextStyle(color: Colors.white)),
