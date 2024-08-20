@@ -69,11 +69,13 @@ class _DailyMoneyDisplayAlertState
 
     widget.prevMonthSpendTimePlaceList
         .forEach((element) => monthlySpendTimePlaceMap[element.date] = []);
-    widget.thisMonthSpendTimePlaceList
-        .forEach((element) => monthlySpendTimePlaceMap[element.date] = []);
 
     widget.prevMonthSpendTimePlaceList.forEach(
         (element) => monthlySpendTimePlaceMap[element.date]?.add(element));
+
+    widget.thisMonthSpendTimePlaceList
+        .forEach((element) => monthlySpendTimePlaceMap[element.date] = []);
+
     widget.thisMonthSpendTimePlaceList.forEach(
         (element) => monthlySpendTimePlaceMap[element.date]?.add(element));
   }

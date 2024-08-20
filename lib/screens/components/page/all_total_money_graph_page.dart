@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:money_note/extensions/extensions.dart';
@@ -76,7 +75,7 @@ class _AllTotalMoneyGraphPageState
         });
       });
 
-      var warisuu = 500000;
+      const warisuu = 500000;
       final minValue = list.reduce(min);
       final maxValue = list.reduce(max);
 
