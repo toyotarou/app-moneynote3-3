@@ -20,6 +20,7 @@ import 'package:money_note/repository/moneys_repository.dart';
 import 'package:money_note/repository/spend_items_repository.dart';
 import 'package:money_note/repository/spend_time_places_repository.dart';
 import 'package:money_note/screens/components/___dummy_data_input_alert.dart';
+import 'package:money_note/screens/components/all_total_money_graph_alert.dart';
 import 'package:money_note/screens/components/bank_price_adjust_alert.dart';
 import 'package:money_note/screens/components/daily_money_display_alert.dart';
 import 'package:money_note/screens/components/deposit_tab_alert.dart';
@@ -121,6 +122,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _makeIncomeList();
   }
 
+  bool getAllTotalMoneyMap = false;
+
+  Map<String, int> allTotalMoneyMap = {};
+
   ///
   @override
   Widget build(BuildContext context) {
@@ -165,6 +170,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         centerTitle: false,
         backgroundColor: Colors.transparent,
         actions: [
+          IconButton(
+            onPressed: () {
+              final years = <int>[];
+
+              dateCurrencySumMap.forEach((key, value) {
+                final exKey = key.split('-');
+                if (!years.contains(exKey[0].toInt())) {
+                  years.add(exKey[0].toInt());
+                }
+
+                allTotalMoneyMap[key] =
+                    dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
+              });
+
+              MoneyDialog(
+                context: context,
+                widget: AllTotalMoneyGraphAlert(
+                  allTotalMoneyMap: allTotalMoneyMap,
+                  years: years,
+                ),
+              );
+            },
+            icon: Icon(Icons.stacked_line_chart,
+                color: Colors.white.withOpacity(0.6), size: 20),
+          ),
           IconButton(
             onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
             icon: Icon(Icons.settings,
