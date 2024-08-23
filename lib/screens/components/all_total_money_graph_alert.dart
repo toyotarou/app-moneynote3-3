@@ -72,7 +72,10 @@ class AllTotalMoneyGraphAlert extends HookWidget {
       if (map[element]!.length > 1) {
         _tabs.add(TabInfo(
           element.toString(),
-          AllTotalMoneyGraphPage(data: map[element]),
+          AllTotalMoneyGraphPage(
+            year: element,
+            data: map[element],
+          ),
         ));
       }
     });

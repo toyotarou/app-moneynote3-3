@@ -7,9 +7,10 @@ import 'package:money_note/extensions/extensions.dart';
 import 'package:money_note/utilities/utilities.dart';
 
 class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
-  const AllTotalMoneyGraphPage({super.key, this.data});
+  const AllTotalMoneyGraphPage({super.key, this.data, required this.year});
 
   final List<Map<String, int>>? data;
+  final int year;
 
   @override
   ConsumerState<AllTotalMoneyGraphPage> createState() =>
@@ -93,32 +94,57 @@ class _AllTotalMoneyGraphPageState
         ///
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
-            tooltipBgColor: Colors.white.withOpacity(0.3),
-            getTooltipItems: _utility.getGraphToolTip,
-          ),
+              tooltipRoundedRadius: 2,
+              getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                final list = <LineTooltipItem>[];
+
+                touchedSpots.forEach((element) {
+                  final textStyle = TextStyle(
+                    color: element.bar.gradient?.colors.first ??
+                        element.bar.color ??
+                        Colors.blueGrey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  );
+
+                  final price =
+                      element.y.round().toString().split('.')[0].toCurrency();
+
+                  final day = DateTime(widget.year)
+                      .add(Duration(days: element.x.toInt() - 1))
+                      .yyyymmdd;
+
+                  list.add(
+                    LineTooltipItem(
+                      '$day\n$price',
+                      textStyle,
+                      textAlign: TextAlign.end,
+                    ),
+                  );
+                });
+
+                return list;
+              }),
         ),
 
         ///
-        gridData: _utility.getFlGridData(),
+        gridData: FlGridData(
+          verticalInterval: 1,
+          getDrawingVerticalLine: (value) {
+            final day =
+                DateTime(widget.year).add(Duration(days: value.toInt()));
+
+            return FlLine(
+              color: (day.day == 1)
+                  ? Colors.yellowAccent.withOpacity(0.3)
+                  : Colors.transparent,
+              strokeWidth: 1,
+            );
+          },
+        ),
 
         ///
-        titlesData: const FlTitlesData(
-          //-------------------------// 上部の目盛り
-          topTitles: AxisTitles(),
-          //-------------------------// 上部の目盛り
-
-          //-------------------------// 下部の目盛り
-          bottomTitles: AxisTitles(),
-          //-------------------------// 下部の目盛り
-
-          //-------------------------// 左側の目盛り
-          leftTitles: AxisTitles(),
-          //-------------------------// 左側の目盛り
-
-          //-------------------------// 右側の目盛り
-          rightTitles: AxisTitles(),
-          //-------------------------// 右側の目盛り
-        ),
+        titlesData: const FlTitlesData(show: false),
 
         ///
         borderData: FlBorderData(show: false),

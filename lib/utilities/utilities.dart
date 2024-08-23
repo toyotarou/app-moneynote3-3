@@ -70,7 +70,9 @@ class Utility {
 
     touchedSpots.forEach((element) {
       final textStyle = TextStyle(
-        color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
+        color: element.bar.gradient?.colors.first ??
+            element.bar.color ??
+            Colors.blueGrey,
         fontWeight: FontWeight.bold,
         fontSize: 12,
       );
@@ -94,6 +96,8 @@ class Utility {
     const flline = FlLine(color: Colors.white30, strokeWidth: 1);
 
     return FlGridData(
+      verticalInterval: 1,
+
       //横線
       getDrawingHorizontalLine: (value) => flline,
 
