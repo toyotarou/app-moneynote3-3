@@ -95,6 +95,7 @@ class _AllTotalMoneyGraphPageState
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
               tooltipRoundedRadius: 2,
+              tooltipBgColor: Colors.white.withOpacity(0.2),
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
                 final list = <LineTooltipItem>[];
 
