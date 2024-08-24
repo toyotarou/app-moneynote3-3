@@ -12,5 +12,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default('') String incomeInputDate,
     @Default(false) bool inputButtonClicked,
     @Default(0) int sameDaySelectedDay,
+    @Default(0) int selectedGraphMonth,
   }) = _AppParamsResponseState;
 }

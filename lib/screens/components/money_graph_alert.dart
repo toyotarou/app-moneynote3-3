@@ -67,7 +67,12 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                 height: 50,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      widget.date.yyyymm,
+                      style: const TextStyle(fontSize: 14),
+                    ),
                     Column(
                       children: [
                         GestureDetector(
@@ -99,7 +104,6 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                         ),
                       ],
                     ),
-                    const SizedBox(),
                   ],
                 ),
               ),

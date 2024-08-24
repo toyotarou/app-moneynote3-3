@@ -26,7 +26,6 @@ import 'package:money_note/screens/components/daily_money_display_alert.dart';
 import 'package:money_note/screens/components/deposit_tab_alert.dart';
 import 'package:money_note/screens/components/download_data_list_alert.dart';
 import 'package:money_note/screens/components/income_input_alert.dart';
-import 'package:money_note/screens/components/money_graph_alert.dart';
 import 'package:money_note/screens/components/money_list_alert.dart';
 import 'package:money_note/screens/components/money_score_list_alert.dart';
 import 'package:money_note/screens/components/parts/back_ground_image.dart';
@@ -184,15 +183,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
               });
 
+              final spendMapMonthly = <String, int>{};
+
+              var mSpend = 0;
+              monthlySpendMap.forEach((key, value) {
+                mSpend += value;
+                spendMapMonthly[key] = mSpend;
+              });
+
               MoneyDialog(
                 context: context,
                 widget: AllTotalMoneyGraphAlert(
                   allTotalMoneyMap: allTotalMoneyMap,
                   years: years,
+                  isar: widget.isar,
+                  monthlyDateSumMap: dateCurrencySumMap,
+                  bankPriceTotalPadMap: bankPriceTotalPadMap,
+                  monthlySpendMap: spendMapMonthly,
                 ),
               );
             },
             icon: Icon(Icons.stacked_line_chart,
+                color: Colors.white.withOpacity(0.6), size: 20),
+          ),
+          IconButton(
+            onPressed: () {
+              MoneyDialog(
+                context: context,
+                widget: SameDaySpendPriceListAlert(
+                    isar: widget.isar,
+                    spendTimePlaceList: allSpendTimePlaceList ?? []),
+              );
+            },
+            icon: Icon(FontAwesomeIcons.diamond,
                 color: Colors.white.withOpacity(0.6), size: 20),
           ),
           IconButton(
@@ -408,67 +431,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        MoneyDialog(
-                          context: context,
-                          widget: SameDaySpendPriceListAlert(
-                              isar: widget.isar,
-                              spendTimePlaceList: allSpendTimePlaceList ?? []),
-                        );
-                      },
-                      child: Icon(FontAwesomeIcons.diamond,
-                          color: Colors.white.withOpacity(0.6), size: 16),
-                    ),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () {
-                        final spendMapMonthly = <String, int>{};
-
-                        var mSpend = 0;
-                        monthlySpendMap.forEach((key, value) {
-                          mSpend += value;
-                          spendMapMonthly[key] = mSpend;
-                        });
-
-                        MoneyDialog(
-                          context: context,
-                          widget: MoneyGraphAlert(
-                            date: (widget.baseYm != null)
-                                ? DateTime.parse('${widget.baseYm}-01 00:00:00')
-                                : DateTime.now(),
-                            isar: widget.isar,
-                            monthlyDateSumMap: dateCurrencySumMap,
-                            bankPriceTotalPadMap: bankPriceTotalPadMap,
-                            monthlySpendMap: spendMapMonthly,
-                          ),
-                        );
-                      },
-                      child: Icon(Icons.show_chart,
-                          color: Colors.white.withOpacity(0.8)),
-                    ),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () => MoneyDialog(
-                        context: context,
-                        widget: MoneyListAlert(
-                          isar: widget.isar,
-                          date: (widget.baseYm != null)
-                              ? DateTime.parse('${widget.baseYm}-01 00:00:00')
-                              : DateTime.now(),
-                          moneyList: moneyList,
-                          bankNameList: bankNameList,
-                          emoneyNameList: emoneyNameList,
-                          bankPricePadMap: bankPricePadMap,
-                        ),
+                IconButton(
+                  onPressed: () {
+                    MoneyDialog(
+                      context: context,
+                      widget: MoneyListAlert(
+                        isar: widget.isar,
+                        date: (widget.baseYm != null)
+                            ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                            : DateTime.now(),
+                        moneyList: moneyList,
+                        bankNameList: bankNameList,
+                        emoneyNameList: emoneyNameList,
+                        bankPricePadMap: bankPricePadMap,
                       ),
-                      child: Icon(Icons.list,
-                          color: Colors.white.withOpacity(0.8)),
-                    ),
-                    const SizedBox(width: 10),
-                  ],
+                    );
+                  },
+                  icon: Icon(FontAwesomeIcons.list,
+                      color: Colors.white.withOpacity(0.6), size: 16),
                 ),
               ],
             ),

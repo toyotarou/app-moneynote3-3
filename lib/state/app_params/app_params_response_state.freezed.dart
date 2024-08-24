@@ -23,6 +23,7 @@ mixin _$AppParamsResponseState {
   String get incomeInputDate => throw _privateConstructorUsedError;
   bool get inputButtonClicked => throw _privateConstructorUsedError;
   int get sameDaySelectedDay => throw _privateConstructorUsedError;
+  int get selectedGraphMonth => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppParamsResponseStateCopyWith<AppParamsResponseState> get copyWith =>
@@ -42,7 +43,8 @@ abstract class $AppParamsResponseStateCopyWith<$Res> {
       bool sameMonthIncomeDeleteFlag,
       String incomeInputDate,
       bool inputButtonClicked,
-      int sameDaySelectedDay});
+      int sameDaySelectedDay,
+      int selectedGraphMonth});
 }
 
 /// @nodoc
@@ -66,6 +68,7 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
     Object? incomeInputDate = null,
     Object? inputButtonClicked = null,
     Object? sameDaySelectedDay = null,
+    Object? selectedGraphMonth = null,
   }) {
     return _then(_value.copyWith(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -96,6 +99,10 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
           ? _value.sameDaySelectedDay
           : sameDaySelectedDay // ignore: cast_nullable_to_non_nullable
               as int,
+      selectedGraphMonth: null == selectedGraphMonth
+          ? _value.selectedGraphMonth
+          : selectedGraphMonth // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -116,7 +123,8 @@ abstract class _$$AppParamsResponseStateImplCopyWith<$Res>
       bool sameMonthIncomeDeleteFlag,
       String incomeInputDate,
       bool inputButtonClicked,
-      int sameDaySelectedDay});
+      int sameDaySelectedDay,
+      int selectedGraphMonth});
 }
 
 /// @nodoc
@@ -139,6 +147,7 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
     Object? incomeInputDate = null,
     Object? inputButtonClicked = null,
     Object? sameDaySelectedDay = null,
+    Object? selectedGraphMonth = null,
   }) {
     return _then(_$AppParamsResponseStateImpl(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -169,6 +178,10 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
           ? _value.sameDaySelectedDay
           : sameDaySelectedDay // ignore: cast_nullable_to_non_nullable
               as int,
+      selectedGraphMonth: null == selectedGraphMonth
+          ? _value.selectedGraphMonth
+          : selectedGraphMonth // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -183,7 +196,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       this.sameMonthIncomeDeleteFlag = false,
       this.incomeInputDate = '',
       this.inputButtonClicked = false,
-      this.sameDaySelectedDay = 0});
+      this.sameDaySelectedDay = 0,
+      this.selectedGraphMonth = 0});
 
   @override
   final DateTime? calendarSelectedDate;
@@ -205,10 +219,13 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
   @override
   @JsonKey()
   final int sameDaySelectedDay;
+  @override
+  @JsonKey()
+  final int selectedGraphMonth;
 
   @override
   String toString() {
-    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay)';
+    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth)';
   }
 
   @override
@@ -230,7 +247,9 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
             (identical(other.inputButtonClicked, inputButtonClicked) ||
                 other.inputButtonClicked == inputButtonClicked) &&
             (identical(other.sameDaySelectedDay, sameDaySelectedDay) ||
-                other.sameDaySelectedDay == sameDaySelectedDay));
+                other.sameDaySelectedDay == sameDaySelectedDay) &&
+            (identical(other.selectedGraphMonth, selectedGraphMonth) ||
+                other.selectedGraphMonth == selectedGraphMonth));
   }
 
   @override
@@ -242,7 +261,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       sameMonthIncomeDeleteFlag,
       incomeInputDate,
       inputButtonClicked,
-      sameDaySelectedDay);
+      sameDaySelectedDay,
+      selectedGraphMonth);
 
   @JsonKey(ignore: true)
   @override
@@ -260,7 +280,8 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
       final bool sameMonthIncomeDeleteFlag,
       final String incomeInputDate,
       final bool inputButtonClicked,
-      final int sameDaySelectedDay}) = _$AppParamsResponseStateImpl;
+      final int sameDaySelectedDay,
+      final int selectedGraphMonth}) = _$AppParamsResponseStateImpl;
 
   @override
   DateTime? get calendarSelectedDate;
@@ -276,6 +297,8 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
   bool get inputButtonClicked;
   @override
   int get sameDaySelectedDay;
+  @override
+  int get selectedGraphMonth;
   @override
   @JsonKey(ignore: true)
   _$$AppParamsResponseStateImplCopyWith<_$AppParamsResponseStateImpl>

@@ -3,14 +3,34 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
 import 'package:money_note/extensions/extensions.dart';
+import 'package:money_note/screens/components/money_graph_alert.dart';
+import 'package:money_note/screens/components/parts/money_dialog.dart';
+import 'package:money_note/state/app_params/app_params_notifier.dart';
 import 'package:money_note/utilities/utilities.dart';
 
 class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
-  const AllTotalMoneyGraphPage({super.key, this.data, required this.year});
+  const AllTotalMoneyGraphPage({
+    super.key,
+    this.data,
+    required this.year,
+    required this.alertWidth,
+    required this.monthList,
+    required this.isar,
+    required this.monthlyDateSumMap,
+    required this.bankPriceTotalPadMap,
+    required this.monthlySpendMap,
+  });
 
   final List<Map<String, int>>? data;
   final int year;
+  final double alertWidth;
+  final List<int> monthList;
+  final Isar isar;
+  final Map<String, int> monthlyDateSumMap;
+  final Map<String, int> bankPriceTotalPadMap;
+  final Map<String, int> monthlySpendMap;
 
   @override
   ConsumerState<AllTotalMoneyGraphPage> createState() =>
@@ -31,6 +51,15 @@ class _AllTotalMoneyGraphPageState
   Widget build(BuildContext context) {
     _setChartData();
 
+    var circleAvatarWidth = (widget.alertWidth / widget.monthList.length) * 0.3;
+
+    if (circleAvatarWidth > 15) {
+      circleAvatarWidth = 15;
+    }
+
+    final selectedGraphMonth =
+        ref.watch(appParamProvider.select((value) => value.selectedGraphMonth));
+
     return AlertDialog(
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
@@ -40,8 +69,51 @@ class _AllTotalMoneyGraphPageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(width: context.screenSize.width),
-              Expanded(
-                child: LineChart(graphData2),
+              Expanded(child: LineChart(graphData2)),
+              SizedBox(
+                height: 60,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: widget.monthList.map((e) {
+                        return GestureDetector(
+                          onTap: () {
+                            ref
+                                .read(appParamProvider.notifier)
+                                .setSelectedGraphMonth(month: e);
+
+                            MoneyDialog(
+                              context: context,
+                              widget: MoneyGraphAlert(
+                                date: DateTime(widget.year, e),
+                                isar: widget.isar,
+                                monthlyDateSumMap: widget.monthlyDateSumMap,
+                                bankPriceTotalPadMap:
+                                    widget.bankPriceTotalPadMap,
+                                monthlySpendMap: widget.monthlySpendMap,
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: circleAvatarWidth,
+                            backgroundColor: (selectedGraphMonth == e)
+                                ? Colors.yellowAccent.withOpacity(0.2)
+                                : Colors.white.withOpacity(0.2),
+                            child: Text(
+                              e.toString(),
+                              style: TextStyle(
+                                fontSize: circleAvatarWidth * 0.6,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -49,9 +121,8 @@ class _AllTotalMoneyGraphPageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(width: context.screenSize.width),
-              Expanded(
-                child: LineChart(graphData),
-              ),
+              Expanded(child: LineChart(graphData)),
+              const SizedBox(height: 60),
             ],
           ),
         ],
