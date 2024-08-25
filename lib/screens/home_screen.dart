@@ -318,6 +318,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ? DateTime.parse('${widget.baseYm}-01 00:00:00')
                             : DateTime.now(),
                         isar: widget.isar,
+                        allSpendTimePlaceList: allSpendTimePlaceList ?? [],
                       ),
                     );
                   },
