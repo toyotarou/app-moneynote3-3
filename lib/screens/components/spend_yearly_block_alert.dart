@@ -1,3 +1,6 @@
+// ignore_for_file: depend_on_referenced_packages
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -189,6 +192,36 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
           ),
         ));
 
+        value.mapIndexed((index, element) {
+          list2.add(
+            Stack(
+              children: [
+                Container(
+                  width: oneWidth,
+                  padding: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white.withOpacity(0.4))),
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    element.toString().toCurrency(),
+                    style: TextStyle(
+                        color: ((index + 1) == widget.date.month)
+                            ? Colors.yellowAccent
+                            : Colors.white),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  child: Text((index + 1).toString().padLeft(2, '0'),
+                      style: const TextStyle(color: Colors.grey)),
+                ),
+              ],
+            ),
+          );
+        });
+
+        /*
         var i = 1;
         value.forEach((element) {
           list2.add(
@@ -220,6 +253,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
           i++;
         });
+        */
       }
 
       list.add(Wrap(children: list2));

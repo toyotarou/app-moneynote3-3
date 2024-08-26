@@ -36,13 +36,15 @@ class BankPriceInputAlert extends ConsumerStatefulWidget {
   final String from;
 
   @override
-  ConsumerState<BankPriceInputAlert> createState() => _BankPriceInputAlertState();
+  ConsumerState<BankPriceInputAlert> createState() =>
+      _BankPriceInputAlertState();
 }
 
 class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   List<BankPrice>? bankPriceList = [];
 
-  final TextEditingController _bankPriceEditingController = TextEditingController();
+  final TextEditingController _bankPriceEditingController =
+      TextEditingController();
 
   late Color contextBlue;
 
@@ -72,14 +74,18 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.bankName!.bankName, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    Text(widget.bankName!.branchName, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    Text('${widget.bankName!.accountType} ${widget.bankName!.accountNumber}'),
+                    Text(widget.bankName!.bankName,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(widget.bankName!.branchName,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(
+                        '${widget.bankName!.accountType} ${widget.bankName!.accountNumber}'),
                   ],
                 ),
               ],
               if (widget.emoneyName != null) ...[
-                Text(widget.emoneyName!.emoneyName, maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(widget.emoneyName!.emoneyName,
+                    maxLines: 1, overflow: TextOverflow.ellipsis),
               ],
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               if (widget.from != 'BankPriceAdjustAlert') ...[
@@ -88,7 +94,9 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(),
-                    TextButton(onPressed: _insertBankMoney, child: const Text('残高を入力する')),
+                    TextButton(
+                        onPressed: _insertBankMoney,
+                        child: const Text('残高を入力する')),
                   ],
                 ),
               ],
@@ -99,7 +107,10 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                     return Expanded(
                       child: SingleChildScrollView(
                         child: Column(
-                          children: [Column(children: snapshot.data!), const SizedBox(height: 20)],
+                          children: [
+                            Column(children: snapshot.data!),
+                            const SizedBox(height: 20)
+                          ],
                         ),
                       ),
                     );
@@ -120,7 +131,10 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
+          BoxShadow(
+              blurRadius: 24,
+              spreadRadius: 16,
+              color: Colors.black.withOpacity(0.2)),
         ],
       ),
       child: ClipRRect(
@@ -134,21 +148,25 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border:
+                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: TextField(
               keyboardType: TextInputType.number,
               controller: _bankPriceEditingController,
               decoration: const InputDecoration(
                 isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                 hintText: '金額(10桁以内)',
                 filled: true,
                 border: OutlineInputBorder(),
-                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white54)),
               ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
-              onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
             ),
           ),
         ),
@@ -158,7 +176,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   ///
   Future<void> _insertBankMoney() async {
-    final bankId = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
+    final bankId =
+        (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
     var errFlg = false;
 
@@ -170,7 +189,10 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       [
         [_bankPriceEditingController.text.trim(), 10]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int) == false) {
+        if (checkInputValueLengthCheck(
+                value: element[0].toString().trim(),
+                length: element[1] as int) ==
+            false) {
           errFlg = true;
         }
       });
@@ -179,14 +201,16 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
     }
 
     //---------------------------//
-    final bankPricesCollection = BankPricesRepository().getCollection(isar: widget.isar);
+    final bankPricesCollection =
+        BankPricesRepository().getCollection(isar: widget.isar);
 
     final getBankPrices = await bankPricesCollection
         .filter()
@@ -196,7 +220,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
         .findAll();
 
     if (getBankPrices.isNotEmpty) {
-      await BankPricesRepository().deleteBankPriceList(isar: widget.isar, bankPriceList: getBankPrices);
+      await BankPricesRepository()
+          .deleteBankPriceList(isar: widget.isar, bankPriceList: getBankPrices);
     }
     //---------------------------//
 
@@ -206,7 +231,9 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       ..bankId = bankId
       ..price = _bankPriceEditingController.text.trim().toInt();
 
-    await BankPricesRepository().inputBankPrice(isar: widget.isar, bankPrice: bankPrice).then((value) {
+    await BankPricesRepository()
+        .inputBankPrice(isar: widget.isar, bankPrice: bankPrice)
+        .then((value) {
       _bankPriceEditingController.clear();
 
       Navigator.pop(context);
@@ -217,8 +244,11 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   ///
   Future<void> _makeBankPriceList() async {
     final param = <String, dynamic>{};
-    param['depositType'] = (widget.bankName != null) ? widget.bankName!.depositType.trim() : widget.emoneyName!.depositType.trim();
-    param['bankId'] = (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
+    param['depositType'] = (widget.bankName != null)
+        ? widget.bankName!.depositType.trim()
+        : widget.emoneyName!.depositType.trim();
+    param['bankId'] =
+        (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
     await BankPricesRepository()
         .getSelectedBankPriceList(isar: widget.isar, param: param)
@@ -244,7 +274,9 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
       list.add(Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
         child: Column(
           children: [
             Row(
@@ -260,7 +292,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                 Container(),
                 GestureDetector(
                   onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
-                  child: Text('delete', style: TextStyle(fontSize: 12, color: contextBlue)),
+                  child: Text('delete',
+                      style: TextStyle(fontSize: 12, color: contextBlue)),
                 ),
               ],
             ),
@@ -274,7 +307,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   ///
   void _showDeleteDialog({required int id}) {
-    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(
+        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {
@@ -294,7 +328,10 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   }
 
   ///
-  Future<void> _deleteBankPrice({required int id}) async => BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id).then((value) {
+  Future<void> _deleteBankPrice({required int id}) async =>
+      BankPricesRepository()
+          .deleteBankPrice(isar: widget.isar, id: id)
+          .then((value) {
         Navigator.pop(context);
         Navigator.pop(context);
       });

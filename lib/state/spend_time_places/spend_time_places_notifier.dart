@@ -157,6 +157,7 @@ class SpendTimePlaceNotifier
       final minusChecks = <bool>[...state.minusCheck];
 
       var diff = 0;
+
       for (var i = 0; i < updateSpendTimePlace.length; i++) {
         spendItem[i] = updateSpendTimePlace[i].spendType;
         spendTime[i] = updateSpendTimePlace[i].time;

@@ -1,5 +1,8 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,14 +16,18 @@ import 'parts/error_dialog.dart';
 
 class SpendItemReInputAlert extends ConsumerStatefulWidget {
   const SpendItemReInputAlert(
-      {super.key, required this.isar, required this.spendTypeBlankSpendTimePlaceList, required this.spendItemList});
+      {super.key,
+      required this.isar,
+      required this.spendTypeBlankSpendTimePlaceList,
+      required this.spendItemList});
 
   final Isar isar;
   final List<SpendItem> spendItemList;
   final List<SpendTimePlace> spendTypeBlankSpendTimePlaceList;
 
   @override
-  ConsumerState<SpendItemReInputAlert> createState() => _SpendItemReInputAlertState();
+  ConsumerState<SpendItemReInputAlert> createState() =>
+      _SpendItemReInputAlertState();
 }
 
 class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
@@ -29,7 +36,8 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final inputButtonClicked = ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
+    final inputButtonClicked =
+        ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -55,11 +63,14 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
                     onPressed: inputButtonClicked
                         ? null
                         : () {
-                            ref.read(appParamProvider.notifier).setInputButtonClicked(flag: true);
+                            ref
+                                .read(appParamProvider.notifier)
+                                .setInputButtonClicked(flag: true);
 
                             _updateSpendName();
                           },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     child: const Text('input'),
                   ),
                 ],
@@ -88,6 +99,93 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
 
     widget.spendItemList.forEach(spendItemList.add);
 
+    widget.spendTypeBlankSpendTimePlaceList.mapIndexed((index, element) {
+      list.add(DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                blurRadius: 24,
+                spreadRadius: 16,
+                color: Colors.black.withOpacity(0.2))
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 5,
+                  right: 15,
+                  child: Text(
+                    (index + 1).toString().padLeft(2, '0'),
+                    style: TextStyle(
+                        fontSize: 60, color: Colors.grey.withOpacity(0.3)),
+                  ),
+                ),
+                Container(
+                  width: context.screenSize.width,
+                  margin: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: Colors.white.withOpacity(0.2), width: 1.5),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              child: DropdownButton(
+                            isExpanded: true,
+                            dropdownColor: Colors.pinkAccent.withOpacity(0.1),
+                            iconEnabledColor: Colors.white,
+                            items: spendItemList.map((e) {
+                              return DropdownMenuItem(
+                                value: e.spendItemName,
+                                child: Text(e.spendItemName,
+                                    style: const TextStyle(fontSize: 12)),
+                              );
+                            }).toList(),
+                            value: reinputSpendNameMap[element.id] ?? '',
+                            onChanged: (value) => addToReinputSpendNameMap(
+                                id: element.id, value: value),
+                          )),
+                          SizedBox(
+                            width: 100,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(element.date),
+                                Text(element.time),
+                                Text(element.price.toString().toCurrency()),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on),
+                          const SizedBox(width: 10),
+                          Text(element.place)
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+    });
+
+    /*
     var i = 0;
     widget.spendTypeBlankSpendTimePlaceList.forEach((element) {
       list.add(DecoratedBox(
@@ -163,6 +261,7 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
 
       i++;
     });
+*/
 
     return SingleChildScrollView(child: Column(children: list));
   }
@@ -204,17 +303,21 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
     if (reinputSpendNameMap.isEmpty) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
-      await ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+      await ref
+          .read(appParamProvider.notifier)
+          .setInputButtonClicked(flag: false);
 
       return;
     }
 
     await widget.isar.writeTxn(() async {
       widget.spendTypeBlankSpendTimePlaceList.forEach((element) async {
-        final spendTimePlace = element..spendType = reinputSpendNameMap[element.id]!;
+        final spendTimePlace = element
+          ..spendType = reinputSpendNameMap[element.id]!;
         await widget.isar.spendTimePlaces.put(spendTimePlace);
       });
     });

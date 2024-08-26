@@ -144,39 +144,6 @@ class _EachMonthItemSummaryPageState
 
     list.add(Row(children: list2));
 
-/*
-I/flutter (11388): {
-1: {
-楽天キャッシュ: 0,
-食費: 22216,
-交通費: 8814,
-クレジット: 179349,
-雑費: 1642, お賽銭: 1320, 遊興費: 2000, 交際費: 6814, 投資: 43333, お使い: 0, 支払い: 1600, 医療費: 0, 通信費: 204, 手数料: 220, 教育費: 0, 美容費: 2200, ジム会費: 0, 設備費: 0, 被服費: 0, 保険料: 3787, 年金保険: 55880, 共済代: 3000, 国民年金基金: 26625, 国民健康保険: 51100, 税金: 201900, 国民年金: 0, 不明: 0, プラス: -14001, 収入: -650000, 利息: 0, 送金: 0, 水道光熱費: 5314, 住居費: 134000},
-2: {楽天キャッシュ: 0, 食費: 29369, 交通費: 7640, クレジット: 179863, 雑費: 12940, お賽銭: 2075, 遊興費: 1000, 交際費: 16296, 投資: 43333, お使い: 4988, 支払い: 33000, 医療費: 6890, 通信費: 0, 手数料: 528, 教育費: 0, 美容費: 0, ジム会費: 0, 設備費: 0, 被服費: 0, 保険料: 3787, 年金保険: 55880, 共済代: 3000, 国民年金基金: 26625, 国民健康保険: 16940, 税金: 0, 国�
-    */
-
-    /*
-
-
-    for (var i = 0; i < 5; i++) {
-      var list2 = <Widget>[];
-      for (var j = 0; j < 5; j++) {
-        list2.add(Container(
-          decoration: const BoxDecoration(color: Colors.redAccent),
-          height: 300,
-          width: 300,
-          margin: const EdgeInsets.all(10),
-        ));
-      }
-
-      list.add(Row(children: list2));
-    }
-
-
-
-
-    */
-
     return SingleChildScrollView(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,

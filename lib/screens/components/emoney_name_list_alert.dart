@@ -1,3 +1,6 @@
+// ignore_for_file: depend_on_referenced_packages
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,7 +20,8 @@ class EmoneyNameListAlert extends ConsumerStatefulWidget {
   final Isar isar;
 
   @override
-  ConsumerState<EmoneyNameListAlert> createState() => _EmoneyNameListAlertState();
+  ConsumerState<EmoneyNameListAlert> createState() =>
+      _EmoneyNameListAlertState();
 }
 
 class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
@@ -56,7 +60,8 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
                         isar: widget.isar,
                       ),
                     ),
-                    child: const Text('電子マネーを追加する', style: TextStyle(fontSize: 12)),
+                    child: const Text('電子マネーを追加する',
+                        style: TextStyle(fontSize: 12)),
                   ),
                 ],
               ),
@@ -90,6 +95,44 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
   Future<List<Widget>> _displayEmoneyNames() async {
     final list = <Widget>[];
 
+    _emoneyNameList!.mapIndexed((index, element) {
+      list.add(
+        Container(
+          width: context.screenSize.width,
+          margin: const EdgeInsets.all(3),
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.white.withOpacity(0.4))),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                    '${element.depositType}-${element.id}: ${element.emoneyName}'),
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => MoneyDialog(
+                      context: context,
+                      widget: EmoneyNameInputAlert(
+                        isar: widget.isar,
+                        depositType: DepositType.emoney,
+                        emoneyName: element,
+                      ),
+                    ),
+                    child: Icon(Icons.edit,
+                        size: 16, color: Colors.greenAccent.withOpacity(0.6)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+
+    /*
     for (var i = 0; i < _emoneyNameList!.length; i++) {
       list.add(
         Container(
@@ -124,6 +167,7 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
         ),
       );
     }
+    */
 
     return list;
   }
