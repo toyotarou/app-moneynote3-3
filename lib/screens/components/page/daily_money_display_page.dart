@@ -3,7 +3,10 @@
 import 'dart:ui';
 
 import 'package:bubble/bubble.dart';
-import 'package:collection/collection.dart';
+
+// import 'package:collection/collection.dart';
+//
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -407,27 +410,28 @@ class _DailyMoneyDisplayAlertState
 
       var sum = 0;
 
-      widget.bankNameList.mapIndexed((index, element) {
-        if (widget.bankPricePadMap['${element.depositType}-${element.id}'] !=
-            null) {
-          final bankPriceMap =
-              widget.bankPricePadMap['${element.depositType}-${element.id}'];
-          if (bankPriceMap![widget.date.yyyymmdd] != null) {
-            sum += bankPriceMap[widget.date.yyyymmdd]!;
-          }
-        }
-      });
+      // widget.bankNameList.mapIndexed((index, element) {
+      //   if (widget.bankPricePadMap['${element.depositType}-${element.id}'] !=
+      //       null) {
+      //     final bankPriceMap =
+      //         widget.bankPricePadMap['${element.depositType}-${element.id}'];
+      //     if (bankPriceMap![widget.date.yyyymmdd] != null) {
+      //       sum += bankPriceMap[widget.date.yyyymmdd]!;
+      //     }
+      //   }
+      // });
 
-      /*
       for (var i = 0; i < widget.bankNameList.length; i++) {
-        if (widget.bankPricePadMap['${widget.bankNameList[i].depositType}-${widget.bankNameList[i].id}'] != null) {
-          final bankPriceMap = widget.bankPricePadMap['${widget.bankNameList[i].depositType}-${widget.bankNameList[i].id}'];
+        if (widget.bankPricePadMap[
+                '${widget.bankNameList[i].depositType}-${widget.bankNameList[i].id}'] !=
+            null) {
+          final bankPriceMap = widget.bankPricePadMap[
+              '${widget.bankNameList[i].depositType}-${widget.bankNameList[i].id}'];
           if (bankPriceMap![widget.date.yyyymmdd] != null) {
             sum += bankPriceMap[widget.date.yyyymmdd]!;
           }
         }
       }
-      */
 
       list2.add(Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -441,59 +445,58 @@ class _DailyMoneyDisplayAlertState
         ),
       ));
 
-      widget.bankNameList.mapIndexed((index, element) {
-        list2.add(
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(element.bankName,
-                          maxLines: 2, overflow: TextOverflow.ellipsis),
-                      Text(element.branchName,
-                          maxLines: 2, overflow: TextOverflow.ellipsis),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      _getListPrice(
-                              depositType: element.depositType, id: element.id)
-                          .toString()
-                          .toCurrency(),
-                    ),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () => MoneyDialog(
-                        context: context,
-                        widget: BankPriceInputAlert(
-                          date: widget.date,
-                          isar: widget.isar,
-                          depositType: DepositType.bank,
-                          bankName: element,
-                          from: 'DailyMoneyDisplayPage',
-                        ),
-                      ),
-                      child: Icon(Icons.input,
-                          color: Colors.greenAccent.withOpacity(0.6)),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      });
+      // widget.bankNameList.mapIndexed((index, element) {
+      //   list2.add(
+      //     Container(
+      //       padding: const EdgeInsets.all(10),
+      //       decoration: BoxDecoration(
+      //           border: Border(
+      //               bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+      //       child: Row(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           Expanded(
+      //             child: Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //                 Text(element.bankName,
+      //                     maxLines: 2, overflow: TextOverflow.ellipsis),
+      //                 Text(element.branchName,
+      //                     maxLines: 2, overflow: TextOverflow.ellipsis),
+      //               ],
+      //             ),
+      //           ),
+      //           Row(
+      //             children: [
+      //               Text(
+      //                 _getListPrice(
+      //                         depositType: element.depositType, id: element.id)
+      //                     .toString()
+      //                     .toCurrency(),
+      //               ),
+      //               const SizedBox(width: 20),
+      //               GestureDetector(
+      //                 onTap: () => MoneyDialog(
+      //                   context: context,
+      //                   widget: BankPriceInputAlert(
+      //                     date: widget.date,
+      //                     isar: widget.isar,
+      //                     depositType: DepositType.bank,
+      //                     bankName: element,
+      //                     from: 'DailyMoneyDisplayPage',
+      //                   ),
+      //                 ),
+      //                 child: Icon(Icons.input,
+      //                     color: Colors.greenAccent.withOpacity(0.6)),
+      //               ),
+      //             ],
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   );
+      // });
 
-      /*
       for (var i = 0; i < widget.bankNameList.length; i++) {
         list2.add(
           Container(
@@ -546,7 +549,6 @@ class _DailyMoneyDisplayAlertState
           ),
         );
       }
-      */
 
       list.add(Column(children: list2));
     }
@@ -582,19 +584,18 @@ class _DailyMoneyDisplayAlertState
 
       var sum = 0;
 
-      widget.emoneyNameList.mapIndexed((index, element) {
-        if (widget.bankPricePadMap['${element.depositType}-${element.id}'] !=
-            null) {
-          final bankPriceMap =
-              widget.bankPricePadMap['${element.depositType}-${element.id}'];
+      // widget.emoneyNameList.mapIndexed((index, element) {
+      //   if (widget.bankPricePadMap['${element.depositType}-${element.id}'] !=
+      //       null) {
+      //     final bankPriceMap =
+      //         widget.bankPricePadMap['${element.depositType}-${element.id}'];
+      //
+      //     if (bankPriceMap![widget.date.yyyymmdd] != null) {
+      //       sum += bankPriceMap[widget.date.yyyymmdd]!;
+      //     }
+      //   }
+      // });
 
-          if (bankPriceMap![widget.date.yyyymmdd] != null) {
-            sum += bankPriceMap[widget.date.yyyymmdd]!;
-          }
-        }
-      });
-
-      /*
       for (var i = 0; i < widget.emoneyNameList.length; i++) {
         if (widget.bankPricePadMap[
                 '${widget.emoneyNameList[i].depositType}-${widget.emoneyNameList[i].id}'] !=
@@ -607,7 +608,6 @@ class _DailyMoneyDisplayAlertState
           }
         }
       }
-      */
 
       list2.add(Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -621,51 +621,50 @@ class _DailyMoneyDisplayAlertState
         ),
       ));
 
-      widget.emoneyNameList.mapIndexed((index, element) {
-        list2.add(
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                    child: Text(element.emoneyName,
-                        maxLines: 2, overflow: TextOverflow.ellipsis)),
-                Row(
-                  children: [
-                    Text(
-                      _getListPrice(
-                              depositType: element.depositType, id: element.id)
-                          .toString()
-                          .toCurrency(),
-                    ),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () => MoneyDialog(
-                        context: context,
-                        widget: BankPriceInputAlert(
-                          date: widget.date,
-                          isar: widget.isar,
-                          depositType: DepositType.emoney,
-                          emoneyName: element,
-                          from: 'DailyMoneyDisplayPage',
-                        ),
-                      ),
-                      child: Icon(Icons.input,
-                          color: Colors.greenAccent.withOpacity(0.6)),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      });
+      // widget.emoneyNameList.mapIndexed((index, element) {
+      //   list2.add(
+      //     Container(
+      //       padding: const EdgeInsets.all(10),
+      //       decoration: BoxDecoration(
+      //           border: Border(
+      //               bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+      //       child: Row(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           Expanded(
+      //               child: Text(element.emoneyName,
+      //                   maxLines: 2, overflow: TextOverflow.ellipsis)),
+      //           Row(
+      //             children: [
+      //               Text(
+      //                 _getListPrice(
+      //                         depositType: element.depositType, id: element.id)
+      //                     .toString()
+      //                     .toCurrency(),
+      //               ),
+      //               const SizedBox(width: 20),
+      //               GestureDetector(
+      //                 onTap: () => MoneyDialog(
+      //                   context: context,
+      //                   widget: BankPriceInputAlert(
+      //                     date: widget.date,
+      //                     isar: widget.isar,
+      //                     depositType: DepositType.emoney,
+      //                     emoneyName: element,
+      //                     from: 'DailyMoneyDisplayPage',
+      //                   ),
+      //                 ),
+      //                 child: Icon(Icons.input,
+      //                     color: Colors.greenAccent.withOpacity(0.6)),
+      //               ),
+      //             ],
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   );
+      // });
 
-      /*
       for (var i = 0; i < widget.emoneyNameList.length; i++) {
         list2.add(
           Container(
@@ -710,7 +709,6 @@ class _DailyMoneyDisplayAlertState
           ),
         );
       }
-      */
 
       list.add(Column(children: list2));
     }

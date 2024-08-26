@@ -1,6 +1,8 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:collection/collection.dart';
+// import 'package:collection/collection.dart';
+//
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -86,7 +88,51 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
   Future<List<Widget>> _displayBankNames() async {
     final list = <Widget>[];
 
-    _bankNameList!.mapIndexed((index, element) {
+    // _bankNameList!.mapIndexed((index, element) {
+    //   list.add(
+    //     Container(
+    //       width: context.screenSize.width,
+    //       margin: const EdgeInsets.all(3),
+    //       padding: const EdgeInsets.all(3),
+    //       decoration: BoxDecoration(
+    //           border: Border.all(color: Colors.white.withOpacity(0.4))),
+    //       child: Row(
+    //         crossAxisAlignment: CrossAxisAlignment.start,
+    //         children: [
+    //           Expanded(
+    //             child: Column(
+    //               crossAxisAlignment: CrossAxisAlignment.start,
+    //               children: [
+    //                 Text(
+    //                   '${element.depositType}-${element.id}: ${element.bankName} (${element.bankNumber}) ',
+    //                 ),
+    //                 Text('${element.branchName} (${element.branchNumber})'),
+    //                 Text('${element.accountType} ${element.accountNumber}'),
+    //               ],
+    //             ),
+    //           ),
+    //           Row(
+    //             children: [
+    //               GestureDetector(
+    //                 onTap: () => MoneyDialog(
+    //                   context: context,
+    //                   widget: BankNameInputAlert(
+    //                       depositType: DepositType.bank,
+    //                       isar: widget.isar,
+    //                       bankName: element),
+    //                 ),
+    //                 child: Icon(Icons.edit,
+    //                     size: 16, color: Colors.greenAccent.withOpacity(0.6)),
+    //               ),
+    //             ],
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   );
+    // });
+
+    for (var i = 0; i < _bankNameList!.length; i++) {
       list.add(
         Container(
           width: context.screenSize.width,
@@ -102,10 +148,12 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${element.depositType}-${element.id}: ${element.bankName} (${element.bankNumber}) ',
+                      '${_bankNameList![i].depositType}-${_bankNameList![i].id}: ${_bankNameList![i].bankName} (${_bankNameList![i].bankNumber}) ',
                     ),
-                    Text('${element.branchName} (${element.branchNumber})'),
-                    Text('${element.accountType} ${element.accountNumber}'),
+                    Text(
+                        '${_bankNameList![i].branchName} (${_bankNameList![i].branchNumber})'),
+                    Text(
+                        '${_bankNameList![i].accountType} ${_bankNameList![i].accountNumber}'),
                   ],
                 ),
               ),
@@ -117,7 +165,7 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
                       widget: BankNameInputAlert(
                           depositType: DepositType.bank,
                           isar: widget.isar,
-                          bankName: element),
+                          bankName: _bankNameList![i]),
                     ),
                     child: Icon(Icons.edit,
                         size: 16, color: Colors.greenAccent.withOpacity(0.6)),
@@ -128,49 +176,7 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
           ),
         ),
       );
-    });
-
-    /*
-    for (var i = 0; i < _bankNameList!.length; i++) {
-      list.add(
-        Container(
-          width: context.screenSize.width,
-          margin: const EdgeInsets.all(3),
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.4))),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${_bankNameList![i].depositType}-${_bankNameList![i].id}: ${_bankNameList![i].bankName} (${_bankNameList![i].bankNumber}) ',
-                    ),
-                    Text('${_bankNameList![i].branchName} (${_bankNameList![i].branchNumber})'),
-                    Text('${_bankNameList![i].accountType} ${_bankNameList![i].accountNumber}'),
-                  ],
-                ),
-              ),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => MoneyDialog(
-                      context: context,
-                      widget: BankNameInputAlert(
-                          depositType: DepositType.bank, isar: widget.isar, bankName: _bankNameList![i]),
-                    ),
-                    child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
     }
-    */
 
     return list;
   }

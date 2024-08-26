@@ -1,6 +1,8 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:collection/collection.dart';
+// import 'package:collection/collection.dart';
+//
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -93,15 +95,14 @@ class _SpendTimePlaceInputAlertState
             ),
       );
 
-      widget.spendTimePlaceList!.mapIndexed((index, element) {
-        _placeTecs[index].text = element.place.trim();
+      // widget.spendTimePlaceList!.mapIndexed((index, element) {
+      //   _placeTecs[index].text = element.place.trim();
+      //
+      //   _priceTecs[index].text = (element.price.toString().trim().toInt() > 0)
+      //       ? element.price.toString().trim()
+      //       : (element.price * -1).toString().trim();
+      // });
 
-        _priceTecs[index].text = (element.price.toString().trim().toInt() > 0)
-            ? element.price.toString().trim()
-            : (element.price * -1).toString().trim();
-      });
-
-      /*
       for (var i = 0; i < widget.spendTimePlaceList!.length; i++) {
         _placeTecs[i].text = widget.spendTimePlaceList![i].place.trim();
 
@@ -110,7 +111,6 @@ class _SpendTimePlaceInputAlertState
                 ? widget.spendTimePlaceList![i].price.toString().trim()
                 : (widget.spendTimePlaceList![i].price * -1).toString().trim();
       }
-      */
     }
   }
 

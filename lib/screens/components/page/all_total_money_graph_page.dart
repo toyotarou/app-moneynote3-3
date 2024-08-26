@@ -2,7 +2,9 @@
 
 import 'dart:math';
 
-import 'package:collection/collection.dart';
+// import 'package:collection/collection.dart';
+//
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -138,8 +140,6 @@ class _AllTotalMoneyGraphPageState
     _flspots = [];
 
     if (widget.data != null) {
-      /*
-
       var i = 0;
       final list = <int>[];
       widget.data!.forEach((element) {
@@ -152,17 +152,15 @@ class _AllTotalMoneyGraphPageState
         });
       });
 
-      */
-
-      final list = <int>[];
-      widget.data!.mapIndexed((index, element) {
-        element.entries.forEach((element2) {
-          _flspots
-              .add(FlSpot((index + 1).toDouble(), element2.value.toDouble()));
-
-          list.add(element2.value);
-        });
-      });
+      // final list = <int>[];
+      // widget.data!.mapIndexed((index, element) {
+      //   element.entries.forEach((element2) {
+      //     _flspots
+      //         .add(FlSpot((index + 1).toDouble(), element2.value.toDouble()));
+      //
+      //     list.add(element2.value);
+      //   });
+      // });
 
       const warisuu = 500000;
       final minValue = list.reduce(min);
