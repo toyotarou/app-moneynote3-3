@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -103,7 +104,25 @@ class _EachMonthItemSummaryPageState
       map[i] = map3;
     }
 
-    final list2 = <Widget>[];
+    final list2 = <Widget>[
+      const SizedBox(width: 100, height: 30),
+      Column(
+        children: widget.spendItemList.map((e) {
+          return Container(
+            width: 100,
+            height: 40,
+            margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.transparent),
+              color: Color(e.color.toInt()).withOpacity(0.2),
+            ),
+            child: const Column(children: [Text(''), Text('')]),
+          );
+        }).toList(),
+      ),
+    ];
+
     for (var i = 1; i <= 12; i++) {
       final list3 = <Widget>[
         SizedBox(
@@ -119,21 +138,31 @@ class _EachMonthItemSummaryPageState
           margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
           padding: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.white.withOpacity(0.3),
-            ),
+            border: Border.all(color: Colors.white.withOpacity(0.3)),
+            color: Color(element5.color.toInt()).withOpacity(0.2),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(element5.spendItemName),
-              Container(
-                alignment: Alignment.topRight,
-                child: Text(
-                  (map[i] != null && map[i]![element5.spendItemName] != null)
-                      ? map[i]![element5.spendItemName]!.toString().toCurrency()
-                      : '',
-                ),
+              Stack(
+                children: [
+                  Container(
+                    alignment: Alignment.topRight,
+                    child: Text(
+                      (map[i] != null &&
+                              map[i]![element5.spendItemName] != null)
+                          ? map[i]![element5.spendItemName]!
+                              .toString()
+                              .toCurrency()
+                          : '',
+                    ),
+                  ),
+                  Text(
+                    i.toString().padLeft(2, '0'),
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
               ),
             ],
           ),
@@ -144,10 +173,39 @@ class _EachMonthItemSummaryPageState
 
     list.add(Row(children: list2));
 
+    final underWidget = Column(
+      children: [
+        const SizedBox(width: 100, height: 30),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widget.spendItemList.map((e) {
+            return Container(
+              width: 100,
+              height: 40,
+              margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.transparent),
+                color: Color(e.color.toInt()).withOpacity(0.2),
+              ),
+              child: Column(
+                children: [Text(e.spendItemName), const Text('')],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+
     return SingleChildScrollView(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Column(children: list),
+      child: Stack(
+        children: [
+          underWidget,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Column(children: list),
+          ),
+        ],
       ),
     );
   }
