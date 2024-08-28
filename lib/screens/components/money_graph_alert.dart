@@ -15,6 +15,8 @@ class MoneyGraphAlert extends ConsumerStatefulWidget {
     required this.monthlyDateSumMap,
     required this.bankPriceTotalPadMap,
     required this.monthlySpendMap,
+    required this.graphMin,
+    required this.graphMax,
   });
 
   final DateTime date;
@@ -24,6 +26,9 @@ class MoneyGraphAlert extends ConsumerStatefulWidget {
   final Map<String, int> bankPriceTotalPadMap;
 
   final Map<String, int> monthlySpendMap;
+
+  final int graphMin;
+  final int graphMax;
 
   @override
   ConsumerState<MoneyGraphAlert> createState() => _MoneyGraphAlertState();
@@ -57,6 +62,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
               const SizedBox(height: 50),
               const Divider(color: Colors.transparent, thickness: 5),
               Expanded(child: LineChart(graphData2)),
+              const SizedBox(height: 60),
             ],
           ),
           Column(
@@ -94,7 +100,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                               .read(moneyGraphProvider.notifier)
                               .setDisplayGraphFlag(flag: 'spend'),
                           child: Text(
-                            '使用金額',
+                            '月初比較',
                             style: TextStyle(
                                 fontSize: 12,
                                 color: (displayGraphFlag == 'spend')
@@ -109,6 +115,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: LineChart(graphData)),
+              const SizedBox(height: 60),
             ],
           ),
         ],
@@ -138,7 +145,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
       case 'spend':
         widget.monthlySpendMap.forEach((key, value) {
           if (widget.date.yyyymm == DateTime.parse('$key 00:00:00').yyyymm) {
-            map[key] = value;
+            map[key] = value * -1;
           }
         });
 
@@ -165,8 +172,12 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
       final minValue = list.reduce(min);
       final maxValue = list.reduce(max);
 
-      final graphMin = ((minValue / warisuu).floor()) * warisuu;
-      final graphMax = ((maxValue / warisuu).ceil()) * warisuu;
+      final graphMin = (displayGraphFlag == 'total')
+          ? widget.graphMin
+          : ((minValue / warisuu).floor()) * warisuu;
+      final graphMax = (displayGraphFlag == 'total')
+          ? widget.graphMax
+          : ((maxValue / warisuu).ceil()) * warisuu;
 
       graphData = LineChartData(
         ///

@@ -51,6 +51,9 @@ class _AllTotalMoneyGraphPageState
 
   List<FlSpot> _flspots = [];
 
+  int graphMin = 0;
+  int graphMax = 0;
+
   ///
   @override
   Widget build(BuildContext context) {
@@ -74,6 +77,7 @@ class _AllTotalMoneyGraphPageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(width: context.screenSize.width),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: LineChart(graphData2)),
               SizedBox(
                 height: 60,
@@ -98,6 +102,8 @@ class _AllTotalMoneyGraphPageState
                                 bankPriceTotalPadMap:
                                     widget.bankPriceTotalPadMap,
                                 monthlySpendMap: widget.monthlySpendMap,
+                                graphMin: graphMin,
+                                graphMax: graphMax,
                               ),
                             );
                           },
@@ -126,6 +132,7 @@ class _AllTotalMoneyGraphPageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(width: context.screenSize.width),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: LineChart(graphData)),
               const SizedBox(height: 60),
             ],
@@ -166,8 +173,8 @@ class _AllTotalMoneyGraphPageState
       final minValue = list.reduce(min);
       final maxValue = list.reduce(max);
 
-      final graphMin = ((minValue / warisuu).floor()) * warisuu;
-      final graphMax = ((maxValue / warisuu).ceil()) * warisuu;
+      graphMin = ((minValue / warisuu).floor()) * warisuu;
+      graphMax = ((maxValue / warisuu).ceil()) * warisuu;
 
       graphData = LineChartData(
         ///
