@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/collections/spend_time_place.dart';
 import 'package:money_note/extensions/extensions.dart';
 import 'package:money_note/state/money_graph/money_graph_notifier.dart';
 
@@ -17,6 +18,7 @@ class MoneyGraphAlert extends ConsumerStatefulWidget {
     required this.monthlySpendMap,
     required this.graphMin,
     required this.graphMax,
+    required this.thisMonthSpendTimePlaceList,
   });
 
   final DateTime date;
@@ -29,6 +31,8 @@ class MoneyGraphAlert extends ConsumerStatefulWidget {
 
   final int graphMin;
   final int graphMax;
+
+  final List<SpendTimePlace> thisMonthSpendTimePlaceList;
 
   @override
   ConsumerState<MoneyGraphAlert> createState() => _MoneyGraphAlertState();
@@ -59,7 +63,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(width: context.screenSize.width),
-              const SizedBox(height: 50),
+              const SizedBox(height: 80),
               const Divider(color: Colors.transparent, thickness: 5),
               Expanded(child: LineChart(graphData2)),
               const SizedBox(height: 60),
@@ -70,7 +74,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
             children: [
               Container(width: context.screenSize.width),
               SizedBox(
-                height: 50,
+                height: 80,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,9 +102,23 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                         GestureDetector(
                           onTap: () => ref
                               .read(moneyGraphProvider.notifier)
+                              .setDisplayGraphFlag(flag: 'diff'),
+                          child: Text(
+                            '繰越比較',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: (displayGraphFlag == 'diff')
+                                    ? Colors.yellowAccent
+                                    : Theme.of(context).colorScheme.primary),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        GestureDetector(
+                          onTap: () => ref
+                              .read(moneyGraphProvider.notifier)
                               .setDisplayGraphFlag(flag: 'spend'),
                           child: Text(
-                            '月初比較',
+                            '使用金額',
                             style: TextStyle(
                                 fontSize: 12,
                                 color: (displayGraphFlag == 'spend')
@@ -142,11 +160,42 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         });
         break;
 
-      case 'spend':
+      case 'diff':
         widget.monthlySpendMap.forEach((key, value) {
           if (widget.date.yyyymm == DateTime.parse('$key 00:00:00').yyyymm) {
             map[key] = value * -1;
           }
+        });
+
+        warisuu = 50000;
+
+        break;
+
+      case 'spend':
+        final map100 = <String, List<int>>{};
+
+        final endDay = DateTime(widget.date.year, widget.date.month + 1, 0).day;
+
+        for (var i = 1; i <= endDay; i++) {
+          final genDate = DateTime(widget.date.year, widget.date.month, i);
+
+          if (genDate.isBefore(DateTime.now())) {
+            map100[genDate.yyyymmdd] = [];
+          }
+        }
+
+        map100.forEach((key, value) {
+          widget.thisMonthSpendTimePlaceList.forEach((element) {
+            if (key == element.date) {
+              map100[key]?.add((element.price > 0) ? element.price : 0);
+            }
+          });
+        });
+
+        var sum = 0;
+        map100.forEach((key, value) {
+          value.forEach((element) => sum += element);
+          map[key] = sum;
         });
 
         warisuu = 50000;
@@ -238,28 +287,21 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                 strokeWidth: 1);
           },
           getDrawingVerticalLine: (value) {
-            return FlLine(color: Colors.white.withOpacity(0.2), strokeWidth: 1);
+            final youbi = DateTime(widget.date.year, widget.date.month)
+                .add(Duration(days: value.toInt()))
+                .youbiStr;
+
+            return FlLine(
+              color: (youbi == 'Sunday')
+                  ? Colors.yellowAccent.withOpacity(0.3)
+                  : Colors.transparent,
+              strokeWidth: 1,
+            );
           },
         ),
 
         ///
-        titlesData: const FlTitlesData(
-          //-------------------------// 上部の目盛り
-          topTitles: AxisTitles(),
-          //-------------------------// 上部の目盛り
-
-          //-------------------------// 下部の目盛り
-          bottomTitles: AxisTitles(),
-          //-------------------------// 下部の目盛り
-
-          //-------------------------// 左側の目盛り
-          leftTitles: AxisTitles(),
-          //-------------------------// 左側の目盛り
-
-          //-------------------------// 右側の目盛り
-          rightTitles: AxisTitles(),
-          //-------------------------// 右側の目盛り
-        ),
+        titlesData: const FlTitlesData(show: false),
 
         ///
         lineBarsData: [

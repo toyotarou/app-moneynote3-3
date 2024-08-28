@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/collections/spend_time_place.dart';
 import 'package:money_note/extensions/extensions.dart';
 import 'package:money_note/screens/components/page/all_total_money_graph_page.dart';
 
@@ -20,7 +21,8 @@ class AllTotalMoneyGraphAlert extends StatefulWidget {
       required this.isar,
       required this.monthlyDateSumMap,
       required this.bankPriceTotalPadMap,
-      required this.monthlySpendMap});
+      required this.monthlySpendMap,
+      required this.thisMonthSpendTimePlaceList});
 
   final Map<String, int> allTotalMoneyMap;
   final List<int> years;
@@ -28,6 +30,7 @@ class AllTotalMoneyGraphAlert extends StatefulWidget {
   final Map<String, int> monthlyDateSumMap;
   final Map<String, int> bankPriceTotalPadMap;
   final Map<String, int> monthlySpendMap;
+  final List<SpendTimePlace> thisMonthSpendTimePlaceList;
 
   ///
   @override
@@ -143,6 +146,7 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
             monthlyDateSumMap: widget.monthlyDateSumMap,
             bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
             monthlySpendMap: widget.monthlySpendMap,
+            thisMonthSpendTimePlaceList: widget.thisMonthSpendTimePlaceList,
           ),
         ));
       }

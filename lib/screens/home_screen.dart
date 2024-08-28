@@ -200,6 +200,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   monthlyDateSumMap: dateCurrencySumMap,
                   bankPriceTotalPadMap: bankPriceTotalPadMap,
                   monthlySpendMap: spendMapMonthly,
+                  thisMonthSpendTimePlaceList:
+                      thisMonthSpendTimePlaceList ?? [],
                 ),
               );
             },

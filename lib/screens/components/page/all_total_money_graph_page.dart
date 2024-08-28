@@ -9,6 +9,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:money_note/collections/spend_time_place.dart';
 import 'package:money_note/extensions/extensions.dart';
 import 'package:money_note/screens/components/money_graph_alert.dart';
 import 'package:money_note/screens/components/parts/money_dialog.dart';
@@ -26,6 +27,7 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
     required this.monthlyDateSumMap,
     required this.bankPriceTotalPadMap,
     required this.monthlySpendMap,
+    required this.thisMonthSpendTimePlaceList,
   });
 
   final List<Map<String, int>>? data;
@@ -36,6 +38,7 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
   final Map<String, int> monthlyDateSumMap;
   final Map<String, int> bankPriceTotalPadMap;
   final Map<String, int> monthlySpendMap;
+  final List<SpendTimePlace> thisMonthSpendTimePlaceList;
 
   @override
   ConsumerState<AllTotalMoneyGraphPage> createState() =>
@@ -77,6 +80,7 @@ class _AllTotalMoneyGraphPageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(width: context.screenSize.width),
+              const SizedBox(height: 30),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: LineChart(graphData2)),
               SizedBox(
@@ -104,6 +108,8 @@ class _AllTotalMoneyGraphPageState
                                 monthlySpendMap: widget.monthlySpendMap,
                                 graphMin: graphMin,
                                 graphMax: graphMax,
+                                thisMonthSpendTimePlaceList:
+                                    widget.thisMonthSpendTimePlaceList,
                               ),
                             );
                           },
@@ -132,6 +138,7 @@ class _AllTotalMoneyGraphPageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(width: context.screenSize.width),
+              const SizedBox(height: 30),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: LineChart(graphData)),
               const SizedBox(height: 60),
