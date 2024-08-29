@@ -94,53 +94,52 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(),
-                  (widget.bankName != null)
-                      ? Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                switch (widget.bankName!.accountType) {
-                                  case '普通口座':
-                                    ref
-                                        .read(bankNamesProvider.notifier)
-                                        .setAccountType(
-                                            accountType: AccountType.normal);
-                                    break;
-                                  case '定期口座':
-                                    ref
-                                        .read(bankNamesProvider.notifier)
-                                        .setAccountType(
-                                            accountType: AccountType.fixed);
-                                    break;
-                                }
+                  if (widget.bankName != null)
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            switch (widget.bankName!.accountType) {
+                              case '普通口座':
+                                ref
+                                    .read(bankNamesProvider.notifier)
+                                    .setAccountType(
+                                        accountType: AccountType.normal);
+                                break;
+                              case '定期口座':
+                                ref
+                                    .read(bankNamesProvider.notifier)
+                                    .setAccountType(
+                                        accountType: AccountType.fixed);
+                                break;
+                            }
 
-                                _updateBankName();
-                              },
-                              child: Text(
-                                '金融機関を更新する',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color:
-                                        Theme.of(context).colorScheme.primary),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            GestureDetector(
-                              onTap: _showDeleteDialog,
-                              child: Text('金融機関を削除する',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary)),
-                            ),
-                          ],
-                        )
-                      : TextButton(
-                          onPressed: _inputBankName,
-                          child: const Text('金融機関を追加する',
-                              style: TextStyle(fontSize: 12)),
+                            _updateBankName();
+                          },
+                          child: Text(
+                            '金融機関を更新する',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.primary),
+                          ),
                         ),
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: _showDeleteDialog,
+                          child: Text('金融機関を削除する',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color:
+                                      Theme.of(context).colorScheme.primary)),
+                        ),
+                      ],
+                    )
+                  else
+                    TextButton(
+                      onPressed: _inputBankName,
+                      child: const Text('金融機関を追加する',
+                          style: TextStyle(fontSize: 12)),
+                    ),
                 ],
               ),
             ],

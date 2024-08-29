@@ -883,24 +883,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(_calendarDays[i].padLeft(2, '0')),
-                            (dateDiff > 0 || dateSum == 0)
-                                ? Container()
-                                : Row(
-                                    children: [
-                                      Container(
-                                        width: 10,
-                                        height: 10,
-                                        decoration: BoxDecoration(
-                                          color: inputedFlag
-                                              ? Colors.yellowAccent
-                                                  .withOpacity(0.3)
-                                              : Colors.black.withOpacity(0.3),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                    ],
+                            if (dateDiff > 0 || dateSum == 0)
+                              Container()
+                            else
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 10,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                      color: inputedFlag
+                                          ? Colors.yellowAccent.withOpacity(0.3)
+                                          : Colors.black.withOpacity(0.3),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
+                                ],
+                              ),
                           ],
                         ),
                         const SizedBox(height: 5),
@@ -914,11 +913,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(),
-                                  (dateDiff > 0 || dateSum == 0)
-                                      ? Container()
-                                      : Text((zenjitsuSum - dateSum)
-                                          .toString()
-                                          .toCurrency()),
+                                  if (dateDiff > 0 || dateSum == 0)
+                                    Container()
+                                  else
+                                    Text((zenjitsuSum - dateSum)
+                                        .toString()
+                                        .toCurrency()),
                                 ],
                               ),
                               Row(
@@ -926,9 +926,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(),
-                                  (dateDiff > 0 || dateSum == 0)
-                                      ? Container()
-                                      : Text(dateSum.toString().toCurrency()),
+                                  if (dateDiff > 0 || dateSum == 0)
+                                    Container()
+                                  else
+                                    Text(dateSum.toString().toCurrency()),
                                 ],
                               ),
                             ],
@@ -1157,9 +1158,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           if (value!.isNotEmpty) {
             for (var element in value) {
-              depoNameList.add(Deposit(
-                '${element.depositType}-${element.id}',
-                '${element.bankName} ${element.branchName}'));
+              depoNameList.add(Deposit('${element.depositType}-${element.id}',
+                  '${element.bankName} ${element.branchName}'));
             }
           }
         });
@@ -1181,7 +1181,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           if (value!.isNotEmpty) {
             for (var element in value) {
               depoNameList.add(Deposit(
-                '${element.depositType}-${element.id}', element.emoneyName));
+                  '${element.depositType}-${element.id}', element.emoneyName));
             }
           }
         });

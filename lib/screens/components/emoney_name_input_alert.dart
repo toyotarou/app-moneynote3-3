@@ -14,18 +14,24 @@ import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class EmoneyNameInputAlert extends ConsumerStatefulWidget {
-  EmoneyNameInputAlert({super.key, required this.depositType, required this.isar, this.emoneyName});
+  EmoneyNameInputAlert(
+      {super.key,
+      required this.depositType,
+      required this.isar,
+      this.emoneyName});
 
   final DepositType depositType;
   final Isar isar;
   EmoneyName? emoneyName;
 
   @override
-  ConsumerState<EmoneyNameInputAlert> createState() => _EmoneyNameInputAlertState();
+  ConsumerState<EmoneyNameInputAlert> createState() =>
+      _EmoneyNameInputAlertState();
 }
 
 class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
-  final TextEditingController _emoneyNameEditingController = TextEditingController();
+  final TextEditingController _emoneyNameEditingController =
+      TextEditingController();
 
   ///
   @override
@@ -63,24 +69,34 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(),
-                  (widget.emoneyName != null)
-                      ? Column(
-                          children: [
-                            GestureDetector(
-                              onTap: _updateEmoneyName,
-                              child: Text('電子マネーを更新する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
-                            ),
-                            const SizedBox(height: 10),
-                            GestureDetector(
-                              onTap: _showDeleteDialog,
-                              child: Text('電子マネーを削除する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
-                            ),
-                          ],
-                        )
-                      : TextButton(
-                          onPressed: _inputEmoneyName,
-                          child: const Text('電子マネーを追加する', style: TextStyle(fontSize: 12)),
+                  if (widget.emoneyName != null)
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: _updateEmoneyName,
+                          child: Text('電子マネーを更新する',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color:
+                                      Theme.of(context).colorScheme.primary)),
                         ),
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: _showDeleteDialog,
+                          child: Text('電子マネーを削除する',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color:
+                                      Theme.of(context).colorScheme.primary)),
+                        ),
+                      ],
+                    )
+                  else
+                    TextButton(
+                      onPressed: _inputEmoneyName,
+                      child: const Text('電子マネーを追加する',
+                          style: TextStyle(fontSize: 12)),
+                    ),
                 ],
               ),
             ],
@@ -95,7 +111,10 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
+          BoxShadow(
+              blurRadius: 24,
+              spreadRadius: 16,
+              color: Colors.black.withOpacity(0.2)),
         ],
       ),
       child: ClipRRect(
@@ -109,20 +128,24 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border:
+                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: TextField(
               controller: _emoneyNameEditingController,
               decoration: const InputDecoration(
                 isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                 hintText: '電子マネー名称(30文字以内)',
                 filled: true,
                 border: OutlineInputBorder(),
-                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white54)),
               ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
-              onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
             ),
           ),
         ),
@@ -142,7 +165,8 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       for (var element in [
         [_emoneyNameEditingController.text.trim(), 30]
       ]) {
-        if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
+        if (!checkInputValueLengthCheck(
+            value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
       }
@@ -151,7 +175,8 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
@@ -161,7 +186,9 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       ..emoneyName = _emoneyNameEditingController.text.trim()
       ..depositType = widget.depositType.japanName;
 
-    await EmoneyNamesRepository().inputEmoneyName(isar: widget.isar, emoneyName: emoneyName).then((value) {
+    await EmoneyNamesRepository()
+        .inputEmoneyName(isar: widget.isar, emoneyName: emoneyName)
+        .then((value) {
       _emoneyNameEditingController.clear();
 
       Navigator.pop(context);
@@ -180,7 +207,8 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       for (var element in [
         [_emoneyNameEditingController.text.trim(), 30]
       ]) {
-        if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
+        if (!checkInputValueLengthCheck(
+            value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
       }
@@ -189,19 +217,24 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
     }
 
     await widget.isar.writeTxn(() async {
-      await EmoneyNamesRepository().getEmoneyName(isar: widget.isar, id: widget.emoneyName!.id).then((value) async {
+      await EmoneyNamesRepository()
+          .getEmoneyName(isar: widget.isar, id: widget.emoneyName!.id)
+          .then((value) async {
         value!
           ..emoneyName = _emoneyNameEditingController.text.trim()
           ..depositType = widget.depositType.japanName;
 
-        await EmoneyNamesRepository().updateEmoneyName(isar: widget.isar, emoneyName: value).then((value) {
+        await EmoneyNamesRepository()
+            .updateEmoneyName(isar: widget.isar, emoneyName: value)
+            .then((value) {
           _emoneyNameEditingController.clear();
 
           Navigator.pop(context);
@@ -212,7 +245,8 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   void _showDeleteDialog() {
-    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(
+        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {
@@ -233,6 +267,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
   }
 
   ///
-  Future<void> _deleteEmoneyName() async =>
-      EmoneyNamesRepository().deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id).then((value) => Navigator.pop(context));
+  Future<void> _deleteEmoneyName() async => EmoneyNamesRepository()
+      .deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id)
+      .then((value) => Navigator.pop(context));
 }

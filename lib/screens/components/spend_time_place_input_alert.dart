@@ -194,29 +194,30 @@ class _SpendTimePlaceInputAlertState
                   child: Row(
                     children: [
                       Expanded(child: _displayInputParts()),
-                      (spendTimePlaceState.blinkingFlag)
-                          ? DecoratedBoxTransition(
-                              decoration: _decorationTween
-                                  .animate(_animationController),
-                              child: SizedBox(
-                                width: 90,
-                                child: Container(
-                                  margin: const EdgeInsets.all(5),
-                                  decoration:
-                                      const BoxDecoration(color: Colors.black),
-                                  child: _spendItemSetPanel(),
-                                ),
-                              ),
-                            )
-                          : SizedBox(
-                              width: 90,
-                              child: Container(
-                                margin: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                    color: Colors.transparent),
-                                child: _spendItemSetPanel(),
-                              ),
+                      if (spendTimePlaceState.blinkingFlag)
+                        DecoratedBoxTransition(
+                          decoration:
+                              _decorationTween.animate(_animationController),
+                          child: SizedBox(
+                            width: 90,
+                            child: Container(
+                              margin: const EdgeInsets.all(5),
+                              decoration:
+                                  const BoxDecoration(color: Colors.black),
+                              child: _spendItemSetPanel(),
                             ),
+                          ),
+                        )
+                      else
+                        SizedBox(
+                          width: 90,
+                          child: Container(
+                            margin: const EdgeInsets.all(5),
+                            decoration:
+                                const BoxDecoration(color: Colors.transparent),
+                            child: _spendItemSetPanel(),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -599,8 +600,8 @@ class _SpendTimePlaceInputAlertState
           [element.place.trim(), 30]
         ]) {
           if (!checkInputValueLengthCheck(
-                  value: element2[0].toString().trim(),
-                  length: element2[1] as int)) {
+              value: element2[0].toString().trim(),
+              length: element2[1] as int)) {
             errFlg = true;
           }
         }

@@ -290,22 +290,23 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                       const Text('Spend Total',
                           style: TextStyle(color: Colors.lightBlueAccent)),
                       const SizedBox(width: 20),
-                      (spendTotalMap.isNotEmpty)
-                          ? GestureDetector(
-                              onTap: () => MoneyDialog(
-                                context: context,
-                                widget: SpendYearlyGraphAlert(
-                                  spendTotal: spendTotal,
-                                  spendTotalMap: spendTotalMap,
-                                  amari: amari,
-                                  spendItemList: _spendItemList ?? [],
-                                ),
-                                clearBarrierColor: true,
-                              ),
-                              child: const Icon(Icons.pie_chart,
-                                  color: Colors.lightBlueAccent, size: 15),
-                            )
-                          : Container(),
+                      if (spendTotalMap.isNotEmpty)
+                        GestureDetector(
+                          onTap: () => MoneyDialog(
+                            context: context,
+                            widget: SpendYearlyGraphAlert(
+                              spendTotal: spendTotal,
+                              spendTotalMap: spendTotalMap,
+                              amari: amari,
+                              spendItemList: _spendItemList ?? [],
+                            ),
+                            clearBarrierColor: true,
+                          ),
+                          child: const Icon(Icons.pie_chart,
+                              color: Colors.lightBlueAccent, size: 15),
+                        )
+                      else
+                        Container(),
                     ],
                   ),
                   Text(spendTotal.toString().toCurrency(),
