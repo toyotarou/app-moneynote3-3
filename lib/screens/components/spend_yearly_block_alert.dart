@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/screens/components/each_month_item_summary_alert.dart';
 
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
@@ -15,6 +14,7 @@ import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
 import '../../repository/spend_time_places_repository.dart';
 import '../../utilities/functions.dart';
+import 'each_month_item_summary_alert.dart';
 import 'parts/money_dialog.dart';
 import 'spend_yearly_graph_alert.dart';
 

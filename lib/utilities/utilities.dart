@@ -1,8 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:money_note/extensions/extensions.dart';
 
 import '../collections/money.dart';
+import '../extensions/extensions.dart';
 
 class Utility {
   ///

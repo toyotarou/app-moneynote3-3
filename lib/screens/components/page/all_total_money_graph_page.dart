@@ -9,12 +9,13 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/collections/spend_time_place.dart';
-import 'package:money_note/extensions/extensions.dart';
-import 'package:money_note/screens/components/money_graph_alert.dart';
-import 'package:money_note/screens/components/parts/money_dialog.dart';
-import 'package:money_note/state/app_params/app_params_notifier.dart';
-import 'package:money_note/utilities/utilities.dart';
+
+import '../../../collections/spend_time_place.dart';
+import '../../../extensions/extensions.dart';
+import '../../../state/app_params/app_params_notifier.dart';
+import '../../../utilities/utilities.dart';
+import '../money_graph_alert.dart';
+import '../parts/money_dialog.dart';
 
 class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
   const AllTotalMoneyGraphPage({

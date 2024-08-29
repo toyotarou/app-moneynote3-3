@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/collections/spend_time_place.dart';
-import 'package:money_note/extensions/extensions.dart';
-import 'package:money_note/screens/components/page/all_total_money_graph_page.dart';
+import '../../collections/spend_time_place.dart';
+import '../../extensions/extensions.dart';
+import 'page/all_total_money_graph_page.dart';
 
 class TabInfo {
   TabInfo(this.label, this.widget);

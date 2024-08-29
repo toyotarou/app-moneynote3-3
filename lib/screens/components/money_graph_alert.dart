@@ -4,9 +4,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/collections/spend_time_place.dart';
-import 'package:money_note/extensions/extensions.dart';
-import 'package:money_note/state/money_graph/money_graph_notifier.dart';
+import '../../collections/spend_time_place.dart';
+import '../../extensions/extensions.dart';
+import '../../state/money_graph/money_graph_notifier.dart';
 
 class MoneyGraphAlert extends ConsumerStatefulWidget {
   const MoneyGraphAlert({

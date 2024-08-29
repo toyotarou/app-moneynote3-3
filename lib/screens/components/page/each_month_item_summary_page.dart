@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:money_note/collections/spend_item.dart';
-import 'package:money_note/collections/spend_time_place.dart';
-import 'package:money_note/extensions/extensions.dart';
+import '../../../collections/spend_item.dart';
+import '../../../collections/spend_time_place.dart';
+import '../../../extensions/extensions.dart';
 
 class EachMonthItemSummaryPage extends ConsumerStatefulWidget {
   const EachMonthItemSummaryPage(

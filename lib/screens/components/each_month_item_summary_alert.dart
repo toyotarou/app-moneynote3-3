@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:money_note/collections/spend_item.dart';
-import 'package:money_note/collections/spend_time_place.dart';
-import 'package:money_note/extensions/extensions.dart';
-import 'package:money_note/screens/components/page/each_month_item_summary_page.dart';
+import '../../collections/spend_item.dart';
+import '../../collections/spend_time_place.dart';
+import '../../extensions/extensions.dart';
+import 'page/each_month_item_summary_page.dart';
 
 class TabInfo {
   TabInfo(this.label, this.widget);

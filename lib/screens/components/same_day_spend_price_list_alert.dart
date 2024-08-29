@@ -5,10 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:money_note/collections/spend_time_place.dart';
-import 'package:money_note/extensions/extensions.dart';
-import 'package:money_note/state/app_params/app_params_notifier.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+import '../../collections/spend_time_place.dart';
+import '../../extensions/extensions.dart';
+import '../../state/app_params/app_params_notifier.dart';
 
 class SameDaySpendPriceListAlert extends ConsumerStatefulWidget {
   const SameDaySpendPriceListAlert(
