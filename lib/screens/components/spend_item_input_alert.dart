@@ -270,6 +270,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       actions: [cancelButton, continueButton],
     );
 
+    // ignore: inference_failure_on_function_invocation
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
 
@@ -335,6 +336,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       mycolor = Color(spendItemColorMap[id]!.toInt());
     }
 
+    // ignore: inference_failure_on_function_invocation
     showDialog(
       context: context,
       builder: (BuildContext context) {

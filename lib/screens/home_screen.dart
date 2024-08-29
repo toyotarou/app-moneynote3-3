@@ -1184,6 +1184,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     Navigator.pushReplacement(
       context,
+      // ignore: inference_failure_on_instance_creation
       MaterialPageRoute(
           builder: (context) => HomeScreen(
               isar: widget.isar, baseYm: calendarState.prevYearMonth)),
@@ -1196,6 +1197,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     Navigator.pushReplacement(
       context,
+      // ignore: inference_failure_on_instance_creation
       MaterialPageRoute(
           builder: (context) => HomeScreen(
               isar: widget.isar, baseYm: calendarState.nextYearMonth)),

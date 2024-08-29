@@ -408,6 +408,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       actions: [cancelButton, continueButton],
     );
 
+    // ignore: inference_failure_on_function_invocation
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
 

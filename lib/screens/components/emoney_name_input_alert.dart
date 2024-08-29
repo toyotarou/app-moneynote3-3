@@ -228,6 +228,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       actions: [cancelButton, continueButton],
     );
 
+    // ignore: inference_failure_on_function_invocation
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
 
