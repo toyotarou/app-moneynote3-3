@@ -315,6 +315,7 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
     }
 
     await widget.isar.writeTxn(() async {
+      // ignore: avoid_function_literals_in_foreach_calls
       widget.spendTypeBlankSpendTimePlaceList.forEach((element) async {
         final spendTimePlace = element
           ..spendType = reinputSpendNameMap[element.id]!;

@@ -455,6 +455,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     final bankPricesCollection =
         BankPricesRepository().getCollection(isar: widget.isar);
 
+    // ignore: avoid_function_literals_in_foreach_calls
     insertBankPriceList.forEach((element) async {
       final exElement = element.split('|');
 

@@ -282,10 +282,11 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     final getSpendTimePlaces = await spendTimePlacesCollection.filter().spendTypeEqualTo(spendItemNameMap[id]!).findAll();
 
     await widget.isar
+        // ignore: avoid_function_literals_in_foreach_calls
         .writeTxn(() async => getSpendTimePlaces.forEach((element) async => widget.isar.spendTimePlaces.put(element..spendType = '')));
     //-----------------------------------
 
-    final spendItemsCollection = widget.isar.spendItems; //TODO
+    final spendItemsCollection = widget.isar.spendItems;
     await widget.isar.writeTxn(() async => spendItemsCollection.delete(id));
 
     if (mounted) {
