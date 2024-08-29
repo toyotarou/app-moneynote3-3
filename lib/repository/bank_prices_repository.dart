@@ -29,7 +29,7 @@ class BankPricesRepository {
   ///
   Future<void> inputBankPriceList(
       {required Isar isar, required List<BankPrice> bankPriceList}) async {
-    for (var element in bankPriceList) {
+    for (final element in bankPriceList) {
       inputBankPrice(isar: isar, bankPrice: element);
     }
   }
@@ -44,7 +44,7 @@ class BankPricesRepository {
   ///
   Future<void> deleteBankPriceList(
       {required Isar isar, required List<BankPrice> bankPriceList}) async {
-    for (var element in bankPriceList) {
+    for (final element in bankPriceList) {
       deleteBankPrice(isar: isar, id: element.id);
     }
   }

@@ -186,7 +186,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     }
 
     if (!errFlg) {
-      for (var element in [
+      for (final element in [
         [_bankPriceEditingController.text.trim(), 10]
       ]) {
         if (!checkInputValueLengthCheck(

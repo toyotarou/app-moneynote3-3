@@ -92,7 +92,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
   ///
   void _makeDateMoneyMap() {
     if (widget.moneyList!.isNotEmpty) {
-      for (var element in widget.moneyList!) {
+      for (final element in widget.moneyList!) {
         _dateMoneyMap[element.date] = element;
       }
     }

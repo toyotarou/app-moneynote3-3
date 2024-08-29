@@ -65,7 +65,7 @@ emoney-5: [{2023-12-11: 50000}]}
       for (var i = 0; i <= diff; i++) {
         final date = dt.add(Duration(days: i)).yyyymmdd;
 
-        for (var element in value) {
+        for (final element in value) {
           if (element[date] != null) {
             price = element[date] ?? 0;
           }
@@ -117,7 +117,7 @@ flutter: {
 
   aaa.forEach((key, value) {
     var sum = 0;
-    for (var element in value) {
+    for (final element in value) {
       sum += element;
     }
     map4[key] = sum;
@@ -140,14 +140,14 @@ Map<String, int> makeMonthlySpendItemSumMap({required List<SpendTimePlace> spend
   final list = <String>[];
 
   if (spendItemList!.isNotEmpty) {
-    for (var element in spendItemList) {
+    for (final element in spendItemList) {
       list.add(element.spendItemName);
     }
   }
 
   final map = <String, List<int>>{};
 
-  for (var element in list) {
+  for (final element in list) {
     final filtered = spendTimePlaceList.where((element2) => element2.spendType == element).toList();
     if (filtered.isNotEmpty) {
       filtered
@@ -158,7 +158,7 @@ Map<String, int> makeMonthlySpendItemSumMap({required List<SpendTimePlace> spend
 
   map.forEach((key, value) {
     var sum = 0;
-    for (var element in value) {
+    for (final element in value) {
       sum += element;
     }
     monthlySpendItemSumMap[key] = sum;
@@ -172,7 +172,7 @@ Map<String, List<int>> makeYearlySpendItemSumMap({required List<SpendTimePlace> 
   final list = <String>[];
 
   if (spendItemList!.isNotEmpty) {
-    for (var element in spendItemList) {
+    for (final element in spendItemList) {
       list.add(element.spendItemName);
     }
   }
@@ -182,7 +182,7 @@ Map<String, List<int>> makeYearlySpendItemSumMap({required List<SpendTimePlace> 
   for (var i = 1; i <= 12; i++) {
     final list2 = <SpendTimePlace>[];
 
-    for (var element in spendTimePlaceList) {
+    for (final element in spendTimePlaceList) {
       if (i.toString().padLeft(2, '0') == element.date.split('-')[1]) {
         list2.add(element);
       }
@@ -214,12 +214,12 @@ print(map2);
 
   final map3 = <String, List<int>>{};
 
-  for (var element in list) {
+  for (final element in list) {
     map3[element] = [];
   }
 
   for (var i = 1; i <= 12; i++) {
-    for (var element in list) {
+    for (final element in list) {
       map3[element]?.add((map2[i.toString().padLeft(2, '0')]?[element] != null) ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt() : 0);
     }
   }

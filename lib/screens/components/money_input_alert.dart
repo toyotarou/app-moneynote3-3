@@ -235,7 +235,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     }
 
     if (!errFlg) {
-      for (var element in [
+      for (final element in [
         [_tecYen10000.text.trim(), 3],
         [_tecYen5000.text.trim(), 3],
         [_tecYen2000.text.trim(), 3],
@@ -323,7 +323,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     }
 
     if (!errFlg) {
-      for (var element in [
+      for (final element in [
         [_tecYen10000.text.trim(), 3],
         [_tecYen5000.text.trim(), 3],
         [_tecYen2000.text.trim(), 3],

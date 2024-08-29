@@ -127,7 +127,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
     final spendItemColorMap = <String, String>{};
     if (_spendItemList!.isNotEmpty) {
-      for (var element in _spendItemList!) {
+      for (final element in _spendItemList!) {
         spendItemColorMap[element.spendItemName] = element.color;
       }
     }
@@ -146,7 +146,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
       var sum = 0;
 
-      for (var element in value) {
+      for (final element in value) {
         // if (element > 0) {
         //   map[element] = '';
         //
@@ -224,7 +224,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
         // });
 
         var i = 1;
-        for (var element in value) {
+        for (final element in value) {
           list2.add(
             Stack(
               children: [

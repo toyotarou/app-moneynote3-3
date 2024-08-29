@@ -46,7 +46,7 @@ class SpendTimePlacesRepository {
   Future<void> inputSpendTimePriceList(
       {required Isar isar,
       required List<SpendTimePlace> spendTimePriceList}) async {
-    for (var element in spendTimePriceList) {
+    for (final element in spendTimePriceList) {
       inputSpendTimePrice(isar: isar, spendTimePlace: element);
     }
   }
@@ -63,7 +63,7 @@ class SpendTimePlacesRepository {
   Future<void> updateSpendTimePriceList(
       {required Isar isar,
       required List<SpendTimePlace> spendTimePriceList}) async {
-    for (var element in spendTimePriceList) {
+    for (final element in spendTimePriceList) {
       updateSpendTimePlace(isar: isar, spendTimePlace: element);
     }
   }

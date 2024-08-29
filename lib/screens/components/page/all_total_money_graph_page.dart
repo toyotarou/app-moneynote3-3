@@ -157,8 +157,8 @@ class _AllTotalMoneyGraphPageState
     if (widget.data != null) {
       var i = 0;
       final list = <int>[];
-      for (var element in widget.data!) {
-        for (var element2 in element.entries) {
+      for (final element in widget.data!) {
+        for (final element2 in element.entries) {
           _flspots.add(FlSpot((i + 1).toDouble(), element2.value.toDouble()));
 
           list.add(element2.value);
@@ -200,7 +200,7 @@ class _AllTotalMoneyGraphPageState
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
                 final list = <LineTooltipItem>[];
 
-                for (var element in touchedSpots) {
+                for (final element in touchedSpots) {
                   final textStyle = TextStyle(
                     color: element.bar.gradient?.colors.first ??
                         element.bar.color ??

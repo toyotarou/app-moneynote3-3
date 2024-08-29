@@ -148,7 +148,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     list.add(const SizedBox(height: 10));
 
     final list2 = <Widget>[];
-    for (var element in depoItemList) {
+    for (final element in depoItemList) {
       list2.add(
         Row(
           children: [
@@ -425,8 +425,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     ////////////////////////// 同数チェック
 
     if (!errFlg) {
-      for (var element in list) {
-        for (var element2 in [
+      for (final element in list) {
+        for (final element2 in [
           [element.price, 10]
         ]) {
           if (!checkInputValueLengthCheck(

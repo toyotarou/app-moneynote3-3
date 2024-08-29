@@ -109,7 +109,7 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
 
     final spendItemColorMap = <String, String>{};
     if (_spendItemList!.isNotEmpty) {
-      for (var element in _spendItemList!) {
+      for (final element in _spendItemList!) {
         spendItemColorMap[element.spendItemName] = element.color;
       }
     }

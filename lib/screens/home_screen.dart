@@ -273,7 +273,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     var minusVal = 0;
 
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
-      for (var element in thisMonthSpendTimePlaceList!) {
+      for (final element in thisMonthSpendTimePlaceList!) {
         if (element.price > 0) {
           minusVal += element.price;
         } else {
@@ -1020,10 +1020,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             if (_spendItemList != null) {
               final map = <String, List<SpendTimePlace>>{};
-              for (var element in _spendItemList!) {
+              for (final element in _spendItemList!) {
                 map[element.spendItemName] = [];
               }
-              for (var element in value) {
+              for (final element in value) {
                 map[element.spendType]?.add(element);
               }
               spendTimePlaceCountMap = map;
@@ -1062,7 +1062,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             map.forEach((key, value) {
               var sum = 0;
-              for (var element in value) {
+              for (final element in value) {
                 sum += element;
               }
               monthlySpendTimePlaceSumMap[key] = sum;
@@ -1084,7 +1084,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
       final spendItemColorMap = <String, String>{};
       if (_spendItemList!.isNotEmpty) {
-        for (var element in _spendItemList!) {
+        for (final element in _spendItemList!) {
           spendItemColorMap[element.spendItemName] = element.color;
         }
       }
@@ -1157,7 +1157,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           bankNameList = value;
 
           if (value!.isNotEmpty) {
-            for (var element in value) {
+            for (final element in value) {
               depoNameList.add(Deposit('${element.depositType}-${element.id}',
                   '${element.bankName} ${element.branchName}'));
             }
@@ -1179,7 +1179,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           emoneyNameList = value;
 
           if (value!.isNotEmpty) {
-            for (var element in value) {
+            for (final element in value) {
               depoNameList.add(Deposit(
                   '${element.depositType}-${element.id}', element.emoneyName));
             }

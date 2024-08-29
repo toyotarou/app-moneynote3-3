@@ -49,7 +49,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   void initState() {
     super.initState();
 
-    for (var element in widget.spendItemList) {
+    for (final element in widget.spendItemList) {
       final colorCode = (element.color != '') ? element.color : '0xffffffff';
       final defaultTime = (element.defaultTime != '') ? element.defaultTime : '08:00';
 
@@ -210,7 +210,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     }
 
     if (!errFlg) {
-      for (var element in [
+      for (final element in [
         [_spendItemEditingController.text.trim(), 20]
       ]) {
         if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {

@@ -68,7 +68,7 @@ class _EachMonthItemSummaryAlertState
   void _makeTab() {
     final years = <int>[];
 
-    for (var element in widget.spendTimePlaceList) {
+    for (final element in widget.spendTimePlaceList) {
       final exDate = element.date.split('-');
 
       if (!years.contains(exDate[0].toInt())) {
@@ -76,7 +76,7 @@ class _EachMonthItemSummaryAlertState
       }
     }
 
-    for (var element in years) {
+    for (final element in years) {
       _tabs.add(TabInfo(
         element.toString(),
         EachMonthItemSummaryPage(

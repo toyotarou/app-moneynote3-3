@@ -39,7 +39,7 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
   void makeGraphDataList() {
     final spendItemColorMap = <String, String>{};
 
-    for (var element in widget.spendItemList) {
+    for (final element in widget.spendItemList) {
       spendItemColorMap[element.spendItemName] = element.color;
     }
 

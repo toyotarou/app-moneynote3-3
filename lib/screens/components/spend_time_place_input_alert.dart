@@ -594,8 +594,8 @@ class _SpendTimePlaceInputAlertState
     ////////////////////////// 同数チェック
 
     if (!errFlg) {
-      for (var element in list) {
-        for (var element2 in [
+      for (final element in list) {
+        for (final element2 in [
           [element.price.toString().trim(), 10],
           [element.place.trim(), 30]
         ]) {
@@ -650,7 +650,7 @@ class _SpendTimePlaceInputAlertState
       _spendItemList = value;
 
       if (value!.isNotEmpty) {
-        for (var element in value) {
+        for (final element in value) {
           if (element.defaultTime != '') {
             final exDefaultTime = element.defaultTime.split(':');
             if (exDefaultTime[0].toInt() == 0) {

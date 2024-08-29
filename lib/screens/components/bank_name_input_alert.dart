@@ -341,7 +341,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     if (!errFlg) {
-      for (var element in [
+      for (final element in [
         [_bankNumberEditingController.text.trim(), 4],
         [_bankNameEditingController.text.trim(), 30],
         [_branchNumberEditingController.text.trim(), 3],
@@ -404,7 +404,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     if (!errFlg) {
-      for (var element in [
+      for (final element in [
         [_bankNumberEditingController.text.trim(), 4],
         [_bankNameEditingController.text.trim(), 30],
         [_branchNumberEditingController.text.trim(), 3],

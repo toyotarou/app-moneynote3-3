@@ -80,7 +80,7 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
 
     final thisMonthYearMonth = DateTime(DateTime.now().year, DateTime.now().month).yyyymm;
 
-    for (var element in widget.monthFirstDateList) {
+    for (final element in widget.monthFirstDateList) {
       final exDate = element.split('-');
 
       final zenjitsu = DateTime(exDate[0].toInt(), exDate[1].toInt(), exDate[2].toInt() - 1).yyyymmdd;
@@ -118,7 +118,7 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
   Widget _displayDataList() {
     final list = <Widget>[];
 
-    for (var element in dispDataList) {
+    for (final element in dispDataList) {
       final mark = (element.startPrice < element.lastPrice) ? 1 : 0;
 
       list.add(Container(

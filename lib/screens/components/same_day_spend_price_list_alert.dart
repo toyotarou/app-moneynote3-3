@@ -129,12 +129,12 @@ class _SameDaySpendPriceListAlertState
 
     final spendTimePlaceMap = <String, List<SpendTimePlace>>{};
 
-    for (var element in widget.spendTimePlaceList) {
+    for (final element in widget.spendTimePlaceList) {
       final exDate = element.date.split('-');
       spendTimePlaceMap['${exDate[0]}-${exDate[1]}'] = [];
     }
 
-    for (var element in widget.spendTimePlaceList) {
+    for (final element in widget.spendTimePlaceList) {
       final exDate = element.date.split('-');
 
       if (exDate[2].toInt() <= sameDaySelectedDay) {
@@ -149,7 +149,7 @@ class _SameDaySpendPriceListAlertState
     spendTimePlaceMap.forEach((key, value) {
       var sum = 0;
       var sum2 = 0;
-      for (var element in value) {
+      for (final element in value) {
         sum += element.price;
 
         if (element.price > 0) {

@@ -124,7 +124,7 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
     map2.forEach((key, value) {
       final monthList = <int>[];
 
-      for (var element in value) {
+      for (final element in value) {
         if (!monthList.contains(element)) {
           monthList.add(element);
         }
@@ -133,7 +133,7 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
       map3[key] = monthList;
     });
 
-    for (var element in widget.years) {
+    for (final element in widget.years) {
       if (map[element]!.length > 1) {
         _tabs.add(TabInfo(
           element.toString(),

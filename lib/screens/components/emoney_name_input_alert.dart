@@ -162,7 +162,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     }
 
     if (!errFlg) {
-      for (var element in [
+      for (final element in [
         [_emoneyNameEditingController.text.trim(), 30]
       ]) {
         if (!checkInputValueLengthCheck(
@@ -204,7 +204,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     }
 
     if (!errFlg) {
-      for (var element in [
+      for (final element in [
         [_emoneyNameEditingController.text.trim(), 30]
       ]) {
         if (!checkInputValueLengthCheck(
