@@ -592,16 +592,15 @@ class _SpendTimePlaceInputAlertState
     }
     ////////////////////////// 同数チェック
 
-    if (errFlg == false) {
+    if (!errFlg) {
       list.forEach((element) {
         [
           [element.price.toString().trim(), 10],
           [element.place.trim(), 30]
         ].forEach((element2) {
-          if (checkInputValueLengthCheck(
+          if (!checkInputValueLengthCheck(
                   value: element2[0].toString().trim(),
-                  length: element2[1] as int) ==
-              false) {
+                  length: element2[1] as int)) {
             errFlg = true;
           }
         });

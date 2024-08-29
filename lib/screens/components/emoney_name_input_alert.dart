@@ -138,11 +138,11 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       errFlg = true;
     }
 
-    if (errFlg == false) {
+    if (!errFlg) {
       [
         [_emoneyNameEditingController.text.trim(), 30]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int) == false) {
+        if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
       });
@@ -176,11 +176,11 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       errFlg = true;
     }
 
-    if (errFlg == false) {
+    if (!errFlg) {
       [
         [_emoneyNameEditingController.text.trim(), 30]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int) == false) {
+        if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
       });

@@ -389,12 +389,12 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     }
     ////////////////////////// 同数チェック
 
-    if (errFlg == false) {
+    if (!errFlg) {
       list.forEach((element) {
         [
           [element.price, 10]
         ].forEach((element2) {
-          if (checkInputValueLengthCheck(value: element2[0].toString().trim(), length: element2[1]) == false) {
+          if (!checkInputValueLengthCheck(value: element2[0].toString().trim(), length: element2[1])) {
             errFlg = true;
           }
         });

@@ -209,11 +209,11 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       errFlg = true;
     }
 
-    if (errFlg == false) {
+    if (!errFlg) {
       [
         [_spendItemEditingController.text.trim(), 20]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int) == false) {
+        if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
       });

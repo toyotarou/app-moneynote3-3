@@ -303,12 +303,12 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       errFlg = true;
     }
 
-    if (errFlg == false) {
+    if (!errFlg) {
       [
         [_incomePriceEditingController.text.trim(), 10],
         [_incomeSourceEditingController.text.trim(), 30]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       });

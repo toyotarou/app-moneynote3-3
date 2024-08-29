@@ -285,7 +285,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       errFlg = true;
     }
 
-    if (errFlg == false) {
+    if (!errFlg) {
       [
         [_bankNumberEditingController.text.trim(), 4],
         [_bankNameEditingController.text.trim(), 30],
@@ -293,7 +293,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
         [_branchNameEditingController.text.trim(), 30],
         [_accountNumberEditingController.text.trim(), 7]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       });
@@ -343,7 +343,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       errFlg = true;
     }
 
-    if (errFlg == false) {
+    if (!errFlg) {
       [
         [_bankNumberEditingController.text.trim(), 4],
         [_bankNameEditingController.text.trim(), 30],
@@ -351,7 +351,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
         [_branchNameEditingController.text.trim(), 30],
         [_accountNumberEditingController.text.trim(), 7]
       ].forEach((element) {
-        if (checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int) == false) {
+        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       });
