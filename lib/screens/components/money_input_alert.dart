@@ -194,7 +194,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_tecYen10000.text.trim(), 3],
         [_tecYen5000.text.trim(), 3],
         [_tecYen2000.text.trim(), 3],
@@ -205,11 +205,11 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
         [_tecYen10.text.trim(), 3],
         [_tecYen5.text.trim(), 3],
         [_tecYen1.text.trim(), 3],
-      ].forEach((element) {
+      ]) {
         if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {
@@ -269,7 +269,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_tecYen10000.text.trim(), 3],
         [_tecYen5000.text.trim(), 3],
         [_tecYen2000.text.trim(), 3],
@@ -280,11 +280,11 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
         [_tecYen10.text.trim(), 3],
         [_tecYen5.text.trim(), 3],
         [_tecYen1.text.trim(), 3],
-      ].forEach((element) {
+      ]) {
         if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {

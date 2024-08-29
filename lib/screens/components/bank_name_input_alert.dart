@@ -15,7 +15,11 @@ import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
 class BankNameInputAlert extends ConsumerStatefulWidget {
-  const BankNameInputAlert({super.key, required this.depositType, required this.isar, this.bankName});
+  const BankNameInputAlert(
+      {super.key,
+      required this.depositType,
+      required this.isar,
+      this.bankName});
 
   final DepositType depositType;
   final Isar isar;
@@ -26,11 +30,16 @@ class BankNameInputAlert extends ConsumerStatefulWidget {
 }
 
 class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
-  final TextEditingController _bankNumberEditingController = TextEditingController();
-  final TextEditingController _bankNameEditingController = TextEditingController();
-  final TextEditingController _branchNumberEditingController = TextEditingController();
-  final TextEditingController _branchNameEditingController = TextEditingController();
-  final TextEditingController _accountNumberEditingController = TextEditingController();
+  final TextEditingController _bankNumberEditingController =
+      TextEditingController();
+  final TextEditingController _bankNameEditingController =
+      TextEditingController();
+  final TextEditingController _branchNumberEditingController =
+      TextEditingController();
+  final TextEditingController _branchNameEditingController =
+      TextEditingController();
+  final TextEditingController _accountNumberEditingController =
+      TextEditingController();
 
   AccountType _selectedAccountType = AccountType.blank;
 
@@ -42,9 +51,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     if (widget.bankName != null) {
       _bankNumberEditingController.text = widget.bankName!.bankNumber.trim();
       _bankNameEditingController.text = widget.bankName!.bankName.trim();
-      _branchNumberEditingController.text = widget.bankName!.branchNumber.trim();
+      _branchNumberEditingController.text =
+          widget.bankName!.branchNumber.trim();
       _branchNameEditingController.text = widget.bankName!.branchName.trim();
-      _accountNumberEditingController.text = widget.bankName!.accountNumber.trim();
+      _accountNumberEditingController.text =
+          widget.bankName!.accountNumber.trim();
 
       switch (widget.bankName!.accountType) {
         case '普通口座':
@@ -90,10 +101,16 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                               onTap: () {
                                 switch (widget.bankName!.accountType) {
                                   case '普通口座':
-                                    ref.read(bankNamesProvider.notifier).setAccountType(accountType: AccountType.normal);
+                                    ref
+                                        .read(bankNamesProvider.notifier)
+                                        .setAccountType(
+                                            accountType: AccountType.normal);
                                     break;
                                   case '定期口座':
-                                    ref.read(bankNamesProvider.notifier).setAccountType(accountType: AccountType.fixed);
+                                    ref
+                                        .read(bankNamesProvider.notifier)
+                                        .setAccountType(
+                                            accountType: AccountType.fixed);
                                     break;
                                 }
 
@@ -101,19 +118,28 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                               },
                               child: Text(
                                 '金融機関を更新する',
-                                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
                               ),
                             ),
                             const SizedBox(height: 10),
                             GestureDetector(
                               onTap: _showDeleteDialog,
-                              child: Text('金融機関を削除する', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                              child: Text('金融機関を削除する',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary)),
                             ),
                           ],
                         )
                       : TextButton(
                           onPressed: _inputBankName,
-                          child: const Text('金融機関を追加する', style: TextStyle(fontSize: 12)),
+                          child: const Text('金融機関を追加する',
+                              style: TextStyle(fontSize: 12)),
                         ),
                 ],
               ),
@@ -131,7 +157,10 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
+          BoxShadow(
+              blurRadius: 24,
+              spreadRadius: 16,
+              color: Colors.black.withOpacity(0.2)),
         ],
       ),
       child: ClipRRect(
@@ -145,7 +174,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border:
+                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
               children: [
@@ -157,14 +187,18 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         controller: _bankNumberEditingController,
                         decoration: const InputDecoration(
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                           hintText: '金融機関番号(4桁以内)',
                           filled: true,
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white54)),
                         ),
-                        style: const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.white),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -174,14 +208,18 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         controller: _bankNameEditingController,
                         decoration: const InputDecoration(
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                           hintText: '金融機関名(30文字以内)',
                           filled: true,
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white54)),
                         ),
-                        style: const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.white),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     )
                   ],
@@ -194,14 +232,18 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         controller: _branchNumberEditingController,
                         decoration: const InputDecoration(
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                           hintText: '支店番号(3桁以内)',
                           filled: true,
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white54)),
                         ),
-                        style: const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.white),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -211,14 +253,18 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         controller: _branchNameEditingController,
                         decoration: const InputDecoration(
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                           hintText: '支店名(30文字以内)',
                           filled: true,
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white54)),
                         ),
-                        style: const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.white),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     )
                   ],
@@ -233,12 +279,17 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         items: AccountType.values.map((e) {
                           return DropdownMenuItem(
                             value: e,
-                            child: Text(e.japanName, style: const TextStyle(fontSize: 12)),
+                            child: Text(e.japanName,
+                                style: const TextStyle(fontSize: 12)),
                           );
                         }).toList(),
-                        value: (_selectedAccountType != AccountType.blank) ? _selectedAccountType : bankNamesSettingState.accountType,
+                        value: (_selectedAccountType != AccountType.blank)
+                            ? _selectedAccountType
+                            : bankNamesSettingState.accountType,
                         onChanged: (value) {
-                          ref.read(bankNamesProvider.notifier).setAccountType(accountType: value!);
+                          ref
+                              .read(bankNamesProvider.notifier)
+                              .setAccountType(accountType: value!);
                         },
                       ),
                     ),
@@ -250,14 +301,18 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         controller: _accountNumberEditingController,
                         decoration: const InputDecoration(
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                           hintText: '口座番号(7桁以内)',
                           filled: true,
                           border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white54)),
                         ),
-                        style: const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.white),
+                        onTapOutside: (event) =>
+                            FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     ),
                   ],
@@ -272,7 +327,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _inputBankName() async {
-    final accountType = ref.watch(bankNamesProvider.select((value) => value.accountType));
+    final accountType =
+        ref.watch(bankNamesProvider.select((value) => value.accountType));
 
     var errFlg = false;
 
@@ -286,23 +342,25 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_bankNumberEditingController.text.trim(), 4],
         [_bankNameEditingController.text.trim(), 30],
         [_branchNumberEditingController.text.trim(), 3],
         [_branchNameEditingController.text.trim(), 30],
         [_accountNumberEditingController.text.trim(), 7]
-      ].forEach((element) {
-        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
+      ]) {
+        if (!checkInputValueLengthCheck(
+            value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
@@ -317,7 +375,9 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       ..accountNumber = _accountNumberEditingController.text.trim()
       ..depositType = widget.depositType.japanName;
 
-    await BankNamesRepository().inputBankName(isar: widget.isar, bankName: bankName).then((value) {
+    await BankNamesRepository()
+        .inputBankName(isar: widget.isar, bankName: bankName)
+        .then((value) {
       _bankNumberEditingController.clear();
       _bankNameEditingController.clear();
       _branchNumberEditingController.clear();
@@ -330,7 +390,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _updateBankName() async {
-    final accountType = ref.watch(bankNamesProvider.select((value) => value.accountType));
+    final accountType =
+        ref.watch(bankNamesProvider.select((value) => value.accountType));
 
     var errFlg = false;
 
@@ -344,30 +405,34 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_bankNumberEditingController.text.trim(), 4],
         [_bankNameEditingController.text.trim(), 30],
         [_branchNumberEditingController.text.trim(), 3],
         [_branchNameEditingController.text.trim(), 30],
         [_accountNumberEditingController.text.trim(), 7]
-      ].forEach((element) {
-        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
+      ]) {
+        if (!checkInputValueLengthCheck(
+            value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
     }
 
     await widget.isar.writeTxn(() async {
-      await BankNamesRepository().getBankName(isar: widget.isar, id: widget.bankName!.id).then((value) async {
+      await BankNamesRepository()
+          .getBankName(isar: widget.isar, id: widget.bankName!.id)
+          .then((value) async {
         value!
           ..bankNumber = _bankNumberEditingController.text.trim()
           ..bankName = _bankNameEditingController.text.trim()
@@ -377,7 +442,9 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
           ..accountNumber = _accountNumberEditingController.text.trim()
           ..depositType = widget.depositType.japanName;
 
-        await BankNamesRepository().updateBankName(isar: widget.isar, bankName: value).then((value) {
+        await BankNamesRepository()
+            .updateBankName(isar: widget.isar, bankName: value)
+            .then((value) {
           _bankNumberEditingController.clear();
           _bankNameEditingController.clear();
           _branchNumberEditingController.clear();
@@ -392,7 +459,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   void _showDeleteDialog() {
-    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(
+        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {
@@ -413,6 +481,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
   }
 
   ///
-  Future<void> _deleteBankName() async =>
-      BankNamesRepository().deleteBankName(isar: widget.isar, id: widget.bankName!.id).then((value) => Navigator.pop(context));
+  Future<void> _deleteBankName() async => BankNamesRepository()
+      .deleteBankName(isar: widget.isar, id: widget.bankName!.id)
+      .then((value) => Navigator.pop(context));
 }

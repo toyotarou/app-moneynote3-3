@@ -80,7 +80,7 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
 
     final thisMonthYearMonth = DateTime(DateTime.now().year, DateTime.now().month).yyyymm;
 
-    widget.monthFirstDateList.forEach((element) {
+    for (var element in widget.monthFirstDateList) {
       final exDate = element.split('-');
 
       final zenjitsu = DateTime(exDate[0].toInt(), exDate[1].toInt(), exDate[2].toInt() - 1).yyyymmdd;
@@ -111,14 +111,14 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
       lastPrice = currency + bank;
 
       dispDataList.add(DispData(element, startPrice, lastDate, lastPrice));
-    });
+    }
   }
 
   ///
   Widget _displayDataList() {
     final list = <Widget>[];
 
-    dispDataList.forEach((element) {
+    for (var element in dispDataList) {
       final mark = (element.startPrice < element.lastPrice) ? 1 : 0;
 
       list.add(Container(
@@ -168,7 +168,7 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
           ],
         ),
       ));
-    });
+    }
 
     return SingleChildScrollView(child: Column(children: list));
   }

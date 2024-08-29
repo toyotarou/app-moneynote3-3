@@ -59,8 +59,12 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   void initState() {
     super.initState();
 
-    widget.allSpendTimePlaceList.forEach((element) => spendTimePlaceMap[element.date] = []);
-    widget.allSpendTimePlaceList.forEach((element) => spendTimePlaceMap[element.date]?.add(element));
+    for (var element in widget.allSpendTimePlaceList) {
+      spendTimePlaceMap[element.date] = [];
+    }
+    for (var element in widget.allSpendTimePlaceList) {
+      spendTimePlaceMap[element.date]?.add(element);
+    }
 
     getPublicDirectoryPath();
   }
@@ -368,7 +372,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
         case DateDownloadDataType.bank:
           outputValuesList = [];
 
-          dateList.forEach((element) {
+          for (var element in dateList) {
             list.add(
               Row(children: [
                 getDataCell(data: element, width: 100, alignment: Alignment.topLeft),
@@ -378,13 +382,15 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             );
 
             final outVal = <String>[element];
-            widget.bankNameList
-                .forEach((element2) => outVal.add(_getBankPriceData(deposit: '${element2.depositType}-${element2.id}', date: element).toString()));
-            widget.emoneyNameList
-                .forEach((element2) => outVal.add(_getBankPriceData(deposit: '${element2.depositType}-${element2.id}', date: element).toString()));
+            for (var element2 in widget.bankNameList) {
+              outVal.add(_getBankPriceData(deposit: '${element2.depositType}-${element2.id}', date: element).toString());
+            }
+            for (var element2 in widget.emoneyNameList) {
+              outVal.add(_getBankPriceData(deposit: '${element2.depositType}-${element2.id}', date: element).toString());
+            }
 
             outputValuesList.add(outVal.join(','));
-          });
+          }
           break;
 
         case DateDownloadDataType.spend:
@@ -392,7 +398,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
           spendTimePlaceMap.forEach((key, value) {
             if (dateList.contains(key)) {
-              value.forEach((element) {
+              for (var element in value) {
                 list.add(Row(
                   children: [
                     getDataCell(data: element.date, width: 100, alignment: Alignment.topLeft),
@@ -404,7 +410,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                 ));
 
                 outputValuesList.add([element.date, element.time, element.spendType, element.price.toString(), element.place].join(','));
-              });
+              }
             }
           });
           break;
@@ -412,7 +418,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
         case DateDownloadDataType.bankName:
           outputValuesList = [];
 
-          widget.bankNameList.forEach((element) {
+          for (var element in widget.bankNameList) {
             list.add(Row(
               children: [
                 getDataCell(data: element.bankNumber, width: 100, alignment: Alignment.topLeft),
@@ -432,9 +438,9 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               element.accountType,
               '\'${element.accountNumber}',
             ].join(','));
-          });
+          }
 
-          widget.emoneyNameList.forEach((element) {
+          for (var element in widget.emoneyNameList) {
             list.add(Row(
               children: [
                 getDataCell(data: element.emoneyName, width: 100, alignment: Alignment.topLeft),
@@ -442,14 +448,14 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             ));
 
             outputValuesList.add([element.emoneyName].join(','));
-          });
+          }
 
           break;
 
         case DateDownloadDataType.spendItem:
           outputValuesList = [];
 
-          widget.spendItem.forEach((element) {
+          for (var element in widget.spendItem) {
             list.add(Row(
               children: [
                 getDataCell(data: element.spendItemName, width: 100, alignment: Alignment.topLeft),
@@ -460,14 +466,14 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             ));
 
             outputValuesList.add([element.spendItemName, element.order.toString(), '\'${element.color}', element.defaultTime].join(','));
-          });
+          }
 
           break;
 
         case DateDownloadDataType.income:
           outputValuesList = [];
 
-          widget.incomeList.forEach((element) {
+          for (var element in widget.incomeList) {
             list.add(Row(
               children: [
                 getDataCell(data: element.date, width: 100, alignment: Alignment.topLeft),
@@ -477,7 +483,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             ));
 
             outputValuesList.add([element.date, element.sourceName, element.price].join(','));
-          });
+          }
 
           break;
       }

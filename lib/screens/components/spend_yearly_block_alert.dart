@@ -127,9 +127,9 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
     final spendItemColorMap = <String, String>{};
     if (_spendItemList!.isNotEmpty) {
-      _spendItemList!.forEach((element) {
+      for (var element in _spendItemList!) {
         spendItemColorMap[element.spendItemName] = element.color;
-      });
+      }
     }
 
     final oneWidth = context.screenSize.width / 6;
@@ -146,7 +146,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
       var sum = 0;
 
-      value.forEach((element) {
+      for (var element in value) {
         // if (element > 0) {
         //   map[element] = '';
         //
@@ -155,7 +155,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
         map[element] = '';
         sum += element;
-      });
+      }
 
       allTotal += sum;
 
@@ -224,7 +224,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
         // });
 
         var i = 1;
-        value.forEach((element) {
+        for (var element in value) {
           list2.add(
             Stack(
               children: [
@@ -253,7 +253,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
           );
 
           i++;
-        });
+        }
       }
 
       list.add(Wrap(children: list2));

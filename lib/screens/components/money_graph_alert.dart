@@ -185,16 +185,18 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         }
 
         map100.forEach((key, value) {
-          widget.thisMonthSpendTimePlaceList.forEach((element) {
+          for (var element in widget.thisMonthSpendTimePlaceList) {
             if (key == element.date) {
               map100[key]?.add((element.price > 0) ? element.price : 0);
             }
-          });
+          }
         });
 
         var sum = 0;
         map100.forEach((key, value) {
-          value.forEach((element) => sum += element);
+          for (var element in value) {
+            sum += element;
+          }
           map[key] = sum;
         });
 
@@ -247,7 +249,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
                 final list = <LineTooltipItem>[];
 
-                touchedSpots.forEach((element) {
+                for (var element in touchedSpots) {
                   final textStyle = TextStyle(
                     color: element.bar.gradient?.colors.first ??
                         element.bar.color ??
@@ -270,7 +272,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                       textAlign: TextAlign.end,
                     ),
                   );
-                });
+                }
 
                 return list;
               }),

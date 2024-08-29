@@ -139,13 +139,13 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_emoneyNameEditingController.text.trim(), 30]
-      ].forEach((element) {
+      ]) {
         if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {
@@ -177,13 +177,13 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_emoneyNameEditingController.text.trim(), 30]
-      ].forEach((element) {
+      ]) {
         if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {

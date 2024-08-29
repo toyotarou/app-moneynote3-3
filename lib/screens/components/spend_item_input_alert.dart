@@ -49,7 +49,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   void initState() {
     super.initState();
 
-    widget.spendItemList.forEach((element) {
+    for (var element in widget.spendItemList) {
       final colorCode = (element.color != '') ? element.color : '0xffffffff';
       final defaultTime = (element.defaultTime != '') ? element.defaultTime : '08:00';
 
@@ -74,7 +74,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       spendItemDefaultTimeMap[element.id] = element.defaultTime;
 
       spendItemNameMap[element.id] = element.spendItemName;
-    });
+    }
 
     ddList.add(DragAndDropList(children: spendItemDDItemList));
   }
@@ -210,13 +210,13 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_spendItemEditingController.text.trim(), 20]
-      ].forEach((element) {
+      ]) {
         if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {

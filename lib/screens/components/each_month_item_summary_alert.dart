@@ -68,15 +68,15 @@ class _EachMonthItemSummaryAlertState
   void _makeTab() {
     final years = <int>[];
 
-    widget.spendTimePlaceList.forEach((element) {
+    for (var element in widget.spendTimePlaceList) {
       final exDate = element.date.split('-');
 
       if (!years.contains(exDate[0].toInt())) {
         years.add(exDate[0].toInt());
       }
-    });
+    }
 
-    years.forEach((element) {
+    for (var element in years) {
       _tabs.add(TabInfo(
         element.toString(),
         EachMonthItemSummaryPage(
@@ -85,6 +85,6 @@ class _EachMonthItemSummaryAlertState
           spendItemList: widget.spendItemList,
         ),
       ));
-    });
+    }
   }
 }

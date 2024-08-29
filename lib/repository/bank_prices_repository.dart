@@ -29,8 +29,9 @@ class BankPricesRepository {
   ///
   Future<void> inputBankPriceList(
       {required Isar isar, required List<BankPrice> bankPriceList}) async {
-    bankPriceList
-        .forEach((element) => inputBankPrice(isar: isar, bankPrice: element));
+    for (var element in bankPriceList) {
+      inputBankPrice(isar: isar, bankPrice: element);
+    }
   }
 
   ///
@@ -43,8 +44,9 @@ class BankPricesRepository {
   ///
   Future<void> deleteBankPriceList(
       {required Isar isar, required List<BankPrice> bankPriceList}) async {
-    bankPriceList
-        .forEach((element) => deleteBankPrice(isar: isar, id: element.id));
+    for (var element in bankPriceList) {
+      deleteBankPrice(isar: isar, id: element.id);
+    }
   }
 
   ///

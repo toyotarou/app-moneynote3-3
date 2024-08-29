@@ -46,8 +46,9 @@ class SpendTimePlacesRepository {
   Future<void> inputSpendTimePriceList(
       {required Isar isar,
       required List<SpendTimePlace> spendTimePriceList}) async {
-    spendTimePriceList.forEach(
-        (element) => inputSpendTimePrice(isar: isar, spendTimePlace: element));
+    for (var element in spendTimePriceList) {
+      inputSpendTimePrice(isar: isar, spendTimePlace: element);
+    }
   }
 
   ///
@@ -62,8 +63,9 @@ class SpendTimePlacesRepository {
   Future<void> updateSpendTimePriceList(
       {required Isar isar,
       required List<SpendTimePlace> spendTimePriceList}) async {
-    spendTimePriceList.forEach(
-        (element) => updateSpendTimePlace(isar: isar, spendTimePlace: element));
+    for (var element in spendTimePriceList) {
+      updateSpendTimePlace(isar: isar, spendTimePlace: element);
+    }
   }
 
   ///

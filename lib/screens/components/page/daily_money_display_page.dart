@@ -807,8 +807,9 @@ class _DailyMoneyDisplayAlertState
     if (widget.spendTimePlaceList.isNotEmpty) {
       final spendItemColorMap = <String, String>{};
       if (widget.spendItemList.isNotEmpty) {
-        widget.spendItemList.forEach((element) =>
-            spendItemColorMap[element.spendItemName] = element.color);
+        for (var element in widget.spendItemList) {
+          spendItemColorMap[element.spendItemName] = element.color;
+        }
       }
 
       var sum = 0;

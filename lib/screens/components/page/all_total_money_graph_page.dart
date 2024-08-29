@@ -156,15 +156,15 @@ class _AllTotalMoneyGraphPageState
     if (widget.data != null) {
       var i = 0;
       final list = <int>[];
-      widget.data!.forEach((element) {
-        element.entries.forEach((element2) {
+      for (var element in widget.data!) {
+        for (var element2 in element.entries) {
           _flspots.add(FlSpot((i + 1).toDouble(), element2.value.toDouble()));
 
           list.add(element2.value);
 
           i++;
-        });
-      });
+        }
+      }
 
       // final list = <int>[];
       // widget.data!.mapIndexed((index, element) {
@@ -199,7 +199,7 @@ class _AllTotalMoneyGraphPageState
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
                 final list = <LineTooltipItem>[];
 
-                touchedSpots.forEach((element) {
+                for (var element in touchedSpots) {
                   final textStyle = TextStyle(
                     color: element.bar.gradient?.colors.first ??
                         element.bar.color ??
@@ -222,7 +222,7 @@ class _AllTotalMoneyGraphPageState
                       textAlign: TextAlign.end,
                     ),
                   );
-                });
+                }
 
                 return list;
               }),

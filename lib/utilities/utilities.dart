@@ -68,7 +68,7 @@ class Utility {
   List<LineTooltipItem> getGraphToolTip(List<LineBarSpot> touchedSpots) {
     final list = <LineTooltipItem>[];
 
-    touchedSpots.forEach((element) {
+    for (var element in touchedSpots) {
       final textStyle = TextStyle(
         color: element.bar.gradient?.colors.first ??
             element.bar.color ??
@@ -86,7 +86,7 @@ class Utility {
           textAlign: TextAlign.end,
         ),
       );
-    });
+    }
 
     return list;
   }

@@ -71,32 +71,36 @@ class _EachMonthItemSummaryPageState
     for (var i = 1; i <= 12; i++) {
       final map2 = <String, List<int>>{};
 
-      widget.spendItemList
-          .forEach((element2) => map2[element2.spendItemName] = []);
+      for (var element2 in widget.spendItemList) {
+        map2[element2.spendItemName] = [];
+      }
 
-      stpList.forEach((element) {
+      for (var element in stpList) {
         final exDate = element.date.split('-');
         final elementYearmonth = '${exDate[0]}-${exDate[1]}';
         final widgetYearmonth =
             '${widget.year}-${i.toString().padLeft(2, '0')}';
 
         if (elementYearmonth == widgetYearmonth) {
-          widget.spendItemList.forEach((element2) {
+          for (var element2 in widget.spendItemList) {
             if (element2.spendItemName == element.spendType) {
               map2[element2.spendItemName]?.add(element.price);
             }
-          });
+          }
         }
-      });
+      }
 
       final map3 = <String, int>{};
 
-      widget.spendItemList
-          .forEach((element4) => map3[element4.spendItemName] = 0);
+      for (var element4 in widget.spendItemList) {
+        map3[element4.spendItemName] = 0;
+      }
 
       map2.forEach((key, value) {
         var sum = 0;
-        value.forEach((element3) => sum += element3);
+        for (var element3 in value) {
+          sum += element3;
+        }
         map3[key] = sum;
       });
 
@@ -118,7 +122,7 @@ class _EachMonthItemSummaryPageState
           ),
         );
 
-        widget.spendItemList.forEach((element5) {
+        for (var element5 in widget.spendItemList) {
           list3.add(Container(
             width: 100,
             height: 24,
@@ -153,7 +157,7 @@ class _EachMonthItemSummaryPageState
               ],
             ),
           ));
-        });
+        }
       }
 
       list2.add(Column(children: list3));

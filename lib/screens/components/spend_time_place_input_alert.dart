@@ -593,18 +593,18 @@ class _SpendTimePlaceInputAlertState
     ////////////////////////// 同数チェック
 
     if (!errFlg) {
-      list.forEach((element) {
-        [
+      for (var element in list) {
+        for (var element2 in [
           [element.price.toString().trim(), 10],
           [element.place.trim(), 30]
-        ].forEach((element2) {
+        ]) {
           if (!checkInputValueLengthCheck(
                   value: element2[0].toString().trim(),
                   length: element2[1] as int)) {
             errFlg = true;
           }
-        });
-      });
+        }
+      }
     }
 
     final diff = spendTimePlaceState.diff;
@@ -649,14 +649,14 @@ class _SpendTimePlaceInputAlertState
       _spendItemList = value;
 
       if (value!.isNotEmpty) {
-        value.forEach((element) {
+        for (var element in value) {
           if (element.defaultTime != '') {
             final exDefaultTime = element.defaultTime.split(':');
             if (exDefaultTime[0].toInt() == 0) {
               _timeUnknownItem.add(element.spendItemName);
             }
           }
-        });
+        }
       }
     });
   }

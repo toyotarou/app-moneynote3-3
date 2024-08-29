@@ -109,7 +109,9 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
 
     final spendItemColorMap = <String, String>{};
     if (_spendItemList!.isNotEmpty) {
-      _spendItemList!.forEach((element) => spendItemColorMap[element.spendItemName] = element.color);
+      for (var element in _spendItemList!) {
+        spendItemColorMap[element.spendItemName] = element.color;
+      }
     }
 
     final roopNum = DateTime(widget.date.year, widget.date.month + 1, 0).day;

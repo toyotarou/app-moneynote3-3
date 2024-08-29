@@ -272,13 +272,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     var minusVal = 0;
 
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
-      thisMonthSpendTimePlaceList!.forEach((element) {
+      for (var element in thisMonthSpendTimePlaceList!) {
         if (element.price > 0) {
           minusVal += element.price;
         } else {
           plusVal += element.price;
         }
-      });
+      }
     }
 
     return Container(
@@ -1018,9 +1018,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             if (_spendItemList != null) {
               final map = <String, List<SpendTimePlace>>{};
-              _spendItemList!
-                  .forEach((element) => map[element.spendItemName] = []);
-              value.forEach((element) => map[element.spendType]?.add(element));
+              for (var element in _spendItemList!) {
+                map[element.spendItemName] = [];
+              }
+              for (var element in value) {
+                map[element.spendType]?.add(element);
+              }
               spendTimePlaceCountMap = map;
             }
 
@@ -1057,7 +1060,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             map.forEach((key, value) {
               var sum = 0;
-              value.forEach((element) => sum += element);
+              for (var element in value) {
+                sum += element;
+              }
               monthlySpendTimePlaceSumMap[key] = sum;
             });
 
@@ -1077,8 +1082,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
       final spendItemColorMap = <String, String>{};
       if (_spendItemList!.isNotEmpty) {
-        _spendItemList!.forEach((element) =>
-            spendItemColorMap[element.spendItemName] = element.color);
+        for (var element in _spendItemList!) {
+          spendItemColorMap[element.spendItemName] = element.color;
+        }
       }
 
       makeMonthlySpendItemSumMap(
@@ -1149,9 +1155,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           bankNameList = value;
 
           if (value!.isNotEmpty) {
-            value.forEach((element) => depoNameList.add(Deposit(
+            for (var element in value) {
+              depoNameList.add(Deposit(
                 '${element.depositType}-${element.id}',
-                '${element.bankName} ${element.branchName}')));
+                '${element.bankName} ${element.branchName}'));
+            }
           }
         });
       }
@@ -1170,8 +1178,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           emoneyNameList = value;
 
           if (value!.isNotEmpty) {
-            value.forEach((element) => depoNameList.add(Deposit(
-                '${element.depositType}-${element.id}', element.emoneyName)));
+            for (var element in value) {
+              depoNameList.add(Deposit(
+                '${element.depositType}-${element.id}', element.emoneyName));
+            }
           }
         });
       }

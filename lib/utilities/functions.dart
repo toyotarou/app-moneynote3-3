@@ -65,13 +65,13 @@ emoney-5: [{2023-12-11: 50000}]}
       for (var i = 0; i <= diff; i++) {
         final date = dt.add(Duration(days: i)).yyyymmdd;
 
-        value.forEach((element) {
+        for (var element in value) {
           if (element[date] != null) {
             price = element[date] ?? 0;
           }
 
           map4[date] = price;
-        });
+        }
       }
 
       map3[deposit] = map4;
@@ -117,7 +117,9 @@ flutter: {
 
   aaa.forEach((key, value) {
     var sum = 0;
-    value.forEach((element) => sum += element);
+    for (var element in value) {
+      sum += element;
+    }
     map4[key] = sum;
   });
 
@@ -138,23 +140,27 @@ Map<String, int> makeMonthlySpendItemSumMap({required List<SpendTimePlace> spend
   final list = <String>[];
 
   if (spendItemList!.isNotEmpty) {
-    spendItemList.forEach((element) => list.add(element.spendItemName));
+    for (var element in spendItemList) {
+      list.add(element.spendItemName);
+    }
   }
 
   final map = <String, List<int>>{};
 
-  list.forEach((element) {
+  for (var element in list) {
     final filtered = spendTimePlaceList.where((element2) => element2.spendType == element).toList();
     if (filtered.isNotEmpty) {
       filtered
         ..forEach((element3) => map[element3.spendType] = [])
         ..forEach((element3) => map[element3.spendType]?.add(element3.price));
     }
-  });
+  }
 
   map.forEach((key, value) {
     var sum = 0;
-    value.forEach((element) => sum += element);
+    for (var element in value) {
+      sum += element;
+    }
     monthlySpendItemSumMap[key] = sum;
   });
 
@@ -166,7 +172,9 @@ Map<String, List<int>> makeYearlySpendItemSumMap({required List<SpendTimePlace> 
   final list = <String>[];
 
   if (spendItemList!.isNotEmpty) {
-    spendItemList.forEach((element) => list.add(element.spendItemName));
+    for (var element in spendItemList) {
+      list.add(element.spendItemName);
+    }
   }
 
   final map = <String, List<SpendTimePlace>>{};
@@ -174,11 +182,11 @@ Map<String, List<int>> makeYearlySpendItemSumMap({required List<SpendTimePlace> 
   for (var i = 1; i <= 12; i++) {
     final list2 = <SpendTimePlace>[];
 
-    spendTimePlaceList.forEach((element) {
+    for (var element in spendTimePlaceList) {
       if (i.toString().padLeft(2, '0') == element.date.split('-')[1]) {
         list2.add(element);
       }
-    });
+    }
 
     map[i.toString().padLeft(2, '0')] = list2;
   }
@@ -206,11 +214,14 @@ print(map2);
 
   final map3 = <String, List<int>>{};
 
-  list.forEach((element) => map3[element] = []);
+  for (var element in list) {
+    map3[element] = [];
+  }
 
   for (var i = 1; i <= 12; i++) {
-    list.forEach((element) =>
-        map3[element]?.add((map2[i.toString().padLeft(2, '0')]?[element] != null) ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt() : 0));
+    for (var element in list) {
+      map3[element]?.add((map2[i.toString().padLeft(2, '0')]?[element] != null) ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt() : 0);
+    }
   }
 
   /*

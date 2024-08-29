@@ -124,16 +124,16 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
     map2.forEach((key, value) {
       final monthList = <int>[];
 
-      value.forEach((element) {
+      for (var element in value) {
         if (!monthList.contains(element)) {
           monthList.add(element);
         }
-      });
+      }
 
       map3[key] = monthList;
     });
 
-    widget.years.forEach((element) {
+    for (var element in widget.years) {
       if (map[element]!.length > 1) {
         _tabs.add(TabInfo(
           element.toString(),
@@ -150,6 +150,6 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
           ),
         ));
       }
-    });
+    }
   }
 }

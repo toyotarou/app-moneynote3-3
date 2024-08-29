@@ -186,15 +186,14 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_bankPriceEditingController.text.trim(), 10]
-      ].forEach((element) {
+      ]) {
         if (!checkInputValueLengthCheck(
-                value: element[0].toString().trim(),
-                length: element[1] as int)) {
+            value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {

@@ -26,7 +26,8 @@ class Deposit {
 }
 
 class BankPriceAdjustAlert extends ConsumerStatefulWidget {
-  const BankPriceAdjustAlert({super.key, required this.isar, this.bankNameList, this.emoneyNameList});
+  const BankPriceAdjustAlert(
+      {super.key, required this.isar, this.bankNameList, this.emoneyNameList});
 
   final Isar isar;
 
@@ -35,7 +36,8 @@ class BankPriceAdjustAlert extends ConsumerStatefulWidget {
   final List<EmoneyName>? emoneyNameList;
 
   @override
-  ConsumerState<BankPriceAdjustAlert> createState() => _BankPriceAdjustAlertState();
+  ConsumerState<BankPriceAdjustAlert> createState() =>
+      _BankPriceAdjustAlertState();
 }
 
 class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
@@ -55,7 +57,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final inputButtonClicked = ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
+    final inputButtonClicked =
+        ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -81,11 +84,14 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                     onPressed: inputButtonClicked
                         ? null
                         : () {
-                            ref.read(appParamProvider.notifier).setInputButtonClicked(flag: true);
+                            ref
+                                .read(appParamProvider.notifier)
+                                .setInputButtonClicked(flag: true);
 
                             _inputBankPriceAdjust();
                           },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     child: const Text('input'),
                   ),
                 ],
@@ -118,18 +124,22 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     widget.bankNameList?.forEach((element) {
       depositNameList.add(
-        Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
+        Deposit('${element.depositType}-${element.id}',
+            '${element.bankName} ${element.branchName}'),
       );
 
-      depoItemList.add(DepoItem(element.id, '${element.bankName}\n${element.branchName}', DepositType.bank));
+      depoItemList.add(DepoItem(element.id,
+          '${element.bankName}\n${element.branchName}', DepositType.bank));
 
       bankNameMap[element.id] = element;
     });
 
     widget.emoneyNameList?.forEach((element) {
-      depositNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName));
+      depositNameList.add(
+          Deposit('${element.depositType}-${element.id}', element.emoneyName));
 
-      depoItemList.add(DepoItem(element.id, element.emoneyName, DepositType.emoney));
+      depoItemList
+          .add(DepoItem(element.id, element.emoneyName, DepositType.emoney));
 
       emoneyNameMap[element.id] = element;
     });
@@ -138,7 +148,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     list.add(const SizedBox(height: 10));
 
     final list2 = <Widget>[];
-    depoItemList.forEach((element) {
+    for (var element in depoItemList) {
       list2.add(
         Row(
           children: [
@@ -170,8 +180,9 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                 }
               },
               child: CircleAvatar(
-                backgroundColor:
-                    (element.type == DepositType.bank) ? Colors.blueAccent.withOpacity(0.2) : Colors.greenAccent.withOpacity(0.2),
+                backgroundColor: (element.type == DepositType.bank)
+                    ? Colors.blueAccent.withOpacity(0.2)
+                    : Colors.greenAccent.withOpacity(0.2),
                 child: Container(
                   alignment: Alignment.center,
                   child: Text(
@@ -187,17 +198,23 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
           ],
         ),
       );
-    });
+    }
 
     list
-      ..add(SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: list2)))
+      ..add(SingleChildScrollView(
+          scrollDirection: Axis.horizontal, child: Row(children: list2)))
       ..add(const SizedBox(height: 10));
     //==============================================
 
     for (var i = 0; i < 10; i++) {
       list.add(DecoratedBox(
         decoration: BoxDecoration(
-          boxShadow: [BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
+          boxShadow: [
+            BoxShadow(
+                blurRadius: 24,
+                spreadRadius: 16,
+                color: Colors.black.withOpacity(0.2))
+          ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
@@ -210,7 +227,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                   right: 15,
                   child: Text(
                     (i + 1).toString().padLeft(2, '0'),
-                    style: TextStyle(fontSize: 60, color: Colors.grey.withOpacity(0.3)),
+                    style: TextStyle(
+                        fontSize: 60, color: Colors.grey.withOpacity(0.3)),
                   ),
                 ),
                 Container(
@@ -220,7 +238,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+                    border: Border.all(
+                        color: Colors.white.withOpacity(0.2), width: 1.5),
                   ),
                   child: Column(
                     children: [
@@ -228,12 +247,14 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                         children: [
                           GestureDetector(
                             onTap: () => _showDP(pos: i),
-                            child: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                            child: Icon(Icons.calendar_month,
+                                color: Colors.greenAccent.withOpacity(0.6)),
                           ),
                           const SizedBox(width: 10),
                           SizedBox(
                             width: context.screenSize.width / 6,
-                            child: Text(bankPriceAdjustState.adjustDate[i], style: const TextStyle(fontSize: 10)),
+                            child: Text(bankPriceAdjustState.adjustDate[i],
+                                style: const TextStyle(fontSize: 10)),
                           ),
                           const SizedBox(width: 20),
                           Expanded(
@@ -244,12 +265,15 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                               items: depositNameList.map((e) {
                                 return DropdownMenuItem(
                                   value: e.flag,
-                                  child: Text(e.name, style: const TextStyle(fontSize: 12)),
+                                  child: Text(e.name,
+                                      style: const TextStyle(fontSize: 12)),
                                 );
                               }).toList(),
                               value: bankPriceAdjustState.adjustDeposit[i],
                               onChanged: (value) {
-                                ref.read(bankPriceAdjustProvider.notifier).setAdjustDeposit(pos: i, value: value!);
+                                ref
+                                    .read(bankPriceAdjustProvider.notifier)
+                                    .setAdjustDeposit(pos: i, value: value!);
                               },
                             ),
                           ),
@@ -263,17 +287,25 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                               controller: _bankPriceTecs[i],
                               decoration: const InputDecoration(
                                 isDense: true,
-                                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 4),
                                 hintText: '金額(10桁以内)',
                                 filled: true,
                                 border: OutlineInputBorder(),
-                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.white54)),
                               ),
-                              style: const TextStyle(fontSize: 13, color: Colors.white),
-                              onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                              style: const TextStyle(
+                                  fontSize: 13, color: Colors.white),
+                              onTapOutside: (event) =>
+                                  FocusManager.instance.primaryFocus?.unfocus(),
                               onChanged: (value) {
                                 if (value != '') {
-                                  ref.read(bankPriceAdjustProvider.notifier).setAdjustPrice(pos: i, value: value.trim().toInt());
+                                  ref
+                                      .read(bankPriceAdjustProvider.notifier)
+                                      .setAdjustPrice(
+                                          pos: i, value: value.trim().toInt());
                                 }
                               },
                             ),
@@ -321,7 +353,9 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     );
 
     if (selectedDate != null) {
-      await ref.read(bankPriceAdjustProvider.notifier).setAdjustDate(pos: pos, value: selectedDate.yyyymmdd);
+      await ref
+          .read(bankPriceAdjustProvider.notifier)
+          .setAdjustDate(pos: pos, value: selectedDate.yyyymmdd);
     }
   }
 
@@ -356,7 +390,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
             ..price = bankPriceAdjustState.adjustPrice[i],
         );
 
-        insertBankPriceList.add('${exDeposit[0]}|${exDeposit[1]}|${bankPriceAdjustState.adjustDate[i]}');
+        insertBankPriceList.add(
+            '${exDeposit[0]}|${exDeposit[1]}|${bankPriceAdjustState.adjustDate[i]}');
       }
       //===============================================
 
@@ -390,30 +425,35 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     ////////////////////////// 同数チェック
 
     if (!errFlg) {
-      list.forEach((element) {
-        [
+      for (var element in list) {
+        for (var element2 in [
           [element.price, 10]
-        ].forEach((element2) {
-          if (!checkInputValueLengthCheck(value: element2[0].toString().trim(), length: element2[1])) {
+        ]) {
+          if (!checkInputValueLengthCheck(
+              value: element2[0].toString().trim(), length: element2[1])) {
             errFlg = true;
           }
-        });
-      });
+        }
+      }
     }
 
     if (errFlg) {
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
-      await ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+      await ref
+          .read(appParamProvider.notifier)
+          .setInputButtonClicked(flag: false);
 
       return;
     }
 
     //---------------------------//
-    final bankPricesCollection = BankPricesRepository().getCollection(isar: widget.isar);
+    final bankPricesCollection =
+        BankPricesRepository().getCollection(isar: widget.isar);
 
     insertBankPriceList.forEach((element) async {
       final exElement = element.split('|');
@@ -426,7 +466,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
           .findAll();
 
       if (getBankPrices.isNotEmpty) {
-        await BankPricesRepository().deleteBankPriceList(isar: widget.isar, bankPriceList: getBankPrices);
+        await BankPricesRepository().deleteBankPriceList(
+            isar: widget.isar, bankPriceList: getBankPrices);
       }
     });
 
@@ -434,7 +475,10 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     await BankPricesRepository()
         .inputBankPriceList(isar: widget.isar, bankPriceList: list)
-        .then((value) async => ref.read(bankPriceAdjustProvider.notifier).clearInputValue().then((value) => Navigator.pop(context)));
+        .then((value) async => ref
+            .read(bankPriceAdjustProvider.notifier)
+            .clearInputValue()
+            .then((value) => Navigator.pop(context)));
   }
 }
 

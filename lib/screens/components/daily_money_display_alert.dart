@@ -67,17 +67,21 @@ class _DailyMoneyDisplayAlertState
   void initState() {
     super.initState();
 
-    widget.prevMonthSpendTimePlaceList
-        .forEach((element) => monthlySpendTimePlaceMap[element.date] = []);
+    for (var element in widget.prevMonthSpendTimePlaceList) {
+      monthlySpendTimePlaceMap[element.date] = [];
+    }
 
-    widget.prevMonthSpendTimePlaceList.forEach(
-        (element) => monthlySpendTimePlaceMap[element.date]?.add(element));
+    for (var element in widget.prevMonthSpendTimePlaceList) {
+      monthlySpendTimePlaceMap[element.date]?.add(element);
+    }
 
-    widget.thisMonthSpendTimePlaceList
-        .forEach((element) => monthlySpendTimePlaceMap[element.date] = []);
+    for (var element in widget.thisMonthSpendTimePlaceList) {
+      monthlySpendTimePlaceMap[element.date] = [];
+    }
 
-    widget.thisMonthSpendTimePlaceList.forEach(
-        (element) => monthlySpendTimePlaceMap[element.date]?.add(element));
+    for (var element in widget.thisMonthSpendTimePlaceList) {
+      monthlySpendTimePlaceMap[element.date]?.add(element);
+    }
   }
 
   ///

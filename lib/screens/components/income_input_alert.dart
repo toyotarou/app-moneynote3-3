@@ -194,7 +194,9 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
         if (value != null) {
           final map = <String, String>{};
-          _incomeList!.forEach((element) => map[element.date.split('-')[0]] = '');
+          for (var element in _incomeList!) {
+            map[element.date.split('-')[0]] = '';
+          }
           map.forEach((key, value) => _yearList.add(key));
         }
       });
@@ -255,15 +257,15 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       if (selectedIncomeYear == '') {
         icList = _incomeList!;
       } else {
-        _incomeList!.forEach((element) {
+        for (var element in _incomeList!) {
           if (element.date.split('-')[0] == selectedIncomeYear) {
             icList.add(element);
           }
-        });
+        }
       }
     }
 
-    icList.forEach((element) {
+    for (var element in icList) {
       list.add(
         Container(
           padding: const EdgeInsets.all(10),
@@ -290,7 +292,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
           ),
         ),
       );
-    });
+    }
 
     return SingleChildScrollView(child: Column(children: list));
   }
@@ -304,14 +306,14 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
     }
 
     if (!errFlg) {
-      [
+      for (var element in [
         [_incomePriceEditingController.text.trim(), 10],
         [_incomeSourceEditingController.text.trim(), 30]
-      ].forEach((element) {
+      ]) {
         if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
-      });
+      }
     }
 
     if (errFlg) {
