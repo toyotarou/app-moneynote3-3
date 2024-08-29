@@ -987,8 +987,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           if (value != null) {
             final bankPriceMap = makeBankPriceMap(bankPriceList: value);
-            bankPricePadMap = bankPriceMap['bankPriceDatePadMap'];
-            bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'];
+            bankPricePadMap = bankPriceMap['bankPriceDatePadMap']
+                as Map<String, Map<String, int>>;
+            bankPriceTotalPadMap =
+                bankPriceMap['bankPriceTotalPadMap'] as Map<String, int>;
           }
         });
       }

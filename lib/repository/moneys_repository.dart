@@ -19,9 +19,13 @@ class MoneysRepository {
   }
 
   ///
-  Future<List<Money>?> getDateMoneyList({required Isar isar, required Map<String, dynamic> param}) async {
+  Future<List<Money>?> getDateMoneyList(
+      {required Isar isar, required Map<String, dynamic> param}) async {
     final moneysCollection = getCollection(isar: isar);
-    return moneysCollection.filter().dateEqualTo(param['date']).findAll();
+    return moneysCollection
+        .filter()
+        .dateEqualTo(param['date'] as String)
+        .findAll();
   }
 
   ///
