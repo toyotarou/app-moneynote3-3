@@ -8,7 +8,7 @@ class MenuHeadIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
+      children: <Widget>[
         Container(
           width: 25,
           height: 25,

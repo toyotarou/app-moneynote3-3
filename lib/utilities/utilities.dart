@@ -11,7 +11,7 @@ class Utility {
     required String youbiStr,
     required Map<String, String> holidayMap,
   }) {
-    var color = Colors.black.withOpacity(0.2);
+    Color color = Colors.black.withOpacity(0.2);
 
     switch (youbiStr) {
       case 'Sunday':
@@ -36,18 +36,18 @@ class Utility {
 
   ///
   int makeCurrencySum({Money? money}) {
-    var sum = 0;
+    int sum = 0;
 
-    final yen_10000 = (money != null) ? money.yen_10000 : 0;
-    final yen_5000 = (money != null) ? money.yen_5000 : 0;
-    final yen_2000 = (money != null) ? money.yen_2000 : 0;
-    final yen_1000 = (money != null) ? money.yen_1000 : 0;
-    final yen_500 = (money != null) ? money.yen_500 : 0;
-    final yen_100 = (money != null) ? money.yen_100 : 0;
-    final yen_50 = (money != null) ? money.yen_50 : 0;
-    final yen_10 = (money != null) ? money.yen_10 : 0;
-    final yen_5 = (money != null) ? money.yen_5 : 0;
-    final yen_1 = (money != null) ? money.yen_1 : 0;
+    final int yen_10000 = (money != null) ? money.yen_10000 : 0;
+    final int yen_5000 = (money != null) ? money.yen_5000 : 0;
+    final int yen_2000 = (money != null) ? money.yen_2000 : 0;
+    final int yen_1000 = (money != null) ? money.yen_1000 : 0;
+    final int yen_500 = (money != null) ? money.yen_500 : 0;
+    final int yen_100 = (money != null) ? money.yen_100 : 0;
+    final int yen_50 = (money != null) ? money.yen_50 : 0;
+    final int yen_10 = (money != null) ? money.yen_10 : 0;
+    final int yen_5 = (money != null) ? money.yen_5 : 0;
+    final int yen_1 = (money != null) ? money.yen_1 : 0;
 
     // ignore: join_return_with_assignment
     sum = (yen_10000 * 10000) +
@@ -66,10 +66,10 @@ class Utility {
 
   ///
   List<LineTooltipItem> getGraphToolTip(List<LineBarSpot> touchedSpots) {
-    final list = <LineTooltipItem>[];
+    final List<LineTooltipItem> list = <LineTooltipItem>[];
 
-    for (final element in touchedSpots) {
-      final textStyle = TextStyle(
+    for (final LineBarSpot element in touchedSpots) {
+      final TextStyle textStyle = TextStyle(
         color: element.bar.gradient?.colors.first ??
             element.bar.color ??
             Colors.blueGrey,
@@ -77,7 +77,8 @@ class Utility {
         fontSize: 12,
       );
 
-      final price = element.y.round().toString().split('.')[0].toCurrency();
+      final String price =
+          element.y.round().toString().split('.')[0].toCurrency();
 
       list.add(
         LineTooltipItem(
@@ -93,16 +94,16 @@ class Utility {
 
   ///
   FlGridData getFlGridData() {
-    const flline = FlLine(color: Colors.white30, strokeWidth: 1);
+    const FlLine flline = FlLine(color: Colors.white30, strokeWidth: 1);
 
     return FlGridData(
       verticalInterval: 1,
 
       //横線
-      getDrawingHorizontalLine: (value) => flline,
+      getDrawingHorizontalLine: (double value) => flline,
 
       //縦線
-      getDrawingVerticalLine: (value) => flline,
+      getDrawingVerticalLine: (double value) => flline,
     );
   }
 }

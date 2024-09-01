@@ -36,11 +36,11 @@ class SpendYearlyBlockAlert extends ConsumerStatefulWidget {
 
 class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   // ignore: use_late_for_private_fields_and_variables
-  List<SpendTimePlace>? yearlySpendTimePlaceList = [];
+  List<SpendTimePlace>? yearlySpendTimePlaceList = <SpendTimePlace>[];
 
-  Map<String, List<int>> _yearlySpendSumMap = {};
+  Map<String, List<int>> _yearlySpendSumMap = <String, List<int>>{};
 
-  List<SpendItem>? _spendItemList = [];
+  List<SpendItem>? _spendItemList = <SpendItem>[];
 
   ///
   void _init() {
@@ -52,6 +52,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     Future(_init);
 
     return AlertDialog(
@@ -67,24 +68,27 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('年間使用金額比較'), Text(widget.date.yyyy)],
+                children: <Widget>[
+                  const Text('年間使用金額比較'),
+                  Text(widget.date.yyyy)
+                ],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
                   GestureDetector(
                     onTap: () {
                       MoneyDialog(
                         context: context,
                         widget: EachMonthItemSummaryAlert(
-                          spendItemList: _spendItemList ?? [],
+                          spendItemList: _spendItemList ?? <SpendItem>[],
                           spendTimePlaceList: widget.allSpendTimePlaceList,
                         ),
                       );
@@ -104,12 +108,12 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
   ///
   Future<void> _makeYearlySpendSumMap() async {
-    final param = <String, dynamic>{};
+    final Map<String, dynamic> param = <String, dynamic>{};
     param['date'] = widget.date.yyyy;
 
     await SpendTimePlacesRepository()
         .getDateSpendTimePlaceList(isar: widget.isar, param: param)
-        .then((value) {
+        .then((List<SpendTimePlace>? value) {
       setState(() {
         yearlySpendTimePlaceList = value;
 
@@ -123,30 +127,30 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
   ///
   Widget _displayYearlySpendSumMap() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final spendItemColorMap = <String, String>{};
+    final Map<String, String> spendItemColorMap = <String, String>{};
     if (_spendItemList!.isNotEmpty) {
-      for (final element in _spendItemList!) {
+      for (final SpendItem element in _spendItemList!) {
         spendItemColorMap[element.spendItemName] = element.color;
       }
     }
 
-    final oneWidth = context.screenSize.width / 6;
+    final double oneWidth = context.screenSize.width / 6;
 
-    var allTotal = 0;
-    var spendTotal = 0;
-    final spendTotalMap = <String, int>{};
-    var amari = 0;
+    int allTotal = 0;
+    int spendTotal = 0;
+    final Map<String, int> spendTotalMap = <String, int>{};
+    int amari = 0;
 
-    _yearlySpendSumMap.forEach((key, value) {
-      final list2 = <Widget>[];
+    _yearlySpendSumMap.forEach((String key, List<int> value) {
+      final List<Widget> list2 = <Widget>[];
 
-      final map = <int, String>{};
+      final Map<int, String> map = <int, String>{};
 
-      var sum = 0;
+      int sum = 0;
 
-      for (final element in value) {
+      for (final int element in value) {
         // if (element > 0) {
         //   map[element] = '';
         //
@@ -170,7 +174,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
       }
 
       if (map.isNotEmpty) {
-        final lineColor =
+        final String? lineColor =
             (spendItemColorMap[key] != null && spendItemColorMap[key] != '')
                 ? spendItemColorMap[key]
                 : '0xffffffff';
@@ -181,15 +185,18 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
           margin: const EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.indigo.withOpacity(0.8), Colors.transparent],
-              stops: const [0.7, 1],
+              colors: <Color>[
+                Colors.indigo.withOpacity(0.8),
+                Colors.transparent
+              ],
+              stops: const <double>[0.7, 1],
             ),
           ),
           child: DefaultTextStyle(
             style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text(key), Text(sum.toString().toCurrency())],
+              children: <Widget>[Text(key), Text(sum.toString().toCurrency())],
             ),
           ),
         ));
@@ -223,11 +230,11 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
         //   );
         // });
 
-        var i = 1;
-        for (final element in value) {
+        int i = 1;
+        for (final int element in value) {
           list2.add(
             Stack(
-              children: [
+              children: <Widget>[
                 Container(
                   width: oneWidth,
                   padding: const EdgeInsets.all(2),
@@ -263,14 +270,14 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
       ..add(const SizedBox(height: 20))
       ..add(
         Column(
-          children: [
+          children: <Widget>[
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               decoration:
                   BoxDecoration(color: Colors.yellowAccent.withOpacity(0.1)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   const Text('Total',
                       style: TextStyle(color: Colors.yellowAccent)),
                   Text(allTotal.toString().toCurrency(),
@@ -284,9 +291,9 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                   BoxDecoration(color: Colors.blueAccent.withOpacity(0.1)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Row(
-                    children: [
+                    children: <Widget>[
                       const Text('Spend Total',
                           style: TextStyle(color: Colors.lightBlueAccent)),
                       const SizedBox(width: 20),
@@ -298,7 +305,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                               spendTotal: spendTotal,
                               spendTotalMap: spendTotalMap,
                               amari: amari,
-                              spendItemList: _spendItemList ?? [],
+                              spendItemList: _spendItemList ?? <SpendItem>[],
                             ),
                             clearBarrierColor: true,
                           ),
@@ -327,5 +334,5 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   ///
   Future<void> _makeSpendItemList() async => SpendItemsRepository()
       .getSpendItemList(isar: widget.isar)
-      .then((value) => setState(() => _spendItemList = value));
+      .then((List<SpendItem>? value) => setState(() => _spendItemList = value));
 }

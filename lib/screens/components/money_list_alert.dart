@@ -8,6 +8,7 @@ import '../../collections/emoney_name.dart';
 import '../../collections/money.dart';
 import '../../extensions/extensions.dart';
 import '../../state/holidays/holidays_notifier.dart';
+import '../../state/holidays/holidays_response_state.dart';
 import '../../utilities/utilities.dart';
 import 'parts/money_list_display_cell.dart';
 
@@ -39,9 +40,9 @@ class MoneyListAlert extends ConsumerStatefulWidget {
 class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
   final Utility _utility = Utility();
 
-  final Map<String, Money> _dateMoneyMap = {};
+  final Map<String, Money> _dateMoneyMap = <String, Money>{};
 
-  Map<String, String> _holidayMap = {};
+  Map<String, String> _holidayMap = <String, String>{};
 
   ///
   @override
@@ -67,18 +68,21 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('月間金額推移'), Text(widget.date.yyyymm)],
+                children: <Widget>[
+                  const Text('月間金額推移'),
+                  Text(widget.date.yyyymm)
+                ],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              if (widget.moneyList!.isNotEmpty) ...[
+              if (widget.moneyList!.isNotEmpty) ...<Widget>[
                 Expanded(child: _dispDateMoneyList())
               ],
-              if (widget.moneyList!.isEmpty) ...[
+              if (widget.moneyList!.isEmpty) ...<Widget>[
                 const Text('no data',
                     style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
               ],
@@ -92,7 +96,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
   ///
   void _makeDateMoneyMap() {
     if (widget.moneyList!.isNotEmpty) {
-      for (final element in widget.moneyList!) {
+      for (final Money element in widget.moneyList!) {
         _dateMoneyMap[element.date] = element;
       }
     }
@@ -104,17 +108,17 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
       return Container();
     }
 
-    final holidayState = ref.watch(holidayProvider);
+    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
 
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;
     }
 
     //---------------------// 見出し行
-    final list = <Widget>[
+    final List<Widget> list = <Widget>[
       Row(
         crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
+        children: <Widget>[
           _displayBlank(),
           const SizedBox(width: 10),
           _displayCurrencyMidashi(),
@@ -127,11 +131,11 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     ];
     //---------------------// 見出し行
 
-    final list2 = <Widget>[];
+    final List<Widget> list2 = <Widget>[];
 
     _dateMoneyMap
-      ..forEach((key, value) {
-        final genDate = DateTime.parse('$key 00:00:00');
+      ..forEach((String key, Money value) {
+        final DateTime genDate = DateTime.parse('$key 00:00:00');
 
         if (widget.date.yyyymm == genDate.yyyymm) {
           list.add(DecoratedBox(
@@ -142,7 +146,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
                   holidayMap: _holidayMap),
             ),
             child: Row(
-              children: [
+              children: <Widget>[
                 const SizedBox(height: 20, width: 100),
                 const SizedBox(width: 10),
                 _displayCurrencyList(value: value),
@@ -155,8 +159,8 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
           ));
         }
       })
-      ..forEach((key, value) {
-        final genDate = DateTime.parse('$key 00:00:00');
+      ..forEach((String key, Money value) {
+        final DateTime genDate = DateTime.parse('$key 00:00:00');
 
         if (widget.date.yyyymm == genDate.yyyymm) {
           list2.add(DecoratedBox(
@@ -167,7 +171,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
                   holidayMap: _holidayMap),
             ),
             child: Row(
-              children: [
+              children: <Widget>[
                 _displayDate(date: genDate),
               ],
             ),
@@ -176,11 +180,11 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
       });
 
     return Stack(
-      children: [
+      children: <Widget>[
         DefaultTextStyle(
           style: const TextStyle(fontSize: 10),
           child: Column(
-            children: [
+            children: <Widget>[
               const SizedBox(height: 36),
               Column(children: list2),
             ],
@@ -213,12 +217,12 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
 
   ///
   Widget _displayCurrencyMidashi() {
-    const width = 70;
-    final color = Colors.yellowAccent.withOpacity(0.1);
-    const minHeight = 30.0;
+    const int width = 70;
+    final Color color = Colors.yellowAccent.withOpacity(0.1);
+    const double minHeight = 30.0;
 
     return Row(
-      children: [
+      children: <Widget>[
         MoneyListDisplayCell(
           widget: const Text('10000'),
           width: width.toDouble(),
@@ -317,13 +321,13 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
 
   ///
   Widget _displayCurrencyList({required Money value}) {
-    const width = 70;
-    const color = Colors.transparent;
+    const int width = 70;
+    const Color color = Colors.transparent;
 
-    const minHeight = 15.0;
+    const double minHeight = 15.0;
 
     return Row(
-      children: [
+      children: <Widget>[
         MoneyListDisplayCell(
           widget: Text(value.yen_10000.toString().toCurrency()),
           width: width.toDouble(),
@@ -411,9 +415,10 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
   ///
   Widget _displayBankMidashi() {
     return Row(
-      children: widget.bankNameList!.map((e) {
+      children: widget.bankNameList!.map((BankName e) {
         return MoneyListDisplayCell(
-          widget: Column(children: [Text(e.bankName), Text(e.branchName)]),
+          widget:
+              Column(children: <Widget>[Text(e.bankName), Text(e.branchName)]),
           width: 100,
           minHeight: 30,
           color: Colors.yellowAccent.withOpacity(0.1),
@@ -426,12 +431,12 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
 
   ///
   Widget _displayBankList({required DateTime date}) {
-    const minHeight = 15.0;
+    const double minHeight = 15.0;
 
     return (widget.bankNameList!.isNotEmpty)
         ? Row(
-            children: widget.bankNameList!.map((e) {
-              final bankPricePadData =
+            children: widget.bankNameList!.map((BankName e) {
+              final Map<String, int>? bankPricePadData =
                   widget.bankPricePadMap['${e.depositType}-${e.id}'];
 
               if (bankPricePadData == null) {
@@ -463,7 +468,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
   ///
   Widget _displayEmoneyMidashi() {
     return Row(
-      children: widget.emoneyNameList!.map((e) {
+      children: widget.emoneyNameList!.map((EmoneyName e) {
         return MoneyListDisplayCell(
           widget: Text(e.emoneyName),
           width: 100,
@@ -478,12 +483,12 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
 
   ///
   Widget _displayEmoneyList({required DateTime date}) {
-    const minHeight = 15.0;
+    const double minHeight = 15.0;
 
     return (widget.emoneyNameList!.isNotEmpty)
         ? Row(
-            children: widget.emoneyNameList!.map((e) {
-              final bankPricePadData =
+            children: widget.emoneyNameList!.map((EmoneyName e) {
+              final Map<String, int>? bankPricePadData =
                   widget.bankPricePadMap['${e.depositType}-${e.id}'];
 
               if (bankPricePadData == null) {

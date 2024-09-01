@@ -25,13 +25,14 @@ class DepositTabAlert extends HookConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tabs = <TabInfo>[
+    final List<TabInfo> tabs = <TabInfo>[
       TabInfo('金融機関管理', BankNameListAlert(isar: isar)),
       TabInfo('電子マネー管理', EmoneyNameListAlert(isar: isar)),
     ];
 
     // 最初に開くタブを指定する
-    final tabController = useTabController(initialLength: tabs.length);
+    final TabController tabController =
+        useTabController(initialLength: tabs.length);
     if (index != null) {
       tabController.index = index!;
     }
@@ -46,7 +47,8 @@ class DepositTabAlert extends HookConsumerWidget {
           child: AppBar(
             backgroundColor: Colors.transparent,
             //-------------------------//これを消すと「←」が出てくる（消さない）
-            leading: const Icon(Icons.check_box_outline_blank, color: Colors.transparent),
+            leading: const Icon(Icons.check_box_outline_blank,
+                color: Colors.transparent),
             //-------------------------//これを消すと「←」が出てくる（消さない）
 
             bottom: TabBar(
@@ -65,7 +67,7 @@ class DepositTabAlert extends HookConsumerWidget {
           controller: tabController,
           //================================//
 
-          children: tabs.map((tab) => tab.widget).toList(),
+          children: tabs.map((TabInfo tab) => tab.widget).toList(),
         ),
       ),
     );

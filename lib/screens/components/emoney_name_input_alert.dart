@@ -59,7 +59,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               const Text('電子マネー追加'),
@@ -67,11 +67,11 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
               _displayInputParts(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
                   if (widget.emoneyName != null)
                     Column(
-                      children: [
+                      children: <Widget>[
                         GestureDetector(
                           onTap: _updateEmoneyName,
                           child: Text('電子マネーを更新する',
@@ -110,7 +110,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
   Widget _displayInputParts() {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
               blurRadius: 24,
               spreadRadius: 16,
@@ -144,7 +144,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
                     borderSide: BorderSide(color: Colors.white54)),
               ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
-              onTapOutside: (event) =>
+              onTapOutside: (PointerDownEvent event) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
             ),
           ),
@@ -155,15 +155,15 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   Future<void> _inputEmoneyName() async {
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_emoneyNameEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (!errFlg) {
-      for (final element in [
-        [_emoneyNameEditingController.text.trim(), 30]
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_emoneyNameEditingController.text.trim(), 30]
       ]) {
         if (!checkInputValueLengthCheck(
             value: element[0].toString().trim(), length: element[1] as int)) {
@@ -173,6 +173,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -182,12 +183,13 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       return;
     }
 
-    final emoneyName = EmoneyName()
+    final EmoneyName emoneyName = EmoneyName()
       ..emoneyName = _emoneyNameEditingController.text.trim()
       ..depositType = widget.depositType.japanName;
 
     await EmoneyNamesRepository()
         .inputEmoneyName(isar: widget.isar, emoneyName: emoneyName)
+        // ignore: always_specify_types
         .then((value) {
       _emoneyNameEditingController.clear();
 
@@ -197,15 +199,15 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   Future<void> _updateEmoneyName() async {
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_emoneyNameEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (!errFlg) {
-      for (final element in [
-        [_emoneyNameEditingController.text.trim(), 30]
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_emoneyNameEditingController.text.trim(), 30]
       ]) {
         if (!checkInputValueLengthCheck(
             value: element[0].toString().trim(), length: element[1] as int)) {
@@ -215,6 +217,7 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -227,13 +230,14 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     await widget.isar.writeTxn(() async {
       await EmoneyNamesRepository()
           .getEmoneyName(isar: widget.isar, id: widget.emoneyName!.id)
-          .then((value) async {
+          .then((EmoneyName? value) async {
         value!
           ..emoneyName = _emoneyNameEditingController.text.trim()
           ..depositType = widget.depositType.japanName;
 
         await EmoneyNamesRepository()
             .updateEmoneyName(isar: widget.isar, emoneyName: value)
+            // ignore: always_specify_types
             .then((value) {
           _emoneyNameEditingController.clear();
 
@@ -256,10 +260,10 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
         },
         child: const Text('はい'));
 
-    final alert = AlertDialog(
+    final AlertDialog alert = AlertDialog(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       content: const Text('このデータを消去しますか？'),
-      actions: [cancelButton, continueButton],
+      actions: <Widget>[cancelButton, continueButton],
     );
 
     // ignore: inference_failure_on_function_invocation
@@ -269,5 +273,6 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
   ///
   Future<void> _deleteEmoneyName() async => EmoneyNamesRepository()
       .deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id)
+      // ignore: always_specify_types
       .then((value) => Navigator.pop(context));
 }

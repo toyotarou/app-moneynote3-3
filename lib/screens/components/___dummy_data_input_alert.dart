@@ -17,7 +17,7 @@ class DummyDataInputAlert extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final barNameList = <BankName>[
+    final List<BankName> barNameList = <BankName>[
       BankName()
         ..bankNumber = '0001'
         ..bankName = 'みずほ銀行'
@@ -60,7 +60,7 @@ class DummyDataInputAlert extends StatelessWidget {
         ..depositType = 'bank',
     ];
 
-    final emoneyNameList = <EmoneyName>[
+    final List<EmoneyName> emoneyNameList = <EmoneyName>[
       EmoneyName()
         ..emoneyName = 'Suica1'
         ..depositType = 'emoney',
@@ -78,64 +78,86 @@ class DummyDataInputAlert extends StatelessWidget {
         ..depositType = 'emoney',
     ];
 
-    final bankPriceList = <BankPrice>[
+    final List<BankPrice> bankPriceList = <BankPrice>[
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'bank'
         ..bankId = 1
         ..price = 10000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'bank'
         ..bankId = 2
         ..price = 20000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'bank'
         ..bankId = 3
         ..price = 30000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'bank'
         ..bankId = 4
         ..price = 40000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'bank'
         ..bankId = 5
         ..price = 50000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'emoney'
         ..bankId = 1
         ..price = 10000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'emoney'
         ..bankId = 2
         ..price = 20000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'emoney'
         ..bankId = 3
         ..price = 30000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'emoney'
         ..bankId = 4
         ..price = 40000,
       BankPrice()
-        ..date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 3).yyyymmdd
+        ..date = DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 3)
+            .yyyymmdd
         ..depositType = 'emoney'
         ..bankId = 5
         ..price = 50000,
     ];
 
-    final date1 = DateTime.now();
-    final date2 = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1);
-    final date3 = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 2);
+    final DateTime date1 = DateTime.now();
+    final DateTime date2 = DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day - 1);
+    final DateTime date3 = DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day - 2);
 
-    final moneyList = <Money>[
+    final List<Money> moneyList = <Money>[
       Money()
         ..date = date1.yyyymmdd
         ..yen_10000 = 7
@@ -174,7 +196,7 @@ class DummyDataInputAlert extends StatelessWidget {
         ..yen_1 = 9,
     ];
 
-    final spendTimePlaceList = <SpendTimePlace>[
+    final List<SpendTimePlace> spendTimePlaceList = <SpendTimePlace>[
       SpendTimePlace()
         ..date = date1.yyyymmdd
         ..spendType = '食費'
@@ -231,7 +253,7 @@ class DummyDataInputAlert extends StatelessWidget {
         ..price = 300,
     ];
 
-    final incomeList = <Income>[
+    final List<Income> incomeList = <Income>[
       Income()
         ..date = '2021-09-25'
         ..sourceName = 'aaaaa'
@@ -288,7 +310,7 @@ class DummyDataInputAlert extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Container(width: context.screenSize.width),
                 ElevatedButton(
                   onPressed: () {
@@ -320,7 +342,8 @@ class DummyDataInputAlert extends StatelessWidget {
                 Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
                 ElevatedButton(
                   onPressed: () {
-                    _inputSpendTimePlaceMulti(spendTimePlaceList: spendTimePlaceList);
+                    _inputSpendTimePlaceMulti(
+                        spendTimePlaceList: spendTimePlaceList);
                   },
                   child: const Text('SpendTimePlace Multi'),
                 ),
@@ -340,27 +363,30 @@ class DummyDataInputAlert extends StatelessWidget {
   }
 
   ///
-  Future<void> _inputBankNameMulti({required List<BankName> bankNameList}) async {
+  Future<void> _inputBankNameMulti(
+      {required List<BankName> bankNameList}) async {
     await isar.writeTxn(() async {
-      for (final bankName in bankNameList) {
+      for (final BankName bankName in bankNameList) {
         await isar.bankNames.put(bankName);
       }
     });
   }
 
   ///
-  Future<void> _inputEmoneyNameMulti({required List<EmoneyName> emoneyNameList}) async {
+  Future<void> _inputEmoneyNameMulti(
+      {required List<EmoneyName> emoneyNameList}) async {
     await isar.writeTxn(() async {
-      for (final emoneyName in emoneyNameList) {
+      for (final EmoneyName emoneyName in emoneyNameList) {
         await isar.emoneyNames.put(emoneyName);
       }
     });
   }
 
   ///
-  Future<void> _inputBankPriceMulti({required List<BankPrice> bankPriceList}) async {
+  Future<void> _inputBankPriceMulti(
+      {required List<BankPrice> bankPriceList}) async {
     await isar.writeTxn(() async {
-      for (final bankPrice in bankPriceList) {
+      for (final BankPrice bankPrice in bankPriceList) {
         await isar.bankPrices.put(bankPrice);
       }
     });
@@ -369,16 +395,17 @@ class DummyDataInputAlert extends StatelessWidget {
   ///
   Future<void> _inputMoneyMulti({required List<Money> moneyList}) async {
     await isar.writeTxn(() async {
-      for (final money in moneyList) {
+      for (final Money money in moneyList) {
         await isar.moneys.put(money);
       }
     });
   }
 
   ///
-  Future<void> _inputSpendTimePlaceMulti({required List<SpendTimePlace> spendTimePlaceList}) async {
+  Future<void> _inputSpendTimePlaceMulti(
+      {required List<SpendTimePlace> spendTimePlaceList}) async {
     await isar.writeTxn(() async {
-      for (final spendTimePlace in spendTimePlaceList) {
+      for (final SpendTimePlace spendTimePlace in spendTimePlaceList) {
         await isar.spendTimePlaces.put(spendTimePlace);
       }
     });
@@ -387,7 +414,7 @@ class DummyDataInputAlert extends StatelessWidget {
   ///
   Future<void> _inputIncomeMulti({required List<Income> incomeList}) async {
     await isar.writeTxn(() async {
-      for (final income in incomeList) {
+      for (final Income income in incomeList) {
         await isar.incomes.put(income);
       }
     });

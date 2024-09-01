@@ -9,30 +9,34 @@ import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
 import '../../repository/spend_time_places_repository.dart';
 import '../../state/holidays/holidays_notifier.dart';
+import '../../state/holidays/holidays_response_state.dart';
 import '../../utilities/functions.dart';
 import '../../utilities/utilities.dart';
 
 class SpendMonthlyListAlert extends ConsumerStatefulWidget {
-  const SpendMonthlyListAlert({super.key, required this.date, required this.isar});
+  const SpendMonthlyListAlert(
+      {super.key, required this.date, required this.isar});
 
   final DateTime date;
   final Isar isar;
 
   @override
-  ConsumerState<SpendMonthlyListAlert> createState() => _SpendMonthlyListAlertState();
+  ConsumerState<SpendMonthlyListAlert> createState() =>
+      _SpendMonthlyListAlertState();
 }
 
 class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   final Utility _utility = Utility();
 
   // ignore: use_late_for_private_fields_and_variables
-  List<SpendTimePlace>? monthlySpendTimePlaceList = [];
+  List<SpendTimePlace>? monthlySpendTimePlaceList = <SpendTimePlace>[];
 
-  final Map<String, Map<String, int>> _monthlySpendTimePlaceMap = {};
+  final Map<String, Map<String, int>> _monthlySpendTimePlaceMap =
+      <String, Map<String, int>>{};
 
-  Map<String, String> _holidayMap = {};
+  Map<String, String> _holidayMap = <String, String>{};
 
-  List<SpendItem>? _spendItemList = [];
+  List<SpendItem>? _spendItemList = <SpendItem>[];
 
   ///
   void _init() {
@@ -44,6 +48,7 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     Future(_init);
 
     return AlertDialog(
@@ -59,12 +64,12 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('月間使用用途履歴'), Container()],
+                children: <Widget>[const Text('月間使用用途履歴'), Container()],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: _displayMonthlySpendItemPlaceList()),
@@ -77,21 +82,27 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
 
   ///
   Future<void> _makeMonthlySpendTimePlaceList() async {
-    final param = <String, dynamic>{};
+    final Map<String, dynamic> param = <String, dynamic>{};
     param['date'] = widget.date.yyyymm;
 
-    await SpendTimePlacesRepository().getDateSpendTimePlaceList(isar: widget.isar, param: param).then((value) {
+    await SpendTimePlacesRepository()
+        .getDateSpendTimePlaceList(isar: widget.isar, param: param)
+        .then((List<SpendTimePlace>? value) {
       setState(() {
         monthlySpendTimePlaceList = value;
 
         if (value!.isNotEmpty) {
-          final map = <String, List<SpendTimePlace>>{};
+          final Map<String, List<SpendTimePlace>> map =
+              <String, List<SpendTimePlace>>{};
           value
-            ..forEach((element) => map[element.date] = [])
-            ..forEach((element) => map[element.date]?.add(element));
+            ..forEach((SpendTimePlace element) =>
+                map[element.date] = <SpendTimePlace>[])
+            ..forEach(
+                (SpendTimePlace element) => map[element.date]?.add(element));
 
-          map.forEach((key, value) => _monthlySpendTimePlaceMap[key] =
-              makeMonthlySpendItemSumMap(spendTimePlaceList: value, spendItemList: _spendItemList));
+          map.forEach((String key, List<SpendTimePlace> value) =>
+              _monthlySpendTimePlaceMap[key] = makeMonthlySpendItemSumMap(
+                  spendTimePlaceList: value, spendItemList: _spendItemList));
         }
       });
     });
@@ -99,43 +110,55 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
 
   ///
   Widget _displayMonthlySpendItemPlaceList() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final holidayState = ref.watch(holidayProvider);
+    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
 
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;
     }
 
-    final spendItemColorMap = <String, String>{};
+    final Map<String, String> spendItemColorMap = <String, String>{};
     if (_spendItemList!.isNotEmpty) {
-      for (final element in _spendItemList!) {
+      for (final SpendItem element in _spendItemList!) {
         spendItemColorMap[element.spendItemName] = element.color;
       }
     }
 
-    final roopNum = DateTime(widget.date.year, widget.date.month + 1, 0).day;
+    final int roopNum =
+        DateTime(widget.date.year, widget.date.month + 1, 0).day;
 
-    for (var i = 1; i <= roopNum; i++) {
-      final genDate =
-          DateTime(widget.date.yyyymmdd.split('-')[0].toInt(), widget.date.yyyymmdd.split('-')[1].toInt(), i).yyyymmdd;
+    for (int i = 1; i <= roopNum; i++) {
+      final String genDate = DateTime(
+              widget.date.yyyymmdd.split('-')[0].toInt(),
+              widget.date.yyyymmdd.split('-')[1].toInt(),
+              i)
+          .yyyymmdd;
 
-      var sum = 0;
-      _monthlySpendTimePlaceMap[genDate]?.forEach((key, value) => sum += value);
+      int sum = 0;
+      _monthlySpendTimePlaceMap[genDate]
+          ?.forEach((String key, int value) => sum += value);
 
-      final list2 = <Widget>[];
-      _monthlySpendTimePlaceMap[genDate]?.forEach((key, value) {
-        final lineColor =
-            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
+      final List<Widget> list2 = <Widget>[];
+      _monthlySpendTimePlaceMap[genDate]?.forEach((String key, int value) {
+        final String? lineColor =
+            (spendItemColorMap[key] != null && spendItemColorMap[key] != '')
+                ? spendItemColorMap[key]
+                : '0xffffffff';
 
         list2.add(Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: DefaultTextStyle(
             style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text(key), Text(value.toString().toCurrency())],
+              children: <Widget>[
+                Text(key),
+                Text(value.toString().toCurrency())
+              ],
             ),
           ),
         ));
@@ -157,10 +180,13 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
               ? Text(genDate)
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text(genDate), Text(sum.toString().toCurrency())],
+                      children: <Widget>[
+                        Text(genDate),
+                        Text(sum.toString().toCurrency())
+                      ],
                     ),
                     const SizedBox(height: 10),
                     Column(children: list2),
@@ -170,11 +196,13 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
       );
     }
 
-    return SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: list));
+    return SingleChildScrollView(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, children: list));
   }
 
   ///
   Future<void> _makeSpendItemList() async => SpendItemsRepository()
       .getSpendItemList(isar: widget.isar)
-      .then((value) => setState(() => _spendItemList = value));
+      .then((List<SpendItem>? value) => setState(() => _spendItemList = value));
 }

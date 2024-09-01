@@ -3,7 +3,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../enums/account_type.dart';
 import 'bank_names_response_state.dart';
 
-final bankNamesProvider = StateNotifierProvider.autoDispose<BankNamesNotifier, BankNamesResponseState>((ref) {
+final AutoDisposeStateNotifierProvider<BankNamesNotifier,
+        BankNamesResponseState> bankNamesProvider =
+    StateNotifierProvider.autoDispose<BankNamesNotifier,
+        BankNamesResponseState>((AutoDisposeStateNotifierProviderRef<
+            BankNamesNotifier, BankNamesResponseState>
+        ref) {
   return BankNamesNotifier(const BankNamesResponseState());
 });
 

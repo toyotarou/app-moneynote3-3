@@ -28,7 +28,7 @@ class SpendItemHistoryAlert extends StatefulWidget {
 
 class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
   // ignore: use_late_for_private_fields_and_variables
-  List<SpendTimePlace>? _spendItemPlaceHistoryList = [];
+  List<SpendTimePlace>? _spendItemPlaceHistoryList = <SpendTimePlace>[];
 
   ///
   void _init() {
@@ -38,6 +38,7 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     Future(_init);
 
     return AlertDialog(
@@ -53,17 +54,17 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   const Text('使用用途履歴'),
                   Row(
-                    children: [
+                    children: <Widget>[
                       Text(widget.item),
-                      if (widget.from == 'home_screen') ...[
+                      if (widget.from == 'home_screen') ...<Widget>[
                         const SizedBox(width: 10),
                         Text(widget.sum.toString().toCurrency()),
                       ],
@@ -82,19 +83,20 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
 
   ///
   Future<void> _makeSpendItemPlaceHistoryList() async {
-    final param = <String, dynamic>{};
+    final Map<String, dynamic> param = <String, dynamic>{};
     param['item'] = widget.item;
 
     await SpendTimePlacesRepository()
         .getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param)
-        .then((value) => setState(() => _spendItemPlaceHistoryList = value));
+        .then((List<SpendTimePlace>? value) =>
+            setState(() => _spendItemPlaceHistoryList = value));
   }
 
   ///
   Widget _displaySpendItemPlaceHistoryList() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < _spendItemPlaceHistoryList!.length; i++) {
+    for (int i = 0; i < _spendItemPlaceHistoryList!.length; i++) {
       if (widget.from == 'home_screen') {
         if (widget.date.month !=
             DateTime.parse('${_spendItemPlaceHistoryList![i].date} 00:00:00')
@@ -110,9 +112,9 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
                 bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 Text(_spendItemPlaceHistoryList![i].date),
                 const SizedBox(width: 10),
                 Text(_spendItemPlaceHistoryList![i].time),

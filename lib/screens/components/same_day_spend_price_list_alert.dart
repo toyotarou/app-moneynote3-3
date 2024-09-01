@@ -10,6 +10,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../state/app_params/app_params_notifier.dart';
+import '../../state/app_params/app_params_response_state.dart';
 
 class SameDaySpendPriceListAlert extends ConsumerStatefulWidget {
   const SameDaySpendPriceListAlert(
@@ -25,14 +26,14 @@ class SameDaySpendPriceListAlert extends ConsumerStatefulWidget {
 
 class _SameDaySpendPriceListAlertState
     extends ConsumerState<SameDaySpendPriceListAlert> {
-  final controller = ItemScrollController();
-  final listener = ItemPositionsListener.create();
+  final ItemScrollController controller = ItemScrollController();
+  final ItemPositionsListener listener = ItemPositionsListener.create();
 
   ///
   @override
   Widget build(BuildContext context) {
-    final sameDaySelectedDay =
-        ref.watch(appParamProvider.select((value) => value.sameDaySelectedDay));
+    final int sameDaySelectedDay = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.sameDaySelectedDay));
 
     if (sameDaySelectedDay == DateTime.now().day) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -52,7 +53,7 @@ class _SameDaySpendPriceListAlertState
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               SizedBox(width: context.screenSize.width),
               const Text('同日消費比較'),
@@ -62,7 +63,7 @@ class _SameDaySpendPriceListAlertState
                   width: context.screenSize.width,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       Expanded(child: _displaySameDaySpendPriceList()),
                       Container(
                         width: 60,
@@ -82,12 +83,12 @@ class _SameDaySpendPriceListAlertState
 
   ///
   Widget _displayDayList() {
-    final sameDaySelectedDay =
-        ref.watch(appParamProvider.select((value) => value.sameDaySelectedDay));
+    final int sameDaySelectedDay = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.sameDaySelectedDay));
 
-    final list = <int>[];
+    final List<int> list = <int>[];
 
-    for (var i = 1; i <= 31; i++) {
+    for (int i = 1; i <= 31; i++) {
       list.add(i);
     }
 
@@ -96,7 +97,7 @@ class _SameDaySpendPriceListAlertState
       itemScrollController: controller,
       itemPositionsListener: listener,
       // ItemPositionsListenerでスクロールを監視
-      itemBuilder: (context, index) {
+      itemBuilder: (BuildContext context, int index) {
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 5),
           child: GestureDetector(
@@ -122,34 +123,35 @@ class _SameDaySpendPriceListAlertState
 
   ///
   Widget _displaySameDaySpendPriceList() {
-    final sameDaySelectedDay =
-        ref.watch(appParamProvider.select((value) => value.sameDaySelectedDay));
+    final int sameDaySelectedDay = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.sameDaySelectedDay));
 
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final spendTimePlaceMap = <String, List<SpendTimePlace>>{};
+    final Map<String, List<SpendTimePlace>> spendTimePlaceMap =
+        <String, List<SpendTimePlace>>{};
 
-    for (final element in widget.spendTimePlaceList) {
-      final exDate = element.date.split('-');
-      spendTimePlaceMap['${exDate[0]}-${exDate[1]}'] = [];
+    for (final SpendTimePlace element in widget.spendTimePlaceList) {
+      final List<String> exDate = element.date.split('-');
+      spendTimePlaceMap['${exDate[0]}-${exDate[1]}'] = <SpendTimePlace>[];
     }
 
-    for (final element in widget.spendTimePlaceList) {
-      final exDate = element.date.split('-');
+    for (final SpendTimePlace element in widget.spendTimePlaceList) {
+      final List<String> exDate = element.date.split('-');
 
       if (exDate[2].toInt() <= sameDaySelectedDay) {
         spendTimePlaceMap['${exDate[0]}-${exDate[1]}']?.add(element);
       }
     }
 
-    final spendTimePlacePriceMap = <String, int>{};
+    final Map<String, int> spendTimePlacePriceMap = <String, int>{};
 
-    final eachMonthMinusPriceMap = <String, int>{};
+    final Map<String, int> eachMonthMinusPriceMap = <String, int>{};
 
-    spendTimePlaceMap.forEach((key, value) {
-      var sum = 0;
-      var sum2 = 0;
-      for (final element in value) {
+    spendTimePlaceMap.forEach((String key, List<SpendTimePlace> value) {
+      int sum = 0;
+      int sum2 = 0;
+      for (final SpendTimePlace element in value) {
         sum += element.price;
 
         if (element.price > 0) {
@@ -162,24 +164,24 @@ class _SameDaySpendPriceListAlertState
       eachMonthMinusPriceMap[key] = sum2;
     });
 
-    spendTimePlacePriceMap.forEach((key, value) {
+    spendTimePlacePriceMap.forEach((String key, int value) {
       list.add(Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
             border: Border(
                 bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Text(key),
                 Text(value.toString().toCurrency()),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 const SizedBox(),
                 Text(
                   (eachMonthMinusPriceMap[key] != null)

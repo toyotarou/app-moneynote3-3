@@ -1,10 +1,13 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'app_params_response_state.dart';
 
-final appParamProvider =
+final AutoDisposeStateNotifierProvider<AppParamNotifier, AppParamsResponseState>
+    appParamProvider =
     StateNotifierProvider.autoDispose<AppParamNotifier, AppParamsResponseState>(
-        (ref) {
-  final day = DateTime.now().day;
+        (AutoDisposeStateNotifierProviderRef<AppParamNotifier,
+                AppParamsResponseState>
+            ref) {
+  final int day = DateTime.now().day;
 
   return AppParamNotifier(AppParamsResponseState(sameDaySelectedDay: day));
 });

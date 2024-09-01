@@ -4,13 +4,23 @@ import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import 'spend_time_places_response_state.dart';
 
-final spendTimePlaceProvider = StateNotifierProvider.autoDispose<
-    SpendTimePlaceNotifier, SpendTimePlacesResponseState>((ref) {
-  final spendTime = List.generate(20, (index) => '時間');
-  final spendPlace = List.generate(20, (index) => '');
-  final spendItem = List.generate(20, (index) => '項目名');
-  final spendPrice = List.generate(20, (index) => 0);
-  final minusCheck = List.generate(20, (index) => false);
+final AutoDisposeStateNotifierProvider<SpendTimePlaceNotifier,
+        SpendTimePlacesResponseState> spendTimePlaceProvider =
+    StateNotifierProvider.autoDispose<SpendTimePlaceNotifier,
+        SpendTimePlacesResponseState>((AutoDisposeStateNotifierProviderRef<
+            SpendTimePlaceNotifier, SpendTimePlacesResponseState>
+        ref) {
+  // ignore: always_specify_types
+  final List<String> spendTime = List.generate(20, (index) => '時間');
+  // ignore: always_specify_types
+  final List<String> spendPlace = List.generate(20, (int index) => '');
+  // ignore: always_specify_types
+  final List<String> spendItem = List.generate(20, (int index) => '項目名');
+  // ignore: always_specify_types
+  final List<int> spendPrice = List.generate(20, (int index) => 0);
+
+  // ignore: always_specify_types
+  final List<bool> minusCheck = List.generate(20, (int index) => false);
 
   return SpendTimePlaceNotifier(
     SpendTimePlacesResponseState(
@@ -41,7 +51,7 @@ class SpendTimePlaceNotifier
 
   ///
   Future<void> setSpendItem({required int pos, required String item}) async {
-    final spendItem = <String>[...state.spendItem];
+    final List<String> spendItem = <String>[...state.spendItem];
 
     spendItem[pos] = item;
 
@@ -50,33 +60,33 @@ class SpendTimePlaceNotifier
 
   ///
   Future<void> setTime({required int pos, required String time}) async {
-    final spendTime = <String>[...state.spendTime];
+    final List<String> spendTime = <String>[...state.spendTime];
     spendTime[pos] = time;
     state = state.copyWith(spendTime: spendTime);
   }
 
   ///
   Future<void> setMinusCheck({required int pos}) async {
-    final minusChecks = <bool>[...state.minusCheck];
-    final check = minusChecks[pos];
+    final List<bool> minusChecks = <bool>[...state.minusCheck];
+    final bool check = minusChecks[pos];
     minusChecks[pos] = !check;
     state = state.copyWith(minusCheck: minusChecks);
   }
 
   ///
   Future<void> setPlace({required int pos, required String place}) async {
-    final spendPlace = <String>[...state.spendPlace];
+    final List<String> spendPlace = <String>[...state.spendPlace];
     spendPlace[pos] = place;
     state = state.copyWith(spendPlace: spendPlace);
   }
 
   ///
   Future<void> setSpendPrice({required int pos, required int price}) async {
-    final spendPrice = <int>[...state.spendPrice];
+    final List<int> spendPrice = <int>[...state.spendPrice];
     spendPrice[pos] = price;
 
-    var sum = 0;
-    for (var i = 0; i < spendPrice.length; i++) {
+    int sum = 0;
+    for (int i = 0; i < spendPrice.length; i++) {
       if (state.minusCheck[i]) {
         sum -= spendPrice[i];
       } else {
@@ -84,19 +94,24 @@ class SpendTimePlaceNotifier
       }
     }
 
-    final baseDiff = state.baseDiff.toInt();
-    final diff = baseDiff - sum;
+    final int baseDiff = state.baseDiff.toInt();
+    final int diff = baseDiff - sum;
 
     state = state.copyWith(spendPrice: spendPrice, diff: diff);
   }
 
   ///
   Future<void> clearInputValue() async {
-    final spendTime = List.generate(20, (index) => '時間');
-    final spendPlace = List.generate(20, (index) => '');
-    final spendItem = List.generate(20, (index) => '項目名');
-    final spendPrice = List.generate(20, (index) => 0);
-    final minusCheck = List.generate(20, (index) => false);
+    // ignore: always_specify_types
+    final List<String> spendTime = List.generate(20, (int index) => '時間');
+    // ignore: always_specify_types
+    final List<String> spendPlace = List.generate(20, (int index) => '');
+    // ignore: always_specify_types
+    final List<String> spendItem = List.generate(20, (int index) => '項目名');
+    // ignore: always_specify_types
+    final List<int> spendPrice = List.generate(20, (int index) => 0);
+    // ignore: always_specify_types
+    final List<bool> minusCheck = List.generate(20, (int index) => false);
 
     state = state.copyWith(
       spendTime: spendTime,
@@ -112,14 +127,14 @@ class SpendTimePlaceNotifier
 
   ///
   Future<void> clearOneBox({required int pos}) async {
-    final spendItem = <String>[...state.spendItem];
-    final spendTime = <String>[...state.spendTime];
-    final spendPrice = <int>[...state.spendPrice];
-    final spendPlace = <String>[...state.spendPlace];
-    final minusChecks = <bool>[...state.minusCheck];
+    final List<String> spendItem = <String>[...state.spendItem];
+    final List<String> spendTime = <String>[...state.spendTime];
+    final List<int> spendPrice = <int>[...state.spendPrice];
+    final List<String> spendPlace = <String>[...state.spendPlace];
+    final List<bool> minusChecks = <bool>[...state.minusCheck];
 
-    final minus = minusChecks[pos];
-    final price = spendPrice[pos];
+    final bool minus = minusChecks[pos];
+    final int price = spendPrice[pos];
 
     spendItem[pos] = '項目名';
     spendTime[pos] = '時間';
@@ -127,7 +142,7 @@ class SpendTimePlaceNotifier
     spendPlace[pos] = '';
     minusChecks[pos] = false;
 
-    var diff = state.diff;
+    int diff = state.diff;
 
     if (minus) {
       diff -= price;
@@ -150,15 +165,15 @@ class SpendTimePlaceNotifier
       {required List<SpendTimePlace> updateSpendTimePlace,
       required int baseDiff}) async {
     try {
-      final spendItem = <String>[...state.spendItem];
-      final spendTime = <String>[...state.spendTime];
-      final spendPrice = <int>[...state.spendPrice];
-      final spendPlace = <String>[...state.spendPlace];
-      final minusChecks = <bool>[...state.minusCheck];
+      final List<String> spendItem = <String>[...state.spendItem];
+      final List<String> spendTime = <String>[...state.spendTime];
+      final List<int> spendPrice = <int>[...state.spendPrice];
+      final List<String> spendPlace = <String>[...state.spendPlace];
+      final List<bool> minusChecks = <bool>[...state.minusCheck];
 
-      var diff = 0;
+      int diff = 0;
 
-      for (var i = 0; i < updateSpendTimePlace.length; i++) {
+      for (int i = 0; i < updateSpendTimePlace.length; i++) {
         spendItem[i] = updateSpendTimePlace[i].spendType;
         spendTime[i] = updateSpendTimePlace[i].time;
         spendPlace[i] = updateSpendTimePlace[i].place;

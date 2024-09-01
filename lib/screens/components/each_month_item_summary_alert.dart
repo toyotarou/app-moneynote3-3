@@ -28,7 +28,7 @@ class EachMonthItemSummaryAlert extends ConsumerStatefulWidget {
 
 class _EachMonthItemSummaryAlertState
     extends ConsumerState<EachMonthItemSummaryAlert> {
-  final List<TabInfo> _tabs = [];
+  final List<TabInfo> _tabs = <TabInfo>[];
 
   ///
   @override
@@ -58,7 +58,7 @@ class _EachMonthItemSummaryAlertState
           ),
         ),
         body: TabBarView(
-          children: _tabs.map((tab) => tab.widget).toList(),
+          children: _tabs.map((TabInfo tab) => tab.widget).toList(),
         ),
       ),
     );
@@ -66,17 +66,17 @@ class _EachMonthItemSummaryAlertState
 
   ///
   void _makeTab() {
-    final years = <int>[];
+    final List<int> years = <int>[];
 
-    for (final element in widget.spendTimePlaceList) {
-      final exDate = element.date.split('-');
+    for (final SpendTimePlace element in widget.spendTimePlaceList) {
+      final List<String> exDate = element.date.split('-');
 
       if (!years.contains(exDate[0].toInt())) {
         years.add(exDate[0].toInt());
       }
     }
 
-    for (final element in years) {
+    for (final int element in years) {
       _tabs.add(TabInfo(
         element.toString(),
         EachMonthItemSummaryPage(

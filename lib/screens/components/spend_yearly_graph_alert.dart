@@ -25,7 +25,7 @@ class SpendYearlyGraphAlert extends StatefulWidget {
 }
 
 class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
-  List<PieChartSectionData> graphDataList = [];
+  List<PieChartSectionData> graphDataList = <PieChartSectionData>[];
 
   ///
   @override
@@ -37,41 +37,47 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
 
   ///
   void makeGraphDataList() {
-    final spendItemColorMap = <String, String>{};
+    final Map<String, String> spendItemColorMap = <String, String>{};
 
-    for (final element in widget.spendItemList) {
+    for (final SpendItem element in widget.spendItemList) {
       spendItemColorMap[element.spendItemName] = element.color;
     }
 
-    widget.spendTotalMap.forEach((key, value) {
-      final val = value / widget.spendTotal;
+    widget.spendTotalMap.forEach((String key, int value) {
+      final double val = value / widget.spendTotal;
 
-      final percent = val * 100;
+      final double percent = val * 100;
 
       graphDataList.add(
         PieChartSectionData(
           borderSide: const BorderSide(color: Colors.white),
-          color: (spendItemColorMap[key] != null) ? Color(spendItemColorMap[key]!.toInt()).withOpacity(0.2) : Colors.grey.withOpacity(0.2),
+          color: (spendItemColorMap[key] != null)
+              ? Color(spendItemColorMap[key]!.toInt()).withOpacity(0.2)
+              : Colors.grey.withOpacity(0.2),
           value: val,
-          title: '$key\n${value.toString().toCurrency()}\n${percent.toString().split('.')[0]} %',
+          title:
+              '$key\n${value.toString().toCurrency()}\n${percent.toString().split('.')[0]} %',
           radius: 140,
-          titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+          titleStyle: const TextStyle(
+              fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       );
     });
 
-    final val2 = widget.amari / widget.spendTotal;
+    final double val2 = widget.amari / widget.spendTotal;
 
-    final percent2 = val2 * 100;
+    final double percent2 = val2 * 100;
 
     graphDataList.add(
       PieChartSectionData(
         borderSide: const BorderSide(color: Colors.white),
         color: Colors.grey.withOpacity(0.2),
         value: val2,
-        title: 'その他\n${widget.amari.toString().toCurrency()}\n${percent2.toString().split('.')[0]} %',
+        title:
+            'その他\n${widget.amari.toString().toCurrency()}\n${percent2.toString().split('.')[0]} %',
         radius: 140,
-        titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+        titleStyle: const TextStyle(
+            fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
@@ -92,17 +98,20 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('年間消費金額比率'), Container()],
+                children: <Widget>[const Text('年間消費金額比率'), Container()],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('Spend Total'), Text(widget.spendTotal.toString().toCurrency())],
+                children: <Widget>[
+                  const Text('Spend Total'),
+                  Text(widget.spendTotal.toString().toCurrency())
+                ],
               ),
               const SizedBox(height: 10),
               _displayCircularGraph(),
@@ -118,6 +127,10 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
     return Container(
         height: 300,
         padding: const EdgeInsets.all(10),
-        child: PieChart(PieChartData(startDegreeOffset: 270, sections: graphDataList, sectionsSpace: 2, centerSpaceRadius: 0)));
+        child: PieChart(PieChartData(
+            startDegreeOffset: 270,
+            sections: graphDataList,
+            sectionsSpace: 2,
+            centerSpaceRadius: 0)));
   }
 }

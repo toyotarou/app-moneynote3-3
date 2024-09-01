@@ -26,7 +26,7 @@ class BankNameListAlert extends ConsumerStatefulWidget {
 
 class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
   // ignore: use_late_for_private_fields_and_variables
-  List<BankName>? _bankNameList = [];
+  List<BankName>? _bankNameList = <BankName>[];
 
   ///
   @override
@@ -46,11 +46,11 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
                   TextButton(
                     onPressed: () => MoneyDialog(
@@ -64,7 +64,8 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
               ),
               FutureBuilder<List<Widget>>(
                 future: _displayBankNames(),
-                builder: (context, snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(child: Column(children: snapshot.data!));
                   }
@@ -82,11 +83,12 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
   ///
   Future<void> _makeBankNameList() async => BankNamesRepository()
       .getBankNameList(isar: widget.isar)
+      // ignore: always_specify_types
       .then((value) => setState(() => _bankNameList = value));
 
   ///
   Future<List<Widget>> _displayBankNames() async {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
     // _bankNameList!.mapIndexed((index, element) {
     //   list.add(
@@ -132,7 +134,7 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
     //   );
     // });
 
-    for (var i = 0; i < _bankNameList!.length; i++) {
+    for (int i = 0; i < _bankNameList!.length; i++) {
       list.add(
         Container(
           width: context.screenSize.width,
@@ -142,11 +144,11 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
               border: Border.all(color: Colors.white.withOpacity(0.4))),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Text(
                       '${_bankNameList![i].depositType}-${_bankNameList![i].id}: ${_bankNameList![i].bankName} (${_bankNameList![i].bankNumber}) ',
                     ),
@@ -158,7 +160,7 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
                 ),
               ),
               Row(
-                children: [
+                children: <Widget>[
                   GestureDetector(
                     onTap: () => MoneyDialog(
                       context: context,

@@ -38,7 +38,7 @@ class MoneyScoreListAlert extends StatefulWidget {
 }
 
 class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
-  List<DispData> dispDataList = [];
+  List<DispData> dispDataList = <DispData>[];
 
   ///
   @override
@@ -58,12 +58,12 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('収支一覧'), Container()],
+                children: <Widget>[const Text('収支一覧'), Container()],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: _displayDataList()),
@@ -76,34 +76,39 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
 
   ///
   void makeDispData() {
-    dispDataList = [];
+    dispDataList = <DispData>[];
 
-    final thisMonthYearMonth = DateTime(DateTime.now().year, DateTime.now().month).yyyymm;
+    final String thisMonthYearMonth =
+        DateTime(DateTime.now().year, DateTime.now().month).yyyymm;
 
-    for (final element in widget.monthFirstDateList) {
-      final exDate = element.split('-');
+    for (final String element in widget.monthFirstDateList) {
+      final List<String> exDate = element.split('-');
 
-      final zenjitsu = DateTime(exDate[0].toInt(), exDate[1].toInt(), exDate[2].toInt() - 1).yyyymmdd;
+      final String zenjitsu =
+          DateTime(exDate[0].toInt(), exDate[1].toInt(), exDate[2].toInt() - 1)
+              .yyyymmdd;
 
-      final currencySum = widget.dateCurrencySumMap[zenjitsu] ?? 0;
-      final bankPriceTotal = widget.bankPriceTotalPadMap[zenjitsu] ?? 0;
+      final int currencySum = widget.dateCurrencySumMap[zenjitsu] ?? 0;
+      final int bankPriceTotal = widget.bankPriceTotalPadMap[zenjitsu] ?? 0;
 
-      final startPrice = currencySum + bankPriceTotal;
+      final int startPrice = currencySum + bankPriceTotal;
 
-      var currency = 0;
-      var bank = 0;
+      int currency = 0;
+      int bank = 0;
 
-      var lastDate = '';
-      var lastPrice = 0;
+      String lastDate = '';
+      int lastPrice = 0;
 
       if ('${exDate[0]}-${exDate[1]}' == thisMonthYearMonth) {
-        widget.dateCurrencySumMap.forEach((key, value) {
+        widget.dateCurrencySumMap.forEach((String key, int value) {
           lastDate = key;
           currency = value;
         });
-        widget.bankPriceTotalPadMap.forEach((key, value) => bank = value);
+        widget.bankPriceTotalPadMap
+            .forEach((String key, int value) => bank = value);
       } else {
-        lastDate = DateTime(exDate[0].toInt(), exDate[1].toInt() + 1, 0).yyyymmdd;
+        lastDate =
+            DateTime(exDate[0].toInt(), exDate[1].toInt() + 1, 0).yyyymmdd;
         currency = widget.dateCurrencySumMap[lastDate] ?? 0;
         bank = widget.bankPriceTotalPadMap[lastDate] ?? 0;
       }
@@ -116,26 +121,30 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
 
   ///
   Widget _displayDataList() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    for (final element in dispDataList) {
-      final mark = (element.startPrice < element.lastPrice) ? 1 : 0;
+    for (final DispData element in dispDataList) {
+      final int mark = (element.startPrice < element.lastPrice) ? 1 : 0;
 
       list.add(Container(
         padding: const EdgeInsets.all(5),
         margin: const EdgeInsets.only(bottom: 5),
-        decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.2))),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.white.withOpacity(0.2))),
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [Text(element.startDate), Text(element.startPrice.toString().toCurrency())],
+                        children: <Widget>[
+                          Text(element.startDate),
+                          Text(element.startPrice.toString().toCurrency())
+                        ],
                       ),
                       Container(),
                     ],
@@ -143,24 +152,32 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Icon(Icons.arrow_forward, color: Colors.white.withOpacity(0.4)),
+                  child: Icon(Icons.arrow_forward,
+                      color: Colors.white.withOpacity(0.4)),
                 ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [Text(element.lastDate), Text(element.lastPrice.toString().toCurrency())],
+                    children: <Widget>[
+                      Text(element.lastDate),
+                      Text(element.lastPrice.toString().toCurrency())
+                    ],
                   ),
                 ),
-                Container(padding: const EdgeInsets.symmetric(horizontal: 10), child: dispUpDownIcon(mark: mark)),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: dispUpDownIcon(mark: mark)),
               ],
             ),
             const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Container(),
                 Text(
-                  (element.lastPrice - element.startPrice).toString().toCurrency(),
+                  (element.lastPrice - element.startPrice)
+                      .toString()
+                      .toCurrency(),
                   style: const TextStyle(color: Colors.yellowAccent),
                 ),
               ],

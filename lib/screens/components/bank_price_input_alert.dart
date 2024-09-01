@@ -41,7 +41,7 @@ class BankPriceInputAlert extends ConsumerStatefulWidget {
 }
 
 class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
-  List<BankPrice>? bankPriceList = [];
+  List<BankPrice>? bankPriceList = <BankPrice>[];
 
   final TextEditingController _bankPriceEditingController =
       TextEditingController();
@@ -66,14 +66,14 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Text(widget.date.yyyymmdd),
-              if (widget.bankName != null) ...[
+              if (widget.bankName != null) ...<Widget>[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Text(widget.bankName!.bankName,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                     Text(widget.bankName!.branchName,
@@ -83,16 +83,16 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                   ],
                 ),
               ],
-              if (widget.emoneyName != null) ...[
+              if (widget.emoneyName != null) ...<Widget>[
                 Text(widget.emoneyName!.emoneyName,
                     maxLines: 1, overflow: TextOverflow.ellipsis),
               ],
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              if (widget.from != 'BankPriceAdjustAlert') ...[
+              if (widget.from != 'BankPriceAdjustAlert') ...<Widget>[
                 _displayInputParts(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: <Widget>[
                     Container(),
                     TextButton(
                         onPressed: _insertBankMoney,
@@ -102,12 +102,13 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
               ],
               FutureBuilder<List<Widget>>(
                 future: _displayBankPrices(),
-                builder: (context, snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(
                       child: SingleChildScrollView(
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             Column(children: snapshot.data!),
                             const SizedBox(height: 20)
                           ],
@@ -130,7 +131,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   Widget _displayInputParts() {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
               blurRadius: 24,
               spreadRadius: 16,
@@ -165,7 +166,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                     borderSide: BorderSide(color: Colors.white54)),
               ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
-              onTapOutside: (event) =>
+              onTapOutside: (PointerDownEvent event) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
             ),
           ),
@@ -176,18 +177,18 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   ///
   Future<void> _insertBankMoney() async {
-    final bankId =
+    final Id bankId =
         (widget.bankName != null) ? widget.bankName!.id : widget.emoneyName!.id;
 
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_bankPriceEditingController.text.trim() == '' && bankId > 0) {
       errFlg = true;
     }
 
     if (!errFlg) {
-      for (final element in [
-        [_bankPriceEditingController.text.trim(), 10]
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_bankPriceEditingController.text.trim(), 10]
       ]) {
         if (!checkInputValueLengthCheck(
             value: element[0].toString().trim(), length: element[1] as int)) {
@@ -197,6 +198,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -207,10 +209,10 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     }
 
     //---------------------------//
-    final bankPricesCollection =
+    final IsarCollection<BankPrice> bankPricesCollection =
         BankPricesRepository().getCollection(isar: widget.isar);
 
-    final getBankPrices = await bankPricesCollection
+    final List<BankPrice> getBankPrices = await bankPricesCollection
         .filter()
         .depositTypeEqualTo(widget.depositType.japanName)
         .bankIdEqualTo(bankId)
@@ -223,7 +225,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     }
     //---------------------------//
 
-    final bankPrice = BankPrice()
+    final BankPrice bankPrice = BankPrice()
       ..date = widget.date.yyyymmdd
       ..depositType = widget.depositType.japanName
       ..bankId = bankId
@@ -231,6 +233,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
     await BankPricesRepository()
         .inputBankPrice(isar: widget.isar, bankPrice: bankPrice)
+        // ignore: always_specify_types
         .then((value) {
       _bankPriceEditingController.clear();
 
@@ -241,7 +244,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   ///
   Future<void> _makeBankPriceList() async {
-    final param = <String, dynamic>{};
+    final Map<String, dynamic> param = <String, dynamic>{};
     param['depositType'] = (widget.bankName != null)
         ? widget.bankName!.depositType.trim()
         : widget.emoneyName!.depositType.trim();
@@ -250,21 +253,23 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
     await BankPricesRepository()
         .getSelectedBankPriceList(isar: widget.isar, param: param)
-        .then((value) => setState(() => bankPriceList = value));
+        .then(
+            (List<BankPrice>? value) => setState(() => bankPriceList = value));
   }
 
   ///
   Future<List<Widget>> _displayBankPrices() async {
     await _makeBankPriceList();
 
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    bankPriceList?.sort((a, b) => a.date.compareTo(b.date));
+    bankPriceList?.sort((BankPrice a, BankPrice b) => a.date.compareTo(b.date));
 
-    for (var i = 0; i < bankPriceList!.length; i++) {
-      final genDate = DateTime.parse('${bankPriceList![i].date} 00:00:00');
+    for (int i = 0; i < bankPriceList!.length; i++) {
+      final DateTime genDate =
+          DateTime.parse('${bankPriceList![i].date} 00:00:00');
 
-      final diff = widget.date.difference(genDate).inDays;
+      final int diff = widget.date.difference(genDate).inDays;
 
       if (diff < 0) {
         continue;
@@ -276,17 +281,17 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
             border: Border(
                 bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Text(bankPriceList![i].date),
                 Text(bankPriceList![i].price.toString().toCurrency()),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Container(),
                 GestureDetector(
                   onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
@@ -316,10 +321,10 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
         },
         child: const Text('はい'));
 
-    final alert = AlertDialog(
+    final AlertDialog alert = AlertDialog(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       content: const Text('このデータを消去しますか？'),
-      actions: [cancelButton, continueButton],
+      actions: <Widget>[cancelButton, continueButton],
     );
 
     // ignore: inference_failure_on_function_invocation
@@ -330,6 +335,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   Future<void> _deleteBankPrice({required int id}) async =>
       BankPricesRepository()
           .deleteBankPrice(isar: widget.isar, id: id)
+          // ignore: always_specify_types
           .then((value) {
         Navigator.pop(context);
         Navigator.pop(context);

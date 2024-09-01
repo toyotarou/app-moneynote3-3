@@ -22,7 +22,9 @@ import '../repository/spend_items_repository.dart';
 import '../repository/spend_time_places_repository.dart';
 import '../state/app_params/app_params_notifier.dart';
 import '../state/calendars/calendars_notifier.dart';
+import '../state/calendars/calendars_response_state.dart';
 import '../state/holidays/holidays_notifier.dart';
+import '../state/holidays/holidays_response_state.dart';
 import '../utilities/functions.dart';
 import '../utilities/utilities.dart';
 import 'components/___dummy_data_input_alert.dart';
@@ -58,7 +60,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   DateTime _calendarMonthFirst = DateTime.now();
-  final List<String> _youbiList = [
+  final List<String> _youbiList = <String>[
     'Sunday',
     'Monday',
     'Tuesday',
@@ -67,46 +69,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     'Friday',
     'Saturday'
   ];
-  List<String> _calendarDays = [];
+  List<String> _calendarDays = <String>[];
 
-  Map<String, String> _holidayMap = {};
+  Map<String, String> _holidayMap = <String, String>{};
 
   final Utility _utility = Utility();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<Money>? moneyList = [];
+  List<Money>? moneyList = <Money>[];
 
-  Map<String, Money> moneyMap = {};
+  Map<String, Money> moneyMap = <String, Money>{};
 
-  Map<String, int> dateCurrencySumMap = {};
+  Map<String, int> dateCurrencySumMap = <String, int>{};
 
-  List<BankPrice>? bankPriceList = [];
+  List<BankPrice>? bankPriceList = <BankPrice>[];
 
-  List<SpendTimePlace>? allSpendTimePlaceList = [];
-  List<SpendTimePlace>? thisMonthSpendTimePlaceList = [];
-  List<SpendTimePlace>? prevMonthSpendTimePlaceList = [];
+  List<SpendTimePlace>? allSpendTimePlaceList = <SpendTimePlace>[];
+  List<SpendTimePlace>? thisMonthSpendTimePlaceList = <SpendTimePlace>[];
+  List<SpendTimePlace>? prevMonthSpendTimePlaceList = <SpendTimePlace>[];
 
-  Map<String, List<SpendTimePlace>> spendTimePlaceCountMap = {};
-  List<SpendTimePlace> spendTypeBlankSpendTimePlaceList = [];
+  Map<String, List<SpendTimePlace>> spendTimePlaceCountMap =
+      <String, List<SpendTimePlace>>{};
+  List<SpendTimePlace> spendTypeBlankSpendTimePlaceList = <SpendTimePlace>[];
 
-  Map<String, int> monthlySpendTimePlaceSumMap = {};
+  Map<String, int> monthlySpendTimePlaceSumMap = <String, int>{};
 
-  Map<String, Map<String, int>> bankPricePadMap = {};
-  Map<String, int> bankPriceTotalPadMap = {};
+  Map<String, Map<String, int>> bankPricePadMap = <String, Map<String, int>>{};
+  Map<String, int> bankPriceTotalPadMap = <String, int>{};
 
-  List<BankName>? bankNameList = [];
-  List<EmoneyName>? emoneyNameList = [];
+  List<BankName>? bankNameList = <BankName>[];
+  List<EmoneyName>? emoneyNameList = <EmoneyName>[];
 
-  List<Deposit> depoNameList = [];
+  List<Deposit> depoNameList = <Deposit>[];
 
-  List<SpendItem>? _spendItemList = [];
+  List<SpendItem>? _spendItemList = <SpendItem>[];
 
-  List<String> monthFirstDateList = [];
+  List<String> monthFirstDateList = <String>[];
 
-  Map<String, int> monthlySpendMap = {};
+  Map<String, int> monthlySpendMap = <String, int>{};
 
-  List<Income>? _incomeList = [];
+  List<Income>? _incomeList = <Income>[];
 
   ///
   void _init() {
@@ -124,20 +127,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   bool getAllTotalMoneyMap = false;
 
-  Map<String, int> allTotalMoneyMap = {};
+  Map<String, int> allTotalMoneyMap = <String, int>{};
 
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     Future(_init);
 
     if (widget.baseYm != null) {
+      // ignore: always_specify_types
       Future(() => ref
           .read(calendarProvider.notifier)
           .setCalendarYearMonth(baseYm: widget.baseYm));
     }
 
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     return Scaffold(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
@@ -145,7 +150,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Row(
-          children: [
+          children: <Widget>[
             Text(calendarState.baseYearMonth),
             const SizedBox(width: 10),
             IconButton(
@@ -169,13 +174,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         centerTitle: false,
         backgroundColor: Colors.transparent,
-        actions: [
+        actions: <Widget>[
           IconButton(
             onPressed: () {
-              final years = <int>[];
+              final List<int> years = <int>[];
 
-              dateCurrencySumMap.forEach((key, value) {
-                final exKey = key.split('-');
+              dateCurrencySumMap.forEach((String key, int value) {
+                final List<String> exKey = key.split('-');
                 if (!years.contains(exKey[0].toInt())) {
                   years.add(exKey[0].toInt());
                 }
@@ -184,10 +189,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
               });
 
-              final spendMapMonthly = <String, int>{};
+              final Map<String, int> spendMapMonthly = <String, int>{};
 
-              var mSpend = 0;
-              monthlySpendMap.forEach((key, value) {
+              int mSpend = 0;
+              monthlySpendMap.forEach((String key, int value) {
                 mSpend += value;
                 spendMapMonthly[key] = mSpend;
               });
@@ -202,8 +207,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   bankPriceTotalPadMap: bankPriceTotalPadMap,
                   monthlySpendMap: spendMapMonthly,
                   thisMonthSpendTimePlaceList:
-                      thisMonthSpendTimePlaceList ?? [],
-                  allSpendTimePlaceList: allSpendTimePlaceList ?? [],
+                      thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
+                  allSpendTimePlaceList:
+                      allSpendTimePlaceList ?? <SpendTimePlace>[],
                 ),
               );
             },
@@ -216,7 +222,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 context: context,
                 widget: SameDaySpendPriceListAlert(
                     isar: widget.isar,
-                    spendTimePlaceList: allSpendTimePlaceList ?? []),
+                    spendTimePlaceList:
+                        allSpendTimePlaceList ?? <SpendTimePlace>[]),
               );
             },
             icon: Icon(FontAwesomeIcons.diamond,
@@ -230,7 +237,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
       body: Stack(
-        children: [
+        children: <Widget>[
           const BackGroundImage(),
           ClipPath(
             clipper: CustomShapeClipper(),
@@ -250,7 +257,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           SafeArea(
             child: Column(
-              children: [
+              children: <Widget>[
                 _displayKurikoshiPrice(),
                 ConstrainedBox(
                   constraints: BoxConstraints(
@@ -270,11 +277,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget _displayMonthSum() {
-    var plusVal = 0;
-    var minusVal = 0;
+    int plusVal = 0;
+    int minusVal = 0;
 
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
-      for (final element in thisMonthSpendTimePlaceList!) {
+      for (final SpendTimePlace element in thisMonthSpendTimePlaceList!) {
         if (element.price > 0) {
           minusVal += element.price;
         } else {
@@ -289,9 +296,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         style: const TextStyle(fontSize: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 GestureDetector(
                   onTap: () {
                     MoneyDialog(
@@ -305,7 +312,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     );
                   },
                   child: Row(
-                    children: [
+                    children: <Widget>[
                       Icon(Icons.calendar_month_rounded,
                           color: Colors.white.withOpacity(0.8)),
                       const Text('日別'),
@@ -322,12 +329,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ? DateTime.parse('${widget.baseYm}-01 00:00:00')
                             : DateTime.now(),
                         isar: widget.isar,
-                        allSpendTimePlaceList: allSpendTimePlaceList ?? [],
+                        allSpendTimePlaceList:
+                            allSpendTimePlaceList ?? <SpendTimePlace>[],
                       ),
                     );
                   },
                   child: Row(
-                    children: [
+                    children: <Widget>[
                       Icon(Icons.calendar_month_rounded,
                           color: Colors.white.withOpacity(0.8)),
                       const Text('年間'),
@@ -366,22 +374,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _displayKurikoshiPrice() {
     //=================================
 
-    final exYm = (widget.baseYm != null)
+    final List<String> exYm = (widget.baseYm != null)
         ? widget.baseYm!.split('-')
         : DateTime.now().yyyymm.split('-');
 
-    final lastMonthLastDate =
+    final String lastMonthLastDate =
         DateTime(exYm[0].toInt(), exYm[1].toInt(), 0).yyyymmdd;
 
-    final kurikoshiMoney = (moneyMap[lastMonthLastDate] != null)
+    final int kurikoshiMoney = (moneyMap[lastMonthLastDate] != null)
         ? _utility.makeCurrencySum(money: moneyMap[lastMonthLastDate])
         : 0;
 
-    final bankPriceTotal = (bankPriceTotalPadMap[lastMonthLastDate] != null)
+    final int bankPriceTotal = (bankPriceTotalPadMap[lastMonthLastDate] != null)
         ? bankPriceTotalPadMap[lastMonthLastDate]!
         : 0;
 
-    final kurikoshi = (kurikoshiMoney != 0 && bankPriceTotal != 0)
+    final int kurikoshi = (kurikoshiMoney != 0 && bankPriceTotal != 0)
         ? (kurikoshiMoney + bankPriceTotal)
         : 0;
 
@@ -389,7 +397,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
               blurRadius: 24,
               spreadRadius: 16,
@@ -411,14 +419,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Row(
-                  children: [
+                  children: <Widget>[
                     const SizedBox(width: 10),
                     DefaultTextStyle(
                       style: const TextStyle(fontSize: 10),
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           const SizedBox(height: 5),
                           const Text('繰越'),
                           const SizedBox(height: 5),
@@ -465,7 +473,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget _dispDrawer() {
-    const isRelease = bool.fromEnvironment('dart.vm.product');
+    const bool isRelease = bool.fromEnvironment('dart.vm.product');
 
     return Drawer(
       backgroundColor: Colors.blueGrey.withOpacity(0.2),
@@ -474,7 +482,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           padding: const EdgeInsets.only(left: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 60),
               if (!isRelease)
                 GestureDetector(
@@ -497,7 +505,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     context: context,
                     widget: DepositTabAlert(isar: widget.isar)),
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -526,7 +534,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   );
                 },
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -559,7 +567,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   }
                 },
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -579,13 +587,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     context: context,
                     widget: SpendItemInputAlert(
                       isar: widget.isar,
-                      spendItemList: _spendItemList ?? [],
+                      spendItemList: _spendItemList ?? <SpendItem>[],
                       spendTimePlaceCountMap: spendTimePlaceCountMap,
                     ),
                   );
                 },
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -599,18 +607,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
-              if (spendTypeBlankSpendTimePlaceList.isNotEmpty) ...[
+              if (spendTypeBlankSpendTimePlaceList.isNotEmpty) ...<Widget>[
                 GestureDetector(
                   onTap: () async {
                     await ref
                         .read(appParamProvider.notifier)
                         .setInputButtonClicked(flag: false)
+                        // ignore: always_specify_types
                         .then((value) {
                       MoneyDialog(
                         context: context,
                         widget: SpendItemReInputAlert(
                           isar: widget.isar,
-                          spendItemList: _spendItemList ?? [],
+                          spendItemList: _spendItemList ?? <SpendItem>[],
                           spendTypeBlankSpendTimePlaceList:
                               spendTypeBlankSpendTimePlaceList,
                         ),
@@ -618,7 +627,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     });
                   },
                   child: Row(
-                    children: [
+                    children: <Widget>[
                       const MenuHeadIcon(),
                       Expanded(
                         child: Container(
@@ -644,7 +653,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -665,17 +674,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     widget: DownloadDataListAlert(
                       isar: widget.isar,
                       moneyMap: moneyMap,
-                      allSpendTimePlaceList: allSpendTimePlaceList ?? [],
-                      bankNameList: bankNameList ?? [],
-                      emoneyNameList: emoneyNameList ?? [],
+                      allSpendTimePlaceList:
+                          allSpendTimePlaceList ?? <SpendTimePlace>[],
+                      bankNameList: bankNameList ?? <BankName>[],
+                      emoneyNameList: emoneyNameList ?? <EmoneyName>[],
                       bankPricePadMap: bankPricePadMap,
-                      spendItem: _spendItemList ?? [],
-                      incomeList: _incomeList ?? [],
+                      spendItem: _spendItemList ?? <SpendItem>[],
+                      incomeList: _incomeList ?? <Income>[],
                     ),
                   );
                 },
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -703,7 +713,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   );
                 },
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     const MenuHeadIcon(),
                     Expanded(
                       child: Container(
@@ -726,35 +736,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget _getCalendar() {
-    monthlySpendMap = {};
+    monthlySpendMap = <String, int>{};
 
-    final holidayState = ref.watch(holidayProvider);
+    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
 
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;
     }
 
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     _calendarMonthFirst =
         DateTime.parse('${calendarState.baseYearMonth}-01 00:00:00');
 
-    final monthEnd =
+    final DateTime monthEnd =
         DateTime.parse('${calendarState.nextYearMonth}-00 00:00:00');
 
-    final diff = monthEnd.difference(_calendarMonthFirst).inDays;
-    final monthDaysNum = diff + 1;
+    final int diff = monthEnd.difference(_calendarMonthFirst).inDays;
+    final int monthDaysNum = diff + 1;
 
-    final youbi = _calendarMonthFirst.youbiStr;
-    final youbiNum = _youbiList.indexWhere((element) => element == youbi);
+    final String youbi = _calendarMonthFirst.youbiStr;
+    final int youbiNum =
+        _youbiList.indexWhere((String element) => element == youbi);
 
-    final weekNum = ((monthDaysNum + youbiNum) <= 35) ? 5 : 6;
+    final int weekNum = ((monthDaysNum + youbiNum) <= 35) ? 5 : 6;
 
-    _calendarDays = List.generate(weekNum * 7, (index) => '');
+    // ignore: always_specify_types
+    _calendarDays = List.generate(weekNum * 7, (int index) => '');
 
-    for (var i = 0; i < (weekNum * 7); i++) {
+    for (int i = 0; i < (weekNum * 7); i++) {
       if (i >= youbiNum) {
-        final gendate = _calendarMonthFirst.add(Duration(days: i - youbiNum));
+        final DateTime gendate =
+            _calendarMonthFirst.add(Duration(days: i - youbiNum));
 
         if (_calendarMonthFirst.month == gendate.month) {
           _calendarDays[i] = gendate.day.toString();
@@ -762,8 +775,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
-    final list = <Widget>[];
-    for (var i = 0; i < weekNum; i++) {
+    final List<Widget> list = <Widget>[];
+    for (int i = 0; i < weekNum; i++) {
       list.add(_getCalendarRow(week: i));
     }
 
@@ -773,25 +786,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget _getCalendarRow({required int week}) {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    for (var i = week * 7; i < ((week + 1) * 7); i++) {
-      final generateYmd = (_calendarDays[i] == '')
+    for (int i = week * 7; i < ((week + 1) * 7); i++) {
+      final String generateYmd = (_calendarDays[i] == '')
           ? ''
           : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
                   _calendarDays[i].toInt())
               .yyyymmdd;
 
-      final youbiStr = (_calendarDays[i] == '')
+      final String youbiStr = (_calendarDays[i] == '')
           ? ''
           : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
                   _calendarDays[i].toInt())
               .youbiStr;
 
-      var dateDiff = 0;
-      var dateSum = 0;
+      int dateDiff = 0;
+      int dateSum = 0;
       if (generateYmd != '') {
-        final genDate = DateTime.parse('$generateYmd 00:00:00');
+        final DateTime genDate = DateTime.parse('$generateYmd 00:00:00');
         dateDiff = genDate.difference(DateTime.now()).inSeconds;
 
         if (dateCurrencySumMap[generateYmd] != null &&
@@ -802,8 +815,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       //-----------------------------------------------//
-      var zenjitsuSum = 0;
-      final zenjitsu = (_calendarDays[i] == '')
+      int zenjitsuSum = 0;
+      final String zenjitsu = (_calendarDays[i] == '')
           ? ''
           : DateTime(_calendarMonthFirst.year, _calendarMonthFirst.month,
                   _calendarDays[i].toInt() - 1)
@@ -821,7 +834,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       /////////////////////////////////////////
 
-      var inputedFlag = false;
+      bool inputedFlag = false;
 
       if ((monthlySpendTimePlaceSumMap[generateYmd] != null &&
               (zenjitsuSum - dateSum) ==
@@ -845,13 +858,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         moneyMap: moneyMap,
                         bankPricePadMap: bankPricePadMap,
                         bankPriceTotalPadMap: bankPriceTotalPadMap,
-                        bankNameList: bankNameList ?? [],
-                        emoneyNameList: emoneyNameList ?? [],
-                        spendItemList: _spendItemList ?? [],
+                        bankNameList: bankNameList ?? <BankName>[],
+                        emoneyNameList: emoneyNameList ?? <EmoneyName>[],
+                        spendItemList: _spendItemList ?? <SpendItem>[],
                         thisMonthSpendTimePlaceList:
-                            thisMonthSpendTimePlaceList ?? [],
+                            thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
                         prevMonthSpendTimePlaceList:
-                            prevMonthSpendTimePlaceList ?? [],
+                            prevMonthSpendTimePlaceList ?? <SpendTimePlace>[],
                       ),
                     ),
             child: Container(
@@ -879,16 +892,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ? const Text('')
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                          children: <Widget>[
                             Text(_calendarDays[i].padLeft(2, '0')),
                             if (dateDiff > 0 || dateSum == 0)
                               Container()
                             else
                               Row(
-                                children: [
+                                children: <Widget>[
                                   Container(
                                     width: 10,
                                     height: 10,
@@ -908,11 +921,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           constraints: BoxConstraints(
                               minHeight: context.screenSize.height / 25),
                           child: Column(
-                            children: [
+                            children: <Widget>[
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
+                                children: <Widget>[
                                   Container(),
                                   if (dateDiff > 0 || dateSum == 0)
                                     Container()
@@ -925,7 +938,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
+                                children: <Widget>[
                                   Container(),
                                   if (dateDiff > 0 || dateSum == 0)
                                     Container()
@@ -955,18 +968,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeMoneyList() async {
-    await MoneysRepository().getMoneyList(isar: widget.isar).then((value) {
+    await MoneysRepository()
+        .getMoneyList(isar: widget.isar)
+        .then((List<Money>? value) {
       if (mounted) {
         setState(() {
           moneyList = value;
 
           if (value!.isNotEmpty) {
             value
-              ..forEach((element) => dateCurrencySumMap[element.date] =
+              ..forEach((Money element) => dateCurrencySumMap[element.date] =
                   _utility.makeCurrencySum(money: element))
-              ..forEach((element) => moneyMap[element.date] = element)
-              ..forEach((element) {
-                final exDate = element.date.split('-');
+              ..forEach((Money element) => moneyMap[element.date] = element)
+              ..forEach((Money element) {
+                final List<String> exDate = element.date.split('-');
                 if (exDate[2].toInt() == 1) {
                   if (!monthFirstDateList.contains(element.date)) {
                     monthFirstDateList.add(element.date);
@@ -983,13 +998,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _makeBankPriceList() async {
     await BankPricesRepository()
         .getBankPriceList(isar: widget.isar)
-        .then((value) {
+        .then((List<BankPrice>? value) {
       if (mounted) {
         setState(() {
           bankPriceList = value;
 
           if (value != null) {
-            final bankPriceMap = makeBankPriceMap(bankPriceList: value);
+            final Map<String, dynamic> bankPriceMap =
+                makeBankPriceMap(bankPriceList: value);
             bankPricePadMap = bankPriceMap['bankPriceDatePadMap']
                 as Map<String, Map<String, int>>;
             bankPriceTotalPadMap =
@@ -1002,49 +1018,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeSpendTimePlaceList() async {
-    spendTypeBlankSpendTimePlaceList = [];
+    spendTypeBlankSpendTimePlaceList = <SpendTimePlace>[];
 
     await SpendTimePlacesRepository()
         .getSpendTimePlaceList(isar: widget.isar)
-        .then((value) {
+        .then((List<SpendTimePlace>? value) {
       if (mounted) {
         setState(() {
           allSpendTimePlaceList = value;
 
           if (value!.isNotEmpty) {
-            final yearmonth =
+            final String? yearmonth =
                 (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
 
-            final prevYearMonth = DateTime(yearmonth!.split('-')[0].toInt(),
+            final String prevYearMonth = DateTime(
+                    yearmonth!.split('-')[0].toInt(),
                     yearmonth.split('-')[1].toInt() - 1)
                 .yyyymm;
 
             if (_spendItemList != null) {
-              final map = <String, List<SpendTimePlace>>{};
-              for (final element in _spendItemList!) {
-                map[element.spendItemName] = [];
+              final Map<String, List<SpendTimePlace>> map =
+                  <String, List<SpendTimePlace>>{};
+              for (final SpendItem element in _spendItemList!) {
+                map[element.spendItemName] = <SpendTimePlace>[];
               }
-              for (final element in value) {
+              for (final SpendTimePlace element in value) {
                 map[element.spendType]?.add(element);
               }
               spendTimePlaceCountMap = map;
             }
 
-            final list = <SpendTimePlace>[];
-            final list2 = <SpendTimePlace>[];
+            final List<SpendTimePlace> list = <SpendTimePlace>[];
+            final List<SpendTimePlace> list2 = <SpendTimePlace>[];
 
-            final map = <String, List<int>>{};
+            final Map<String, List<int>> map = <String, List<int>>{};
 
             value
-              ..forEach((element) {
-                final exDate = element.date.split('-');
+              ..forEach((SpendTimePlace element) {
+                final List<String> exDate = element.date.split('-');
 
                 if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
-                  map[element.date] = [];
+                  map[element.date] = <int>[];
                 }
               })
-              ..forEach((element) {
-                final exDate = element.date.split('-');
+              ..forEach((SpendTimePlace element) {
+                final List<String> exDate = element.date.split('-');
 
                 if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
                   map[element.date]?.add(element.price);
@@ -1061,9 +1079,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 }
               });
 
-            map.forEach((key, value) {
-              var sum = 0;
-              for (final element in value) {
+            map.forEach((String key, List<int> value) {
+              int sum = 0;
+              for (final int element in value) {
                 sum += element;
               }
               monthlySpendTimePlaceSumMap[key] = sum;
@@ -1080,12 +1098,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Widget _displayMonthlySpendTimePlaceList() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
     if (thisMonthSpendTimePlaceList!.isNotEmpty) {
-      final spendItemColorMap = <String, String>{};
+      final Map<String, String> spendItemColorMap = <String, String>{};
       if (_spendItemList!.isNotEmpty) {
-        for (final element in _spendItemList!) {
+        for (final SpendItem element in _spendItemList!) {
           spendItemColorMap[element.spendItemName] = element.color;
         }
       }
@@ -1093,8 +1111,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       makeMonthlySpendItemSumMap(
               spendTimePlaceList: thisMonthSpendTimePlaceList!,
               spendItemList: _spendItemList)
-          .forEach((key, value) {
-        final lineColor =
+          .forEach((String key, int value) {
+        final String? lineColor =
             (spendItemColorMap[key] != null && spendItemColorMap[key] != '')
                 ? spendItemColorMap[key]
                 : '0xffffffff';
@@ -1108,10 +1126,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Text(key),
                 Row(
-                  children: [
+                  children: <Widget>[
                     Text(value.toString().toCurrency()),
                     const SizedBox(width: 20),
                     GestureDetector(
@@ -1148,17 +1166,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   Future<void> _makeBankNameList() async {
-    depoNameList = [];
+    depoNameList = <Deposit>[];
 
     await BankNamesRepository()
         .getBankNameList(isar: widget.isar)
-        .then((value) {
+        .then((List<BankName>? value) {
       if (mounted) {
         setState(() {
           bankNameList = value;
 
           if (value!.isNotEmpty) {
-            for (final element in value) {
+            for (final BankName element in value) {
               depoNameList.add(Deposit('${element.depositType}-${element.id}',
                   '${element.bankName} ${element.branchName}'));
             }
@@ -1174,13 +1192,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _makeEmoneyNameList() async {
     await EmoneyNamesRepository()
         .getEmoneyNameList(isar: widget.isar)
-        .then((value) {
+        .then((List<EmoneyName>? value) {
       if (mounted) {
         setState(() {
           emoneyNameList = value;
 
           if (value!.isNotEmpty) {
-            for (final element in value) {
+            for (final EmoneyName element in value) {
               depoNameList.add(Deposit(
                   '${element.depositType}-${element.id}', element.emoneyName));
             }
@@ -1192,41 +1210,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   void _goPrevMonth() {
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     Navigator.pushReplacement(
       context,
-      // ignore: inference_failure_on_instance_creation
+      // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (context) => HomeScreen(
+          builder: (BuildContext context) => HomeScreen(
               isar: widget.isar, baseYm: calendarState.prevYearMonth)),
     );
   }
 
   ///
   void _goNextMonth() {
-    final calendarState = ref.watch(calendarProvider);
+    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
     Navigator.pushReplacement(
       context,
-      // ignore: inference_failure_on_instance_creation
+      // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (context) => HomeScreen(
+          builder: (BuildContext context) => HomeScreen(
               isar: widget.isar, baseYm: calendarState.nextYearMonth)),
     );
   }
 
   ///
-  Future<void> _makeSpendItemList() async =>
-      SpendItemsRepository().getSpendItemList(isar: widget.isar).then((value) {
+  Future<void> _makeSpendItemList() async => SpendItemsRepository()
+          .getSpendItemList(isar: widget.isar)
+          .then((List<SpendItem>? value) {
         if (mounted) {
           setState(() => _spendItemList = value);
         }
       });
 
   ///
-  Future<void> _makeIncomeList() async =>
-      IncomesRepository().getIncomeList(isar: widget.isar).then((value) {
+  Future<void> _makeIncomeList() async => IncomesRepository()
+          .getIncomeList(isar: widget.isar)
+          .then((List<Income>? value) {
         if (mounted) {
           setState(() => _incomeList = value);
         }

@@ -9,20 +9,24 @@ import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_time_places_repository.dart';
 import '../../state/spend_time_places/spend_time_places_notifier.dart';
+import '../../state/spend_time_places/spend_time_places_response_state.dart';
 import 'parts/error_dialog.dart';
 
 class SpendTimePlaceItemModifyAlert extends ConsumerStatefulWidget {
-  const SpendTimePlaceItemModifyAlert({super.key, required this.isar, required this.spendTimePlace});
+  const SpendTimePlaceItemModifyAlert(
+      {super.key, required this.isar, required this.spendTimePlace});
 
   final Isar isar;
   final SpendTimePlace spendTimePlace;
 
   ///
   @override
-  ConsumerState<SpendTimePlaceItemModifyAlert> createState() => _SpendTimePlaceItemModifyAlertState();
+  ConsumerState<SpendTimePlaceItemModifyAlert> createState() =>
+      _SpendTimePlaceItemModifyAlertState();
 }
 
-class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceItemModifyAlert> {
+class _SpendTimePlaceItemModifyAlertState
+    extends ConsumerState<SpendTimePlaceItemModifyAlert> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -38,7 +42,7 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               const Text('消費アイテム修正'),
@@ -56,8 +60,11 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
   Widget displayTopPlate() {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+              blurRadius: 24,
+              spreadRadius: 16,
+              color: Colors.black.withOpacity(0.2)),
         ],
       ),
       child: ClipRRect(
@@ -71,16 +78,20 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border:
+                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
-              children: [
+              children: <Widget>[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       const Text('date'),
                       Text(widget.spendTimePlace.date),
                     ],
@@ -88,10 +99,13 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       const Text('time'),
                       Text(widget.spendTimePlace.time),
                     ],
@@ -99,10 +113,13 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       const Text('spendType'),
                       Text(widget.spendTimePlace.spendType),
                     ],
@@ -110,10 +127,13 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       const Text('price'),
                       Text(widget.spendTimePlace.price.toString().toCurrency()),
                     ],
@@ -121,10 +141,13 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       const Text('place'),
                       Text(widget.spendTimePlace.place),
                     ],
@@ -140,19 +163,24 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
 
   ///
   Widget displayButtonColumn() {
-    final spendTimePlaceItemChangeDate = ref.watch(spendTimePlaceProvider.select((value) => value.spendTimePlaceItemChangeDate));
+    final String spendTimePlaceItemChangeDate = ref.watch(
+        spendTimePlaceProvider.select((SpendTimePlacesResponseState value) =>
+            value.spendTimePlaceItemChangeDate));
 
     return Column(
-      children: [
+      children: <Widget>[
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               const Text('このレコードを削除する'),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                 onPressed: _showDeleteDialog,
                 child: const Text('削除'),
               ),
@@ -161,16 +189,18 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
         ),
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Row(
-            children: [
+            children: <Widget>[
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     const Text('このレコードの日付を変更する'),
                     Row(
-                      children: [
+                      children: <Widget>[
                         GestureDetector(
                           onTap: _showDP,
                           child: Icon(
@@ -186,12 +216,17 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
                 ),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                 onPressed: () {
                   if (spendTimePlaceItemChangeDate == '') {
+                    // ignore: always_specify_types
                     Future.delayed(
                       Duration.zero,
-                      () => error_dialog(context: context, title: '変更できません。', content: '変更する日付を入力してください。'),
+                      () => error_dialog(
+                          context: context,
+                          title: '変更できません。',
+                          content: '変更する日付を入力してください。'),
                     );
 
                     return;
@@ -210,7 +245,7 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
 
   ///
   Future<void> _showDP() async {
-    final selectedDate = await showDatePicker(
+    final DateTime? selectedDate = await showDatePicker(
       barrierColor: Colors.transparent,
       locale: const Locale('ja'),
       context: context,
@@ -236,19 +271,31 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
     );
 
     if (selectedDate != null) {
-      await ref.read(spendTimePlaceProvider.notifier).setSpendTimePlaceItemChangeDate(date: selectedDate.yyyymmdd);
+      await ref
+          .read(spendTimePlaceProvider.notifier)
+          .setSpendTimePlaceItemChangeDate(date: selectedDate.yyyymmdd);
     }
   }
 
   ///
   Future<void> _updateSpendTimePlaceItem() async {
-    final spendTimePlaceItemChangeDate = ref.watch(spendTimePlaceProvider.select((value) => value.spendTimePlaceItemChangeDate));
+    final String spendTimePlaceItemChangeDate = ref.watch(
+        spendTimePlaceProvider.select((SpendTimePlacesResponseState value) =>
+            value.spendTimePlaceItemChangeDate));
 
-    final spendTimePlaceItem = widget.spendTimePlace..date = spendTimePlaceItemChangeDate;
+    final SpendTimePlace spendTimePlaceItem = widget.spendTimePlace
+      ..date = spendTimePlaceItemChangeDate;
 
     await widget.isar.writeTxn(() async {
-      await SpendTimePlacesRepository().updateSpendTimePlace(isar: widget.isar, spendTimePlace: spendTimePlaceItem).then((value) async {
-        await ref.read(spendTimePlaceProvider.notifier).setSpendTimePlaceItemChangeDate(date: '');
+      // ignore: always_specify_types
+      await SpendTimePlacesRepository()
+          .updateSpendTimePlace(
+              isar: widget.isar, spendTimePlace: spendTimePlaceItem)
+          // ignore: always_specify_types
+          .then((value) async {
+        await ref
+            .read(spendTimePlaceProvider.notifier)
+            .setSpendTimePlaceItemChangeDate(date: '');
 
         if (mounted) {
           Navigator.pop(context);
@@ -261,7 +308,8 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
 
   ///
   void _showDeleteDialog() {
-    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(
+        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {
@@ -271,10 +319,10 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
         },
         child: const Text('はい'));
 
-    final alert = AlertDialog(
+    final AlertDialog alert = AlertDialog(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       content: const Text('このデータを消去しますか？'),
-      actions: [cancelButton, continueButton],
+      actions: <Widget>[cancelButton, continueButton],
     );
 
     // ignore: inference_failure_on_function_invocation
@@ -283,7 +331,11 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
 
   ///
   Future<void> _deleteSpendTimePlaceItem() async {
-    await SpendTimePlacesRepository().deleteSpendTimePrice(isar: widget.isar, id: widget.spendTimePlace.id).then((value) {
+    // ignore: always_specify_types
+    await SpendTimePlacesRepository()
+        .deleteSpendTimePrice(isar: widget.isar, id: widget.spendTimePlace.id)
+        // ignore: always_specify_types
+        .then((value) {
       Navigator.pop(context);
       Navigator.pop(context);
       Navigator.pop(context);

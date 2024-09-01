@@ -10,11 +10,11 @@ class SpendTimePlacesResponseState with _$SpendTimePlacesResponseState {
     @Default(0) int diff,
     @Default('') String baseDiff,
     //
-    @Default([]) List<String> spendItem,
-    @Default([]) List<String> spendTime,
-    @Default([]) List<String> spendPlace,
-    @Default([]) List<int> spendPrice,
-    @Default([]) List<bool> minusCheck,
+    @Default(<String>[]) List<String> spendItem,
+    @Default(<String>[]) List<String> spendTime,
+    @Default(<String>[]) List<String> spendPlace,
+    @Default(<String>[]) List<int> spendPrice,
+    @Default(<String>[]) List<bool> minusCheck,
 
     //
     @Default(false) bool blinkingFlag,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:charset_converter/charset_converter.dart';
 import 'package:external_path/external_path.dart';
@@ -18,6 +19,7 @@ import '../../enums/data_download_data_type.dart';
 import '../../enums/data_download_date_type.dart';
 import '../../extensions/extensions.dart';
 import '../../state/data_download/data_download_notifier.dart';
+import '../../state/data_download/data_download_response_state.dart';
 import 'parts/error_dialog.dart';
 
 class DownloadDataListAlert extends ConsumerStatefulWidget {
@@ -49,9 +51,10 @@ class DownloadDataListAlert extends ConsumerStatefulWidget {
 }
 
 class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
-  Map<String, List<SpendTimePlace>> spendTimePlaceMap = {};
+  Map<String, List<SpendTimePlace>> spendTimePlaceMap =
+      <String, List<SpendTimePlace>>{};
 
-  List<String> outputValuesList = [];
+  List<String> outputValuesList = <String>[];
 
   String externalStoragePublicDirectoryPath = '';
 
@@ -60,10 +63,10 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   void initState() {
     super.initState();
 
-    for (final element in widget.allSpendTimePlaceList) {
-      spendTimePlaceMap[element.date] = [];
+    for (final SpendTimePlace element in widget.allSpendTimePlaceList) {
+      spendTimePlaceMap[element.date] = <SpendTimePlace>[];
     }
-    for (final element in widget.allSpendTimePlaceList) {
+    for (final SpendTimePlace element in widget.allSpendTimePlaceList) {
       spendTimePlaceMap[element.date]?.add(element);
     }
 
@@ -72,7 +75,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
   ///
   Future<void> getPublicDirectoryPath() async {
-    final path = await ExternalPath.getExternalStoragePublicDirectory(
+    final String path = await ExternalPath.getExternalStoragePublicDirectory(
         ExternalPath.DIRECTORY_DOWNLOADS);
     setState(() {
       externalStoragePublicDirectoryPath = path;
@@ -82,7 +85,8 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final dataDownloadState = ref.watch(dataDownloadProvider);
+    final DataDownloadResponseState dataDownloadState =
+        ref.watch(dataDownloadProvider);
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -97,16 +101,16 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('ダウンロードデータ選択'), Container()],
+                children: <Widget>[const Text('ダウンロードデータ選択'), Container()],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
-                children: [
+                children: <Widget>[
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         backgroundColor: (dataDownloadState.dataType ==
@@ -157,13 +161,13 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.white.withOpacity(0.4))),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Row(
-                      children: [
+                      children: <Widget>[
                         SizedBox(
                           width: context.screenSize.width * 0.3,
                           child: Row(
-                            children: [
+                            children: <Widget>[
                               IconButton(
                                 onPressed: () {
                                   ref
@@ -178,7 +182,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
+                                children: <Widget>[
                                   const Text('Start'),
                                   Text(dataDownloadState.startDate)
                                 ],
@@ -189,7 +193,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                         const SizedBox(width: 10),
                         const Text('〜'),
                         Row(
-                          children: [
+                          children: <Widget>[
                             IconButton(
                               onPressed: () {
                                 ref
@@ -204,7 +208,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                              children: <Widget>[
                                 const Text('End'),
                                 Text(dataDownloadState.endDate)
                               ],
@@ -214,7 +218,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                       ],
                     ),
                     Row(
-                      children: [
+                      children: <Widget>[
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: (dataDownloadState.dataType ==
@@ -287,7 +291,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
                   TextButton(
                     onPressed: outputCsv,
@@ -305,6 +309,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
   ///
   void getErrorDialog({required String title, required String content}) {
+    // ignore: always_specify_types
     Future.delayed(
       Duration.zero,
       () => error_dialog(context: context, title: title, content: content),
@@ -313,7 +318,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
   ///
   Future<void> _showDP({required DateDownloadDateType pos}) async {
-    final selectedDate = await showDatePicker(
+    final DateTime? selectedDate = await showDatePicker(
       barrierColor: Colors.transparent,
       locale: const Locale('ja'),
       context: context,
@@ -356,24 +361,27 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
   ///
   Widget _displayDownloadData() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final dataDownloadState = ref.watch(dataDownloadProvider);
+    final DataDownloadResponseState dataDownloadState =
+        ref.watch(dataDownloadProvider);
 
     if (dataDownloadState.dataType != null) {
       //=====================//
-      final dateList = <String>[];
+      final List<String> dateList = <String>[];
 
       if (dataDownloadState.endDate != '' &&
           dataDownloadState.startDate != '') {
-        final dateDiff = DateTime.parse('${dataDownloadState.endDate} 00:00:00')
-            .difference(
-                DateTime.parse('${dataDownloadState.startDate} 00:00:00'))
-            .inDays;
+        final int dateDiff =
+            DateTime.parse('${dataDownloadState.endDate} 00:00:00')
+                .difference(
+                    DateTime.parse('${dataDownloadState.startDate} 00:00:00'))
+                .inDays;
 
-        for (var i = 0; i <= dateDiff; i++) {
-          final day = DateTime.parse('${dataDownloadState.startDate} 00:00:00')
-              .add(Duration(days: i));
+        for (int i = 0; i <= dateDiff; i++) {
+          final DateTime day =
+              DateTime.parse('${dataDownloadState.startDate} 00:00:00')
+                  .add(Duration(days: i));
 
           dateList.add(day.yyyymmdd);
         }
@@ -385,12 +393,12 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           break;
 
         case DateDownloadDataType.money:
-          outputValuesList = [];
+          outputValuesList = <String>[];
 
-          widget.moneyMap.forEach((key, value) {
+          widget.moneyMap.forEach((String key, Money value) {
             if (dateList.contains(key)) {
               list.add(Row(
-                children: [
+                children: <Widget>[
                   getDataCell(
                       data: value.date,
                       width: 100,
@@ -438,7 +446,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                 ],
               ));
 
-              outputValuesList.add([
+              outputValuesList.add(<String>[
                 value.date,
                 value.yen_10000.toString(),
                 value.yen_5000.toString(),
@@ -456,34 +464,34 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           break;
 
         case DateDownloadDataType.bank:
-          outputValuesList = [];
+          outputValuesList = <String>[];
 
-          for (final element in dateList) {
+          for (final String element in dateList) {
             list.add(
-              Row(children: [
+              Row(children: <Widget>[
                 getDataCell(
                     data: element, width: 100, alignment: Alignment.topLeft),
                 Row(
                     children: widget.bankNameList
-                        .map((e) => _displayBankPriceListData(
+                        .map((BankName e) => _displayBankPriceListData(
                             date: element, bankName: e))
                         .toList()),
                 Row(
                     children: widget.emoneyNameList
-                        .map((e) => _displayBankPriceListData(
+                        .map((EmoneyName e) => _displayBankPriceListData(
                             date: element, emoneyName: e))
                         .toList())
               ]),
             );
 
-            final outVal = <String>[element];
-            for (final element2 in widget.bankNameList) {
+            final List<String> outVal = <String>[element];
+            for (final BankName element2 in widget.bankNameList) {
               outVal.add(_getBankPriceData(
                       deposit: '${element2.depositType}-${element2.id}',
                       date: element)
                   .toString());
             }
-            for (final element2 in widget.emoneyNameList) {
+            for (final EmoneyName element2 in widget.emoneyNameList) {
               outVal.add(_getBankPriceData(
                       deposit: '${element2.depositType}-${element2.id}',
                       date: element)
@@ -495,13 +503,13 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           break;
 
         case DateDownloadDataType.spend:
-          outputValuesList = [];
+          outputValuesList = <String>[];
 
-          spendTimePlaceMap.forEach((key, value) {
+          spendTimePlaceMap.forEach((String key, List<SpendTimePlace> value) {
             if (dateList.contains(key)) {
-              for (final element in value) {
+              for (final SpendTimePlace element in value) {
                 list.add(Row(
-                  children: [
+                  children: <Widget>[
                     getDataCell(
                         data: element.date,
                         width: 100,
@@ -525,7 +533,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                   ],
                 ));
 
-                outputValuesList.add([
+                outputValuesList.add(<String>[
                   element.date,
                   element.time,
                   element.spendType,
@@ -538,11 +546,11 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           break;
 
         case DateDownloadDataType.bankName:
-          outputValuesList = [];
+          outputValuesList = <String>[];
 
-          for (final element in widget.bankNameList) {
+          for (final BankName element in widget.bankNameList) {
             list.add(Row(
-              children: [
+              children: <Widget>[
                 getDataCell(
                     data: element.bankNumber,
                     width: 100,
@@ -570,7 +578,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               ],
             ));
 
-            outputValuesList.add([
+            outputValuesList.add(<String>[
               "'${element.bankNumber}",
               element.bankName,
               "'${element.branchNumber}",
@@ -580,9 +588,9 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             ].join(','));
           }
 
-          for (final element in widget.emoneyNameList) {
+          for (final EmoneyName element in widget.emoneyNameList) {
             list.add(Row(
-              children: [
+              children: <Widget>[
                 getDataCell(
                     data: element.emoneyName,
                     width: 100,
@@ -590,17 +598,17 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               ],
             ));
 
-            outputValuesList.add([element.emoneyName].join(','));
+            outputValuesList.add(<String>[element.emoneyName].join(','));
           }
 
           break;
 
         case DateDownloadDataType.spendItem:
-          outputValuesList = [];
+          outputValuesList = <String>[];
 
-          for (final element in widget.spendItem) {
+          for (final SpendItem element in widget.spendItem) {
             list.add(Row(
-              children: [
+              children: <Widget>[
                 getDataCell(
                     data: element.spendItemName,
                     width: 100,
@@ -620,7 +628,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               ],
             ));
 
-            outputValuesList.add([
+            outputValuesList.add(<String>[
               element.spendItemName,
               element.order.toString(),
               "'${element.color}",
@@ -631,11 +639,11 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           break;
 
         case DateDownloadDataType.income:
-          outputValuesList = [];
+          outputValuesList = <String>[];
 
-          for (final element in widget.incomeList) {
+          for (final Income element in widget.incomeList) {
             list.add(Row(
-              children: [
+              children: <Widget>[
                 getDataCell(
                     data: element.date,
                     width: 100,
@@ -651,8 +659,11 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               ],
             ));
 
-            outputValuesList.add(
-                [element.date, element.sourceName, element.price].join(','));
+            outputValuesList.add(<Object>[
+              element.date,
+              element.sourceName,
+              element.price
+            ].join(','));
           }
 
           break;
@@ -674,7 +685,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
   ///
   int _getBankPriceData({required String deposit, required String date}) {
-    var dispPrice = 0;
+    int dispPrice = 0;
     if (widget.bankPricePadMap[deposit] != null) {
       if (widget.bankPricePadMap[deposit]![date] != null) {
         dispPrice = widget.bankPricePadMap[deposit]![date]!;
@@ -687,7 +698,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   ///
   Widget _displayBankPriceListData(
       {required String date, BankName? bankName, EmoneyName? emoneyName}) {
-    var deposit = '';
+    String deposit = '';
 
     if (bankName != null) {
       deposit = '${bankName.depositType}-${bankName.id}';
@@ -730,26 +741,28 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       return;
     }
 
-    final dataType =
-        ref.watch(dataDownloadProvider.select((value) => value.dataType));
+    final DateDownloadDataType? dataType = ref.watch(dataDownloadProvider
+        .select((DataDownloadResponseState value) => value.dataType));
 
-    final now = DateTime.now();
-    final timeFormat = DateFormat('HHmmss');
-    final currentTime = timeFormat.format(now);
+    final DateTime now = DateTime.now();
+    final DateFormat timeFormat = DateFormat('HHmmss');
+    final String currentTime = timeFormat.format(now);
 
-    final year = now.year.toString();
-    final month = now.month.toString().padLeft(2, '0');
-    final day = now.day.toString().padLeft(2, '0');
+    final String year = now.year.toString();
+    final String month = now.month.toString().padLeft(2, '0');
+    final String day = now.day.toString().padLeft(2, '0');
 
-    final dateStr = '${dataType!.japanName}_$year$month$day$currentTime';
-    final sendFileName = '$dateStr.csv';
+    final String dateStr = '${dataType!.japanName}_$year$month$day$currentTime';
+    final String sendFileName = '$dateStr.csv';
 
-    final exFilePath = '$externalStoragePublicDirectoryPath/$sendFileName';
-    final textFilePath = File(exFilePath);
+    final String exFilePath =
+        '$externalStoragePublicDirectoryPath/$sendFileName';
+    final File textFilePath = File(exFilePath);
 
-    final contents = outputValuesList.join('\n');
+    final String contents = outputValuesList.join('\n');
 
-    final encoded = await CharsetConverter.encode('Shift_JIS', contents);
+    final Uint8List encoded =
+        await CharsetConverter.encode('Shift_JIS', contents);
     await textFilePath.writeAsBytes(encoded);
 
     getErrorDialog(title: '出力しました。', content: 'ダウンロードフォルダにCSVを作成しました。');

@@ -10,7 +10,8 @@ class SpendTimePlacesRepository {
   ///
   Future<List<SpendTimePlace>?> getSpendTimePlaceList(
       {required Isar isar}) async {
-    final spendTimePlacesCollection = getCollection(isar: isar);
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection =
+        getCollection(isar: isar);
     return spendTimePlacesCollection
         .where()
         .sortByDate()
@@ -21,7 +22,8 @@ class SpendTimePlacesRepository {
   ///
   Future<List<SpendTimePlace>?> getDateSpendTimePlaceList(
       {required Isar isar, required Map<String, dynamic> param}) async {
-    final spendTimePlacesCollection = getCollection(isar: isar);
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection =
+        getCollection(isar: isar);
     return spendTimePlacesCollection
         .filter()
         .dateStartsWith(param['date'] as String)
@@ -33,7 +35,8 @@ class SpendTimePlacesRepository {
   ///
   Future<List<SpendTimePlace>?> getSpendTypeSpendTimePlaceList(
       {required Isar isar, required Map<String, dynamic> param}) async {
-    final spendTimePlacesCollection = getCollection(isar: isar);
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection =
+        getCollection(isar: isar);
     return spendTimePlacesCollection
         .filter()
         .spendTypeEqualTo(param['item'] as String)
@@ -46,7 +49,7 @@ class SpendTimePlacesRepository {
   Future<void> inputSpendTimePriceList(
       {required Isar isar,
       required List<SpendTimePlace> spendTimePriceList}) async {
-    for (final element in spendTimePriceList) {
+    for (final SpendTimePlace element in spendTimePriceList) {
       inputSpendTimePrice(isar: isar, spendTimePlace: element);
     }
   }
@@ -54,7 +57,8 @@ class SpendTimePlacesRepository {
   ///
   Future<void> inputSpendTimePrice(
       {required Isar isar, required SpendTimePlace spendTimePlace}) async {
-    final spendTimePlacesCollection = getCollection(isar: isar);
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection =
+        getCollection(isar: isar);
     await isar
         .writeTxn(() async => spendTimePlacesCollection.put(spendTimePlace));
   }
@@ -63,7 +67,7 @@ class SpendTimePlacesRepository {
   Future<void> updateSpendTimePriceList(
       {required Isar isar,
       required List<SpendTimePlace> spendTimePriceList}) async {
-    for (final element in spendTimePriceList) {
+    for (final SpendTimePlace element in spendTimePriceList) {
       updateSpendTimePlace(isar: isar, spendTimePlace: element);
     }
   }
@@ -71,7 +75,8 @@ class SpendTimePlacesRepository {
   ///
   Future<void> updateSpendTimePlace(
       {required Isar isar, required SpendTimePlace spendTimePlace}) async {
-    final spendTimePlacesCollection = getCollection(isar: isar);
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection =
+        getCollection(isar: isar);
     await spendTimePlacesCollection.put(spendTimePlace);
   }
 
@@ -79,14 +84,15 @@ class SpendTimePlacesRepository {
   Future<void> deleteSpendTimePriceList(
       {required Isar isar,
       required List<SpendTimePlace>? spendTimePriceList}) async {
-    spendTimePriceList?.forEach(
-        (element) => deleteSpendTimePrice(isar: isar, id: element.id));
+    spendTimePriceList?.forEach((SpendTimePlace element) =>
+        deleteSpendTimePrice(isar: isar, id: element.id));
   }
 
   ///
   Future<void> deleteSpendTimePrice(
       {required Isar isar, required int id}) async {
-    final spendTimePlacesCollection = getCollection(isar: isar);
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection =
+        getCollection(isar: isar);
     await isar.writeTxn(() async => spendTimePlacesCollection.delete(id));
   }
 }

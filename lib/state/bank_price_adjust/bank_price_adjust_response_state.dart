@@ -5,8 +5,8 @@ part 'bank_price_adjust_response_state.freezed.dart';
 @freezed
 class BankPriceAdjustResponseState with _$BankPriceAdjustResponseState {
   const factory BankPriceAdjustResponseState({
-    @Default([]) List<String> adjustDate,
-    @Default([]) List<String> adjustDeposit,
-    @Default([]) List<int> adjustPrice,
+    @Default(<String>[]) List<String> adjustDate,
+    @Default(<String>[]) List<String> adjustDeposit,
+    @Default(<int>[]) List<int> adjustPrice,
   }) = _BankPriceAdjustResponseState;
 }

@@ -78,7 +78,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Text(widget.date.yyyymmdd),
@@ -90,7 +90,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   GestureDetector(
                     onTap: _callBeforeDateData,
                     child: Text('前日データ呼び出し',
@@ -127,7 +127,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
   Widget _displayInputParts() {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
               blurRadius: 24,
               spreadRadius: 16,
@@ -149,9 +149,9 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
                   Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
-              children: [
+              children: <Widget>[
                 Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                         child: _displayInputTextFieldParts(
                             name: '10000', tec: _tecYen10000)),
@@ -167,7 +167,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
                   ],
                 ),
                 Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                         child: _displayInputTextFieldParts(
                             name: '500', tec: _tecYen500)),
@@ -181,7 +181,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
                   ],
                 ),
                 Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                         child: _displayInputTextFieldParts(
                             name: '10', tec: _tecYen10)),
@@ -212,14 +212,15 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
         controller: tec,
         decoration: InputDecoration(labelText: name),
         style: const TextStyle(fontSize: 13, color: Colors.white),
-        onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+        onTapOutside: (PointerDownEvent event) =>
+            FocusManager.instance.primaryFocus?.unfocus(),
       ),
     );
   }
 
   ///
   Future<void> _insertMoney() async {
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_tecYen10000.text.trim() == '' ||
         _tecYen5000.text.trim() == '' ||
@@ -235,17 +236,17 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     }
 
     if (!errFlg) {
-      for (final element in [
-        [_tecYen10000.text.trim(), 3],
-        [_tecYen5000.text.trim(), 3],
-        [_tecYen2000.text.trim(), 3],
-        [_tecYen1000.text.trim(), 3],
-        [_tecYen500.text.trim(), 3],
-        [_tecYen100.text.trim(), 3],
-        [_tecYen50.text.trim(), 3],
-        [_tecYen10.text.trim(), 3],
-        [_tecYen5.text.trim(), 3],
-        [_tecYen1.text.trim(), 3],
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_tecYen10000.text.trim(), 3],
+        <Object>[_tecYen5000.text.trim(), 3],
+        <Object>[_tecYen2000.text.trim(), 3],
+        <Object>[_tecYen1000.text.trim(), 3],
+        <Object>[_tecYen500.text.trim(), 3],
+        <Object>[_tecYen100.text.trim(), 3],
+        <Object>[_tecYen50.text.trim(), 3],
+        <Object>[_tecYen10.text.trim(), 3],
+        <Object>[_tecYen5.text.trim(), 3],
+        <Object>[_tecYen1.text.trim(), 3],
       ]) {
         if (!checkInputValueLengthCheck(
             value: element[0].toString(), length: element[1] as int)) {
@@ -255,6 +256,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -264,7 +266,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       return;
     }
 
-    final money = Money()
+    final Money money = Money()
       ..date = widget.date.yyyymmdd
       ..yen_10000 = (_tecYen10000.text.trim() == '')
           ? 0
@@ -288,6 +290,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
     await MoneysRepository()
         .inputMoney(isar: widget.isar, money: money)
+        // ignore: always_specify_types
         .then((value) {
       _tecYen10000.clear();
       _tecYen5000.clear();
@@ -307,7 +310,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
   ///
   Future<void> _updateMoney() async {
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_tecYen10000.text.trim() == '' ||
         _tecYen5000.text.trim() == '' ||
@@ -323,17 +326,17 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     }
 
     if (!errFlg) {
-      for (final element in [
-        [_tecYen10000.text.trim(), 3],
-        [_tecYen5000.text.trim(), 3],
-        [_tecYen2000.text.trim(), 3],
-        [_tecYen1000.text.trim(), 3],
-        [_tecYen500.text.trim(), 3],
-        [_tecYen100.text.trim(), 3],
-        [_tecYen50.text.trim(), 3],
-        [_tecYen10.text.trim(), 3],
-        [_tecYen5.text.trim(), 3],
-        [_tecYen1.text.trim(), 3],
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_tecYen10000.text.trim(), 3],
+        <Object>[_tecYen5000.text.trim(), 3],
+        <Object>[_tecYen2000.text.trim(), 3],
+        <Object>[_tecYen1000.text.trim(), 3],
+        <Object>[_tecYen500.text.trim(), 3],
+        <Object>[_tecYen100.text.trim(), 3],
+        <Object>[_tecYen50.text.trim(), 3],
+        <Object>[_tecYen10.text.trim(), 3],
+        <Object>[_tecYen5.text.trim(), 3],
+        <Object>[_tecYen1.text.trim(), 3],
       ]) {
         if (!checkInputValueLengthCheck(
             value: element[0].toString(), length: element[1] as int)) {
@@ -343,6 +346,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -355,7 +359,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
     await widget.isar.writeTxn(() async {
       await MoneysRepository()
           .getMoney(isar: widget.isar, id: widget.onedayMoneyList![0].id)
-          .then((value) async {
+          .then((Money? value) async {
         value!
           ..date = widget.date.yyyymmdd
           ..yen_10000 = (_tecYen10000.text.trim() == '')
@@ -387,6 +391,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
         await MoneysRepository()
             .updateMoney(isar: widget.isar, money: value)
+            // ignore: always_specify_types
             .then((value) {
           _tecYen10000.clear();
           _tecYen5000.clear();

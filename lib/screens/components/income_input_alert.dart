@@ -9,6 +9,7 @@ import '../../collections/income.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/incomes_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
+import '../../state/app_params/app_params_response_state.dart';
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
@@ -23,12 +24,14 @@ class IncomeInputAlert extends ConsumerStatefulWidget {
 }
 
 class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
-  final TextEditingController _incomePriceEditingController = TextEditingController();
-  final TextEditingController _incomeSourceEditingController = TextEditingController();
+  final TextEditingController _incomePriceEditingController =
+      TextEditingController();
+  final TextEditingController _incomeSourceEditingController =
+      TextEditingController();
 
-  List<Income>? _incomeList = [];
+  List<Income>? _incomeList = <Income>[];
 
-  List<String> _yearList = [];
+  List<String> _yearList = <String>[];
 
   ///
   void _init() {
@@ -38,6 +41,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     Future(_init);
 
     return AlertDialog(
@@ -53,20 +57,24 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [const Text('収入履歴登録'), Text(widget.date.yyyymm)],
+                children: <Widget>[
+                  const Text('収入履歴登録'),
+                  Text(widget.date.yyyymm)
+                ],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
-                  TextButton(onPressed: _insertIncome, child: const Text('入力する')),
+                  TextButton(
+                      onPressed: _insertIncome, child: const Text('入力する')),
                 ],
               ),
               SizedBox(height: 40, child: _displayYearButton()),
@@ -80,12 +88,16 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Widget _displayInputParts() {
-    final incomeInputDate = ref.watch(appParamProvider.select((value) => value.incomeInputDate));
+    final String incomeInputDate = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.incomeInputDate));
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+              blurRadius: 24,
+              spreadRadius: 16,
+              color: Colors.black.withOpacity(0.2)),
         ],
       ),
       child: ClipRRect(
@@ -99,21 +111,24 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border:
+                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Row(
-                  children: [
+                  children: <Widget>[
                     GestureDetector(
                       onTap: _showDP,
-                      child: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                      child: Icon(Icons.calendar_month,
+                          color: Colors.greenAccent.withOpacity(0.6)),
                     ),
                     const SizedBox(width: 10),
                     SizedBox(
                       width: context.screenSize.width / 6,
-                      child: Text(incomeInputDate, style: const TextStyle(fontSize: 10)),
+                      child: Text(incomeInputDate,
+                          style: const TextStyle(fontSize: 10)),
                     ),
                   ],
                 ),
@@ -122,27 +137,33 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
                   controller: _incomePriceEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '金額(10桁以内)',
                     filled: true,
                     border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (PointerDownEvent event) =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
                 ),
                 TextField(
                   controller: _incomeSourceEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '支払い元(30文字以内)',
                     filled: true,
                     border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (PointerDownEvent event) =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
                 ),
               ],
             ),
@@ -154,7 +175,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Future<void> _showDP() async {
-    final selectedDate = await showDatePicker(
+    final DateTime? selectedDate = await showDatePicker(
       barrierColor: Colors.transparent,
       locale: const Locale('ja'),
       context: context,
@@ -180,24 +201,28 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
     );
 
     if (selectedDate != null) {
-      await ref.read(appParamProvider.notifier).setIncomeInputDate(date: selectedDate.yyyymmdd);
+      await ref
+          .read(appParamProvider.notifier)
+          .setIncomeInputDate(date: selectedDate.yyyymmdd);
     }
   }
 
   ///
   Future<void> _makeIncomeList() async {
-    _yearList = [];
+    _yearList = <String>[];
 
-    await IncomesRepository().getIncomeList(isar: widget.isar).then((value) {
+    await IncomesRepository()
+        .getIncomeList(isar: widget.isar)
+        .then((List<Income>? value) {
       setState(() {
         _incomeList = value;
 
         if (value != null) {
-          final map = <String, String>{};
-          for (final element in _incomeList!) {
+          final Map<String, String> map = <String, String>{};
+          for (final Income element in _incomeList!) {
             map[element.date.split('-')[0]] = '';
           }
-          map.forEach((key, value) => _yearList.add(key));
+          map.forEach((String key, String value) => _yearList.add(key));
         }
       });
     });
@@ -205,19 +230,24 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Widget _displayYearButton() {
-    final selectedIncomeYear = ref.watch(appParamProvider.select((value) => value.selectedIncomeYear));
+    final String selectedIncomeYear = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.selectedIncomeYear));
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: [
+        children: <Widget>[
           GestureDetector(
-            onTap: () async => ref.read(appParamProvider.notifier).setSelectedIncomeYear(year: ''),
+            onTap: () async => ref
+                .read(appParamProvider.notifier)
+                .setSelectedIncomeYear(year: ''),
             child: Container(
               margin: const EdgeInsets.all(5),
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               decoration: BoxDecoration(
-                color: (selectedIncomeYear == '') ? Colors.yellowAccent.withOpacity(0.2) : Colors.black,
+                color: (selectedIncomeYear == '')
+                    ? Colors.yellowAccent.withOpacity(0.2)
+                    : Colors.black,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Icon(Icons.close, size: 14),
@@ -225,14 +255,19 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _yearList.map((e) {
+            children: _yearList.map((String e) {
               return GestureDetector(
-                onTap: () async => ref.read(appParamProvider.notifier).setSelectedIncomeYear(year: e),
+                onTap: () async => ref
+                    .read(appParamProvider.notifier)
+                    .setSelectedIncomeYear(year: e),
                 child: Container(
                   margin: const EdgeInsets.all(5),
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   decoration: BoxDecoration(
-                    color: (selectedIncomeYear == e) ? Colors.yellowAccent.withOpacity(0.2) : Colors.black,
+                    color: (selectedIncomeYear == e)
+                        ? Colors.yellowAccent.withOpacity(0.2)
+                        : Colors.black,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(e),
@@ -247,17 +282,18 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Widget _displayIncomeList() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    var icList = <Income>[];
+    List<Income> icList = <Income>[];
 
     if (_incomeList!.isNotEmpty) {
-      final selectedIncomeYear = ref.watch(appParamProvider.select((value) => value.selectedIncomeYear));
+      final String selectedIncomeYear = ref.watch(appParamProvider
+          .select((AppParamsResponseState value) => value.selectedIncomeYear));
 
       if (selectedIncomeYear == '') {
         icList = _incomeList!;
       } else {
-        for (final element in _incomeList!) {
+        for (final Income element in _incomeList!) {
           if (element.date.split('-')[0] == selectedIncomeYear) {
             icList.add(element);
           }
@@ -265,27 +301,32 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       }
     }
 
-    for (final element in icList) {
+    for (final Income element in icList) {
       list.add(
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Text(element.date),
                   Text(element.price.toString().toCurrency()),
                 ],
               ),
-              Text(element.sourceName, maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text(element.sourceName,
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
               GestureDetector(
                 onTap: () async => _showDeleteDialog(id: element.id),
                 child: Text(
                   'delete',
-                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.primary),
                 ),
               ),
             ],
@@ -299,40 +340,49 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Future<void> _insertIncome() async {
-    var errFlg = false;
+    bool errFlg = false;
 
-    if (_incomePriceEditingController.text.trim() == '' || _incomeSourceEditingController.text.trim() == '') {
+    if (_incomePriceEditingController.text.trim() == '' ||
+        _incomeSourceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
     if (!errFlg) {
-      for (final element in [
-        [_incomePriceEditingController.text.trim(), 10],
-        [_incomeSourceEditingController.text.trim(), 30]
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_incomePriceEditingController.text.trim(), 10],
+        <Object>[_incomeSourceEditingController.text.trim(), 30]
       ]) {
-        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
+        if (!checkInputValueLengthCheck(
+            value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
-        () => error_dialog(context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+        () => error_dialog(
+            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
       );
 
       return;
     }
 
-    final incomeInputDate = ref.watch(appParamProvider.select((value) => value.incomeInputDate));
+    final String incomeInputDate = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.incomeInputDate));
 
-    final income = Income()
+    final Income income = Income()
       ..date = incomeInputDate
       ..sourceName = _incomeSourceEditingController.text.trim()
       ..price = _incomePriceEditingController.text.trim().toInt();
 
-    await IncomesRepository().inputIncome(isar: widget.isar, income: income).then((value) async {
+    // ignore: always_specify_types
+    await IncomesRepository()
+        .inputIncome(isar: widget.isar, income: income)
+        // ignore: always_specify_types
+        .then((value) async {
       _incomeSourceEditingController.clear();
       _incomePriceEditingController.clear();
 
@@ -342,7 +392,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   void _showDeleteDialog({required int id}) {
-    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(
+        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {
@@ -352,10 +403,10 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
         },
         child: const Text('はい'));
 
-    final alert = AlertDialog(
+    final AlertDialog alert = AlertDialog(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       content: const Text('このデータを消去しますか？'),
-      actions: [cancelButton, continueButton],
+      actions: <Widget>[cancelButton, continueButton],
     );
 
     // ignore: inference_failure_on_function_invocation
@@ -364,5 +415,9 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Future<void> _deleteIncome({required int id}) async =>
-      IncomesRepository().deleteIncome(isar: widget.isar, id: id).then((value) => Navigator.pop(context));
+      // ignore: always_specify_types
+      IncomesRepository()
+          .deleteIncome(isar: widget.isar, id: id)
+          // ignore: always_specify_types
+          .then((value) => Navigator.pop(context));
 }

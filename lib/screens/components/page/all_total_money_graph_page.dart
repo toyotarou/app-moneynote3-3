@@ -13,6 +13,7 @@ import 'package:isar/isar.dart';
 import '../../../collections/spend_time_place.dart';
 import '../../../extensions/extensions.dart';
 import '../../../state/app_params/app_params_notifier.dart';
+import '../../../state/app_params/app_params_response_state.dart';
 import '../../../utilities/utilities.dart';
 import '../money_graph_alert.dart';
 import '../parts/money_dialog.dart';
@@ -55,7 +56,7 @@ class _AllTotalMoneyGraphPageState
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
 
-  List<FlSpot> _flspots = [];
+  List<FlSpot> _flspots = <FlSpot>[];
 
   int graphMin = 0;
   int graphMax = 0;
@@ -65,23 +66,24 @@ class _AllTotalMoneyGraphPageState
   Widget build(BuildContext context) {
     _setChartData();
 
-    var circleAvatarWidth = (widget.alertWidth / widget.monthList.length) * 0.3;
+    double circleAvatarWidth =
+        (widget.alertWidth / widget.monthList.length) * 0.3;
 
     if (circleAvatarWidth > 15) {
       circleAvatarWidth = 15;
     }
 
-    final selectedGraphMonth =
-        ref.watch(appParamProvider.select((value) => value.selectedGraphMonth));
+    final int selectedGraphMonth = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.selectedGraphMonth));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       content: Stack(
-        children: [
+        children: <Widget>[
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Container(width: context.screenSize.width),
               const SizedBox(height: 30),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
@@ -89,17 +91,16 @@ class _AllTotalMoneyGraphPageState
               SizedBox(
                 height: 60,
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: widget.monthList.map((e) {
+                      children: widget.monthList.map((int e) {
                         return GestureDetector(
                           onTap: () {
                             ref
                                 .read(appParamProvider.notifier)
                                 .setSelectedGraphMonth(month: e);
-
 
 //
 //                             var aaa=
@@ -107,10 +108,6 @@ class _AllTotalMoneyGraphPageState
 //                             print(aaa);
 //
 //
-
-
-
-
 
                             MoneyDialog(
                               context: context,
@@ -126,9 +123,9 @@ class _AllTotalMoneyGraphPageState
                                 thisMonthSpendTimePlaceList:
                                     widget.thisMonthSpendTimePlaceList,
                                 monthSTPList: widget.allSpendTimePlaceList
-                                    .where((element) =>
+                                    .where((SpendTimePlace element) =>
                                         element.date.split('-')[1] ==
-                                        e.toString().padLeft(2,'0'))
+                                        e.toString().padLeft(2, '0'))
                                     .toList(),
                               ),
                             );
@@ -156,7 +153,7 @@ class _AllTotalMoneyGraphPageState
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Container(width: context.screenSize.width),
               const SizedBox(height: 30),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
@@ -171,13 +168,13 @@ class _AllTotalMoneyGraphPageState
 
   ///
   void _setChartData() {
-    _flspots = [];
+    _flspots = <FlSpot>[];
 
     if (widget.data != null) {
-      var i = 0;
-      final list = <int>[];
-      for (final element in widget.data!) {
-        for (final element2 in element.entries) {
+      int i = 0;
+      final List<int> list = <int>[];
+      for (final Map<String, int> element in widget.data!) {
+        for (final MapEntry<String, int> element2 in element.entries) {
           _flspots.add(FlSpot((i + 1).toDouble(), element2.value.toDouble()));
 
           list.add(element2.value);
@@ -196,9 +193,9 @@ class _AllTotalMoneyGraphPageState
       //   });
       // });
 
-      const warisuu = 500000;
-      final minValue = list.reduce(min);
-      final maxValue = list.reduce(max);
+      const int warisuu = 500000;
+      final int minValue = list.reduce(min);
+      final int maxValue = list.reduce(max);
 
       graphMin = ((minValue / warisuu).floor()) * warisuu;
       graphMax = ((maxValue / warisuu).ceil()) * warisuu;
@@ -217,10 +214,10 @@ class _AllTotalMoneyGraphPageState
               tooltipRoundedRadius: 2,
               tooltipBgColor: Colors.white.withOpacity(0.2),
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                final list = <LineTooltipItem>[];
+                final List<LineTooltipItem> list = <LineTooltipItem>[];
 
-                for (final element in touchedSpots) {
-                  final textStyle = TextStyle(
+                for (final LineBarSpot element in touchedSpots) {
+                  final TextStyle textStyle = TextStyle(
                     color: element.bar.gradient?.colors.first ??
                         element.bar.color ??
                         Colors.blueGrey,
@@ -228,10 +225,10 @@ class _AllTotalMoneyGraphPageState
                     fontSize: 12,
                   );
 
-                  final price =
+                  final String price =
                       element.y.round().toString().split('.')[0].toCurrency();
 
-                  final day = DateTime(widget.year)
+                  final String day = DateTime(widget.year)
                       .add(Duration(days: element.x.toInt() - 1))
                       .yyyymmdd;
 
@@ -251,8 +248,8 @@ class _AllTotalMoneyGraphPageState
         ///
         gridData: FlGridData(
           verticalInterval: 1,
-          getDrawingVerticalLine: (value) {
-            final day =
+          getDrawingVerticalLine: (double value) {
+            final DateTime day =
                 DateTime(widget.year).add(Duration(days: value.toInt()));
 
             return FlLine(
@@ -271,7 +268,7 @@ class _AllTotalMoneyGraphPageState
         borderData: FlBorderData(show: false),
 
         ///
-        lineBarsData: [
+        lineBarsData: <LineChartBarData>[
           LineChartBarData(
             spots: _flspots,
             color: Colors.yellowAccent,
@@ -312,7 +309,7 @@ class _AllTotalMoneyGraphPageState
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 70,
-              getTitlesWidget: (value, meta) {
+              getTitlesWidget: (double value, TitleMeta meta) {
                 if (value == graphMin || value == graphMax) {
                   return const SizedBox();
                 }
@@ -334,7 +331,7 @@ class _AllTotalMoneyGraphPageState
         ),
 
         ///
-        lineBarsData: [],
+        lineBarsData: <LineChartBarData>[],
       );
     }
   }

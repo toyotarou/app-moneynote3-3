@@ -13,6 +13,6 @@ class CustomShapeClipper extends CustomClipper<Path> {
   }
 
   @override
-  // ignore: strict_raw_type
+  // ignore: strict_raw_type, always_specify_types
   bool shouldReclip(CustomClipper oldClipper) => true;
 }

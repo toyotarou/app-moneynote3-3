@@ -23,7 +23,7 @@ class EachMonthItemSummaryPage extends ConsumerStatefulWidget {
 
 class _EachMonthItemSummaryPageState
     extends ConsumerState<EachMonthItemSummaryPage> {
-  List<SpendTimePlace> stpList = [];
+  List<SpendTimePlace> stpList = <SpendTimePlace>[];
 
   ///
   @override
@@ -31,7 +31,8 @@ class _EachMonthItemSummaryPageState
     super.initState();
 
     stpList = widget.spendTimePlaceList
-        .where((element) => element.date.split('-')[0].toInt() == widget.year)
+        .where((SpendTimePlace element) =>
+            element.date.split('-')[0].toInt() == widget.year)
         .toList();
   }
 
@@ -51,7 +52,7 @@ class _EachMonthItemSummaryPageState
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Expanded(child: displayEachMonthItemSummary()),
@@ -64,25 +65,25 @@ class _EachMonthItemSummaryPageState
 
   ///
   Widget displayEachMonthItemSummary() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final map = <int, Map<String, int>>{};
+    final Map<int, Map<String, int>> map = <int, Map<String, int>>{};
 
-    for (var i = 1; i <= 12; i++) {
-      final map2 = <String, List<int>>{};
+    for (int i = 1; i <= 12; i++) {
+      final Map<String, List<int>> map2 = <String, List<int>>{};
 
-      for (final element2 in widget.spendItemList) {
-        map2[element2.spendItemName] = [];
+      for (final SpendItem element2 in widget.spendItemList) {
+        map2[element2.spendItemName] = <int>[];
       }
 
-      for (final element in stpList) {
-        final exDate = element.date.split('-');
-        final elementYearmonth = '${exDate[0]}-${exDate[1]}';
-        final widgetYearmonth =
+      for (final SpendTimePlace element in stpList) {
+        final List<String> exDate = element.date.split('-');
+        final String elementYearmonth = '${exDate[0]}-${exDate[1]}';
+        final String widgetYearmonth =
             '${widget.year}-${i.toString().padLeft(2, '0')}';
 
         if (elementYearmonth == widgetYearmonth) {
-          for (final element2 in widget.spendItemList) {
+          for (final SpendItem element2 in widget.spendItemList) {
             if (element2.spendItemName == element.spendType) {
               map2[element2.spendItemName]?.add(element.price);
             }
@@ -90,15 +91,15 @@ class _EachMonthItemSummaryPageState
         }
       }
 
-      final map3 = <String, int>{};
+      final Map<String, int> map3 = <String, int>{};
 
-      for (final element4 in widget.spendItemList) {
+      for (final SpendItem element4 in widget.spendItemList) {
         map3[element4.spendItemName] = 0;
       }
 
-      map2.forEach((key, value) {
-        var sum = 0;
-        for (final element3 in value) {
+      map2.forEach((String key, List<int> value) {
+        int sum = 0;
+        for (final int element3 in value) {
           sum += element3;
         }
         map3[key] = sum;
@@ -107,10 +108,10 @@ class _EachMonthItemSummaryPageState
       map[i] = map3;
     }
 
-    final list2 = <Widget>[const SizedBox(width: 140)];
+    final List<Widget> list2 = <Widget>[const SizedBox(width: 140)];
 
-    for (var i = 1; i <= 12; i++) {
-      final list3 = <Widget>[];
+    for (int i = 1; i <= 12; i++) {
+      final List<Widget> list3 = <Widget>[];
 
       if (DateTime(widget.year, i).isBefore(DateTime.now())) {
         list3.add(
@@ -122,7 +123,7 @@ class _EachMonthItemSummaryPageState
           ),
         );
 
-        for (final element5 in widget.spendItemList) {
+        for (final SpendItem element5 in widget.spendItemList) {
           list3.add(Container(
             width: 100,
             height: 24,
@@ -133,9 +134,9 @@ class _EachMonthItemSummaryPageState
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Stack(
-                  children: [
+                  children: <Widget>[
                     Container(
                       alignment: Alignment.topRight,
                       padding: const EdgeInsets.only(right: 5),
@@ -165,12 +166,12 @@ class _EachMonthItemSummaryPageState
 
     list.add(Row(children: list2));
 
-    final underWidget = Column(
-      children: [
+    final Column underWidget = Column(
+      children: <Widget>[
         const SizedBox(width: 100, height: 30),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: widget.spendItemList.map((e) {
+          children: widget.spendItemList.map((SpendItem e) {
             return Container(
               width: 120,
               height: 24,
@@ -188,7 +189,7 @@ class _EachMonthItemSummaryPageState
 
     return SingleChildScrollView(
       child: Stack(
-        children: [
+        children: <Widget>[
           underWidget,
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,

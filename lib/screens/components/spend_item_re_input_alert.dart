@@ -12,6 +12,7 @@ import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../state/app_params/app_params_notifier.dart';
+import '../../state/app_params/app_params_response_state.dart';
 import 'parts/error_dialog.dart';
 
 class SpendItemReInputAlert extends ConsumerStatefulWidget {
@@ -31,13 +32,13 @@ class SpendItemReInputAlert extends ConsumerStatefulWidget {
 }
 
 class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
-  Map<int, String> reinputSpendNameMap = {};
+  Map<int, String> reinputSpendNameMap = <int, String>{};
 
   ///
   @override
   Widget build(BuildContext context) {
-    final inputButtonClicked =
-        ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
+    final bool inputButtonClicked = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.inputButtonClicked));
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -52,12 +53,12 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   const Text('消費アイテム再設定'),
                   ElevatedButton(
                     onPressed: inputButtonClicked
@@ -86,9 +87,9 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
 
   ///
   Widget _displayInputParts() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final spendItemList = <SpendItem>[
+    final List<SpendItem> spendItemList = <SpendItem>[
       SpendItem()
         ..id = 9999
         ..spendItemName = ''
@@ -99,10 +100,11 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
 
     widget.spendItemList.forEach(spendItemList.add);
 
-    widget.spendTypeBlankSpendTimePlaceList.mapIndexed((index, element) {
+    widget.spendTypeBlankSpendTimePlaceList
+        .mapIndexed((int index, SpendTimePlace element) {
       list.add(DecoratedBox(
         decoration: BoxDecoration(
-          boxShadow: [
+          boxShadow: <BoxShadow>[
             BoxShadow(
                 blurRadius: 24,
                 spreadRadius: 16,
@@ -114,7 +116,7 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
             child: Stack(
-              children: [
+              children: <Widget>[
                 Positioned(
                   bottom: 5,
                   right: 15,
@@ -135,16 +137,18 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
                         color: Colors.white.withOpacity(0.2), width: 1.5),
                   ),
                   child: Column(
-                    children: [
+                    children: <Widget>[
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: <Widget>[
                           Expanded(
+                              // ignore: always_specify_types
                               child: DropdownButton(
                             isExpanded: true,
                             dropdownColor: Colors.pinkAccent.withOpacity(0.1),
                             iconEnabledColor: Colors.white,
-                            items: spendItemList.map((e) {
+                            items: spendItemList.map((SpendItem e) {
+                              // ignore: always_specify_types
                               return DropdownMenuItem(
                                 value: e.spendItemName,
                                 child: Text(e.spendItemName,
@@ -152,14 +156,15 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
                               );
                             }).toList(),
                             value: reinputSpendNameMap[element.id] ?? '',
-                            onChanged: (value) => addToReinputSpendNameMap(
-                                id: element.id, value: value),
+                            onChanged: (String? value) =>
+                                addToReinputSpendNameMap(
+                                    id: element.id, value: value),
                           )),
                           SizedBox(
                             width: 100,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
+                              children: <Widget>[
                                 Text(element.date),
                                 Text(element.time),
                                 Text(element.price.toString().toCurrency()),
@@ -169,7 +174,7 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
                         ],
                       ),
                       Row(
-                        children: [
+                        children: <Widget>[
                           const Icon(Icons.location_on),
                           const SizedBox(width: 10),
                           Text(element.place)
@@ -301,6 +306,7 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
   ///
   Future<void> _updateSpendName() async {
     if (reinputSpendNameMap.isEmpty) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -316,8 +322,10 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
 
     await widget.isar.writeTxn(() async {
       // ignore: avoid_function_literals_in_foreach_calls
-      widget.spendTypeBlankSpendTimePlaceList.forEach((element) async {
-        final spendTimePlace = element
+      widget.spendTypeBlankSpendTimePlaceList
+          // ignore: avoid_function_literals_in_foreach_calls
+          .forEach((SpendTimePlace element) async {
+        final SpendTimePlace spendTimePlace = element
           ..spendType = reinputSpendNameMap[element.id]!;
         await widget.isar.spendTimePlaces.put(spendTimePlace);
       });

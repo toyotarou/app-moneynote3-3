@@ -8,20 +8,20 @@ class MoneysRepository {
 
   ///
   Future<Money?> getMoney({required Isar isar, required int id}) async {
-    final moneysCollection = getCollection(isar: isar);
+    final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
     return moneysCollection.get(id);
   }
 
   ///
   Future<List<Money>?> getMoneyList({required Isar isar}) async {
-    final moneysCollection = getCollection(isar: isar);
+    final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
     return moneysCollection.where().sortByDate().findAll();
   }
 
   ///
   Future<List<Money>?> getDateMoneyList(
       {required Isar isar, required Map<String, dynamic> param}) async {
-    final moneysCollection = getCollection(isar: isar);
+    final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
     return moneysCollection
         .filter()
         .dateEqualTo(param['date'] as String)
@@ -30,13 +30,13 @@ class MoneysRepository {
 
   ///
   Future<void> inputMoney({required Isar isar, required Money money}) async {
-    final moneysCollection = getCollection(isar: isar);
+    final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => moneysCollection.put(money));
   }
 
   ///
   Future<void> updateMoney({required Isar isar, required Money money}) async {
-    final moneysCollection = getCollection(isar: isar);
+    final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
     await moneysCollection.put(money);
   }
 }

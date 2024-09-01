@@ -36,7 +36,7 @@ class SpendItemCard extends StatelessWidget {
   ///
   @override
   Widget build(BuildContext context) {
-    final exDefaultTime = defaultTime.split(':');
+    final List<String> exDefaultTime = defaultTime.split(':');
 
     return Container(
       padding: const EdgeInsets.all(5),
@@ -44,11 +44,11 @@ class SpendItemCard extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border.all(color: Colors.white.withOpacity(0.2))),
       child: Row(
-        children: [
+        children: <Widget>[
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Text(spendItemName,
                     style: TextStyle(color: Color(colorCode.toInt())),
                     maxLines: 3,
@@ -64,7 +64,7 @@ class SpendItemCard extends StatelessWidget {
           ),
           const SizedBox(width: 5),
           Row(
-            children: [
+            children: <Widget>[
               if (spendTimePlaceCountMap[spendItemName] == null ||
                   spendTimePlaceCountMap[spendItemName]!.isEmpty)
                 const Icon(Icons.check_box_outline_blank,

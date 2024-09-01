@@ -4,31 +4,35 @@ import '../collections/spend_time_place.dart';
 import '../extensions/extensions.dart';
 
 ///
-Map<String, dynamic> makeBankPriceMap({required List<BankPrice> bankPriceList}) {
-  final map2 = <String, List<BankPrice>>{};
+Map<String, dynamic> makeBankPriceMap(
+    {required List<BankPrice> bankPriceList}) {
+  final Map<String, List<BankPrice>> map2 = <String, List<BankPrice>>{};
 
   bankPriceList
-    ..forEach((element) {
-      map2['${element.depositType}-${element.bankId}'] = [];
+    ..forEach((BankPrice element) {
+      map2['${element.depositType}-${element.bankId}'] = <BankPrice>[];
     })
-    ..forEach((element) {
+    ..forEach((BankPrice element) {
       map2['${element.depositType}-${element.bankId}']?.add(element);
     });
 
   //=======================//
 
-  final map3 = <String, Map<String, int>>{};
+  final Map<String, Map<String, int>> map3 = <String, Map<String, int>>{};
 
   if (bankPriceList.isNotEmpty) {
     //--- (1)
-    final bplMap = <String, List<Map<String, int>>>{};
+    final Map<String, List<Map<String, int>>> bplMap =
+        <String, List<Map<String, int>>>{};
 
     bankPriceList
-      ..forEach((element) {
-        bplMap['${element.depositType}-${element.bankId}'] = [];
+      ..forEach((BankPrice element) {
+        bplMap['${element.depositType}-${element.bankId}'] =
+            <Map<String, int>>[];
       })
-      ..forEach((element) {
-        bplMap['${element.depositType}-${element.bankId}']?.add({element.date: element.price});
+      ..forEach((BankPrice element) {
+        bplMap['${element.depositType}-${element.bankId}']
+            ?.add(<String, int>{element.date: element.price});
       });
     //--- (1)
 
@@ -52,20 +56,20 @@ emoney-5: [{2023-12-11: 50000}]}
 */
 
     //--- (2)
-    final dt = DateTime.parse('${bankPriceList[0].date} 00:00:00');
+    final DateTime dt = DateTime.parse('${bankPriceList[0].date} 00:00:00');
 
-    final now = DateTime.now();
+    final DateTime now = DateTime.now();
 
-    final diff = now.difference(dt).inDays;
+    final int diff = now.difference(dt).inDays;
 
-    bplMap.forEach((deposit, value) {
-      final map4 = <String, int>{};
+    bplMap.forEach((String deposit, List<Map<String, int>> value) {
+      final Map<String, int> map4 = <String, int>{};
 
-      var price = 0;
-      for (var i = 0; i <= diff; i++) {
-        final date = dt.add(Duration(days: i)).yyyymmdd;
+      int price = 0;
+      for (int i = 0; i <= diff; i++) {
+        final String date = dt.add(Duration(days: i)).yyyymmdd;
 
-        for (final element in value) {
+        for (final Map<String, int> element in value) {
           if (element[date] != null) {
             price = element[date] ?? 0;
           }
@@ -99,12 +103,14 @@ emoney-5: [{2023-12-11: 50000}]}
 
   /////////////////////////////////
 
-  final map4 = <String, int>{};
+  final Map<String, int> map4 = <String, int>{};
 
-  final aaa = <String, List<int>>{};
+  final Map<String, List<int>> aaa = <String, List<int>>{};
   map3
-    ..forEach((key, value) => value.forEach((key2, value2) => aaa[key2] = []))
-    ..forEach((key, value) => value.forEach((key2, value2) => aaa[key2]?.add(value2)));
+    ..forEach((String key, Map<String, int> value) =>
+        value.forEach((String key2, int value2) => aaa[key2] = <int>[]))
+    ..forEach((String key, Map<String, int> value) =>
+        value.forEach((String key2, int value2) => aaa[key2]?.add(value2)));
 
 //print(aaa);
 /*
@@ -115,9 +121,9 @@ flutter: {
 2023-12-20: [10000, 20000, 30000, 40000, 50000, 10000, 20000, 30000, 40000, 50000]}
 */
 
-  aaa.forEach((key, value) {
-    var sum = 0;
-    for (final element in value) {
+  aaa.forEach((String key, List<int> value) {
+    int sum = 0;
+    for (final int element in value) {
       sum += element;
     }
     map4[key] = sum;
@@ -130,35 +136,42 @@ flutter: {2023-12-17: 300000, 2023-12-18: 300000, 2023-12-19: 300000, 2023-12-20
 
   /////////////////////////////////
 
+  // ignore: always_specify_types
   return {'bankPriceDatePadMap': map3, 'bankPriceTotalPadMap': map4};
 }
 
 ///
-Map<String, int> makeMonthlySpendItemSumMap({required List<SpendTimePlace> spendTimePlaceList, List<SpendItem>? spendItemList}) {
-  final monthlySpendItemSumMap = <String, int>{};
+Map<String, int> makeMonthlySpendItemSumMap(
+    {required List<SpendTimePlace> spendTimePlaceList,
+    List<SpendItem>? spendItemList}) {
+  final Map<String, int> monthlySpendItemSumMap = <String, int>{};
 
-  final list = <String>[];
+  final List<String> list = <String>[];
 
   if (spendItemList!.isNotEmpty) {
-    for (final element in spendItemList) {
+    for (final SpendItem element in spendItemList) {
       list.add(element.spendItemName);
     }
   }
 
-  final map = <String, List<int>>{};
+  final Map<String, List<int>> map = <String, List<int>>{};
 
-  for (final element in list) {
-    final filtered = spendTimePlaceList.where((element2) => element2.spendType == element).toList();
+  for (final String element in list) {
+    final List<SpendTimePlace> filtered = spendTimePlaceList
+        .where((SpendTimePlace element2) => element2.spendType == element)
+        .toList();
     if (filtered.isNotEmpty) {
       filtered
-        ..forEach((element3) => map[element3.spendType] = [])
-        ..forEach((element3) => map[element3.spendType]?.add(element3.price));
+        ..forEach(
+            (SpendTimePlace element3) => map[element3.spendType] = <int>[])
+        ..forEach((SpendTimePlace element3) =>
+            map[element3.spendType]?.add(element3.price));
     }
   }
 
-  map.forEach((key, value) {
-    var sum = 0;
-    for (final element in value) {
+  map.forEach((String key, List<int> value) {
+    int sum = 0;
+    for (final int element in value) {
       sum += element;
     }
     monthlySpendItemSumMap[key] = sum;
@@ -168,21 +181,24 @@ Map<String, int> makeMonthlySpendItemSumMap({required List<SpendTimePlace> spend
 }
 
 ///
-Map<String, List<int>> makeYearlySpendItemSumMap({required List<SpendTimePlace> spendTimePlaceList, List<SpendItem>? spendItemList}) {
-  final list = <String>[];
+Map<String, List<int>> makeYearlySpendItemSumMap(
+    {required List<SpendTimePlace> spendTimePlaceList,
+    List<SpendItem>? spendItemList}) {
+  final List<String> list = <String>[];
 
   if (spendItemList!.isNotEmpty) {
-    for (final element in spendItemList) {
+    for (final SpendItem element in spendItemList) {
       list.add(element.spendItemName);
     }
   }
 
-  final map = <String, List<SpendTimePlace>>{};
+  final Map<String, List<SpendTimePlace>> map =
+      <String, List<SpendTimePlace>>{};
 
-  for (var i = 1; i <= 12; i++) {
-    final list2 = <SpendTimePlace>[];
+  for (int i = 1; i <= 12; i++) {
+    final List<SpendTimePlace> list2 = <SpendTimePlace>[];
 
-    for (final element in spendTimePlaceList) {
+    for (final SpendTimePlace element in spendTimePlaceList) {
       if (i.toString().padLeft(2, '0') == element.date.split('-')[1]) {
         list2.add(element);
       }
@@ -193,9 +209,11 @@ Map<String, List<int>> makeYearlySpendItemSumMap({required List<SpendTimePlace> 
 
 //  print(map['02']);
 
-  final map2 = <String, Map<String, int>>{};
+  final Map<String, Map<String, int>> map2 = <String, Map<String, int>>{};
 
-  map.forEach((key, value) => map2[key] = makeMonthlySpendItemSumMap(spendTimePlaceList: value, spendItemList: spendItemList));
+  map.forEach((String key, List<SpendTimePlace> value) => map2[key] =
+      makeMonthlySpendItemSumMap(
+          spendTimePlaceList: value, spendItemList: spendItemList));
 
   /*
 
@@ -212,15 +230,17 @@ print(map2);
 
   */
 
-  final map3 = <String, List<int>>{};
+  final Map<String, List<int>> map3 = <String, List<int>>{};
 
-  for (final element in list) {
-    map3[element] = [];
+  for (final String element in list) {
+    map3[element] = <int>[];
   }
 
-  for (var i = 1; i <= 12; i++) {
-    for (final element in list) {
-      map3[element]?.add((map2[i.toString().padLeft(2, '0')]?[element] != null) ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt() : 0);
+  for (int i = 1; i <= 12; i++) {
+    for (final String element in list) {
+      map3[element]?.add((map2[i.toString().padLeft(2, '0')]?[element] != null)
+          ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt()
+          : 0);
     }
   }
 

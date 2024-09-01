@@ -28,7 +28,7 @@ class EmoneyNameListAlert extends ConsumerStatefulWidget {
 
 class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
   // ignore: use_late_for_private_fields_and_variables
-  List<EmoneyName>? _emoneyNameList = [];
+  List<EmoneyName>? _emoneyNameList = <EmoneyName>[];
 
   ///
   @override
@@ -48,11 +48,11 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
                   TextButton(
                     onPressed: () => MoneyDialog(
@@ -69,7 +69,8 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
               ),
               FutureBuilder<List<Widget>>(
                 future: _displayEmoneyNames(),
-                builder: (context, snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(
                       child: Column(children: snapshot.data!),
@@ -88,14 +89,13 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
 
   ///
   Future<void> _makeEmoneyNameList() async {
-    await EmoneyNamesRepository()
-        .getEmoneyNameList(isar: widget.isar)
-        .then((value) => setState(() => _emoneyNameList = value));
+    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then(
+        (List<EmoneyName>? value) => setState(() => _emoneyNameList = value));
   }
 
   ///
   Future<List<Widget>> _displayEmoneyNames() async {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
     // _emoneyNameList!.mapIndexed((index, element) {
     //   list.add(
@@ -134,7 +134,7 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
     //   );
     // });
 
-    for (var i = 0; i < _emoneyNameList!.length; i++) {
+    for (int i = 0; i < _emoneyNameList!.length; i++) {
       list.add(
         Container(
           width: context.screenSize.width,
@@ -144,13 +144,13 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
               border: Border.all(color: Colors.white.withOpacity(0.4))),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Expanded(
                 child: Text(
                     '${_emoneyNameList![i].depositType}-${_emoneyNameList![i].id}: ${_emoneyNameList![i].emoneyName}'),
               ),
               Row(
-                children: [
+                children: <Widget>[
                   GestureDetector(
                     onTap: () => MoneyDialog(
                       context: context,

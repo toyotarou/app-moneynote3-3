@@ -41,7 +41,7 @@ class AllTotalMoneyGraphAlert extends StatefulWidget {
 }
 
 class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
-  List<TabInfo> _tabs = [];
+  List<TabInfo> _tabs = <TabInfo>[];
 
   GlobalKey globalKey = GlobalKey();
 
@@ -53,7 +53,7 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
     _makeTab();
 
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
+      (Duration timeStamp) {
         setState(() {
           alertWidth = globalKey.currentContext!.size!.width;
         });
@@ -85,11 +85,11 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
         body: Container(
           key: globalKey,
           child: Column(
-            children: [
+            children: <Widget>[
               Container(width: context.screenSize.width),
               Expanded(
                 child: TabBarView(
-                  children: _tabs.map((tab) => tab.widget).toList(),
+                  children: _tabs.map((TabInfo tab) => tab.widget).toList(),
                 ),
               ),
             ],
@@ -101,32 +101,33 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
 
   ///
   void _makeTab() {
-    _tabs = [];
+    _tabs = <TabInfo>[];
 
-    final map = <int, List<Map<String, int>>>{};
+    final Map<int, List<Map<String, int>>> map =
+        <int, List<Map<String, int>>>{};
 
-    final map2 = <int, List<int>>{};
+    final Map<int, List<int>> map2 = <int, List<int>>{};
 
     widget.allTotalMoneyMap
-      ..forEach((key, value) {
-        final exKey = key.split('-');
-        map[exKey[0].toInt()] = [];
+      ..forEach((String key, int value) {
+        final List<String> exKey = key.split('-');
+        map[exKey[0].toInt()] = <Map<String, int>>[];
 
-        map2[exKey[0].toInt()] = [];
+        map2[exKey[0].toInt()] = <int>[];
       })
-      ..forEach((key, value) {
-        final exKey = key.split('-');
-        map[exKey[0].toInt()]?.add({key: value});
+      ..forEach((String key, int value) {
+        final List<String> exKey = key.split('-');
+        map[exKey[0].toInt()]?.add(<String, int>{key: value});
 
         map2[exKey[0].toInt()]?.add(exKey[1].toInt());
       });
 
-    final map3 = <int, List<int>>{};
+    final Map<int, List<int>> map3 = <int, List<int>>{};
 
-    map2.forEach((key, value) {
-      final monthList = <int>[];
+    map2.forEach((int key, List<int> value) {
+      final List<int> monthList = <int>[];
 
-      for (final element in value) {
+      for (final int element in value) {
         if (!monthList.contains(element)) {
           monthList.add(element);
         }
@@ -135,7 +136,7 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
       map3[key] = monthList;
     });
 
-    for (final element in widget.years) {
+    for (final int element in widget.years) {
       if (map[element]!.length > 1) {
         _tabs.add(TabInfo(
           element.toString(),
@@ -143,7 +144,7 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
             year: element,
             data: map[element],
             alertWidth: alertWidth,
-            monthList: map3[element] ?? [],
+            monthList: map3[element] ?? <int>[],
             isar: widget.isar,
             monthlyDateSumMap: widget.monthlyDateSumMap,
             bankPriceTotalPadMap: widget.bankPriceTotalPadMap,

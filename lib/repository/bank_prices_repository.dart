@@ -9,14 +9,16 @@ class BankPricesRepository {
 
   ///
   Future<List<BankPrice>?> getBankPriceList({required Isar isar}) async {
-    final bankPricesCollection = getCollection(isar: isar);
+    final IsarCollection<BankPrice> bankPricesCollection =
+        getCollection(isar: isar);
     return bankPricesCollection.where().sortByDate().findAll();
   }
 
   ///
   Future<List<BankPrice>?> getSelectedBankPriceList(
       {required Isar isar, required Map<String, dynamic> param}) async {
-    final bankPricesCollection = getCollection(isar: isar);
+    final IsarCollection<BankPrice> bankPricesCollection =
+        getCollection(isar: isar);
 
     return bankPricesCollection
         .filter()
@@ -29,7 +31,7 @@ class BankPricesRepository {
   ///
   Future<void> inputBankPriceList(
       {required Isar isar, required List<BankPrice> bankPriceList}) async {
-    for (final element in bankPriceList) {
+    for (final BankPrice element in bankPriceList) {
       inputBankPrice(isar: isar, bankPrice: element);
     }
   }
@@ -37,21 +39,23 @@ class BankPricesRepository {
   ///
   Future<void> inputBankPrice(
       {required Isar isar, required BankPrice bankPrice}) async {
-    final bankPricesCollection = getCollection(isar: isar);
+    final IsarCollection<BankPrice> bankPricesCollection =
+        getCollection(isar: isar);
     await isar.writeTxn(() async => bankPricesCollection.put(bankPrice));
   }
 
   ///
   Future<void> deleteBankPriceList(
       {required Isar isar, required List<BankPrice> bankPriceList}) async {
-    for (final element in bankPriceList) {
+    for (final BankPrice element in bankPriceList) {
       deleteBankPrice(isar: isar, id: element.id);
     }
   }
 
   ///
   Future<void> deleteBankPrice({required Isar isar, required int id}) async {
-    final bankPricesCollection = getCollection(isar: isar);
+    final IsarCollection<BankPrice> bankPricesCollection =
+        getCollection(isar: isar);
     await isar.writeTxn(() async => bankPricesCollection.delete(id));
   }
 }

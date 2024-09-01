@@ -14,7 +14,9 @@ import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
 import '../../repository/spend_time_places_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
+import '../../state/app_params/app_params_response_state.dart';
 import '../../state/spend_time_places/spend_time_places_notifier.dart';
+import '../../state/spend_time_places/spend_time_places_response_state.dart';
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 import 'parts/money_dialog.dart';
@@ -50,12 +52,12 @@ class _SpendTimePlaceInputAlertState
     end: BoxDecoration(color: Colors.yellowAccent.withOpacity(0.1)),
   );
 
-  final List<TextEditingController> _placeTecs = [];
-  final List<TextEditingController> _priceTecs = [];
+  final List<TextEditingController> _placeTecs = <TextEditingController>[];
+  final List<TextEditingController> _priceTecs = <TextEditingController>[];
 
-  final List<String> _timeUnknownItem = [];
+  final List<String> _timeUnknownItem = <String>[];
 
-  List<SpendItem>? _spendItemList = [];
+  List<SpendItem>? _spendItemList = <SpendItem>[];
 
   ///
   @override
@@ -82,12 +84,13 @@ class _SpendTimePlaceInputAlertState
 
   ///
   Future<void> _makeTecs() async {
-    for (var i = 0; i < 20; i++) {
+    for (int i = 0; i < 20; i++) {
       _placeTecs.add(TextEditingController(text: ''));
       _priceTecs.add(TextEditingController(text: ''));
     }
 
     if (widget.spendTimePlaceList!.isNotEmpty) {
+      // ignore: always_specify_types
       await Future(
         () => ref.read(spendTimePlaceProvider.notifier).setUpdateSpendTimePlace(
               updateSpendTimePlace: widget.spendTimePlaceList!,
@@ -103,7 +106,7 @@ class _SpendTimePlaceInputAlertState
       //       : (element.price * -1).toString().trim();
       // });
 
-      for (var i = 0; i < widget.spendTimePlaceList!.length; i++) {
+      for (int i = 0; i < widget.spendTimePlaceList!.length; i++) {
         _placeTecs[i].text = widget.spendTimePlaceList![i].place.trim();
 
         _priceTecs[i].text =
@@ -122,16 +125,19 @@ class _SpendTimePlaceInputAlertState
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     Future(_init);
 
-    final spendTimePlaceState = ref.watch(spendTimePlaceProvider);
+    final SpendTimePlacesResponseState spendTimePlaceState =
+        ref.watch(spendTimePlaceProvider);
 
+    // ignore: always_specify_types
     Future(() => ref
         .read(spendTimePlaceProvider.notifier)
         .setBaseDiff(baseDiff: widget.spend.toString()));
 
-    final inputButtonClicked =
-        ref.watch(appParamProvider.select((value) => value.inputButtonClicked));
+    final bool inputButtonClicked = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.inputButtonClicked));
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -146,15 +152,15 @@ class _SpendTimePlaceInputAlertState
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Text(widget.date.yyyymmdd),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Row(
-                    children: [
+                    children: <Widget>[
                       const Text('Spend'),
                       const SizedBox(width: 10),
                       Text(
@@ -192,7 +198,7 @@ class _SpendTimePlaceInputAlertState
                 child: SizedBox(
                   width: context.screenSize.width,
                   child: Row(
-                    children: [
+                    children: <Widget>[
                       Expanded(child: _displayInputParts()),
                       if (spendTimePlaceState.blinkingFlag)
                         DecoratedBoxTransition(
@@ -231,20 +237,21 @@ class _SpendTimePlaceInputAlertState
 
   ///
   Widget _displayInputParts() {
-    final list = <Widget>[];
+    final List<Widget> list = <Widget>[];
 
-    final spendTimePlaceState = ref.watch(spendTimePlaceProvider);
+    final SpendTimePlacesResponseState spendTimePlaceState =
+        ref.watch(spendTimePlaceProvider);
 
-    for (var i = 0; i < 20; i++) {
-      final item = spendTimePlaceState.spendItem[i];
-      final time = spendTimePlaceState.spendTime[i];
-      final price = spendTimePlaceState.spendPrice[i];
-      final place = spendTimePlaceState.spendPlace[i];
+    for (int i = 0; i < 20; i++) {
+      final String item = spendTimePlaceState.spendItem[i];
+      final String time = spendTimePlaceState.spendTime[i];
+      final int price = spendTimePlaceState.spendPrice[i];
+      final String place = spendTimePlaceState.spendPlace[i];
 
       list.add(
         DecoratedBox(
           decoration: BoxDecoration(
-            boxShadow: [
+            boxShadow: <BoxShadow>[
               BoxShadow(
                   blurRadius: 24,
                   spreadRadius: 16,
@@ -252,7 +259,7 @@ class _SpendTimePlaceInputAlertState
             ],
           ),
           child: Stack(
-            children: [
+            children: <Widget>[
               Positioned(
                 bottom: 5,
                 right: 15,
@@ -280,9 +287,9 @@ class _SpendTimePlaceInputAlertState
                   ),
                 ),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Row(
-                      children: [
+                      children: <Widget>[
                         Expanded(
                           flex: 2,
                           child: GestureDetector(
@@ -337,7 +344,7 @@ class _SpendTimePlaceInputAlertState
                     ),
                     const SizedBox(height: 10),
                     Row(
-                      children: [
+                      children: <Widget>[
                         GestureDetector(
                           onTap: () => ref
                               .read(spendTimePlaceProvider.notifier)
@@ -366,7 +373,7 @@ class _SpendTimePlaceInputAlertState
                                       BorderSide(color: Colors.white54)),
                             ),
                             style: const TextStyle(fontSize: 12),
-                            onChanged: (value) {
+                            onChanged: (String value) {
                               ref
                                   .read(spendTimePlaceProvider.notifier)
                                   .setSpendPrice(
@@ -374,7 +381,7 @@ class _SpendTimePlaceInputAlertState
                                     price: (value == '') ? 0 : value.toInt(),
                                   );
                             },
-                            onTapOutside: (event) =>
+                            onTapOutside: (PointerDownEvent event) =>
                                 FocusManager.instance.primaryFocus?.unfocus(),
                           ),
                         ),
@@ -394,18 +401,18 @@ class _SpendTimePlaceInputAlertState
                             borderSide: BorderSide(color: Colors.white54)),
                       ),
                       style: const TextStyle(fontSize: 12),
-                      onChanged: (value) => ref
+                      onChanged: (String value) => ref
                           .read(spendTimePlaceProvider.notifier)
                           .setPlace(pos: i, place: value.trim()),
-                      onTapOutside: (event) =>
+                      onTapOutside: (PointerDownEvent event) =>
                           FocusManager.instance.primaryFocus?.unfocus(),
                     ),
-                    if (i < widget.spendTimePlaceList!.length) ...[
+                    if (i < widget.spendTimePlaceList!.length) ...<Widget>[
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                          children: <Widget>[
                             Container(),
                             GestureDetector(
                               onTap: () {
@@ -445,15 +452,15 @@ class _SpendTimePlaceInputAlertState
 
   ///
   Widget _spendItemSetPanel() {
-    final itemPos =
-        ref.watch(spendTimePlaceProvider.select((value) => value.itemPos));
-    final spendItem =
-        ref.watch(spendTimePlaceProvider.select((value) => value.spendItem));
+    final int itemPos = ref.watch(spendTimePlaceProvider
+        .select((SpendTimePlacesResponseState value) => value.itemPos));
+    final List<String> spendItem = ref.watch(spendTimePlaceProvider
+        .select((SpendTimePlacesResponseState value) => value.spendItem));
 
     return SingleChildScrollView(
       child: Column(
         children: (_spendItemList != null)
-            ? _spendItemList!.map((e) {
+            ? _spendItemList!.map((SpendItem e) {
                 return GestureDetector(
                   onTap: () async {
                     await ref
@@ -486,17 +493,17 @@ class _SpendTimePlaceInputAlertState
                   ),
                 );
               }).toList()
-            : [],
+            : <Widget>[],
       ),
     );
   }
 
   ///
   Future<void> _showTP({required int pos}) async {
-    final selectedTime = await showTimePicker(
+    final TimeOfDay? selectedTime = await showTimePicker(
       context: context,
       initialTime: const TimeOfDay(hour: 8, minute: 0),
-      builder: (context, child) {
+      builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
           child: child ?? Container(),
@@ -505,7 +512,7 @@ class _SpendTimePlaceInputAlertState
     );
 
     if (selectedTime != null) {
-      final time =
+      final String time =
           '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
       await ref
           .read(spendTimePlaceProvider.notifier)
@@ -523,26 +530,27 @@ class _SpendTimePlaceInputAlertState
 
   ///
   Future<void> _inputSpendTimePlace() async {
-    final spendTimePlaceState = ref.watch(spendTimePlaceProvider);
+    final SpendTimePlacesResponseState spendTimePlaceState =
+        ref.watch(spendTimePlaceProvider);
 
-    final list = <SpendTimePlace>[];
+    final List<SpendTimePlace> list = <SpendTimePlace>[];
 
-    var errFlg = false;
+    bool errFlg = false;
 
     ////////////////////////// 同数チェック
-    var spendItemCount = 0;
-    var spendTimeCount = 0;
-    var spendPlaceCount = 0;
-    var spendPriceCount = 0;
+    int spendItemCount = 0;
+    int spendTimeCount = 0;
+    int spendPlaceCount = 0;
+    int spendPriceCount = 0;
     ////////////////////////// 同数チェック
 
-    for (var i = 0; i < 20; i++) {
+    for (int i = 0; i < 20; i++) {
       //===============================================
       if (spendTimePlaceState.spendItem[i].trim() != '項目名' &&
           spendTimePlaceState.spendTime[i].trim() != '時間' &&
           spendTimePlaceState.spendPlace[i].trim() != '' &&
           spendTimePlaceState.spendPrice[i].toString().trim() != '') {
-        final price = (spendTimePlaceState.minusCheck[i])
+        final int price = (spendTimePlaceState.minusCheck[i])
             ? spendTimePlaceState.spendPrice[i] * -1
             : spendTimePlaceState.spendPrice[i];
 
@@ -581,7 +589,7 @@ class _SpendTimePlaceInputAlertState
     }
 
     ////////////////////////// 同数チェック
-    final countCheck = <int, String>{};
+    final Map<int, String> countCheck = <int, String>{};
     countCheck[spendItemCount] = '';
     countCheck[spendTimeCount] = '';
     countCheck[spendPlaceCount] = '';
@@ -594,10 +602,10 @@ class _SpendTimePlaceInputAlertState
     ////////////////////////// 同数チェック
 
     if (!errFlg) {
-      for (final element in list) {
-        for (final element2 in [
-          [element.price.toString().trim(), 10],
-          [element.place.trim(), 30]
+      for (final SpendTimePlace element in list) {
+        for (final List<Object> element2 in <List<Object>>[
+          <Object>[element.price.toString().trim(), 10],
+          <Object>[element.place.trim(), 30]
         ]) {
           if (!checkInputValueLengthCheck(
               value: element2[0].toString().trim(),
@@ -608,9 +616,10 @@ class _SpendTimePlaceInputAlertState
       }
     }
 
-    final diff = spendTimePlaceState.diff;
+    final int diff = spendTimePlaceState.diff;
 
     if (diff != 0 || errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -627,13 +636,16 @@ class _SpendTimePlaceInputAlertState
     await SpendTimePlacesRepository()
         .deleteSpendTimePriceList(
             isar: widget.isar, spendTimePriceList: widget.spendTimePlaceList)
+        // ignore: always_specify_types
         .then((value) async {
       await SpendTimePlacesRepository()
           .inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list)
+          // ignore: always_specify_types
           .then((value2) async {
         await ref
             .read(spendTimePlaceProvider.notifier)
             .clearInputValue()
+            // ignore: always_specify_types
             .then((value3) async {
           Navigator.pop(context);
           Navigator.pop(context);
@@ -646,13 +658,13 @@ class _SpendTimePlaceInputAlertState
   Future<void> _makeSpendItemList() async {
     await SpendItemsRepository()
         .getSpendItemList(isar: widget.isar)
-        .then((value) {
+        .then((List<SpendItem>? value) {
       _spendItemList = value;
 
       if (value!.isNotEmpty) {
-        for (final element in value) {
+        for (final SpendItem element in value) {
           if (element.defaultTime != '') {
-            final exDefaultTime = element.defaultTime.split(':');
+            final List<String> exDefaultTime = element.defaultTime.split(':');
             if (exDefaultTime[0].toInt() == 0) {
               _timeUnknownItem.add(element.spendItemName);
             }

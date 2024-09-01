@@ -74,20 +74,20 @@ class _DailyMoneyDisplayAlertState
   ///
   @override
   Widget build(BuildContext context) {
-    final oneday = widget.date.yyyymmdd;
+    final String oneday = widget.date.yyyymmdd;
 
-    final beforeDate = DateTime(oneday.split('-')[0].toInt(),
+    final DateTime beforeDate = DateTime(oneday.split('-')[0].toInt(),
         oneday.split('-')[1].toInt(), oneday.split('-')[2].toInt() - 1);
 
-    final onedayBankTotal = (widget.bankPriceTotalPadMap[oneday] != null)
+    final int? onedayBankTotal = (widget.bankPriceTotalPadMap[oneday] != null)
         ? widget.bankPriceTotalPadMap[oneday]
         : 0;
-    final beforeBankTotal =
+    final int? beforeBankTotal =
         (widget.bankPriceTotalPadMap[beforeDate.yyyymmdd] != null)
             ? widget.bankPriceTotalPadMap[beforeDate.yyyymmdd]
             : 0;
 
-    final spendDiff = (widget.beforeMoneyTotal + beforeBankTotal!) -
+    final int spendDiff = (widget.beforeMoneyTotal + beforeBankTotal!) -
         (widget.onedayMoneyTotal + onedayBankTotal!);
 
     return AlertDialog(
@@ -104,7 +104,7 @@ class _DailyMoneyDisplayAlertState
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 const SizedBox(height: 20),
                 Container(width: context.screenSize.width),
                 const SizedBox(height: 20),
@@ -116,7 +116,7 @@ class _DailyMoneyDisplayAlertState
                 const SizedBox(height: 20),
                 _displayEmoneyNames(),
                 const SizedBox(height: 20),
-                if (spendDiff != 0) ...[
+                if (spendDiff != 0) ...<Widget>[
                   _displaySpendTimePlaceList(),
                   const SizedBox(height: 20),
                 ],
@@ -130,25 +130,25 @@ class _DailyMoneyDisplayAlertState
 
   ///
   Widget _displayTopInfoPlate() {
-    final oneday = widget.date.yyyymmdd;
+    final String oneday = widget.date.yyyymmdd;
 
-    final beforeDate = DateTime(oneday.split('-')[0].toInt(),
+    final DateTime beforeDate = DateTime(oneday.split('-')[0].toInt(),
         oneday.split('-')[1].toInt(), oneday.split('-')[2].toInt() - 1);
 
-    final onedayBankTotal = (widget.bankPriceTotalPadMap[oneday] != null)
+    final int? onedayBankTotal = (widget.bankPriceTotalPadMap[oneday] != null)
         ? widget.bankPriceTotalPadMap[oneday]
         : 0;
-    final beforeBankTotal =
+    final int? beforeBankTotal =
         (widget.bankPriceTotalPadMap[beforeDate.yyyymmdd] != null)
             ? widget.bankPriceTotalPadMap[beforeDate.yyyymmdd]
             : 0;
 
-    final beforeTotal = widget.beforeMoneyTotal + beforeBankTotal!;
-    final onedayTotal = widget.onedayMoneyTotal + onedayBankTotal!;
+    final int beforeTotal = widget.beforeMoneyTotal + beforeBankTotal!;
+    final int onedayTotal = widget.onedayMoneyTotal + onedayBankTotal!;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
               blurRadius: 24,
               spreadRadius: 16,
@@ -170,7 +170,7 @@ class _DailyMoneyDisplayAlertState
                   Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
-              children: [
+              children: <Widget>[
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -179,7 +179,7 @@ class _DailyMoneyDisplayAlertState
                               color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       const Text('Start'),
                       Text(beforeTotal.toString().toCurrency()),
                     ],
@@ -193,7 +193,7 @@ class _DailyMoneyDisplayAlertState
                               color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       const Text('End'),
                       Text(onedayTotal.toString().toCurrency()),
                     ],
@@ -207,10 +207,10 @@ class _DailyMoneyDisplayAlertState
                               color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       const Text('Spend'),
                       Row(
-                        children: [
+                        children: <Widget>[
                           _getBubbleComment(
                               beforeTotal: beforeTotal,
                               onedayTotal: onedayTotal),
@@ -241,8 +241,8 @@ class _DailyMoneyDisplayAlertState
   ///
   Widget _getBubbleComment(
       {required int beforeTotal, required int onedayTotal}) {
-    var text = '';
-    var color = Colors.transparent;
+    String text = '';
+    Color color = Colors.transparent;
 
     if (beforeTotal > 0 && onedayTotal > beforeTotal) {
       text = '増えた！';
@@ -259,7 +259,7 @@ class _DailyMoneyDisplayAlertState
     }
 
     return Row(
-      children: [
+      children: <Widget>[
         Bubble(
           color: color,
           nip: BubbleNip.rightTop,
@@ -275,18 +275,22 @@ class _DailyMoneyDisplayAlertState
   Widget _displaySingleMoney() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Container(
           width: context.screenSize.width,
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Colors.indigo.withOpacity(0.8), Colors.transparent],
-                stops: const [0.7, 1]),
+            gradient: LinearGradient(colors: <Color>[
+              Colors.indigo.withOpacity(0.8),
+              Colors.transparent
+            ], stops: const <double>[
+              0.7,
+              1
+            ]),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               const Text('CURRENCY', overflow: TextOverflow.ellipsis),
               GestureDetector(
                 onTap: () => MoneyDialog(
@@ -308,7 +312,7 @@ class _DailyMoneyDisplayAlertState
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               Container(),
               Text(
                 widget.onedayMoneyTotal.toString().toCurrency(),
@@ -377,21 +381,25 @@ class _DailyMoneyDisplayAlertState
               Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text(key), Text(value.toString().toCurrency())],
+        children: <Widget>[Text(key), Text(value.toString().toCurrency())],
       ),
     );
   }
 
   ///
   Widget _displayBankNames() {
-    final list = <Widget>[
+    final List<Widget> list = <Widget>[
       Container(
         width: context.screenSize.width,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.indigo.withOpacity(0.8), Colors.transparent],
-              stops: const [0.7, 1]),
+          gradient: LinearGradient(colors: <Color>[
+            Colors.indigo.withOpacity(0.8),
+            Colors.transparent
+          ], stops: const <double>[
+            0.7,
+            1
+          ]),
         ),
         child: const Text('BANK', overflow: TextOverflow.ellipsis),
       )
@@ -399,16 +407,16 @@ class _DailyMoneyDisplayAlertState
 
     if (widget.bankNameList.isEmpty) {
       list.add(Column(
-        children: [
+        children: <Widget>[
           const SizedBox(height: 10),
           BankEmoneyBlankMessage(deposit: '金融機関', isar: widget.isar),
           const SizedBox(height: 30),
         ],
       ));
     } else {
-      final list2 = <Widget>[];
+      final List<Widget> list2 = <Widget>[];
 
-      var sum = 0;
+      int sum = 0;
 
       // widget.bankNameList.mapIndexed((index, element) {
       //   if (widget.bankPricePadMap['${element.depositType}-${element.id}'] !=
@@ -421,11 +429,11 @@ class _DailyMoneyDisplayAlertState
       //   }
       // });
 
-      for (var i = 0; i < widget.bankNameList.length; i++) {
+      for (int i = 0; i < widget.bankNameList.length; i++) {
         if (widget.bankPricePadMap[
                 '${widget.bankNameList[i].depositType}-${widget.bankNameList[i].id}'] !=
             null) {
-          final bankPriceMap = widget.bankPricePadMap[
+          final Map<String, int>? bankPriceMap = widget.bankPricePadMap[
               '${widget.bankNameList[i].depositType}-${widget.bankNameList[i].id}'];
           if (bankPriceMap![widget.date.yyyymmdd] != null) {
             sum += bankPriceMap[widget.date.yyyymmdd]!;
@@ -437,7 +445,7 @@ class _DailyMoneyDisplayAlertState
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             Container(),
             Text(sum.toString().toCurrency(),
                 style: const TextStyle(color: Colors.yellowAccent)),
@@ -497,7 +505,7 @@ class _DailyMoneyDisplayAlertState
       //   );
       // });
 
-      for (var i = 0; i < widget.bankNameList.length; i++) {
+      for (int i = 0; i < widget.bankNameList.length; i++) {
         list2.add(
           Container(
             padding: const EdgeInsets.all(10),
@@ -506,11 +514,11 @@ class _DailyMoneyDisplayAlertState
                     bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       Text(widget.bankNameList[i].bankName,
                           maxLines: 2, overflow: TextOverflow.ellipsis),
                       Text(widget.bankNameList[i].branchName,
@@ -519,7 +527,7 @@ class _DailyMoneyDisplayAlertState
                   ),
                 ),
                 Row(
-                  children: [
+                  children: <Widget>[
                     Text(
                       _getListPrice(
                               depositType: widget.bankNameList[i].depositType,
@@ -558,14 +566,18 @@ class _DailyMoneyDisplayAlertState
 
   ///
   Widget _displayEmoneyNames() {
-    final list = <Widget>[
+    final List<Widget> list = <Widget>[
       Container(
         width: context.screenSize.width,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.indigo.withOpacity(0.8), Colors.transparent],
-              stops: const [0.7, 1]),
+          gradient: LinearGradient(colors: <Color>[
+            Colors.indigo.withOpacity(0.8),
+            Colors.transparent
+          ], stops: const <double>[
+            0.7,
+            1
+          ]),
         ),
         child: const Text('E-MONEY', overflow: TextOverflow.ellipsis),
       )
@@ -573,16 +585,16 @@ class _DailyMoneyDisplayAlertState
 
     if (widget.emoneyNameList.isEmpty) {
       list.add(Column(
-        children: [
+        children: <Widget>[
           const SizedBox(height: 10),
           BankEmoneyBlankMessage(deposit: '電子マネー', index: 1, isar: widget.isar),
           const SizedBox(height: 30),
         ],
       ));
     } else {
-      final list2 = <Widget>[];
+      final List<Widget> list2 = <Widget>[];
 
-      var sum = 0;
+      int sum = 0;
 
       // widget.emoneyNameList.mapIndexed((index, element) {
       //   if (widget.bankPricePadMap['${element.depositType}-${element.id}'] !=
@@ -596,11 +608,11 @@ class _DailyMoneyDisplayAlertState
       //   }
       // });
 
-      for (var i = 0; i < widget.emoneyNameList.length; i++) {
+      for (int i = 0; i < widget.emoneyNameList.length; i++) {
         if (widget.bankPricePadMap[
                 '${widget.emoneyNameList[i].depositType}-${widget.emoneyNameList[i].id}'] !=
             null) {
-          final bankPriceMap = widget.bankPricePadMap[
+          final Map<String, int>? bankPriceMap = widget.bankPricePadMap[
               '${widget.emoneyNameList[i].depositType}-${widget.emoneyNameList[i].id}'];
 
           if (bankPriceMap![widget.date.yyyymmdd] != null) {
@@ -613,7 +625,7 @@ class _DailyMoneyDisplayAlertState
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             Container(),
             Text(sum.toString().toCurrency(),
                 style: const TextStyle(color: Colors.yellowAccent)),
@@ -665,7 +677,7 @@ class _DailyMoneyDisplayAlertState
       //   );
       // });
 
-      for (var i = 0; i < widget.emoneyNameList.length; i++) {
+      for (int i = 0; i < widget.emoneyNameList.length; i++) {
         list2.add(
           Container(
             padding: const EdgeInsets.all(10),
@@ -674,12 +686,12 @@ class _DailyMoneyDisplayAlertState
                     bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Expanded(
                     child: Text(widget.emoneyNameList[i].emoneyName,
                         maxLines: 2, overflow: TextOverflow.ellipsis)),
                 Row(
-                  children: [
+                  children: <Widget>[
                     Text(
                       _getListPrice(
                               depositType: widget.emoneyNameList[i].depositType,
@@ -718,9 +730,10 @@ class _DailyMoneyDisplayAlertState
 
   ///
   int _getListPrice({required String depositType, required int id}) {
-    var listPrice = 0;
+    int listPrice = 0;
     if (widget.bankPricePadMap['$depositType-$id'] != null) {
-      final bankPriceMap = widget.bankPricePadMap['$depositType-$id'];
+      final Map<String, int>? bankPriceMap =
+          widget.bankPricePadMap['$depositType-$id'];
       if (bankPriceMap![widget.date.yyyymmdd] != null) {
         listPrice = bankPriceMap[widget.date.yyyymmdd]!;
       }
@@ -731,24 +744,29 @@ class _DailyMoneyDisplayAlertState
 
   ///
   Widget _displaySpendTimePlaceList() {
-    final list = <Widget>[
+    final List<Widget> list = <Widget>[
       Column(
-        children: [
+        children: <Widget>[
           Container(
             width: context.screenSize.width,
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.indigo.withOpacity(0.8), Colors.transparent],
-                  stops: const [0.7, 1]),
+              gradient: LinearGradient(colors: <Color>[
+                Colors.indigo.withOpacity(0.8),
+                Colors.transparent
+              ], stops: const <double>[
+                0.7,
+                1
+              ]),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 const Text('SPEND', overflow: TextOverflow.ellipsis),
                 GestureDetector(
                   onTap: () async {
                     if (widget.onedayMoneyTotal == 0) {
+                      // ignore: always_specify_types
                       Future.delayed(
                         Duration.zero,
                         () => error_dialog(
@@ -760,18 +778,18 @@ class _DailyMoneyDisplayAlertState
                       return;
                     }
 
-                    final oneday = widget.date.yyyymmdd;
+                    final String oneday = widget.date.yyyymmdd;
 
-                    final beforeDate = DateTime(
+                    final DateTime beforeDate = DateTime(
                         oneday.split('-')[0].toInt(),
                         oneday.split('-')[1].toInt(),
                         oneday.split('-')[2].toInt() - 1);
 
-                    final onedayBankTotal =
+                    final int? onedayBankTotal =
                         (widget.bankPriceTotalPadMap[oneday] != null)
                             ? widget.bankPriceTotalPadMap[oneday]
                             : 0;
-                    final beforeBankTotal =
+                    final int? beforeBankTotal =
                         (widget.bankPriceTotalPadMap[beforeDate.yyyymmdd] !=
                                 null)
                             ? widget.bankPriceTotalPadMap[beforeDate.yyyymmdd]
@@ -805,24 +823,24 @@ class _DailyMoneyDisplayAlertState
     ];
 
     if (widget.spendTimePlaceList.isNotEmpty) {
-      final spendItemColorMap = <String, String>{};
+      final Map<String, String> spendItemColorMap = <String, String>{};
       if (widget.spendItemList.isNotEmpty) {
-        for (final element in widget.spendItemList) {
+        for (final SpendItem element in widget.spendItemList) {
           spendItemColorMap[element.spendItemName] = element.color;
         }
       }
 
-      var sum = 0;
+      int sum = 0;
       makeMonthlySpendItemSumMap(
               spendItemList: widget.spendItemList,
               spendTimePlaceList: widget.spendTimePlaceList)
-          .forEach((key, value) => sum += value);
+          .forEach((String key, int value) => sum += value);
 
       list.add(Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             Container(),
             Text(sum.toString().toCurrency(),
                 style: const TextStyle(color: Colors.yellowAccent)),
@@ -833,8 +851,8 @@ class _DailyMoneyDisplayAlertState
       makeMonthlySpendItemSumMap(
               spendTimePlaceList: widget.spendTimePlaceList,
               spendItemList: widget.spendItemList)
-          .forEach((key, value) {
-        final lineColor =
+          .forEach((String key, int value) {
+        final String? lineColor =
             (spendItemColorMap[key] != null && spendItemColorMap[key] != '')
                 ? spendItemColorMap[key]
                 : '0xffffffff';
@@ -846,7 +864,7 @@ class _DailyMoneyDisplayAlertState
                   bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               FittedBox(
                   child: Text(key,
                       style: TextStyle(color: Color(lineColor!.toInt())))),

@@ -11,6 +11,7 @@ import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/bank_names_repository.dart';
 import '../../state/bank_names/bank_names_notifier.dart';
+import '../../state/bank_names/bank_names_response_state.dart';
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
@@ -84,7 +85,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               const Text('金融機関追加'),
@@ -92,11 +93,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
               _displayInputParts(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   Container(),
                   if (widget.bankName != null)
                     Column(
-                      children: [
+                      children: <Widget>[
                         GestureDetector(
                           onTap: () {
                             switch (widget.bankName!.accountType) {
@@ -151,11 +152,12 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Widget _displayInputParts() {
-    final bankNamesSettingState = ref.watch(bankNamesProvider);
+    final BankNamesResponseState bankNamesSettingState =
+        ref.watch(bankNamesProvider);
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
               blurRadius: 24,
               spreadRadius: 16,
@@ -177,9 +179,9 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                   Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
-              children: [
+              children: <Widget>[
                 Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                       child: TextField(
                         keyboardType: TextInputType.number,
@@ -196,7 +198,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         ),
                         style:
                             const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) =>
+                        onTapOutside: (PointerDownEvent event) =>
                             FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     ),
@@ -217,14 +219,14 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         ),
                         style:
                             const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) =>
+                        onTapOutside: (PointerDownEvent event) =>
                             FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     )
                   ],
                 ),
                 Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                       child: TextField(
                         keyboardType: TextInputType.number,
@@ -241,7 +243,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         ),
                         style:
                             const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) =>
+                        onTapOutside: (PointerDownEvent event) =>
                             FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     ),
@@ -262,20 +264,22 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         ),
                         style:
                             const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) =>
+                        onTapOutside: (PointerDownEvent event) =>
                             FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     )
                   ],
                 ),
                 Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
+                      // ignore: always_specify_types
                       child: DropdownButton(
                         isExpanded: true,
                         dropdownColor: Colors.pinkAccent.withOpacity(0.1),
                         iconEnabledColor: Colors.white,
-                        items: AccountType.values.map((e) {
+                        items: AccountType.values.map((AccountType e) {
+                          // ignore: always_specify_types
                           return DropdownMenuItem(
                             value: e,
                             child: Text(e.japanName,
@@ -285,7 +289,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         value: (_selectedAccountType != AccountType.blank)
                             ? _selectedAccountType
                             : bankNamesSettingState.accountType,
-                        onChanged: (value) {
+                        onChanged: (AccountType? value) {
                           ref
                               .read(bankNamesProvider.notifier)
                               .setAccountType(accountType: value!);
@@ -310,7 +314,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         ),
                         style:
                             const TextStyle(fontSize: 13, color: Colors.white),
-                        onTapOutside: (event) =>
+                        onTapOutside: (PointerDownEvent event) =>
                             FocusManager.instance.primaryFocus?.unfocus(),
                       ),
                     ),
@@ -326,10 +330,10 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _inputBankName() async {
-    final accountType =
-        ref.watch(bankNamesProvider.select((value) => value.accountType));
+    final AccountType accountType = ref.watch(bankNamesProvider
+        .select((BankNamesResponseState value) => value.accountType));
 
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_bankNumberEditingController.text.trim() == '' ||
         _bankNameEditingController.text.trim() == '' ||
@@ -341,12 +345,12 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     if (!errFlg) {
-      for (final element in [
-        [_bankNumberEditingController.text.trim(), 4],
-        [_bankNameEditingController.text.trim(), 30],
-        [_branchNumberEditingController.text.trim(), 3],
-        [_branchNameEditingController.text.trim(), 30],
-        [_accountNumberEditingController.text.trim(), 7]
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_bankNumberEditingController.text.trim(), 4],
+        <Object>[_bankNameEditingController.text.trim(), 30],
+        <Object>[_branchNumberEditingController.text.trim(), 3],
+        <Object>[_branchNameEditingController.text.trim(), 30],
+        <Object>[_accountNumberEditingController.text.trim(), 7]
       ]) {
         if (!checkInputValueLengthCheck(
             value: element[0].toString(), length: element[1] as int)) {
@@ -356,6 +360,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -365,7 +370,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       return;
     }
 
-    final bankName = BankName()
+    final BankName bankName = BankName()
       ..bankNumber = _bankNumberEditingController.text.trim()
       ..bankName = _bankNameEditingController.text.trim()
       ..branchNumber = _branchNumberEditingController.text.trim()
@@ -376,6 +381,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
     await BankNamesRepository()
         .inputBankName(isar: widget.isar, bankName: bankName)
+        // ignore: always_specify_types
         .then((value) {
       _bankNumberEditingController.clear();
       _bankNameEditingController.clear();
@@ -389,10 +395,10 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _updateBankName() async {
-    final accountType =
-        ref.watch(bankNamesProvider.select((value) => value.accountType));
+    final AccountType accountType = ref.watch(bankNamesProvider
+        .select((BankNamesResponseState value) => value.accountType));
 
-    var errFlg = false;
+    bool errFlg = false;
 
     if (_bankNumberEditingController.text.trim() == '' ||
         _bankNameEditingController.text.trim() == '' ||
@@ -404,12 +410,12 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     if (!errFlg) {
-      for (final element in [
-        [_bankNumberEditingController.text.trim(), 4],
-        [_bankNameEditingController.text.trim(), 30],
-        [_branchNumberEditingController.text.trim(), 3],
-        [_branchNameEditingController.text.trim(), 30],
-        [_accountNumberEditingController.text.trim(), 7]
+      for (final List<Object> element in <List<Object>>[
+        <Object>[_bankNumberEditingController.text.trim(), 4],
+        <Object>[_bankNameEditingController.text.trim(), 30],
+        <Object>[_branchNumberEditingController.text.trim(), 3],
+        <Object>[_branchNameEditingController.text.trim(), 30],
+        <Object>[_accountNumberEditingController.text.trim(), 7]
       ]) {
         if (!checkInputValueLengthCheck(
             value: element[0].toString(), length: element[1] as int)) {
@@ -419,6 +425,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     }
 
     if (errFlg) {
+      // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
         () => error_dialog(
@@ -431,7 +438,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
     await widget.isar.writeTxn(() async {
       await BankNamesRepository()
           .getBankName(isar: widget.isar, id: widget.bankName!.id)
-          .then((value) async {
+          .then((BankName? value) async {
         value!
           ..bankNumber = _bankNumberEditingController.text.trim()
           ..bankName = _bankNameEditingController.text.trim()
@@ -443,6 +450,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
         await BankNamesRepository()
             .updateBankName(isar: widget.isar, bankName: value)
+            // ignore: always_specify_types
             .then((value) {
           _bankNumberEditingController.clear();
           _bankNameEditingController.clear();
@@ -469,10 +477,10 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
         },
         child: const Text('はい'));
 
-    final alert = AlertDialog(
+    final AlertDialog alert = AlertDialog(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       content: const Text('このデータを消去しますか？'),
-      actions: [cancelButton, continueButton],
+      actions: <Widget>[cancelButton, continueButton],
     );
 
     // ignore: inference_failure_on_function_invocation
@@ -482,5 +490,6 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
   ///
   Future<void> _deleteBankName() async => BankNamesRepository()
       .deleteBankName(isar: widget.isar, id: widget.bankName!.id)
+      // ignore: always_specify_types
       .then((value) => Navigator.pop(context));
 }
