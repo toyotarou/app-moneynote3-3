@@ -44,7 +44,8 @@ class DownloadDataListAlert extends ConsumerStatefulWidget {
 
   ///
   @override
-  ConsumerState<DownloadDataListAlert> createState() => _DownloadDataListAlertState();
+  ConsumerState<DownloadDataListAlert> createState() =>
+      _DownloadDataListAlertState();
 }
 
 class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
@@ -71,7 +72,8 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
   ///
   Future<void> getPublicDirectoryPath() async {
-    final path = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+    final path = await ExternalPath.getExternalStoragePublicDirectory(
+        ExternalPath.DIRECTORY_DOWNLOADS);
     setState(() {
       externalStoragePublicDirectoryPath = path;
     });
@@ -107,33 +109,43 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.bankName)
+                        backgroundColor: (dataDownloadState.dataType ==
+                                DateDownloadDataType.bankName)
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bankName);
+                      ref
+                          .read(dataDownloadProvider.notifier)
+                          .setDataType(dataType: DateDownloadDataType.bankName);
                     },
-                    child: const Text('bank name', style: TextStyle(fontSize: 10)),
+                    child:
+                        const Text('bank name', style: TextStyle(fontSize: 10)),
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.spendItem)
+                        backgroundColor: (dataDownloadState.dataType ==
+                                DateDownloadDataType.spendItem)
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spendItem);
+                      ref.read(dataDownloadProvider.notifier).setDataType(
+                          dataType: DateDownloadDataType.spendItem);
                     },
-                    child: const Text('spend item', style: TextStyle(fontSize: 10)),
+                    child: const Text('spend item',
+                        style: TextStyle(fontSize: 10)),
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.income)
+                        backgroundColor: (dataDownloadState.dataType ==
+                                DateDownloadDataType.income)
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.income);
+                      ref
+                          .read(dataDownloadProvider.notifier)
+                          .setDataType(dataType: DateDownloadDataType.income);
                     },
                     child: const Text('income', style: TextStyle(fontSize: 10)),
                   ),
@@ -142,7 +154,8 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               Container(
                 margin: const EdgeInsets.all(5),
                 padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.4))),
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white.withOpacity(0.4))),
                 child: Column(
                   children: [
                     Row(
@@ -153,15 +166,22 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.none);
+                                  ref
+                                      .read(dataDownloadProvider.notifier)
+                                      .setDataType(
+                                          dataType: DateDownloadDataType.none);
 
                                   _showDP(pos: DateDownloadDateType.start);
                                 },
-                                icon: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                                icon: Icon(Icons.calendar_month,
+                                    color: Colors.greenAccent.withOpacity(0.6)),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [const Text('Start'), Text(dataDownloadState.startDate)],
+                                children: [
+                                  const Text('Start'),
+                                  Text(dataDownloadState.startDate)
+                                ],
                               ),
                             ],
                           ),
@@ -172,15 +192,22 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                           children: [
                             IconButton(
                               onPressed: () {
-                                ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.none);
+                                ref
+                                    .read(dataDownloadProvider.notifier)
+                                    .setDataType(
+                                        dataType: DateDownloadDataType.none);
 
                                 _showDP(pos: DateDownloadDateType.end);
                               },
-                              icon: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
+                              icon: Icon(Icons.calendar_month,
+                                  color: Colors.greenAccent.withOpacity(0.6)),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [const Text('End'), Text(dataDownloadState.endDate)],
+                              children: [
+                                const Text('End'),
+                                Text(dataDownloadState.endDate)
+                              ],
                             ),
                           ],
                         ),
@@ -190,50 +217,68 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                       children: [
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.money)
+                              backgroundColor: (dataDownloadState.dataType ==
+                                      DateDownloadDataType.money)
                                   ? Colors.yellowAccent.withOpacity(0.3)
                                   : Colors.pinkAccent.withOpacity(0.2)),
                           onPressed: () {
-                            if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                              getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
+                            if (dataDownloadState.startDate == '' ||
+                                dataDownloadState.endDate == '') {
+                              getErrorDialog(
+                                  title: '選択できません。',
+                                  content: '日付を正しく入力してください。');
                               return;
                             }
 
-                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.money);
+                            ref.read(dataDownloadProvider.notifier).setDataType(
+                                dataType: DateDownloadDataType.money);
                           },
-                          child: const Text('money', style: TextStyle(fontSize: 10)),
+                          child: const Text('money',
+                              style: TextStyle(fontSize: 10)),
                         ),
                         const SizedBox(width: 10),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.bank)
+                              backgroundColor: (dataDownloadState.dataType ==
+                                      DateDownloadDataType.bank)
                                   ? Colors.yellowAccent.withOpacity(0.3)
                                   : Colors.pinkAccent.withOpacity(0.2)),
                           onPressed: () {
-                            if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                              getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
+                            if (dataDownloadState.startDate == '' ||
+                                dataDownloadState.endDate == '') {
+                              getErrorDialog(
+                                  title: '選択できません。',
+                                  content: '日付を正しく入力してください。');
                               return;
                             }
 
-                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bank);
+                            ref.read(dataDownloadProvider.notifier).setDataType(
+                                dataType: DateDownloadDataType.bank);
                           },
-                          child: const Text('bank', style: TextStyle(fontSize: 10)),
+                          child: const Text('bank',
+                              style: TextStyle(fontSize: 10)),
                         ),
                         const SizedBox(width: 10),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: (dataDownloadState.dataType == DateDownloadDataType.spend)
+                              backgroundColor: (dataDownloadState.dataType ==
+                                      DateDownloadDataType.spend)
                                   ? Colors.yellowAccent.withOpacity(0.3)
                                   : Colors.pinkAccent.withOpacity(0.2)),
                           onPressed: () {
-                            if (dataDownloadState.startDate == '' || dataDownloadState.endDate == '') {
-                              getErrorDialog(title: '選択できません。', content: '日付を正しく入力してください。');
+                            if (dataDownloadState.startDate == '' ||
+                                dataDownloadState.endDate == '') {
+                              getErrorDialog(
+                                  title: '選択できません。',
+                                  content: '日付を正しく入力してください。');
                               return;
                             }
 
-                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spend);
+                            ref.read(dataDownloadProvider.notifier).setDataType(
+                                dataType: DateDownloadDataType.spend);
                           },
-                          child: const Text('spend', style: TextStyle(fontSize: 10)),
+                          child: const Text('spend',
+                              style: TextStyle(fontSize: 10)),
                         ),
                       ],
                     ),
@@ -296,10 +341,14 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
     if (selectedDate != null) {
       switch (pos) {
         case DateDownloadDateType.start:
-          await ref.read(dataDownloadProvider.notifier).setStartDate(date: selectedDate.yyyymmdd);
+          await ref
+              .read(dataDownloadProvider.notifier)
+              .setStartDate(date: selectedDate.yyyymmdd);
           break;
         case DateDownloadDateType.end:
-          await ref.read(dataDownloadProvider.notifier).setEndDate(date: selectedDate.yyyymmdd);
+          await ref
+              .read(dataDownloadProvider.notifier)
+              .setEndDate(date: selectedDate.yyyymmdd);
           break;
       }
     }
@@ -315,12 +364,16 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       //=====================//
       final dateList = <String>[];
 
-      if (dataDownloadState.endDate != '' && dataDownloadState.startDate != '') {
-        final dateDiff =
-            DateTime.parse('${dataDownloadState.endDate} 00:00:00').difference(DateTime.parse('${dataDownloadState.startDate} 00:00:00')).inDays;
+      if (dataDownloadState.endDate != '' &&
+          dataDownloadState.startDate != '') {
+        final dateDiff = DateTime.parse('${dataDownloadState.endDate} 00:00:00')
+            .difference(
+                DateTime.parse('${dataDownloadState.startDate} 00:00:00'))
+            .inDays;
 
         for (var i = 0; i <= dateDiff; i++) {
-          final day = DateTime.parse('${dataDownloadState.startDate} 00:00:00').add(Duration(days: i));
+          final day = DateTime.parse('${dataDownloadState.startDate} 00:00:00')
+              .add(Duration(days: i));
 
           dateList.add(day.yyyymmdd);
         }
@@ -338,17 +391,50 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             if (dateList.contains(key)) {
               list.add(Row(
                 children: [
-                  getDataCell(data: value.date, width: 100, alignment: Alignment.topLeft),
-                  getDataCell(data: value.yen_10000.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_5000.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_2000.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_1000.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_500.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_100.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_50.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_10.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_5.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
-                  getDataCell(data: value.yen_1.toString().toCurrency(), width: 50, alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.date,
+                      width: 100,
+                      alignment: Alignment.topLeft),
+                  getDataCell(
+                      data: value.yen_10000.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_5000.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_2000.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_1000.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_500.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_100.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_50.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_10.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_5.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
+                  getDataCell(
+                      data: value.yen_1.toString().toCurrency(),
+                      width: 50,
+                      alignment: Alignment.topRight),
                 ],
               ));
 
@@ -375,18 +461,33 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           for (final element in dateList) {
             list.add(
               Row(children: [
-                getDataCell(data: element, width: 100, alignment: Alignment.topLeft),
-                Row(children: widget.bankNameList.map((e) => _displayBankPriceListData(date: element, bankName: e)).toList()),
-                Row(children: widget.emoneyNameList.map((e) => _displayBankPriceListData(date: element, emoneyName: e)).toList())
+                getDataCell(
+                    data: element, width: 100, alignment: Alignment.topLeft),
+                Row(
+                    children: widget.bankNameList
+                        .map((e) => _displayBankPriceListData(
+                            date: element, bankName: e))
+                        .toList()),
+                Row(
+                    children: widget.emoneyNameList
+                        .map((e) => _displayBankPriceListData(
+                            date: element, emoneyName: e))
+                        .toList())
               ]),
             );
 
             final outVal = <String>[element];
             for (final element2 in widget.bankNameList) {
-              outVal.add(_getBankPriceData(deposit: '${element2.depositType}-${element2.id}', date: element).toString());
+              outVal.add(_getBankPriceData(
+                      deposit: '${element2.depositType}-${element2.id}',
+                      date: element)
+                  .toString());
             }
             for (final element2 in widget.emoneyNameList) {
-              outVal.add(_getBankPriceData(deposit: '${element2.depositType}-${element2.id}', date: element).toString());
+              outVal.add(_getBankPriceData(
+                      deposit: '${element2.depositType}-${element2.id}',
+                      date: element)
+                  .toString());
             }
 
             outputValuesList.add(outVal.join(','));
@@ -401,15 +502,36 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               for (final element in value) {
                 list.add(Row(
                   children: [
-                    getDataCell(data: element.date, width: 100, alignment: Alignment.topLeft),
-                    getDataCell(data: element.time, width: 60, alignment: Alignment.topLeft),
-                    getDataCell(data: element.spendType, width: 120, alignment: Alignment.topLeft),
-                    getDataCell(data: element.price.toString().toCurrency(), width: 80, alignment: Alignment.topRight),
-                    getDataCell(data: element.place, width: 200, alignment: Alignment.topLeft),
+                    getDataCell(
+                        data: element.date,
+                        width: 100,
+                        alignment: Alignment.topLeft),
+                    getDataCell(
+                        data: element.time,
+                        width: 60,
+                        alignment: Alignment.topLeft),
+                    getDataCell(
+                        data: element.spendType,
+                        width: 120,
+                        alignment: Alignment.topLeft),
+                    getDataCell(
+                        data: element.price.toString().toCurrency(),
+                        width: 80,
+                        alignment: Alignment.topRight),
+                    getDataCell(
+                        data: element.place,
+                        width: 200,
+                        alignment: Alignment.topLeft),
                   ],
                 ));
 
-                outputValuesList.add([element.date, element.time, element.spendType, element.price.toString(), element.place].join(','));
+                outputValuesList.add([
+                  element.date,
+                  element.time,
+                  element.spendType,
+                  element.price.toString(),
+                  element.place
+                ].join(','));
               }
             }
           });
@@ -421,29 +543,50 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           for (final element in widget.bankNameList) {
             list.add(Row(
               children: [
-                getDataCell(data: element.bankNumber, width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.bankName, width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.branchNumber, width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.branchName, width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.accountType, width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.accountNumber, width: 100, alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.bankNumber,
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.bankName,
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.branchNumber,
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.branchName,
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.accountType,
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.accountNumber,
+                    width: 100,
+                    alignment: Alignment.topLeft),
               ],
             ));
 
             outputValuesList.add([
-              '\'${element.bankNumber}',
+              "'${element.bankNumber}",
               element.bankName,
-              '\'${element.branchNumber}',
+              "'${element.branchNumber}",
               element.branchName,
               element.accountType,
-              '\'${element.accountNumber}',
+              "'${element.accountNumber}",
             ].join(','));
           }
 
           for (final element in widget.emoneyNameList) {
             list.add(Row(
               children: [
-                getDataCell(data: element.emoneyName, width: 100, alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.emoneyName,
+                    width: 100,
+                    alignment: Alignment.topLeft),
               ],
             ));
 
@@ -458,14 +601,31 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           for (final element in widget.spendItem) {
             list.add(Row(
               children: [
-                getDataCell(data: element.spendItemName, width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.order.toString(), width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.color, width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.defaultTime, width: 100, alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.spendItemName,
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.order.toString(),
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.color,
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.defaultTime,
+                    width: 100,
+                    alignment: Alignment.topLeft),
               ],
             ));
 
-            outputValuesList.add([element.spendItemName, element.order.toString(), '\'${element.color}', element.defaultTime].join(','));
+            outputValuesList.add([
+              element.spendItemName,
+              element.order.toString(),
+              "'${element.color}",
+              element.defaultTime
+            ].join(','));
           }
 
           break;
@@ -476,13 +636,23 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           for (final element in widget.incomeList) {
             list.add(Row(
               children: [
-                getDataCell(data: element.date, width: 100, alignment: Alignment.topLeft),
-                getDataCell(data: element.sourceName, width: 200, alignment: Alignment.topLeft),
-                getDataCell(data: element.price.toString(), width: 100, alignment: Alignment.topRight),
+                getDataCell(
+                    data: element.date,
+                    width: 100,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.sourceName,
+                    width: 200,
+                    alignment: Alignment.topLeft),
+                getDataCell(
+                    data: element.price.toString(),
+                    width: 100,
+                    alignment: Alignment.topRight),
               ],
             ));
 
-            outputValuesList.add([element.date, element.sourceName, element.price].join(','));
+            outputValuesList.add(
+                [element.date, element.sourceName, element.price].join(','));
           }
 
           break;
@@ -515,7 +685,8 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   }
 
   ///
-  Widget _displayBankPriceListData({required String date, BankName? bankName, EmoneyName? emoneyName}) {
+  Widget _displayBankPriceListData(
+      {required String date, BankName? bankName, EmoneyName? emoneyName}) {
     var deposit = '';
 
     if (bankName != null) {
@@ -526,16 +697,27 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       deposit = '${emoneyName.depositType}-${emoneyName.id}';
     }
 
-    return getDataCell(data: _getBankPriceData(date: date, deposit: deposit).toString().toCurrency(), width: 70, alignment: Alignment.topRight);
+    return getDataCell(
+        data: _getBankPriceData(date: date, deposit: deposit)
+            .toString()
+            .toCurrency(),
+        width: 70,
+        alignment: Alignment.topRight);
   }
 
   ///
-  Widget getDataCell({required String data, required double width, required Alignment alignment}) {
+  Widget getDataCell(
+      {required String data,
+      required double width,
+      required Alignment alignment}) {
     return Container(
       width: width,
       margin: const EdgeInsets.all(2),
       alignment: alignment,
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
+      decoration: BoxDecoration(
+          border: Border(
+              bottom:
+                  BorderSide(color: Colors.white.withOpacity(0.2), width: 2))),
       child: Text(data),
     );
   }
@@ -548,7 +730,8 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       return;
     }
 
-    final dataType = ref.watch(dataDownloadProvider.select((value) => value.dataType));
+    final dataType =
+        ref.watch(dataDownloadProvider.select((value) => value.dataType));
 
     final now = DateTime.now();
     final timeFormat = DateFormat('HHmmss');

@@ -203,6 +203,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   monthlySpendMap: spendMapMonthly,
                   thisMonthSpendTimePlaceList:
                       thisMonthSpendTimePlaceList ?? [],
+                  allSpendTimePlaceList: allSpendTimePlaceList ?? [],
                 ),
               );
             },

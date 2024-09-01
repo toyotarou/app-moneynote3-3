@@ -22,7 +22,8 @@ class AllTotalMoneyGraphAlert extends StatefulWidget {
       required this.monthlyDateSumMap,
       required this.bankPriceTotalPadMap,
       required this.monthlySpendMap,
-      required this.thisMonthSpendTimePlaceList});
+      required this.thisMonthSpendTimePlaceList,
+      required this.allSpendTimePlaceList});
 
   final Map<String, int> allTotalMoneyMap;
   final List<int> years;
@@ -31,6 +32,7 @@ class AllTotalMoneyGraphAlert extends StatefulWidget {
   final Map<String, int> bankPriceTotalPadMap;
   final Map<String, int> monthlySpendMap;
   final List<SpendTimePlace> thisMonthSpendTimePlaceList;
+  final List<SpendTimePlace> allSpendTimePlaceList;
 
   ///
   @override
@@ -147,6 +149,7 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
             bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
             monthlySpendMap: widget.monthlySpendMap,
             thisMonthSpendTimePlaceList: widget.thisMonthSpendTimePlaceList,
+            allSpendTimePlaceList: widget.allSpendTimePlaceList,
           ),
         ));
       }

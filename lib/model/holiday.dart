@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+// ignore: flutter_style_todos
 // TODO エラー修正できない
 Map<String, String> holidayFromJson(String str) =>
     // ignore: inference_failure_on_instance_creation
     Map.from(json.decode(str) as Map<dynamic, dynamic>)
         .map((k, v) => MapEntry<String, String>(k as String, v as String));
 
+// ignore: flutter_style_todos
 // TODO エラー修正できない
 // ignore: inference_failure_on_instance_creation
 String holidayToJson(Map<String, String> data) => json.encode(Map.from(data)

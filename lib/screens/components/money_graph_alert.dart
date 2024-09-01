@@ -7,6 +7,7 @@ import 'package:isar/isar.dart';
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../state/money_graph/money_graph_notifier.dart';
+import '../../state/money_graph/money_graph_response_state.dart';
 
 class MoneyGraphAlert extends ConsumerStatefulWidget {
   const MoneyGraphAlert({
@@ -19,6 +20,7 @@ class MoneyGraphAlert extends ConsumerStatefulWidget {
     required this.graphMin,
     required this.graphMax,
     required this.thisMonthSpendTimePlaceList,
+    required this.monthSTPList,
   });
 
   final DateTime date;
@@ -34,6 +36,8 @@ class MoneyGraphAlert extends ConsumerStatefulWidget {
 
   final List<SpendTimePlace> thisMonthSpendTimePlaceList;
 
+  final List<SpendTimePlace> monthSTPList;
+
   @override
   ConsumerState<MoneyGraphAlert> createState() => _MoneyGraphAlertState();
 }
@@ -42,26 +46,26 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
 
-  List<FlSpot> _flspots = [];
+  List<FlSpot> _flspots = <FlSpot>[];
 
-  Map<String, String> _dateMap = {};
+  Map<String, String> _dateMap = <String, String>{};
 
   ///
   @override
   Widget build(BuildContext context) {
     _setChartData();
 
-    final displayGraphFlag =
-        ref.watch(moneyGraphProvider.select((value) => value.displayGraphFlag));
+    final String displayGraphFlag = ref.watch(moneyGraphProvider
+        .select((MoneyGraphResponseState value) => value.displayGraphFlag));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       content: Stack(
-        children: [
+        children: <Widget>[
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               SizedBox(width: context.screenSize.width),
               const SizedBox(height: 80),
               const Divider(color: Colors.transparent, thickness: 5),
@@ -71,20 +75,20 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Container(width: context.screenSize.width),
               SizedBox(
                 height: 80,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Text(
                       widget.date.yyyymm,
                       style: const TextStyle(fontSize: 14),
                     ),
                     Column(
-                      children: [
+                      children: <Widget>[
                         GestureDetector(
                           onTap: () => ref
                               .read(moneyGraphProvider.notifier)
@@ -143,28 +147,49 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
   ///
   void _setChartData() {
-    final map = <String, int>{};
+    final Map<String, int> map = <String, int>{};
 
-    final displayGraphFlag =
-        ref.watch(moneyGraphProvider.select((value) => value.displayGraphFlag));
+    final String displayGraphFlag = ref.watch(moneyGraphProvider
+        .select((MoneyGraphResponseState value) => value.displayGraphFlag));
 
-    var warisuu = 500000;
+    int warisuu = 500000;
 
     switch (displayGraphFlag) {
       case 'total':
-        widget.monthlyDateSumMap.forEach((key, value) {
+        widget.monthlyDateSumMap.forEach((String key, int value) {
           if (widget.date.yyyymm == DateTime.parse('$key 00:00:00').yyyymm) {
-            final value2 = widget.bankPriceTotalPadMap[key] ?? 0;
+            final int value2 = widget.bankPriceTotalPadMap[key] ?? 0;
             map[key] = value + value2;
           }
         });
         break;
 
       case 'diff':
-        widget.monthlySpendMap.forEach((key, value) {
-          if (widget.date.yyyymm == DateTime.parse('$key 00:00:00').yyyymm) {
-            map[key] = value * -1;
+        final Map<String, List<int>> map100 = <String, List<int>>{};
+
+        final int endDay =
+            DateTime(widget.date.year, widget.date.month + 1, 0).day;
+
+        for (int i = 1; i <= endDay; i++) {
+          final String genDate =
+              DateTime(widget.date.year, widget.date.month, i).yyyymmdd;
+          map100[genDate] = <int>[0];
+        }
+
+        for (final SpendTimePlace element in widget.monthSTPList) {
+          map100[element.date] = <int>[];
+        }
+
+        for (final SpendTimePlace element in widget.monthSTPList) {
+          map100[element.date]?.add(element.price);
+        }
+
+        int total = 0;
+        map100.forEach((String key, List<int> value) {
+          for (final int element in value) {
+            total += element * -1;
           }
+          map[key] = total;
         });
 
         warisuu = 50000;
@@ -172,32 +197,34 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         break;
 
       case 'spend':
-        final map100 = <String, List<int>>{};
+        final Map<String, List<int>> map100 = <String, List<int>>{};
 
-        final endDay = DateTime(widget.date.year, widget.date.month + 1, 0).day;
+        final int endDay =
+            DateTime(widget.date.year, widget.date.month + 1, 0).day;
 
-        for (var i = 1; i <= endDay; i++) {
-          final genDate = DateTime(widget.date.year, widget.date.month, i);
-
-          if (genDate.isBefore(DateTime.now())) {
-            map100[genDate.yyyymmdd] = [];
-          }
+        for (int i = 1; i <= endDay; i++) {
+          final String genDate =
+              DateTime(widget.date.year, widget.date.month, i).yyyymmdd;
+          map100[genDate] = <int>[0];
         }
 
-        map100.forEach((key, value) {
-          for (final element in widget.thisMonthSpendTimePlaceList) {
-            if (key == element.date) {
-              map100[key]?.add((element.price > 0) ? element.price : 0);
-            }
-          }
-        });
+        for (final SpendTimePlace element in widget.monthSTPList) {
+          map100[element.date] = <int>[];
+        }
 
-        var sum = 0;
-        map100.forEach((key, value) {
-          for (final element in value) {
-            sum += element;
+        for (final SpendTimePlace element in widget.monthSTPList) {
+          map100[element.date]?.add(element.price);
+        }
+
+        int total = 0;
+        map100.forEach((String key, List<int> value) {
+          int sum = 0;
+          for (final int element in value) {
+            sum += (element > 0) ? element : 0;
           }
-          map[key] = sum;
+
+          map[key] = total;
+          total += sum;
         });
 
         warisuu = 50000;
@@ -205,14 +232,14 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         break;
     }
 
-    _flspots = [];
-    _dateMap = {};
+    _flspots = <FlSpot>[];
+    _dateMap = <String, String>{};
 
-    final list = <int>[];
+    final List<int> list = <int>[];
 
-    var i = 0;
+    int i = 0;
 
-    map.forEach((key, value) {
+    map.forEach((String key, int value) {
       _flspots.add(FlSpot((i + 1).toDouble(), value.toDouble()));
       _dateMap[(i + 1).toString()] = key;
       list.add(value);
@@ -220,13 +247,13 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
     });
 
     if (list.isNotEmpty) {
-      final minValue = list.reduce(min);
-      final maxValue = list.reduce(max);
+      final int minValue = list.reduce(min);
+      final int maxValue = list.reduce(max);
 
-      final graphMin = (displayGraphFlag == 'total')
+      final int graphMin = (displayGraphFlag == 'total')
           ? widget.graphMin
           : ((minValue / warisuu).floor()) * warisuu;
-      final graphMax = (displayGraphFlag == 'total')
+      final int graphMax = (displayGraphFlag == 'total')
           ? widget.graphMax
           : ((maxValue / warisuu).ceil()) * warisuu;
 
@@ -247,10 +274,10 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
               tooltipRoundedRadius: 2,
               tooltipBgColor: Colors.white.withOpacity(0.2),
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                final list = <LineTooltipItem>[];
+                final List<LineTooltipItem> list = <LineTooltipItem>[];
 
-                for (final element in touchedSpots) {
-                  final textStyle = TextStyle(
+                for (final LineBarSpot element in touchedSpots) {
+                  final TextStyle textStyle = TextStyle(
                     color: element.bar.gradient?.colors.first ??
                         element.bar.color ??
                         Colors.blueGrey,
@@ -258,12 +285,13 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                     fontSize: 12,
                   );
 
-                  final price =
+                  final String price =
                       element.y.round().toString().split('.')[0].toCurrency();
 
-                  final day = DateTime(widget.date.year, widget.date.month)
-                      .add(Duration(days: element.x.toInt() - 1))
-                      .yyyymmdd;
+                  final String day =
+                      DateTime(widget.date.year, widget.date.month)
+                          .add(Duration(days: element.x.toInt() - 1))
+                          .yyyymmdd;
 
                   list.add(
                     LineTooltipItem(
@@ -281,15 +309,15 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         ///
         gridData: FlGridData(
           verticalInterval: 1,
-          getDrawingHorizontalLine: (value) {
+          getDrawingHorizontalLine: (double value) {
             return FlLine(
                 color: (value == 0.0)
                     ? Colors.greenAccent.withOpacity(0.8)
                     : Colors.white.withOpacity(0.2),
                 strokeWidth: 1);
           },
-          getDrawingVerticalLine: (value) {
-            final youbi = DateTime(widget.date.year, widget.date.month)
+          getDrawingVerticalLine: (double value) {
+            final String youbi = DateTime(widget.date.year, widget.date.month)
                 .add(Duration(days: value.toInt()))
                 .youbiStr;
 
@@ -306,7 +334,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         titlesData: const FlTitlesData(show: false),
 
         ///
-        lineBarsData: [
+        lineBarsData: <LineChartBarData>[
           LineChartBarData(
             spots: _flspots,
             color: Colors.yellowAccent,
@@ -347,7 +375,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 70,
-              getTitlesWidget: (value, meta) {
+              getTitlesWidget: (double value, TitleMeta meta) {
                 if (value == graphMin || value == graphMax) {
                   return const SizedBox();
                 }
@@ -369,7 +397,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         ),
 
         ///
-        lineBarsData: [],
+        lineBarsData: <LineChartBarData>[],
       );
     }
   }
@@ -377,9 +405,12 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
 ///
 ////////////////////////////////////////////////////////////
-final graphWidthProvider =
+final AutoDisposeStateNotifierProvider<GraphWidthStateNotifier, double>
+    graphWidthProvider =
     StateNotifierProvider.autoDispose<GraphWidthStateNotifier, double>(
-        (ref) => GraphWidthStateNotifier());
+        (AutoDisposeStateNotifierProviderRef<GraphWidthStateNotifier, double>
+                ref) =>
+            GraphWidthStateNotifier());
 
 class GraphWidthStateNotifier extends StateNotifier<double> {
   GraphWidthStateNotifier() : super(0.6);

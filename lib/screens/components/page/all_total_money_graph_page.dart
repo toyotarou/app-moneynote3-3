@@ -29,6 +29,7 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
     required this.bankPriceTotalPadMap,
     required this.monthlySpendMap,
     required this.thisMonthSpendTimePlaceList,
+    required this.allSpendTimePlaceList,
   });
 
   final List<Map<String, int>>? data;
@@ -40,6 +41,7 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
   final Map<String, int> bankPriceTotalPadMap;
   final Map<String, int> monthlySpendMap;
   final List<SpendTimePlace> thisMonthSpendTimePlaceList;
+  final List<SpendTimePlace> allSpendTimePlaceList;
 
   @override
   ConsumerState<AllTotalMoneyGraphPage> createState() =>
@@ -98,6 +100,18 @@ class _AllTotalMoneyGraphPageState
                                 .read(appParamProvider.notifier)
                                 .setSelectedGraphMonth(month: e);
 
+
+//
+//                             var aaa=
+// widget.allSpendTimePlaceList.where((element) => element.date.split('-')[1] == '08').toList();
+//                             print(aaa);
+//
+//
+
+
+
+
+
                             MoneyDialog(
                               context: context,
                               widget: MoneyGraphAlert(
@@ -111,6 +125,11 @@ class _AllTotalMoneyGraphPageState
                                 graphMax: graphMax,
                                 thisMonthSpendTimePlaceList:
                                     widget.thisMonthSpendTimePlaceList,
+                                monthSTPList: widget.allSpendTimePlaceList
+                                    .where((element) =>
+                                        element.date.split('-')[1] ==
+                                        e.toString().padLeft(2,'0'))
+                                    .toList(),
                               ),
                             );
                           },
