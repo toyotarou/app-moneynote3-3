@@ -102,13 +102,6 @@ class _AllTotalMoneyGraphPageState
                                 .read(appParamProvider.notifier)
                                 .setSelectedGraphMonth(month: e);
 
-//
-//                             var aaa=
-// widget.allSpendTimePlaceList.where((element) => element.date.split('-')[1] == '08').toList();
-//                             print(aaa);
-//
-//
-
                             MoneyDialog(
                               context: context,
                               widget: MoneyGraphAlert(
@@ -171,6 +164,9 @@ class _AllTotalMoneyGraphPageState
     _flspots = <FlSpot>[];
 
     if (widget.data != null) {
+      String lastDate = '';
+      int lastTotal = 0;
+
       int i = 0;
       final List<int> list = <int>[];
       for (final Map<String, int> element in widget.data!) {
@@ -179,8 +175,26 @@ class _AllTotalMoneyGraphPageState
 
           list.add(element2.value);
 
+          lastDate = element2.key;
+
+          if (element2.value > 0) {
+            lastTotal = element2.value;
+          }
+
           i++;
         }
+      }
+
+      final List<String> exLastDate = lastDate.split('-');
+
+      final int lastDateMonthLastDay =
+          DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
+
+      for (int i = exLastDate[2].toInt();
+          i <= (lastDateMonthLastDay - exLastDate[2].toInt());
+          i++) {
+        _flspots
+            .add(FlSpot((list.length + i).toDouble(), lastTotal.toDouble()));
       }
 
       // final list = <int>[];

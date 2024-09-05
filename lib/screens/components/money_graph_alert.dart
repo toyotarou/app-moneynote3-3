@@ -235,6 +235,9 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
     _flspots = <FlSpot>[];
     _dateMap = <String, String>{};
 
+    String lastDate = '';
+    int lastTotal = 0;
+
     final List<int> list = <int>[];
 
     int i = 0;
@@ -243,8 +246,25 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
       _flspots.add(FlSpot((i + 1).toDouble(), value.toDouble()));
       _dateMap[(i + 1).toString()] = key;
       list.add(value);
+
+      lastDate = key;
+      if (value > 0) {
+        lastTotal = value;
+      }
+
       i++;
     });
+
+    final List<String> exLastDate = lastDate.split('-');
+
+    final int lastDateMonthLastDay =
+        DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
+
+    for (int i = exLastDate[2].toInt();
+        i <= (lastDateMonthLastDay - exLastDate[2].toInt());
+        i++) {
+      _flspots.add(FlSpot((list.length + i).toDouble(), lastTotal.toDouble()));
+    }
 
     if (list.isNotEmpty) {
       final int minValue = list.reduce(min);

@@ -333,11 +333,5 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
   ///
   Future<void> _deleteBankPrice({required int id}) async =>
-      BankPricesRepository()
-          .deleteBankPrice(isar: widget.isar, id: id)
-          // ignore: always_specify_types
-          .then((value) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-      });
+      BankPricesRepository().deleteBankPrice(isar: widget.isar, id: id);
 }
