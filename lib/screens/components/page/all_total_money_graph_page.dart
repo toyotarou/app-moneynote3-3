@@ -190,22 +190,11 @@ class _AllTotalMoneyGraphPageState
       final int lastDateMonthLastDay =
           DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
 
-      for (int i = exLastDate[2].toInt();
-          i <= (lastDateMonthLastDay - exLastDate[2].toInt());
+      for (int i = list.length;
+          i <= (list.length + (lastDateMonthLastDay - exLastDate[2].toInt()));
           i++) {
-        _flspots
-            .add(FlSpot((list.length + i).toDouble(), lastTotal.toDouble()));
+        _flspots.add(FlSpot(i.toDouble(), lastTotal.toDouble()));
       }
-
-      // final list = <int>[];
-      // widget.data!.mapIndexed((index, element) {
-      //   element.entries.forEach((element2) {
-      //     _flspots
-      //         .add(FlSpot((index + 1).toDouble(), element2.value.toDouble()));
-      //
-      //     list.add(element2.value);
-      //   });
-      // });
 
       const int warisuu = 500000;
       final int minValue = list.reduce(min);
@@ -264,7 +253,7 @@ class _AllTotalMoneyGraphPageState
           verticalInterval: 1,
           getDrawingVerticalLine: (double value) {
             final DateTime day =
-                DateTime(widget.year).add(Duration(days: value.toInt()));
+                DateTime(widget.year).add(Duration(days: value.toInt() - 1));
 
             return FlLine(
               color: (day.day == 1)

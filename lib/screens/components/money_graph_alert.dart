@@ -260,10 +260,10 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
     final int lastDateMonthLastDay =
         DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
 
-    for (int i = exLastDate[2].toInt();
-        i <= (lastDateMonthLastDay - exLastDate[2].toInt());
+    for (int i = list.length;
+        i <= (lastDateMonthLastDay - exLastDate[2].toInt()) + list.length;
         i++) {
-      _flspots.add(FlSpot((list.length + i).toDouble(), lastTotal.toDouble()));
+      _flspots.add(FlSpot(i.toDouble(), lastTotal.toDouble()));
     }
 
     if (list.isNotEmpty) {
@@ -338,7 +338,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
           },
           getDrawingVerticalLine: (double value) {
             final String youbi = DateTime(widget.date.year, widget.date.month)
-                .add(Duration(days: value.toInt()))
+                .add(Duration(days: value.toInt() - 1))
                 .youbiStr;
 
             return FlLine(
