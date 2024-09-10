@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:charset_converter/charset_converter.dart';
@@ -317,8 +318,12 @@ class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
 
     final String contents = outputValuesList.join('\n');
 
-    final Uint8List encoded =
-        await CharsetConverter.encode('Shift_JIS', contents);
+    // final Uint8List encoded =
+    //     await CharsetConverter.encode('Shift_JIS', contents);
+
+    final List<int> byteList = utf8.encode(contents);
+
+    final Uint8List encoded = Uint8List.fromList(byteList);
 
     sendFileNameList.add(sendFileName);
     sendFileList.add(XFile.fromData(encoded, mimeType: 'text/plain'));
