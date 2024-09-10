@@ -1,13 +1,11 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:charset_converter/charset_converter.dart';
-import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../collections/bank_name.dart';
 import '../../collections/emoney_name.dart';
@@ -56,7 +54,11 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
   List<String> outputValuesList = <String>[];
 
-  String externalStoragePublicDirectoryPath = '';
+  // String externalStoragePublicDirectoryPath = '';
+  //
+  //
+  //
+  //
 
   ///
   @override
@@ -70,17 +72,26 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       spendTimePlaceMap[element.date]?.add(element);
     }
 
-    getPublicDirectoryPath();
+    // getPublicDirectoryPath();
+    //
+    //
+    //
+    //
+    //
   }
 
-  ///
-  Future<void> getPublicDirectoryPath() async {
-    final String path = await ExternalPath.getExternalStoragePublicDirectory(
-        ExternalPath.DIRECTORY_DOWNLOADS);
-    setState(() {
-      externalStoragePublicDirectoryPath = path;
-    });
-  }
+  // ///
+  // Future<void> getPublicDirectoryPath() async {
+  //   final String path = await ExternalPath.getExternalStoragePublicDirectory(
+  //       ExternalPath.DIRECTORY_DOWNLOADS);
+  //   setState(() {
+  //     externalStoragePublicDirectoryPath = path;
+  //   });
+  // }
+  //
+  //
+  //
+  //
 
   ///
   @override
@@ -755,16 +766,17 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
     final String dateStr = '${dataType!.japanName}_$year$month$day$currentTime';
     final String sendFileName = '$dateStr.csv';
 
-    final String exFilePath =
-        '$externalStoragePublicDirectoryPath/$sendFileName';
-    final File textFilePath = File(exFilePath);
-
     final String contents = outputValuesList.join('\n');
+
+    final RenderBox? box = context.findRenderObject() as RenderBox?;
 
     final Uint8List encoded =
         await CharsetConverter.encode('Shift_JIS', contents);
-    await textFilePath.writeAsBytes(encoded);
 
-    getErrorDialog(title: '出力しました。', content: 'ダウンロードフォルダにCSVを作成しました。');
+    await Share.shareXFiles(
+      <XFile>[XFile.fromData(encoded, mimeType: 'text/plain')],
+      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+      fileNameOverrides: <String>[sendFileName],
+    );
   }
 }
