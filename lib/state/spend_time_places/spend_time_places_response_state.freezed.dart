@@ -12,7 +12,7 @@ part of 'spend_time_places_response_state.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$SpendTimePlacesResponseState {
@@ -222,11 +222,11 @@ class _$SpendTimePlacesResponseStateImpl
       {this.itemPos = 0,
       this.diff = 0,
       this.baseDiff = '',
-      final List<String> spendItem = const [],
-      final List<String> spendTime = const [],
-      final List<String> spendPlace = const [],
-      final List<int> spendPrice = const [],
-      final List<bool> minusCheck = const [],
+      final List<String> spendItem = const <String>[],
+      final List<String> spendTime = const <String>[],
+      final List<String> spendPlace = const <String>[],
+      final List<int> spendPrice = const <int>[],
+      final List<bool> minusCheck = const <bool>[],
       this.blinkingFlag = false,
       this.spendTimePlaceItemChangeDate = ''})
       : _spendItem = spendItem,
