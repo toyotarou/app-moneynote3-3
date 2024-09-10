@@ -486,22 +486,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SizedBox(height: 60),
-              if (!isRelease) ...<Widget>[
-                GestureDetector(
-                  onTap: () => MoneyDialog(
-                      context: context,
-                      widget: DummyDataInputAlert(isar: widget.isar)),
-                  child: Container(
-                    width: double.infinity,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-                    margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Colors.white.withOpacity(0.4))),
-                    child: const Text('dummy data input'),
-                  ),
-                ),
+//              if (!isRelease) ...<Widget>[
+//                 GestureDetector(
+//                   onTap: () => MoneyDialog(
+//                       context: context,
+//                       widget: DummyDataInputAlert(isar: widget.isar)),
+//                   child: Container(
+//                     width: double.infinity,
+//                     padding:
+//                         const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+//                     margin: const EdgeInsets.all(5),
+//                     decoration: BoxDecoration(
+//                         border:
+//                             Border.all(color: Colors.white.withOpacity(0.4))),
+//                     child: const Text('dummy data input'),
+//                   ),
+//                 ),
                 GestureDetector(
                   onTap: () => MoneyDialog(
                       context: context,
@@ -532,7 +532,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: const Text('dummy csv input'),
                   ),
                 ),
-              ],
+//              ],
               GestureDetector(
                 onTap: () => MoneyDialog(
                     context: context,

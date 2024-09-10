@@ -164,6 +164,7 @@ class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
                 Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
                 Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: displayFileNameList.map((String e) {
                     return Text(e);
                   }).toList(),
