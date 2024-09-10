@@ -54,11 +54,8 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
   List<String> outputValuesList = <String>[];
 
-  // String externalStoragePublicDirectoryPath = '';
-  //
-  //
-  //
-  //
+  List<XFile> sendFileList = <XFile>[];
+  List<String> sendFileNameList = <String>[];
 
   ///
   @override
@@ -72,26 +69,11 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       spendTimePlaceMap[element.date]?.add(element);
     }
 
-    // getPublicDirectoryPath();
-    //
-    //
-    //
-    //
-    //
-  }
+    outputValuesList.clear();
 
-  // ///
-  // Future<void> getPublicDirectoryPath() async {
-  //   final String path = await ExternalPath.getExternalStoragePublicDirectory(
-  //       ExternalPath.DIRECTORY_DOWNLOADS);
-  //   setState(() {
-  //     externalStoragePublicDirectoryPath = path;
-  //   });
-  // }
-  //
-  //
-  //
-  //
+    sendFileNameList.clear();
+    sendFileList.clear();
+  }
 
   ///
   @override
@@ -307,6 +289,16 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                   TextButton(
                     onPressed: outputCsv,
                     child: const Text('CSVを出力する'),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(),
+                  TextButton(
+                    onPressed: sendCsv,
+                    child: const Text('CSVを送信する'),
                   ),
                 ],
               ),
@@ -768,15 +760,38 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
     final String contents = outputValuesList.join('\n');
 
-    final RenderBox? box = context.findRenderObject() as RenderBox?;
-
     final Uint8List encoded =
         await CharsetConverter.encode('Shift_JIS', contents);
 
+    sendFileNameList.add(sendFileName);
+    sendFileList.add(XFile.fromData(encoded, mimeType: 'text/plain'));
+
+    getErrorDialog(title: 'ファイルを追加しました。', content: 'CSV送信の準備ができました。');
+  }
+
+  ///
+  Future<void> sendCsv() async {
+    if (sendFileList.isEmpty || sendFileNameList.isEmpty) {
+      getErrorDialog(title: '送信できません。', content: '送信するデータを正しく選択してください。');
+
+      return;
+    }
+
+    final RenderBox? box = context.findRenderObject() as RenderBox?;
+
     await Share.shareXFiles(
-      <XFile>[XFile.fromData(encoded, mimeType: 'text/plain')],
+      sendFileList,
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-      fileNameOverrides: <String>[sendFileName],
+      fileNameOverrides: sendFileNameList,
     );
+
+    if (mounted) {
+      outputValuesList.clear();
+
+      sendFileNameList.clear();
+      sendFileList.clear();
+
+      Navigator.pop(context);
+    }
   }
 }
