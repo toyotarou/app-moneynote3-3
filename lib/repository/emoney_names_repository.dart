@@ -23,6 +23,14 @@ class EmoneyNamesRepository {
   }
 
   ///
+  Future<void> inputEmoneyNameList(
+      {required Isar isar, required List<EmoneyName> emoneyNameList}) async {
+    for (final EmoneyName element in emoneyNameList) {
+      inputEmoneyName(isar: isar, emoneyName: element);
+    }
+  }
+
+  ///
   Future<void> inputEmoneyName(
       {required Isar isar, required EmoneyName emoneyName}) async {
     final IsarCollection<EmoneyName> emoneyNamesCollection =

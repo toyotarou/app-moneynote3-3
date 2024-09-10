@@ -29,6 +29,14 @@ class MoneysRepository {
   }
 
   ///
+  Future<void> inputMoneyList(
+      {required Isar isar, required List<Money> moneyList}) async {
+    for (final Money element in moneyList) {
+      inputMoney(isar: isar, money: element);
+    }
+  }
+
+  ///
   Future<void> inputMoney({required Isar isar, required Money money}) async {
     final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => moneysCollection.put(money));

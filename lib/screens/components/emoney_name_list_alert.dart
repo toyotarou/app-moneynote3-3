@@ -73,7 +73,9 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
                     AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(
-                      child: Column(children: snapshot.data!),
+                      child: SingleChildScrollView(
+                        child: Column(children: snapshot.data!),
+                      ),
                     );
                   }
 

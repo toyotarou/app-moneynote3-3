@@ -67,7 +67,11 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
-                    return Expanded(child: Column(children: snapshot.data!));
+                    return Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(children: snapshot.data!),
+                      ),
+                    );
                   }
 
                   return Container();

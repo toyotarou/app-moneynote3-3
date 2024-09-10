@@ -22,6 +22,14 @@ class SpendItemsRepository {
   }
 
   ///
+  Future<void> inputSpendItemList(
+      {required Isar isar, required List<SpendItem> spendItemList}) async {
+    for (final SpendItem element in spendItemList) {
+      inputSpendItem(isar: isar, spendItem: element);
+    }
+  }
+
+  ///
   Future<void> inputSpendItem(
       {required Isar isar, required SpendItem spendItem}) async {
     final IsarCollection<SpendItem> spendItemsCollection =

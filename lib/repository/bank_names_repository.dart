@@ -22,6 +22,14 @@ class BankNamesRepository {
   }
 
   ///
+  Future<void> inputBankNameList(
+      {required Isar isar, required List<BankName> bankNameList}) async {
+    for (final BankName element in bankNameList) {
+      inputBankName(isar: isar, bankName: element);
+    }
+  }
+
+  ///
   Future<void> inputBankName(
       {required Isar isar, required BankName bankName}) async {
     final IsarCollection<BankName> bankNamesCollection =
