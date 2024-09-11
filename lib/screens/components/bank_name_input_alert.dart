@@ -61,10 +61,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       switch (widget.bankName!.accountType) {
         case '普通口座':
           _selectedAccountType = AccountType.normal;
-          break;
         case '定期口座':
           _selectedAccountType = AccountType.fixed;
-          break;
       }
     }
   }
@@ -106,13 +104,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                                     .read(bankNamesProvider.notifier)
                                     .setAccountType(
                                         accountType: AccountType.normal);
-                                break;
                               case '定期口座':
                                 ref
                                     .read(bankNamesProvider.notifier)
                                     .setAccountType(
                                         accountType: AccountType.fixed);
-                                break;
                             }
 
                             _updateBankName();

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
-import '../../../collections/bank_name.dart';
-import '../../../collections/bank_price.dart';
-import '../../../collections/emoney_name.dart';
-import '../../../collections/income.dart';
-import '../../../collections/money.dart';
-import '../../../collections/spend_time_place.dart';
-import '../../../extensions/extensions.dart';
+import '../../collections/bank_name.dart';
+import '../../collections/bank_price.dart';
+import '../../collections/emoney_name.dart';
+import '../../collections/income.dart';
+import '../../collections/money.dart';
+import '../../collections/spend_time_place.dart';
+import '../../extensions/extensions.dart';
 
 class DummyDataInputAlert extends StatelessWidget {
   const DummyDataInputAlert({super.key, required this.isar});

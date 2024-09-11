@@ -14,7 +14,6 @@ import '../../../collections/spend_time_place.dart';
 import '../../../extensions/extensions.dart';
 import '../../../state/app_params/app_params_notifier.dart';
 import '../../../state/app_params/app_params_response_state.dart';
-import '../../../utilities/utilities.dart';
 import '../money_graph_alert.dart';
 import '../parts/money_dialog.dart';
 
@@ -51,8 +50,6 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
 
 class _AllTotalMoneyGraphPageState
     extends ConsumerState<AllTotalMoneyGraphPage> {
-  final Utility _utility = Utility();
-
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
 
@@ -215,14 +212,6 @@ class _AllTotalMoneyGraphPageState
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
               tooltipRoundedRadius: 2,
-              // tooltipBgColor: Colors.white.withOpacity(0.2),
-              //
-              //
-              //
-
-
-
-
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
                 final List<LineTooltipItem> list = <LineTooltipItem>[];
 
@@ -302,7 +291,7 @@ class _AllTotalMoneyGraphPageState
         lineTouchData: const LineTouchData(enabled: false),
 
         ///
-        gridData: _utility.getFlGridData(),
+        gridData: const FlGridData(show: false),
 
         ///
         titlesData: FlTitlesData(

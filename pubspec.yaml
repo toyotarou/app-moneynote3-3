@@ -63,7 +63,6 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
-    - assets/csv/
 
   fonts:
     - family: KiwiMaru

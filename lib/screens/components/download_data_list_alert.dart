@@ -353,12 +353,10 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
           await ref
               .read(dataDownloadProvider.notifier)
               .setStartDate(date: selectedDate.yyyymmdd);
-          break;
         case DateDownloadDateType.end:
           await ref
               .read(dataDownloadProvider.notifier)
               .setEndDate(date: selectedDate.yyyymmdd);
-          break;
       }
     }
   }
@@ -465,7 +463,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               ].join(','));
             }
           });
-          break;
 
         case DateDownloadDataType.bank:
           outputValuesList = <String>[];
@@ -504,7 +501,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
 
             outputValuesList.add(outVal.join(','));
           }
-          break;
 
         case DateDownloadDataType.spend:
           outputValuesList = <String>[];
@@ -547,7 +543,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
               }
             }
           });
-          break;
 
         case DateDownloadDataType.bankName:
           outputValuesList = <String>[];
@@ -605,7 +600,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             outputValuesList.add(<String>[element.emoneyName].join(','));
           }
 
-          break;
 
         case DateDownloadDataType.spendItem:
           outputValuesList = <String>[];
@@ -640,7 +634,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             ].join(','));
           }
 
-          break;
 
         case DateDownloadDataType.income:
           outputValuesList = <String>[];
@@ -670,7 +663,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
             ].join(','));
           }
 
-          break;
       }
     }
 

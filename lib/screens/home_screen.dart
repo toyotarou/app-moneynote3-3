@@ -27,8 +27,7 @@ import '../state/holidays/holidays_notifier.dart';
 import '../state/holidays/holidays_response_state.dart';
 import '../utilities/functions.dart';
 import '../utilities/utilities.dart';
-import 'components/___dummy/___dummy_csv_input_alert.dart';
-import 'components/___dummy/___dummy_data_input_alert.dart';
+import 'components/___dummy_data_input_alert.dart';
 import 'components/all_total_money_graph_alert.dart';
 import 'components/bank_price_adjust_alert.dart';
 import 'components/csv_data/data_export_alert.dart';
@@ -501,21 +500,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         border:
                             Border.all(color: Colors.white.withOpacity(0.4))),
                     child: const Text('dummy data input'),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => MoneyDialog(
-                      context: context,
-                      widget: DummyCsvInputAlert(isar: widget.isar)),
-                  child: Container(
-                    width: double.infinity,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-                    margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Colors.white.withOpacity(0.4))),
-                    child: const Text('dummy csv input'),
                   ),
                 ),
               ],

@@ -162,7 +162,6 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
             map[key] = value + value2;
           }
         });
-        break;
 
       case 'diff':
         final Map<String, List<int>> map100 = <String, List<int>>{};
@@ -194,7 +193,6 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
         warisuu = 50000;
 
-        break;
 
       case 'spend':
         final Map<String, List<int>> map100 = <String, List<int>>{};
@@ -229,14 +227,10 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
         warisuu = 50000;
 
-        break;
     }
 
     _flspots = <FlSpot>[];
     _dateMap = <String, String>{};
-
-    String lastDate = '';
-    int lastTotal = 0;
 
     final List<int> list = <int>[];
 
@@ -247,24 +241,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
       _dateMap[(i + 1).toString()] = key;
       list.add(value);
 
-      lastDate = key;
-      if (value > 0) {
-        lastTotal = value;
-      }
-
       i++;
     });
-
-    final List<String> exLastDate = lastDate.split('-');
-
-    final int lastDateMonthLastDay =
-        DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
-
-    for (int i = list.length;
-        i <= (lastDateMonthLastDay - exLastDate[2].toInt()) + list.length;
-        i++) {
-      _flspots.add(FlSpot(i.toDouble(), lastTotal.toDouble()));
-    }
 
     if (list.isNotEmpty) {
       final int minValue = list.reduce(min);
@@ -292,12 +270,6 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
               tooltipRoundedRadius: 2,
-              // tooltipBgColor: Colors.white.withOpacity(0.2),
-              //
-              //
-              //
-              //
-
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
                 final List<LineTooltipItem> list = <LineTooltipItem>[];
 
