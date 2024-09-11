@@ -181,6 +181,8 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
       return;
     }
 
+    outputValuesList.add('export_csv_from_money_note');
+
     switch (csvName) {
       case 'bankName':
         await BankNamesRepository()

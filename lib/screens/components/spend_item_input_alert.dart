@@ -250,7 +250,10 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       Future.delayed(
         Duration.zero,
         () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '登録できません。',
+            content: '値を正しく入力してください。'),
       );
 
       return;
@@ -268,7 +271,10 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
         // ignore: always_specify_types
         .then((value) {
       _spendItemEditingController.clear();
-      Navigator.pop(context);
+
+      if (mounted) {
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -425,7 +431,9 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
               // ignore: always_specify_types
               await _updateColorCode(id: id, color: colorCode).then((value) {
+                // ignore: use_build_context_synchronously
                 Navigator.pop(context);
+                // ignore: use_build_context_synchronously
                 Navigator.pop(context);
               });
             },
@@ -459,8 +467,11 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
       // ignore: always_specify_types
       await _updateDefaultTime(id: id, time: time).then((value) {
-        Navigator.pop(context);
-        Navigator.pop(context);
+        if (mounted) {
+          Navigator.pop(context);
+
+          Navigator.pop(context);
+        }
       });
     }
   }

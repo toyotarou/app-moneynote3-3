@@ -364,7 +364,10 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       Future.delayed(
         Duration.zero,
         () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '登録できません。',
+            content: '値を正しく入力してください。'),
       );
 
       return;
@@ -389,7 +392,9 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       _branchNameEditingController.clear();
       _accountNumberEditingController.clear();
 
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -429,7 +434,10 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       Future.delayed(
         Duration.zero,
         () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '登録できません。',
+            content: '値を正しく入力してください。'),
       );
 
       return;
@@ -458,7 +466,9 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
           _branchNameEditingController.clear();
           _accountNumberEditingController.clear();
 
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
       });
     });
@@ -489,7 +499,11 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _deleteBankName() async => BankNamesRepository()
-      .deleteBankName(isar: widget.isar, id: widget.bankName!.id)
-      // ignore: always_specify_types
-      .then((value) => Navigator.pop(context));
+          .deleteBankName(isar: widget.isar, id: widget.bankName!.id)
+          // ignore: always_specify_types
+          .then((value) {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      });
 }

@@ -623,7 +623,10 @@ class _SpendTimePlaceInputAlertState
       Future.delayed(
         Duration.zero,
         () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '登録できません。',
+            content: '値を正しく入力してください。'),
       );
 
       await ref
@@ -647,8 +650,11 @@ class _SpendTimePlaceInputAlertState
             .clearInputValue()
             // ignore: always_specify_types
             .then((value3) async {
-          Navigator.pop(context);
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+
+            Navigator.pop(context);
+          }
         });
       });
     });

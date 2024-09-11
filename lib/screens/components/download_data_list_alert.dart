@@ -315,6 +315,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
     // ignore: always_specify_types
     Future.delayed(
       Duration.zero,
+      // ignore: use_build_context_synchronously
       () => error_dialog(context: context, title: title, content: content),
     );
   }

@@ -634,15 +634,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         .setInputButtonClicked(flag: false)
                         // ignore: always_specify_types
                         .then((value) {
-                      MoneyDialog(
-                        context: context,
-                        widget: SpendItemReInputAlert(
-                          isar: widget.isar,
-                          spendItemList: _spendItemList ?? <SpendItem>[],
-                          spendTypeBlankSpendTimePlaceList:
-                              spendTypeBlankSpendTimePlaceList,
-                        ),
-                      );
+                      if (mounted) {
+                        MoneyDialog(
+                          context: context,
+                          widget: SpendItemReInputAlert(
+                            isar: widget.isar,
+                            spendItemList: _spendItemList ?? <SpendItem>[],
+                            spendTypeBlankSpendTimePlaceList:
+                                spendTypeBlankSpendTimePlaceList,
+                          ),
+                        );
+                      }
                     });
                   },
                   child: Row(
@@ -715,7 +717,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         margin: const EdgeInsets.all(5),
                         child: const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: <Widget>[
                             Text('整形データダウンロード'),
                             Text(
                               '（このファイルはインポートできません。）',

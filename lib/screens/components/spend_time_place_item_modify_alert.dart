@@ -224,6 +224,7 @@ class _SpendTimePlaceItemModifyAlertState
                     Future.delayed(
                       Duration.zero,
                       () => error_dialog(
+                          // ignore: use_build_context_synchronously
                           context: context,
                           title: '変更できません。',
                           content: '変更する日付を入力してください。'),
@@ -336,9 +337,12 @@ class _SpendTimePlaceItemModifyAlertState
         .deleteSpendTimePrice(isar: widget.isar, id: widget.spendTimePlace.id)
         // ignore: always_specify_types
         .then((value) {
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+
+        Navigator.pop(context);
+      }
     });
   }
 }

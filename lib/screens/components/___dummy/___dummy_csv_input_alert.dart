@@ -19,8 +19,8 @@ import '../../../repository/incomes_repository.dart';
 import '../../../repository/moneys_repository.dart';
 import '../../../repository/spend_items_repository.dart';
 import '../../../repository/spend_time_places_repository.dart';
-import '../parts/error_dialog.dart';
 import '../csv_data/data_export_alert.dart';
+import '../parts/error_dialog.dart';
 
 class DummyCsvInputAlert extends ConsumerStatefulWidget {
   const DummyCsvInputAlert({super.key, required this.isar});
@@ -334,7 +334,9 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
                 isar: widget.isar, bankNameList: list as List<BankName>)
             // ignore: always_specify_types
             .then((value) {
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
 
       case 'bankPrice':
@@ -343,7 +345,9 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
                 isar: widget.isar, bankPriceList: list as List<BankPrice>)
             // ignore: always_specify_types
             .then((value) {
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
 
       case 'emoneyName':
@@ -352,7 +356,9 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
                 isar: widget.isar, emoneyNameList: list as List<EmoneyName>)
             // ignore: always_specify_types
             .then((value) {
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
 
       case 'income':
@@ -361,7 +367,9 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
                 isar: widget.isar, incomeList: list as List<Income>)
             // ignore: always_specify_types
             .then((value) {
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
 
       case 'money':
@@ -369,7 +377,9 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
             .inputMoneyList(isar: widget.isar, moneyList: list as List<Money>)
             // ignore: always_specify_types
             .then((value) {
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
 
       case 'spendItem':
@@ -378,7 +388,9 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
                 isar: widget.isar, spendItemList: list as List<SpendItem>)
             // ignore: always_specify_types
             .then((value) {
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
 
       case 'spendTimePlace':
@@ -388,7 +400,9 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
                 spendTimePriceList: list as List<SpendTimePlace>)
             // ignore: always_specify_types
             .then((value) {
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
     }
   }
@@ -398,6 +412,7 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
     // ignore: always_specify_types
     Future.delayed(
       Duration.zero,
+      // ignore: use_build_context_synchronously
       () => error_dialog(context: context, title: title, content: content),
     );
   }

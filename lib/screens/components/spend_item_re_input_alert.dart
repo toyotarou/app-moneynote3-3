@@ -310,7 +310,10 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert> {
       Future.delayed(
         Duration.zero,
         () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '登録できません。',
+            content: '値を正しく入力してください。'),
       );
 
       await ref

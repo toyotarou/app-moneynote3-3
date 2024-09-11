@@ -449,7 +449,10 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
       Future.delayed(
         Duration.zero,
         () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '登録できません。',
+            content: '値を正しく入力してください。'),
       );
 
       await ref
@@ -486,10 +489,14 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
         .inputBankPriceList(isar: widget.isar, bankPriceList: list)
         // ignore: always_specify_types
         .then((value) async => ref
-            .read(bankPriceAdjustProvider.notifier)
-            .clearInputValue()
-            // ignore: always_specify_types
-            .then((value) => Navigator.pop(context)));
+                .read(bankPriceAdjustProvider.notifier)
+                .clearInputValue()
+                // ignore: always_specify_types
+                .then((value) {
+              if (mounted) {
+                Navigator.pop(context);
+              }
+            }));
   }
 }
 

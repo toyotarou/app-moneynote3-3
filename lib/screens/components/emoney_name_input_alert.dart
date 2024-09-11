@@ -177,7 +177,10 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       Future.delayed(
         Duration.zero,
         () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '登録できません。',
+            content: '値を正しく入力してください。'),
       );
 
       return;
@@ -193,7 +196,9 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
         .then((value) {
       _emoneyNameEditingController.clear();
 
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -221,7 +226,10 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
       Future.delayed(
         Duration.zero,
         () => error_dialog(
-            context: context, title: '登録できません。', content: '値を正しく入力してください。'),
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '登録できません。',
+            content: '値を正しく入力してください。'),
       );
 
       return;
@@ -241,7 +249,9 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
             .then((value) {
           _emoneyNameEditingController.clear();
 
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         });
       });
     });
@@ -272,7 +282,11 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   Future<void> _deleteEmoneyName() async => EmoneyNamesRepository()
-      .deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id)
-      // ignore: always_specify_types
-      .then((value) => Navigator.pop(context));
+          .deleteEmoneyName(isar: widget.isar, id: widget.emoneyName!.id)
+          // ignore: always_specify_types
+          .then((value) {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      });
 }

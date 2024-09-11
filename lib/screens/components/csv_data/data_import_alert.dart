@@ -13,6 +13,14 @@ import '../../../collections/money.dart';
 import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
 import '../../../extensions/extensions.dart';
+import '../../../repository/bank_names_repository.dart';
+import '../../../repository/bank_prices_repository.dart';
+import '../../../repository/emoney_names_repository.dart';
+import '../../../repository/incomes_repository.dart';
+import '../../../repository/moneys_repository.dart';
+import '../../../repository/spend_items_repository.dart';
+import '../../../repository/spend_time_places_repository.dart';
+import '../parts/error_dialog.dart';
 
 class DataImportAlert extends StatefulWidget {
   const DataImportAlert({super.key, required this.isar});
@@ -31,6 +39,21 @@ class _DataImportAlertState extends State<DataImportAlert> {
   List<String> csvContentsList = <String>[];
 
   List<dynamic> importDataList = <dynamic>[];
+  int importDataListLength = 0;
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    fileName = '';
+
+    csvName = '';
+
+    csvContentsList = <String>[];
+
+    importDataList = <dynamic>[];
+  }
 
   ///
   Future<void> _pickAndLoadCsvFile() async {
@@ -47,6 +70,23 @@ class _DataImportAlertState extends State<DataImportAlert> {
       final File file = File(result.files.single.path!);
       final String csvString = await file.readAsString();
       final List<String> exCsvString = csvString.split('\n');
+
+      if (exCsvString[0] != 'export_csv_from_money_note') {
+        setState(() {
+          fileName = '';
+
+          csvName = '';
+
+          csvContentsList = <String>[];
+
+          importDataList = <dynamic>[];
+        });
+
+        getErrorDialog(title: '出力できません。', content: '出力するデータを正しく選択してください。');
+
+        return;
+      }
+
       setState(() {
         csvContentsList = exCsvString;
       });
@@ -86,16 +126,21 @@ class _DataImportAlertState extends State<DataImportAlert> {
                   ),
                   const SizedBox(width: 20),
                   Expanded(
-                    child: Text(csvContentsList.length.toString()),
+                    child: ElevatedButton(
+                      onPressed: registData,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      child: const Text('登録'),
+                    ),
                   ),
                 ],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Text(fileName),
-              if (csvContentsList.isNotEmpty) ...[
+              if (csvContentsList.isNotEmpty) ...<Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: <Widget>[
                     Container(),
                     Text(
                       '${csvContentsList.length} records.',
@@ -115,8 +160,6 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
   ///
   Widget displayCsvContents() {
-    final List<Widget> widgetList = <Widget>[];
-
     switch (csvName) {
       case 'bankName':
         importDataList = <BankName>[];
@@ -140,9 +183,27 @@ class _DataImportAlertState extends State<DataImportAlert> {
         importDataList = <SpendTimePlace>[];
     }
 
-    for (final String element in csvContentsList) {
-      final List<String> exLine = element.split(',');
-      widgetList.add(Text(exLine[1]));
+    final List<Widget> widgetList = <Widget>[];
+
+    for (int i = 1; i < csvContentsList.length; i++) {
+      final List<String> exLine = csvContentsList[i].split(',');
+
+      final List<Widget> widgetList2 = <Widget>[];
+
+      for (int j = 1; j < exLine.length; j++) {
+        widgetList2.add(
+          Container(
+            width: context.screenSize.width / 3,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white.withOpacity(0.2)),
+            ),
+            child:
+                Text(exLine[j], maxLines: 1, overflow: TextOverflow.ellipsis),
+          ),
+        );
+      }
+
+      widgetList.add(Row(children: widgetList2));
 
       switch (csvName) {
         case 'bankName':
@@ -204,11 +265,124 @@ class _DataImportAlertState extends State<DataImportAlert> {
       }
     }
 
+    setState(() {
+      importDataListLength = importDataList.length;
+    });
+
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: widgetList,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widgetList,
+        ),
       ),
     );
+  }
+
+  ///
+  void getErrorDialog({required String title, required String content}) {
+    // ignore: always_specify_types
+    Future.delayed(
+      Duration.zero,
+      () {
+        if (mounted) {
+          return error_dialog(context: context, title: title, content: content);
+        }
+      },
+    );
+  }
+
+  ///
+  Future<void> registData() async {
+    if ((csvContentsList.length - 1) != importDataList.length) {
+      getErrorDialog(title: '登録できません。', content: '登録するデータが正しく選択されていません。');
+
+      return;
+    }
+
+    switch (csvName) {
+      case 'bankName':
+        await BankNamesRepository()
+            .inputBankNameList(
+                isar: widget.isar,
+                bankNameList: importDataList as List<BankName>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
+      case 'bankPrice':
+        await BankPricesRepository()
+            .inputBankPriceList(
+                isar: widget.isar,
+                bankPriceList: importDataList as List<BankPrice>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
+      case 'emoneyName':
+        await EmoneyNamesRepository()
+            .inputEmoneyNameList(
+                isar: widget.isar,
+                emoneyNameList: importDataList as List<EmoneyName>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
+      case 'income':
+        await IncomesRepository()
+            .inputIncomeList(
+                isar: widget.isar, incomeList: importDataList as List<Income>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
+      case 'money':
+        await MoneysRepository()
+            .inputMoneyList(
+                isar: widget.isar, moneyList: importDataList as List<Money>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
+      case 'spendItem':
+        await SpendItemsRepository()
+            .inputSpendItemList(
+                isar: widget.isar,
+                spendItemList: importDataList as List<SpendItem>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
+      case 'spendTimePlace':
+        await SpendTimePlacesRepository()
+            .inputSpendTimePriceList(
+                isar: widget.isar,
+                spendTimePriceList: importDataList as List<SpendTimePlace>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+    }
   }
 }

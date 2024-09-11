@@ -770,6 +770,7 @@ class _DailyMoneyDisplayAlertState
                       Future.delayed(
                         Duration.zero,
                         () => error_dialog(
+                            // ignore: use_build_context_synchronously
                             context: context,
                             title: '登録できません。',
                             content: '先にCURRENCYを入力してください。'),
