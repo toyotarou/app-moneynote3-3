@@ -292,7 +292,12 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
               tooltipRoundedRadius: 2,
-              tooltipBgColor: Colors.white.withOpacity(0.2),
+              // tooltipBgColor: Colors.white.withOpacity(0.2),
+              //
+              //
+              //
+              //
+
               getTooltipItems: (List<LineBarSpot> touchedSpots) {
                 final List<LineTooltipItem> list = <LineTooltipItem>[];
 

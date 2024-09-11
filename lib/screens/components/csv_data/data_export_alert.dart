@@ -18,6 +18,7 @@ import '../../../collections/income.dart';
 import '../../../collections/money.dart';
 import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
+import '../../../extensions/extensions.dart';
 import '../../../repository/bank_names_repository.dart';
 import '../../../repository/bank_prices_repository.dart';
 import '../../../repository/emoney_names_repository.dart';
@@ -27,20 +28,20 @@ import '../../../repository/spend_items_repository.dart';
 import '../../../repository/spend_time_places_repository.dart';
 import '../parts/error_dialog.dart';
 
-part '___dummy_download_alert.freezed.dart';
+part 'data_export_alert.freezed.dart';
 
-part '___dummy_download_alert.g.dart';
+part 'data_export_alert.g.dart';
 
-class DummyDownloadAlert extends ConsumerStatefulWidget {
-  const DummyDownloadAlert({super.key, required this.isar});
+class DataExportAlert extends ConsumerStatefulWidget {
+  const DataExportAlert({super.key, required this.isar});
 
   final Isar isar;
 
   @override
-  ConsumerState<DummyDownloadAlert> createState() => _DummyDownloadAlertState();
+  ConsumerState<DataExportAlert> createState() => _DummyDownloadAlertState();
 }
 
-class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
+class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
   List<String> outputValuesList = <String>[];
 
   List<XFile> sendFileList = <XFile>[];
@@ -64,8 +65,13 @@ class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final String csvName = ref.watch(dummyDownloadProvider
-        .select((DummyDownloadState value) => value.csvName));
+    final String csvName = ref.watch(
+        dataExportProvider.select((DataExportState value) => value.csvName));
+
+    final List<String> colorChangeFileNameList = <String>[];
+    for (final String element in displayFileNameList) {
+      colorChangeFileNameList.add(element.split('_')[0]);
+    }
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -78,99 +84,84 @@ class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
         height: double.infinity,
         child: DefaultTextStyle(
           style: GoogleFonts.kiwiMaru(fontSize: 12),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(csvName),
-                Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-                ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(dummyDownloadProvider.notifier)
-                        .setCsvName(csvName: 'bankName');
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(width: context.screenSize.width),
+              const SizedBox(height: 20),
+              const Text('データエクスポート'),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <String>[
+                  'bankName',
+                  'bankPrice',
+                  'emoneyName',
+                  'income',
+                  'money',
+                  'spendItem',
+                  'spendTimePlace'
+                ].map(
+                  (String e) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              ref
+                                  .read(dataExportProvider.notifier)
+                                  .setCsvName(csvName: e);
+                            },
+                            child: CircleAvatar(
+                              radius: 15,
+                              backgroundColor:
+                                  (colorChangeFileNameList.contains(e))
+                                      ? Colors.greenAccent.withOpacity(0.3)
+                                      : (csvName == e)
+                                          ? Colors.yellowAccent.withOpacity(0.3)
+                                          : Colors.white.withOpacity(0.3),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(e),
+                        ],
+                      ),
+                    );
                   },
-                  child: const Text('bankName'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(dummyDownloadProvider.notifier)
-                        .setCsvName(csvName: 'bankPrice');
-                  },
-                  child: const Text('bankPrice'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(dummyDownloadProvider.notifier)
-                        .setCsvName(csvName: 'emoneyName');
-                  },
-                  child: const Text('emoneyName'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(dummyDownloadProvider.notifier)
-                        .setCsvName(csvName: 'income');
-                  },
-                  child: const Text('income'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(dummyDownloadProvider.notifier)
-                        .setCsvName(csvName: 'money');
-                  },
-                  child: const Text('money'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(dummyDownloadProvider.notifier)
-                        .setCsvName(csvName: 'spendItem');
-                  },
-                  child: const Text('spendItem'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    ref
-                        .read(dummyDownloadProvider.notifier)
-                        .setCsvName(csvName: 'spendTimePlace');
-                  },
-                  child: const Text('spendTimePlace'),
-                ),
-                const SizedBox(height: 10),
-                Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-                ElevatedButton(
-                  onPressed: () => csvOutput(),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                  child: const Text('csv output'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () => csvSend(),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                  child: const Text('csv send'),
-                ),
-                Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: displayFileNameList.map((String e) {
-                    return Text(e);
-                  }).toList(),
-                ),
-              ],
-            ),
+                ).toList(),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => csvOutput(),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      child: const Text('csv選択'),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => csvSend(),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      child: const Text('送信'),
+                    ),
+                  ),
+                ],
+              ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: displayFileNameList.map((String e) {
+                  return Text(e);
+                }).toList(),
+              ),
+            ],
           ),
         ),
       ),
@@ -181,8 +172,8 @@ class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
   Future<void> csvOutput() async {
     outputValuesList.clear();
 
-    final String csvName = ref.watch(dummyDownloadProvider
-        .select((DummyDownloadState value) => value.csvName));
+    final String csvName = ref.watch(
+        dataExportProvider.select((DataExportState value) => value.csvName));
 
     if (csvName == '') {
       getErrorDialog(title: '出力できません。', content: '出力するデータを正しく選択してください。');
@@ -331,8 +322,6 @@ class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
     setState(() {
       displayFileNameList = sendFileNameList;
     });
-
-    getErrorDialog(title: 'ファイルを追加しました。', content: 'CSV送信の準備ができました。');
   }
 
   ///
@@ -340,7 +329,11 @@ class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
     // ignore: always_specify_types
     Future.delayed(
       Duration.zero,
-      () => error_dialog(context: context, title: title, content: content),
+      () {
+        if (mounted) {
+          return error_dialog(context: context, title: title, content: content);
+        }
+      },
     );
   }
 
@@ -372,18 +365,18 @@ class _DummyDownloadAlertState extends ConsumerState<DummyDownloadAlert> {
 }
 
 @freezed
-class DummyDownloadState with _$DummyDownloadState {
-  const factory DummyDownloadState({
+class DataExportState with _$DataExportState {
+  const factory DataExportState({
     @Default('') String csvName,
   }) = _DummyDownloadState;
 }
 
 @riverpod
-class DummyDownload extends _$DummyDownload {
+class DataExport extends _$DataExport {
   ///
   @override
-  DummyDownloadState build() {
-    return const DummyDownloadState();
+  DataExportState build() {
+    return const DataExportState();
   }
 
   ///

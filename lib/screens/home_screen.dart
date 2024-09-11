@@ -29,9 +29,10 @@ import '../utilities/functions.dart';
 import '../utilities/utilities.dart';
 import 'components/___dummy/___dummy_csv_input_alert.dart';
 import 'components/___dummy/___dummy_data_input_alert.dart';
-import 'components/___dummy/___dummy_download_alert.dart';
 import 'components/all_total_money_graph_alert.dart';
 import 'components/bank_price_adjust_alert.dart';
+import 'components/csv_data/data_export_alert.dart';
+import 'components/csv_data/data_import_alert.dart';
 import 'components/daily_money_display_alert.dart';
 import 'components/deposit_tab_alert.dart';
 import 'components/download_data_list_alert.dart';
@@ -486,26 +487,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SizedBox(height: 60),
-//              if (!isRelease) ...<Widget>[
-//                 GestureDetector(
-//                   onTap: () => MoneyDialog(
-//                       context: context,
-//                       widget: DummyDataInputAlert(isar: widget.isar)),
-//                   child: Container(
-//                     width: double.infinity,
-//                     padding:
-//                         const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-//                     margin: const EdgeInsets.all(5),
-//                     decoration: BoxDecoration(
-//                         border:
-//                             Border.all(color: Colors.white.withOpacity(0.4))),
-//                     child: const Text('dummy data input'),
-//                   ),
-//                 ),
+              if (!isRelease) ...<Widget>[
                 GestureDetector(
                   onTap: () => MoneyDialog(
                       context: context,
-                      widget: DummyDownloadAlert(isar: widget.isar)),
+                      widget: DummyDataInputAlert(isar: widget.isar)),
                   child: Container(
                     width: double.infinity,
                     padding:
@@ -514,7 +500,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     decoration: BoxDecoration(
                         border:
                             Border.all(color: Colors.white.withOpacity(0.4))),
-                    child: const Text('dummy csv download'),
+                    child: const Text('dummy data input'),
                   ),
                 ),
                 GestureDetector(
@@ -532,7 +518,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: const Text('dummy csv input'),
                   ),
                 ),
-//              ],
+              ],
               GestureDetector(
                 onTap: () => MoneyDialog(
                     context: context,
@@ -700,6 +686,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               GestureDetector(
                 onTap: () {
                   MoneyDialog(
@@ -726,12 +713,62 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
-                        child: const Text('データダウンロード'),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('整形データダウンロード'),
+                            Text(
+                              '（このファイルはインポートできません。）',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 1),
+              GestureDetector(
+                onTap: () => MoneyDialog(
+                    context: context,
+                    widget: DataExportAlert(isar: widget.isar)),
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('データエクスポート'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () => MoneyDialog(
+                    context: context,
+                    widget: DataImportAlert(isar: widget.isar)),
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('データインポート'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);

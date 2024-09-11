@@ -20,7 +20,7 @@ import '../../../repository/moneys_repository.dart';
 import '../../../repository/spend_items_repository.dart';
 import '../../../repository/spend_time_places_repository.dart';
 import '../parts/error_dialog.dart';
-import '___dummy_download_alert.dart';
+import '../csv_data/data_export_alert.dart';
 
 class DummyCsvInputAlert extends ConsumerStatefulWidget {
   const DummyCsvInputAlert({super.key, required this.isar});
@@ -132,8 +132,8 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final String csvName = ref.watch(dummyDownloadProvider
-        .select((DummyDownloadState value) => value.csvName));
+    final String csvName = ref.watch(
+        dataExportProvider.select((DataExportState value) => value.csvName));
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -171,7 +171,7 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
                             ElevatedButton(
                               onPressed: () {
                                 ref
-                                    .read(dummyDownloadProvider.notifier)
+                                    .read(dataExportProvider.notifier)
                                     .setCsvName(csvName: e);
                               },
                               child: Text(e),
@@ -214,8 +214,8 @@ class _DummyCsvInputAlertState extends ConsumerState<DummyCsvInputAlert> {
 
   ///
   Future<void> csvInput() async {
-    final String csvName = ref.watch(dummyDownloadProvider
-        .select((DummyDownloadState value) => value.csvName));
+    final String csvName = ref.watch(
+        dataExportProvider.select((DataExportState value) => value.csvName));
 
     if (csvName == '') {
       getErrorDialog(title: '出力できません。', content: '出力するデータを正しく選択してください。');

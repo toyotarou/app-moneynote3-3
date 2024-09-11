@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of '___dummy_download_alert.dart';
+part of 'data_export_alert.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,27 +15,27 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$DummyDownloadState {
+mixin _$DataExportState {
   String get csvName => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $DummyDownloadStateCopyWith<DummyDownloadState> get copyWith =>
+  $DataExportStateCopyWith<DataExportState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $DummyDownloadStateCopyWith<$Res> {
-  factory $DummyDownloadStateCopyWith(
-          DummyDownloadState value, $Res Function(DummyDownloadState) then) =
-      _$DummyDownloadStateCopyWithImpl<$Res, DummyDownloadState>;
+abstract class $DataExportStateCopyWith<$Res> {
+  factory $DataExportStateCopyWith(
+          DataExportState value, $Res Function(DataExportState) then) =
+      _$DataExportStateCopyWithImpl<$Res, DataExportState>;
   @useResult
   $Res call({String csvName});
 }
 
 /// @nodoc
-class _$DummyDownloadStateCopyWithImpl<$Res, $Val extends DummyDownloadState>
-    implements $DummyDownloadStateCopyWith<$Res> {
-  _$DummyDownloadStateCopyWithImpl(this._value, this._then);
+class _$DataExportStateCopyWithImpl<$Res, $Val extends DataExportState>
+    implements $DataExportStateCopyWith<$Res> {
+  _$DataExportStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -58,7 +58,7 @@ class _$DummyDownloadStateCopyWithImpl<$Res, $Val extends DummyDownloadState>
 
 /// @nodoc
 abstract class _$$DummyDownloadStateImplCopyWith<$Res>
-    implements $DummyDownloadStateCopyWith<$Res> {
+    implements $DataExportStateCopyWith<$Res> {
   factory _$$DummyDownloadStateImplCopyWith(_$DummyDownloadStateImpl value,
           $Res Function(_$DummyDownloadStateImpl) then) =
       __$$DummyDownloadStateImplCopyWithImpl<$Res>;
@@ -69,7 +69,7 @@ abstract class _$$DummyDownloadStateImplCopyWith<$Res>
 
 /// @nodoc
 class __$$DummyDownloadStateImplCopyWithImpl<$Res>
-    extends _$DummyDownloadStateCopyWithImpl<$Res, _$DummyDownloadStateImpl>
+    extends _$DataExportStateCopyWithImpl<$Res, _$DummyDownloadStateImpl>
     implements _$$DummyDownloadStateImplCopyWith<$Res> {
   __$$DummyDownloadStateImplCopyWithImpl(_$DummyDownloadStateImpl _value,
       $Res Function(_$DummyDownloadStateImpl) _then)
@@ -100,7 +100,7 @@ class _$DummyDownloadStateImpl implements _DummyDownloadState {
 
   @override
   String toString() {
-    return 'DummyDownloadState(csvName: $csvName)';
+    return 'DataExportState(csvName: $csvName)';
   }
 
   @override
@@ -122,7 +122,7 @@ class _$DummyDownloadStateImpl implements _DummyDownloadState {
           this, _$identity);
 }
 
-abstract class _DummyDownloadState implements DummyDownloadState {
+abstract class _DummyDownloadState implements DataExportState {
   const factory _DummyDownloadState({final String csvName}) =
       _$DummyDownloadStateImpl;
 
