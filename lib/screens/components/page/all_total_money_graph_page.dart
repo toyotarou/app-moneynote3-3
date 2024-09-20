@@ -251,11 +251,17 @@ class _AllTotalMoneyGraphPageState
             final DateTime day =
                 DateTime(widget.year).add(Duration(days: value.toInt() - 1));
 
+            final DateTime today = DateTime.now();
+            final DateTime newYear = DateTime(today.year);
+            final int dayOfYear = today.difference(newYear).inDays + 1;
+
             return FlLine(
-              color: (day.day == 1)
-                  ? Colors.yellowAccent.withOpacity(0.3)
-                  : Colors.transparent,
-              strokeWidth: 1,
+              color: (value.toInt() == dayOfYear)
+                  ? const Color(0xFFFBB6CE).withOpacity(0.3)
+                  : (day.day == 1)
+                      ? Colors.yellowAccent.withOpacity(0.3)
+                      : Colors.transparent,
+              strokeWidth: (value.toInt() == dayOfYear) ? 3 : 1,
             );
           },
         ),

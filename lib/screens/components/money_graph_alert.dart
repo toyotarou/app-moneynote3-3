@@ -338,10 +338,12 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                 .youbiStr;
 
             return FlLine(
-              color: (youbi == 'Sunday')
-                  ? Colors.yellowAccent.withOpacity(0.3)
-                  : Colors.transparent,
-              strokeWidth: 1,
+              color: (value.toInt() == DateTime.now().day)
+                  ? const Color(0xFFFBB6CE).withOpacity(0.3)
+                  : (youbi == 'Sunday')
+                      ? Colors.yellowAccent.withOpacity(0.3)
+                      : Colors.transparent,
+              strokeWidth: (value.toInt() == DateTime.now().day) ? 3 : 1,
             );
           },
         ),
