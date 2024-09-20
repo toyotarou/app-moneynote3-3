@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -1213,10 +1214,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       });
     }
 
-    return SingleChildScrollView(
-      child: DefaultTextStyle(
-          style: const TextStyle(fontSize: 10),
-          child: Column(mainAxisSize: MainAxisSize.min, children: list)),
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) => DefaultTextStyle(
+                style: GoogleFonts.kiwiMaru(fontSize: 12), child: list[index]),
+            childCount: list.length,
+          ),
+        ),
+      ],
     );
   }
 

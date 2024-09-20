@@ -62,19 +62,13 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     final bool inputButtonClicked = ref.watch(appParamProvider
         .select((AppParamsResponseState value) => value.inputButtonClicked));
 
-    return AlertDialog(
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.zero,
+    return Scaffold(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.zero,
-      content: Container(
+      body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        width: double.infinity,
-        height: double.infinity,
         child: DefaultTextStyle(
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
@@ -327,7 +321,16 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
       ));
     }
 
-    return SingleChildScrollView(child: Column(children: list));
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) => list[index],
+            childCount: list.length,
+          ),
+        ),
+      ],
+    );
   }
 
   ///
