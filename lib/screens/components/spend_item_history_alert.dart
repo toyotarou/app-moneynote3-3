@@ -33,13 +33,19 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
   ///
   void _init() {
     _makeSpendItemPlaceHistoryList();
+
+    getInit = true;
   }
+
+  bool getInit = false;
 
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
+    if (!getInit) {
+      // ignore: always_specify_types
+      Future(_init);
+    }
 
     return Scaffold(
       backgroundColor: Colors.transparent,

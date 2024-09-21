@@ -126,17 +126,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _makeSpendItemList();
 
     _makeIncomeList();
+
+    getInit = true;
   }
 
   bool getAllTotalMoneyMap = false;
 
   Map<String, int> allTotalMoneyMap = <String, int>{};
 
+  bool getInit = false;
+
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
+    if (!getInit) {
+      // ignore: always_specify_types
+      Future(_init);
+    }
 
     if (widget.baseYm != null) {
       // ignore: always_specify_types
@@ -1157,62 +1163,101 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _displayMonthlySpendTimePlaceList() {
     final List<Widget> list = <Widget>[];
 
-    if (thisMonthSpendTimePlaceList!.isNotEmpty) {
-      final Map<String, String> spendItemColorMap = <String, String>{};
-      if (_spendItemList!.isNotEmpty) {
-        for (final SpendItem element in _spendItemList!) {
-          spendItemColorMap[element.spendItemName] = element.color;
-        }
+    final Map<String, List<int>> stpListMinus = <String, List<int>>{};
+    final Map<String, List<int>> stpListPlus = <String, List<int>>{};
+
+    _spendItemList?.forEach((SpendItem element) {
+      stpListMinus[element.spendItemName] = <int>[];
+      stpListPlus[element.spendItemName] = <int>[];
+    });
+
+    thisMonthSpendTimePlaceList?.forEach((SpendTimePlace element) {
+      if (element.price < 0) {
+        stpListMinus[element.spendType]?.add(element.price);
+      } else {
+        stpListPlus[element.spendType]?.add(element.price);
       }
+    });
 
-      makeMonthlySpendItemSumMap(
-              spendTimePlaceList: thisMonthSpendTimePlaceList!,
-              spendItemList: _spendItemList)
-          .forEach((String key, int value) {
-        final String? lineColor =
-            (spendItemColorMap[key] != null && spendItemColorMap[key] != '')
-                ? spendItemColorMap[key]
-                : '0xffffffff';
+    _spendItemList?.forEach((SpendItem element) {
+      int minusSum = 0;
+      stpListMinus[element.spendItemName]
+          ?.forEach((int element2) => minusSum += element2);
 
+      int plusSum = 0;
+      stpListPlus[element.spendItemName]
+          ?.forEach((int element2) => plusSum += element2);
+
+      if (minusSum == 0 && plusSum == 0) {
+      } else {
         list.add(Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
               border: Border(
                   bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-          child: DefaultTextStyle(
-            style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(key),
-                Row(
-                  children: <Widget>[
-                    Text(value.toString().toCurrency()),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () => MoneyDialog(
-                        context: context,
-                        widget: SpendItemHistoryAlert(
-                          date: (widget.baseYm != null)
-                              ? DateTime.parse('${widget.baseYm}-01 00:00:00')
-                              : DateTime.now(),
-                          isar: widget.isar,
-                          item: key,
-                          sum: value,
-                          from: 'home_screen',
-                        ),
-                      ),
-                      child: Icon(Icons.info_outline_rounded,
-                          color: Colors.greenAccent.withOpacity(0.6)),
+          child: Row(
+            children: <Widget>[
+              CircleAvatar(
+                radius: 10,
+                backgroundColor: Color(element.color.toInt()).withOpacity(0.3),
+              ),
+              const SizedBox(width: 10),
+              Expanded(flex: 2, child: Text(element.spendItemName)),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: FittedBox(
+                    child: Text(
+                      plusSum.toString().toCurrency(),
+                      style: const TextStyle(color: Colors.yellowAccent),
                     ),
-                  ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: FittedBox(
+                    child: Text(
+                      minusSum.toString().toCurrency(),
+                      style: const TextStyle(color: Colors.greenAccent),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: FittedBox(
+                    child: Text(
+                      (plusSum + minusSum).toString().toCurrency(),
+                      style: const TextStyle(color: Colors.orangeAccent),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20),
+              GestureDetector(
+                onTap: () => MoneyDialog(
+                  context: context,
+                  widget: SpendItemHistoryAlert(
+                    date: (widget.baseYm != null)
+                        ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                        : DateTime.now(),
+                    isar: widget.isar,
+                    item: element.spendItemName,
+                    sum: plusSum + minusSum,
+                    from: 'home_screen',
+                  ),
+                ),
+                child: Icon(Icons.info_outline_rounded,
+                    color: Colors.blueAccent.withOpacity(0.6)),
+              ),
+            ],
           ),
         ));
-      });
-    }
+      }
+    });
 
     return CustomScrollView(
       slivers: <Widget>[
