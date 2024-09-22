@@ -126,23 +126,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _makeSpendItemList();
 
     _makeIncomeList();
-
-    getInit = true;
   }
 
   bool getAllTotalMoneyMap = false;
 
   Map<String, int> allTotalMoneyMap = <String, int>{};
 
-  bool getInit = false;
-
   ///
   @override
   Widget build(BuildContext context) {
-    if (!getInit) {
-      // ignore: always_specify_types
-      Future(_init);
-    }
+    // ignore: always_specify_types
+    Future(_init);
 
     if (widget.baseYm != null) {
       // ignore: always_specify_types
@@ -1197,19 +1191,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Row(
             children: <Widget>[
-              CircleAvatar(
-                radius: 10,
-                backgroundColor: Color(element.color.toInt()).withOpacity(0.3),
-              ),
-              const SizedBox(width: 10),
-              Expanded(flex: 2, child: Text(element.spendItemName)),
+              Expanded(
+                  flex: 2,
+                  child: Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 10,
+                        backgroundColor:
+                            Color(element.color.toInt()).withOpacity(0.3),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(element.spendItemName),
+                    ],
+                  )),
               Expanded(
                 child: Align(
                   alignment: Alignment.topRight,
                   child: FittedBox(
                     child: Text(
                       plusSum.toString().toCurrency(),
-                      style: const TextStyle(color: Colors.yellowAccent),
+                      style: const TextStyle(
+                          color: Colors.yellowAccent, fontSize: 10),
                     ),
                   ),
                 ),
@@ -1220,7 +1222,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: FittedBox(
                     child: Text(
                       minusSum.toString().toCurrency(),
-                      style: const TextStyle(color: Colors.greenAccent),
+                      style: const TextStyle(
+                          color: Colors.greenAccent, fontSize: 10),
                     ),
                   ),
                 ),
@@ -1231,7 +1234,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: FittedBox(
                     child: Text(
                       (plusSum + minusSum).toString().toCurrency(),
-                      style: const TextStyle(color: Colors.orangeAccent),
+                      style: const TextStyle(
+                          color: Colors.orangeAccent, fontSize: 10),
                     ),
                   ),
                 ),
