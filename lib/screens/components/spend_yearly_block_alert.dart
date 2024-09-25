@@ -137,6 +137,8 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
     final Map<String, int> spendTotalMap = <String, int>{};
     int amari = 0;
 
+    final Map<String, int> eachItemSpendMap = <String, int>{};
+
     _yearlySpendSumMap.forEach((String key, List<int> value) {
       final List<Widget> list2 = <Widget>[];
 
@@ -154,6 +156,8 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
         map[element] = '';
         sum += element;
       }
+
+      eachItemSpendMap[key] = sum;
 
       allTotal += sum;
 
@@ -300,6 +304,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                               spendTotalMap: spendTotalMap,
                               amari: amari,
                               spendItemList: _spendItemList ?? <SpendItem>[],
+                              eachItemSpendMap: eachItemSpendMap,
                             ),
                             clearBarrierColor: true,
                           ),

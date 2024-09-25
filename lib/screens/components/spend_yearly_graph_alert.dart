@@ -12,12 +12,14 @@ class SpendYearlyGraphAlert extends StatefulWidget {
     required this.spendTotalMap,
     required this.amari,
     required this.spendItemList,
+    required this.eachItemSpendMap,
   });
 
   final int spendTotal;
   final Map<String, int> spendTotalMap;
   final int amari;
   final List<SpendItem> spendItemList;
+  final Map<String, int> eachItemSpendMap;
 
   ///
   @override
@@ -43,26 +45,46 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
       spendItemColorMap[element.spendItemName] = element.color;
     }
 
+    final Map<int, List<String>> spendTotalGuideMap = <int, List<String>>{};
+
+    final List<int> guideIntList = <int>[];
+
     widget.spendTotalMap.forEach((String key, int value) {
-      final double val = value / widget.spendTotal;
+      spendTotalGuideMap[value] = <String>[];
 
-      final double percent = val * 100;
-
-      graphDataList.add(
-        PieChartSectionData(
-          borderSide: const BorderSide(color: Colors.white),
-          color: (spendItemColorMap[key] != null)
-              ? Color(spendItemColorMap[key]!.toInt()).withOpacity(0.2)
-              : Colors.grey.withOpacity(0.2),
-          value: val,
-          title:
-              '$key\n${value.toString().toCurrency()}\n${percent.toString().split('.')[0]} %',
-          radius: 140,
-          titleStyle: const TextStyle(
-              fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-      );
+      guideIntList.add(value);
     });
+
+    widget.spendTotalMap.forEach((String key, int value) {
+      spendTotalGuideMap[value]?.add(key);
+    });
+
+    guideIntList
+      ..sort((int a, int b) => a.compareTo(b) * -1)
+      ..forEach((int element) {
+        spendTotalGuideMap[element]?.forEach((String element2) {
+          final double val = element / widget.spendTotal;
+
+          final double percent = val * 100;
+
+          graphDataList.add(
+            PieChartSectionData(
+              borderSide: const BorderSide(color: Colors.white),
+              color: (spendItemColorMap[element2] != null)
+                  ? Color(spendItemColorMap[element2]!.toInt()).withOpacity(0.2)
+                  : Colors.grey.withOpacity(0.2),
+              value: val,
+              title:
+                  '$element2\n${element.toString().toCurrency()}\n${percent.toStringAsFixed(2)} %',
+              radius: 140,
+              titleStyle: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+          );
+        });
+      });
 
     final double val2 = widget.amari / widget.spendTotal;
 
@@ -74,7 +96,7 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
         color: Colors.grey.withOpacity(0.2),
         value: val2,
         title:
-            'その他\n${widget.amari.toString().toCurrency()}\n${percent2.toString().split('.')[0]} %',
+            'その他\n${widget.amari.toString().toCurrency()}\n${percent2.toStringAsFixed(2)} %',
         radius: 140,
         titleStyle: const TextStyle(
             fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
@@ -85,20 +107,16 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.zero,
+    return Scaffold(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.zero,
-      content: Container(
+      body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        width: double.infinity,
-        height: double.infinity,
         child: DefaultTextStyle(
           style: GoogleFonts.kiwiMaru(fontSize: 12),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              const SizedBox(height: 20),
+              Container(width: context.screenSize.width),
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
               Row(
@@ -115,6 +133,7 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
               ),
               const SizedBox(height: 10),
               _displayCircularGraph(),
+              Expanded(child: displayEachItemSpendMap()),
             ],
           ),
         ),
@@ -132,5 +151,83 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
             sections: graphDataList,
             sectionsSpace: 2,
             centerSpaceRadius: 0)));
+  }
+
+  ///
+  Widget displayEachItemSpendMap() {
+    final Map<String, String> spendItemColorMap = <String, String>{};
+
+    for (final SpendItem element in widget.spendItemList) {
+      spendItemColorMap[element.spendItemName] = element.color;
+    }
+
+    final List<Widget> list = <Widget>[];
+
+    final Map<int, List<String>> spendTotalGuideMap = <int, List<String>>{};
+
+    final List<int> guideIntList = <int>[];
+
+    widget.eachItemSpendMap.forEach((String key, int value) {
+      spendTotalGuideMap[value] = <String>[];
+
+      guideIntList.add(value);
+    });
+
+    widget.eachItemSpendMap.forEach((String key, int value) {
+      spendTotalGuideMap[value]?.add(key);
+    });
+
+    guideIntList
+      ..sort((int a, int b) => a.compareTo(b) * -1)
+      ..forEach((int element) {
+        if (element > 0) {
+          final String percent =
+              (element / widget.spendTotal * 100).toStringAsFixed(2);
+
+          spendTotalGuideMap[element]?.forEach((String element2) {
+            final Color lineColor = (spendItemColorMap[element2] != null)
+                ? Color(spendItemColorMap[element2]!.toInt())
+                : Colors.grey;
+
+            list.add(Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom:
+                          BorderSide(color: Colors.white.withOpacity(0.3)))),
+              child: DefaultTextStyle(
+                style: TextStyle(color: lineColor, fontSize: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(element2),
+                    Row(
+                      children: <Widget>[
+                        Text(element.toString().toCurrency()),
+                        Container(
+                          width: 70,
+                          alignment: Alignment.topRight,
+                          child: Text('$percent %'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ));
+          });
+        }
+      });
+
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) => list[index],
+            childCount: list.length,
+          ),
+        ),
+      ],
+    );
   }
 }
