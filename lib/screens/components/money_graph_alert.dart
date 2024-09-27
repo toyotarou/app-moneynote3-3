@@ -220,8 +220,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
             sum += (element > 0) ? element : 0;
           }
 
-          map[key] = total;
           total += sum;
+          map[key] = total;
         });
 
         warisuu = 50000;
