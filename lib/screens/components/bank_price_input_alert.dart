@@ -271,6 +271,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
     bankPriceList?.sort((BankPrice a, BankPrice b) => a.date.compareTo(b.date));
 
+    int keepPrice = 0;
+
     for (int i = 0; i < bankPriceList!.length; i++) {
       final DateTime genDate =
           DateTime.parse('${bankPriceList![i].date} 00:00:00');
@@ -298,17 +300,27 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Container(),
                 GestureDetector(
                   onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
                   child: Text('delete',
                       style: TextStyle(fontSize: 12, color: contextBlue)),
                 ),
+                if (i == 0)
+                  Container()
+                else
+                  Text(
+                    (keepPrice - bankPriceList![i].price)
+                        .toString()
+                        .toCurrency(),
+                    style: TextStyle(color: Colors.grey.withOpacity(0.6)),
+                  ),
               ],
             ),
           ],
         ),
       ));
+
+      keepPrice = bankPriceList![i].price;
     }
 
     return list;
