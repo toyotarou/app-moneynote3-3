@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
+import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 
 class DispData {
@@ -23,6 +24,7 @@ class MoneyScoreListAlert extends StatefulWidget {
     required this.monthFirstDateList,
     required this.dateCurrencySumMap,
     required this.bankPriceTotalPadMap,
+    required this.allSpendTimePlaceList,
   });
 
   final Isar isar;
@@ -33,6 +35,8 @@ class MoneyScoreListAlert extends StatefulWidget {
 
   final Map<String, int> bankPriceTotalPadMap;
 
+  final List<SpendTimePlace> allSpendTimePlaceList;
+
   @override
   State<MoneyScoreListAlert> createState() => _MoneyScoreListAlertState();
 }
@@ -40,9 +44,14 @@ class MoneyScoreListAlert extends StatefulWidget {
 class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
   List<DispData> dispDataList = <DispData>[];
 
+  Map<String, Map<String, int>> monthlySpendTimePlaceMap =
+      <String, Map<String, int>>{};
+
   ///
   @override
   Widget build(BuildContext context) {
+    makeMonthlySpendTimePlaceList();
+
     makeDispData();
 
     return Scaffold(
@@ -66,6 +75,48 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
         ),
       ),
     );
+  }
+
+  ///
+  void makeMonthlySpendTimePlaceList() {
+    monthlySpendTimePlaceMap = <String, Map<String, int>>{};
+
+    final Map<String, Map<String, List<int>>> map =
+        <String, Map<String, List<int>>>{};
+
+    final List<String> yearmonth = <String>[];
+    for (final SpendTimePlace element in widget.allSpendTimePlaceList) {
+      yearmonth.add(
+        '${element.date.split('-')[0]}-${element.date.split('-')[1]}',
+      );
+    }
+
+    for (final String element in yearmonth) {
+      map[element] = <String, List<int>>{'minus': <int>[], 'plus': <int>[]};
+    }
+
+    for (final SpendTimePlace element in widget.allSpendTimePlaceList) {
+      final String ym =
+          '${element.date.split('-')[0]}-${element.date.split('-')[1]}';
+
+      if (element.price > 0) {
+        map[ym]?['minus']?.add(element.price);
+      } else {
+        map[ym]?['plus']?.add(element.price);
+      }
+    }
+
+    map.forEach((String key, Map<String, List<int>> value) {
+      int minusSum = 0;
+      int plusSum = 0;
+      value['minus']?.forEach((int element) => minusSum += element);
+      value['plus']?.forEach((int element) => plusSum += element);
+
+      monthlySpendTimePlaceMap[key] = <String, int>{
+        'minus': minusSum,
+        'plus': plusSum,
+      };
+    });
   }
 
   ///
@@ -120,6 +171,9 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
     for (final DispData element in dispDataList) {
       final int mark = (element.startPrice < element.lastPrice) ? 1 : 0;
 
+      final String ym =
+          '${element.startDate.split('-')[0]}-${element.startDate.split('-')[1]}';
+
       list.add(Container(
         padding: const EdgeInsets.all(5),
         margin: const EdgeInsets.only(bottom: 5),
@@ -168,12 +222,33 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(),
-                Text(
-                  (element.lastPrice - element.startPrice)
-                      .toString()
-                      .toCurrency(),
-                  style: const TextStyle(color: Colors.yellowAccent),
-                ),
+                RichText(
+                  text: TextSpan(
+                    text: (monthlySpendTimePlaceMap[ym]?['minus'] ?? 0)
+                        .toString()
+                        .toCurrency(),
+                    style: const TextStyle(
+                        color: Colors.yellowAccent, fontSize: 12),
+                    children: <TextSpan>[
+                      const TextSpan(
+                          text: ' + ', style: TextStyle(color: Colors.white)),
+                      TextSpan(
+                          text: (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0)
+                              .toString()
+                              .toCurrency(),
+                          style: const TextStyle(color: Colors.greenAccent)),
+                      const TextSpan(
+                          text: ' = ', style: TextStyle(color: Colors.white)),
+                      TextSpan(
+                        text: ((monthlySpendTimePlaceMap[ym]?['minus'] ?? 0) +
+                                (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0))
+                            .toString()
+                            .toCurrency(),
+                        style: const TextStyle(color: Colors.orangeAccent),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           ],

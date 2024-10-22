@@ -656,6 +656,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     monthFirstDateList: monthFirstDateList,
                     dateCurrencySumMap: dateCurrencySumMap,
                     bankPriceTotalPadMap: bankPriceTotalPadMap,
+                    allSpendTimePlaceList:
+                        allSpendTimePlaceList ?? <SpendTimePlace>[],
                   ),
                 ),
                 child: Row(
