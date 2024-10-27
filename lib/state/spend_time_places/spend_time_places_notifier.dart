@@ -119,7 +119,7 @@ class SpendTimePlaceNotifier
       spendItem: spendItem,
       spendPrice: spendPrice,
       minusCheck: minusCheck,
-      itemPos: 0,
+      itemPos: -1,
       baseDiff: '',
       diff: 0,
     );

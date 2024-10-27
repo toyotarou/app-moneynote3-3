@@ -219,7 +219,7 @@ class __$$SpendTimePlacesResponseStateImplCopyWithImpl<$Res>
 class _$SpendTimePlacesResponseStateImpl
     implements _SpendTimePlacesResponseState {
   const _$SpendTimePlacesResponseStateImpl(
-      {this.itemPos = 0,
+      {this.itemPos = -1,
       this.diff = 0,
       this.baseDiff = '',
       final List<String> spendItem = const <String>[],

@@ -5,7 +5,7 @@ part 'spend_time_places_response_state.freezed.dart';
 @freezed
 class SpendTimePlacesResponseState with _$SpendTimePlacesResponseState {
   const factory SpendTimePlacesResponseState({
-    @Default(0) int itemPos,
+    @Default(-1) int itemPos,
     //
     @Default(0) int diff,
     @Default('') String baseDiff,

@@ -486,13 +486,16 @@ class _SpendTimePlaceInputAlertState
                     padding: const EdgeInsets.all(5),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: (e.spendItemName == spendItem[itemPos])
+                      color: (itemPos > -1 &&
+                              e.spendItemName == spendItem[itemPos])
                           ? Colors.yellowAccent.withOpacity(0.2)
                           : Colors.blueGrey.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(e.spendItemName,
-                        style: const TextStyle(fontSize: 10)),
+                    child: FittedBox(
+                      child: Text(e.spendItemName,
+                          style: const TextStyle(fontSize: 10)),
+                    ),
                   ),
                 );
               }).toList()
