@@ -16,23 +16,23 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
   AppParamNotifier(super.state);
 
   ///
-  Future<void> setCalendarSelectedDate({required DateTime date}) async =>
+  void setCalendarSelectedDate({required DateTime date}) =>
       state = state.copyWith(calendarSelectedDate: date);
 
   ///
-  Future<void> setMenuNumber({required int menuNumber}) async =>
+  void setMenuNumber({required int menuNumber}) =>
       state = state.copyWith(menuNumber: menuNumber);
 
   ///
-  Future<void> setSelectedIncomeYear({required String year}) async =>
+  void setSelectedIncomeYear({required String year}) =>
       state = state.copyWith(selectedIncomeYear: year);
 
   ///
-  Future<void> setSameMonthIncomeDeleteFlag({required bool flag}) async =>
+  void setSameMonthIncomeDeleteFlag({required bool flag}) =>
       state = state.copyWith(sameMonthIncomeDeleteFlag: flag);
 
   ///
-  Future<void> setIncomeInputDate({required String date}) async =>
+  void setIncomeInputDate({required String date}) =>
       state = state.copyWith(incomeInputDate: date);
 
   ///
@@ -40,10 +40,14 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
       state = state.copyWith(inputButtonClicked: flag);
 
   ///
-  Future<void> setSameDaySelectedDay({required int day}) async =>
+  void setSameDaySelectedDay({required int day}) =>
       state = state.copyWith(sameDaySelectedDay: day);
 
   ///
-  Future<void> setSelectedGraphMonth({required int month}) async =>
+  void setSelectedGraphMonth({required int month}) =>
       state = state.copyWith(selectedGraphMonth: month);
+
+  ///
+  void setCalendarDisp({required bool flag}) =>
+      state = state.copyWith(calendarDisp: flag);
 }

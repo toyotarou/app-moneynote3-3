@@ -635,9 +635,7 @@ class _SpendTimePlaceInputAlertState
             content: '値を正しく入力してください。'),
       );
 
-      await ref
-          .read(appParamProvider.notifier)
-          .setInputButtonClicked(flag: false);
+      ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
 
       return;
     }

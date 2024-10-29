@@ -195,7 +195,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
     );
 
     if (selectedDate != null) {
-      await ref
+      ref
           .read(appParamProvider.notifier)
           .setIncomeInputDate(date: selectedDate.yyyymmdd);
     }
@@ -392,7 +392,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       _incomeSourceEditingController.clear();
       _incomePriceEditingController.clear();
 
-      await ref.read(appParamProvider.notifier).setIncomeInputDate(date: '');
+      ref.read(appParamProvider.notifier).setIncomeInputDate(date: '');
     });
   }
 

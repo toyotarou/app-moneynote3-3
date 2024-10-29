@@ -720,7 +720,7 @@ class _DailyMoneyDisplayAlertState
                             ? widget.bankPriceTotalPadMap[beforeDate.yyyymmdd]
                             : 0;
 
-                    await ref
+                    ref
                         .read(appParamProvider.notifier)
                         .setInputButtonClicked(flag: false);
 

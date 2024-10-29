@@ -13,5 +13,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default(false) bool inputButtonClicked,
     @Default(0) int sameDaySelectedDay,
     @Default(0) int selectedGraphMonth,
+    @Default(true) bool calendarDisp,
   }) = _AppParamsResponseState;
 }

@@ -22,6 +22,7 @@ import '../repository/moneys_repository.dart';
 import '../repository/spend_items_repository.dart';
 import '../repository/spend_time_places_repository.dart';
 import '../state/app_params/app_params_notifier.dart';
+import '../state/app_params/app_params_response_state.dart';
 import '../state/calendars/calendars_notifier.dart';
 import '../state/calendars/calendars_response_state.dart';
 import '../state/holidays/holidays_notifier.dart';
@@ -147,6 +148,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final CalendarsResponseState calendarState = ref.watch(calendarProvider);
 
+    final bool calendarDisp = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.calendarDisp));
+
     return Scaffold(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       key: _scaffoldKey,
@@ -178,60 +182,65 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         centerTitle: false,
         backgroundColor: Colors.transparent,
         actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              final List<int> years = <int>[];
+          if (calendarDisp)
+            Row(
+              children: <Widget>[
+                IconButton(
+                  onPressed: () {
+                    final List<int> years = <int>[];
 
-              dateCurrencySumMap.forEach((String key, int value) {
-                final List<String> exKey = key.split('-');
-                if (!years.contains(exKey[0].toInt())) {
-                  years.add(exKey[0].toInt());
-                }
+                    dateCurrencySumMap.forEach((String key, int value) {
+                      final List<String> exKey = key.split('-');
+                      if (!years.contains(exKey[0].toInt())) {
+                        years.add(exKey[0].toInt());
+                      }
 
-                allTotalMoneyMap[key] =
-                    dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
-              });
+                      allTotalMoneyMap[key] =
+                          dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
+                    });
 
-              final Map<String, int> spendMapMonthly = <String, int>{};
+                    final Map<String, int> spendMapMonthly = <String, int>{};
 
-              int mSpend = 0;
-              monthlySpendMap.forEach((String key, int value) {
-                mSpend += value;
-                spendMapMonthly[key] = mSpend;
-              });
+                    int mSpend = 0;
+                    monthlySpendMap.forEach((String key, int value) {
+                      mSpend += value;
+                      spendMapMonthly[key] = mSpend;
+                    });
 
-              MoneyDialog(
-                context: context,
-                widget: AllTotalMoneyGraphAlert(
-                  allTotalMoneyMap: allTotalMoneyMap,
-                  years: years,
-                  isar: widget.isar,
-                  monthlyDateSumMap: dateCurrencySumMap,
-                  bankPriceTotalPadMap: bankPriceTotalPadMap,
-                  monthlySpendMap: spendMapMonthly,
-                  thisMonthSpendTimePlaceList:
-                      thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
-                  allSpendTimePlaceList:
-                      allSpendTimePlaceList ?? <SpendTimePlace>[],
+                    MoneyDialog(
+                      context: context,
+                      widget: AllTotalMoneyGraphAlert(
+                        allTotalMoneyMap: allTotalMoneyMap,
+                        years: years,
+                        isar: widget.isar,
+                        monthlyDateSumMap: dateCurrencySumMap,
+                        bankPriceTotalPadMap: bankPriceTotalPadMap,
+                        monthlySpendMap: spendMapMonthly,
+                        thisMonthSpendTimePlaceList:
+                            thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
+                        allSpendTimePlaceList:
+                            allSpendTimePlaceList ?? <SpendTimePlace>[],
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.stacked_line_chart,
+                      color: Colors.white.withOpacity(0.6), size: 20),
                 ),
-              );
-            },
-            icon: Icon(Icons.stacked_line_chart,
-                color: Colors.white.withOpacity(0.6), size: 20),
-          ),
-          IconButton(
-            onPressed: () {
-              MoneyDialog(
-                context: context,
-                widget: SameDaySpendPriceListAlert(
-                    isar: widget.isar,
-                    spendTimePlaceList:
-                        allSpendTimePlaceList ?? <SpendTimePlace>[]),
-              );
-            },
-            icon: Icon(FontAwesomeIcons.diamond,
-                color: Colors.white.withOpacity(0.6), size: 20),
-          ),
+                IconButton(
+                  onPressed: () {
+                    MoneyDialog(
+                      context: context,
+                      widget: SameDaySpendPriceListAlert(
+                          isar: widget.isar,
+                          spendTimePlaceList:
+                              allSpendTimePlaceList ?? <SpendTimePlace>[]),
+                    );
+                  },
+                  icon: Icon(FontAwesomeIcons.diamond,
+                      color: Colors.white.withOpacity(0.6), size: 20),
+                ),
+              ],
+            ),
           IconButton(
             onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
             icon: Icon(Icons.settings,
@@ -262,11 +271,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Column(
               children: <Widget>[
                 _displayKurikoshiPrice(),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      minHeight: context.screenSize.height * 0.45),
-                  child: _getCalendar(),
-                ),
+                if (calendarDisp) ...<Widget>[
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                        minHeight: context.screenSize.height * 0.45),
+                    child: _getCalendar(),
+                  ),
+                ],
+                if (!calendarDisp) ...<Widget>[
+                  const SizedBox(height: 10),
+                ],
                 _displayMonthSum(),
                 Expanded(child: _displayMonthlySpendTimePlaceList()),
               ],
@@ -293,6 +307,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
+    final bool calendarDisp = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.calendarDisp));
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DefaultTextStyle(
@@ -300,53 +317,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    MoneyDialog(
-                      context: context,
-                      widget: SpendMonthlyListAlert(
-                        isar: widget.isar,
-                        date: (widget.baseYm != null)
-                            ? DateTime.parse('${widget.baseYm}-01 00:00:00')
-                            : DateTime.now(),
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.calendar_month_rounded,
-                          color: Colors.white.withOpacity(0.8)),
-                      const Text('日別'),
-                    ],
+            if (calendarDisp) ...<Widget>[
+              Row(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      MoneyDialog(
+                        context: context,
+                        widget: SpendMonthlyListAlert(
+                          isar: widget.isar,
+                          date: (widget.baseYm != null)
+                              ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                              : DateTime.now(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Icon(Icons.calendar_month_rounded,
+                            color: Colors.white.withOpacity(0.8)),
+                        const Text('日別'),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 20),
-                GestureDetector(
-                  onTap: () {
-                    MoneyDialog(
-                      context: context,
-                      widget: SpendYearlyBlockAlert(
-                        date: (widget.baseYm != null)
-                            ? DateTime.parse('${widget.baseYm}-01 00:00:00')
-                            : DateTime.now(),
-                        isar: widget.isar,
-                        allSpendTimePlaceList:
-                            allSpendTimePlaceList ?? <SpendTimePlace>[],
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.calendar_month_rounded,
-                          color: Colors.white.withOpacity(0.8)),
-                      const Text('年間'),
-                    ],
+                  const SizedBox(width: 20),
+                  GestureDetector(
+                    onTap: () {
+                      MoneyDialog(
+                        context: context,
+                        widget: SpendYearlyBlockAlert(
+                          date: (widget.baseYm != null)
+                              ? DateTime.parse('${widget.baseYm}-01 00:00:00')
+                              : DateTime.now(),
+                          isar: widget.isar,
+                          allSpendTimePlaceList:
+                              allSpendTimePlaceList ?? <SpendTimePlace>[],
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Icon(Icons.calendar_month_rounded,
+                            color: Colors.white.withOpacity(0.8)),
+                        const Text('年間'),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
+            if (!calendarDisp) ...<Widget>[Container()],
             RichText(
               text: TextSpan(
                 text: minusVal.toString().toCurrency(),
@@ -398,6 +418,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     //=================================
 
+    final bool calendarDisp = ref.watch(appParamProvider
+        .select((AppParamsResponseState value) => value.calendarDisp));
+
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
@@ -423,48 +446,72 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                if (calendarDisp) ...<Widget>[
+                  Row(
+                    children: <Widget>[
+                      const SizedBox(width: 10),
+                      DefaultTextStyle(
+                        style: const TextStyle(fontSize: 10),
+                        child: Column(
+                          children: <Widget>[
+                            const SizedBox(height: 5),
+                            const Text('繰越'),
+                            const SizedBox(height: 5),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 3, horizontal: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.yellowAccent.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Text(kurikoshi.toString().toCurrency()),
+                            ),
+                            const SizedBox(height: 5),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (!calendarDisp) ...<Widget>[Container()],
                 Row(
                   children: <Widget>[
-                    const SizedBox(width: 10),
-                    DefaultTextStyle(
-                      style: const TextStyle(fontSize: 10),
-                      child: Column(
-                        children: <Widget>[
-                          const SizedBox(height: 5),
-                          const Text('繰越'),
-                          const SizedBox(height: 5),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.yellowAccent.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Text(kurikoshi.toString().toCurrency()),
-                          ),
-                          const SizedBox(height: 5),
-                        ],
+                    IconButton(
+                      onPressed: () {
+                        ref
+                            .read(appParamProvider.notifier)
+                            .setCalendarDisp(flag: !calendarDisp);
+                      },
+                      icon: Icon(
+                        Icons.calendar_month,
+                        color: calendarDisp
+                            ? Colors.white.withOpacity(0.6)
+                            : Colors.grey.withOpacity(0.6),
+                        size: 16,
                       ),
                     ),
-                  ],
-                ),
-                IconButton(
-                  onPressed: () {
-                    MoneyDialog(
-                      context: context,
-                      widget: MoneyListAlert(
-                        isar: widget.isar,
-                        date: (widget.baseYm != null)
-                            ? DateTime.parse('${widget.baseYm}-01 00:00:00')
-                            : DateTime.now(),
-                        moneyList: moneyList,
-                        bankNameList: bankNameList,
-                        emoneyNameList: emoneyNameList,
-                        bankPricePadMap: bankPricePadMap,
+                    if (calendarDisp) ...<Widget>[
+                      IconButton(
+                        onPressed: () {
+                          MoneyDialog(
+                            context: context,
+                            widget: MoneyListAlert(
+                              isar: widget.isar,
+                              date: (widget.baseYm != null)
+                                  ? DateTime.parse(
+                                      '${widget.baseYm}-01 00:00:00')
+                                  : DateTime.now(),
+                              moneyList: moneyList,
+                              bankNameList: bankNameList,
+                              emoneyNameList: emoneyNameList,
+                              bankPricePadMap: bankPricePadMap,
+                            ),
+                          );
+                        },
+                        icon: Icon(FontAwesomeIcons.list,
+                            color: Colors.white.withOpacity(0.6), size: 16),
                       ),
-                    );
-                  },
-                  icon: Icon(FontAwesomeIcons.list,
-                      color: Colors.white.withOpacity(0.6), size: 16),
+                    ],
+                  ],
                 ),
               ],
             ),
@@ -554,7 +601,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () async {
-                  await ref
+                  ref
                       .read(appParamProvider.notifier)
                       .setSelectedIncomeYear(year: '');
 
