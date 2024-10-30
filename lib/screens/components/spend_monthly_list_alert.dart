@@ -159,33 +159,40 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
       });
 
       list.add(
-        Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white.withOpacity(0.3)),
-            color: _utility.getYoubiColor(
-              date: DateTime.parse('$genDate 00:00:00').yyyymmdd,
-              youbiStr: DateTime.parse('$genDate 00:00:00').youbiStr,
-              holidayMap: _holidayMap,
-            ),
-          ),
-          child: (sum == 0)
-              ? Text(genDate)
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(genDate),
-                        Text(sum.toString().toCurrency())
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Column(children: list2),
-                  ],
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white.withOpacity(0.3)),
+                  color: _utility.getYoubiColor(
+                    date: DateTime.parse('$genDate 00:00:00').yyyymmdd,
+                    youbiStr: DateTime.parse('$genDate 00:00:00').youbiStr,
+                    holidayMap: _holidayMap,
+                  ),
                 ),
+                child: (sum == 0)
+                    ? Text(genDate)
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(genDate),
+                              Text(sum.toString().toCurrency())
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Column(children: list2),
+                        ],
+                      ),
+              ),
+            ),
+            if (sum == 0) Expanded(flex: 2, child: Container()),
+          ],
         ),
       );
     }
