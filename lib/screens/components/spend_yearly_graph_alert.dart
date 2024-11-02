@@ -1,11 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../collections/spend_item.dart';
 import '../../extensions/extensions.dart';
+import '../../state/app_params/app_params_notifier.dart';
+import '../../state/app_params/app_params_response_state.dart';
 
-class SpendYearlyGraphAlert extends StatefulWidget {
+class SpendYearlyGraphAlert extends ConsumerStatefulWidget {
   const SpendYearlyGraphAlert({
     super.key,
     required this.spendTotal,
@@ -23,27 +26,24 @@ class SpendYearlyGraphAlert extends StatefulWidget {
 
   ///
   @override
-  State<SpendYearlyGraphAlert> createState() => _SpendYearlyGraphAlertState();
+  ConsumerState<SpendYearlyGraphAlert> createState() => _SpendYearlyGraphAlertState();
 }
 
-class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
+class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
   List<PieChartSectionData> graphDataList = <PieChartSectionData>[];
 
   ///
-  @override
-  void initState() {
-    super.initState();
-
-    makeGraphDataList();
-  }
-
-  ///
   void makeGraphDataList() {
+    graphDataList = <PieChartSectionData>[];
+
     final Map<String, String> spendItemColorMap = <String, String>{};
 
     for (final SpendItem element in widget.spendItemList) {
       spendItemColorMap[element.spendItemName] = element.color;
     }
+
+    final String selectedYearlySpendCircleGraphSpendItem = ref.watch(
+        appParamProvider.select((AppParamsResponseState value) => value.selectedYearlySpendCircleGraphSpendItem));
 
     final Map<int, List<String>> spendTotalGuideMap = <int, List<String>>{};
 
@@ -55,9 +55,7 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
       guideIntList.add(value);
     });
 
-    widget.spendTotalMap.forEach((String key, int value) {
-      spendTotalGuideMap[value]?.add(key);
-    });
+    widget.spendTotalMap.forEach((String key, int value) => spendTotalGuideMap[value]?.add(key));
 
     guideIntList
       ..sort((int a, int b) => a.compareTo(b) * -1)
@@ -74,13 +72,13 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
                   ? Color(spendItemColorMap[element2]!.toInt()).withOpacity(0.2)
                   : Colors.grey.withOpacity(0.2),
               value: val,
-              title:
-                  '$element2\n${element.toString().toCurrency()}\n${percent.toStringAsFixed(2)} %',
+              title: (selectedYearlySpendCircleGraphSpendItem == '')
+                  ? '$element2\n${element.toString().toCurrency()}\n${percent.toStringAsFixed(2)} %'
+                  : (element2 == selectedYearlySpendCircleGraphSpendItem)
+                      ? '$element2\n${element.toString().toCurrency()}\n${percent.toStringAsFixed(2)} %'
+                      : '',
               radius: 140,
-              titleStyle: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+              titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
             ),
           );
         });
@@ -95,11 +93,11 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
         borderSide: const BorderSide(color: Colors.white),
         color: Colors.grey.withOpacity(0.2),
         value: val2,
-        title:
-            'その他\n${widget.amari.toString().toCurrency()}\n${percent2.toStringAsFixed(2)} %',
+        title: (selectedYearlySpendCircleGraphSpendItem == '')
+            ? 'その他\n${widget.amari.toString().toCurrency()}\n${percent2.toStringAsFixed(2)} %'
+            : '',
         radius: 140,
-        titleStyle: const TextStyle(
-            fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+        titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
@@ -107,6 +105,8 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    makeGraphDataList();
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -126,13 +126,25 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text('Spend Total'),
-                  Text(widget.spendTotal.toString().toCurrency())
-                ],
+                children: <Widget>[const Text('Spend Total'), Text(widget.spendTotal.toString().toCurrency())],
               ),
               const SizedBox(height: 10),
               _displayCircularGraph(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(),
+                    GestureDetector(
+                      onTap: () =>
+                          ref.read(appParamProvider.notifier).setSelectedYearlySpendCircleGraphSpendItem(item: ''),
+                      child:
+                          Text('clear', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(child: displayEachItemSpendMap()),
             ],
           ),
@@ -146,11 +158,8 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
     return Container(
         height: 300,
         padding: const EdgeInsets.all(10),
-        child: PieChart(PieChartData(
-            startDegreeOffset: 270,
-            sections: graphDataList,
-            sectionsSpace: 2,
-            centerSpaceRadius: 0)));
+        child: PieChart(
+            PieChartData(startDegreeOffset: 270, sections: graphDataList, sectionsSpace: 2, centerSpaceRadius: 0)));
   }
 
   ///
@@ -173,42 +182,49 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
       guideIntList.add(value);
     });
 
-    widget.eachItemSpendMap.forEach((String key, int value) {
-      spendTotalGuideMap[value]?.add(key);
-    });
+    widget.eachItemSpendMap.forEach((String key, int value) => spendTotalGuideMap[value]?.add(key));
 
     guideIntList
       ..sort((int a, int b) => a.compareTo(b) * -1)
       ..forEach((int element) {
         if (element > 0) {
-          final String percent =
-              (element / widget.spendTotal * 100).toStringAsFixed(2);
+          final String percent = (element / widget.spendTotal * 100).toStringAsFixed(2);
 
           spendTotalGuideMap[element]?.forEach((String element2) {
-            final Color lineColor = (spendItemColorMap[element2] != null)
-                ? Color(spendItemColorMap[element2]!.toInt())
-                : Colors.grey;
+            final Color lineColor =
+                (spendItemColorMap[element2] != null) ? Color(spendItemColorMap[element2]!.toInt()) : Colors.grey;
 
             list.add(Container(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom:
-                          BorderSide(color: Colors.white.withOpacity(0.3)))),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
               child: DefaultTextStyle(
-                style: TextStyle(color: lineColor, fontSize: 12),
+                style: const TextStyle(fontSize: 12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(element2),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          width: 40,
+                          alignment: Alignment.topLeft,
+                          child: ((element / 100000).floor() > 1)
+                              ? GestureDetector(
+                                  onTap: () {
+                                    ref
+                                        .read(appParamProvider.notifier)
+                                        .setSelectedYearlySpendCircleGraphSpendItem(item: element2);
+                                  },
+                                  child: CircleAvatar(radius: 10, backgroundColor: lineColor.withOpacity(0.4)),
+                                )
+                              : Container(),
+                        ),
+                        Text(element2),
+                      ],
+                    ),
                     Row(
                       children: <Widget>[
                         Text(element.toString().toCurrency()),
-                        Container(
-                          width: 70,
-                          alignment: Alignment.topRight,
-                          child: Text('$percent %'),
-                        ),
+                        Container(width: 70, alignment: Alignment.topRight, child: Text('$percent %')),
                       ],
                     ),
                   ],
@@ -222,10 +238,8 @@ class _SpendYearlyGraphAlertState extends State<SpendYearlyGraphAlert> {
     return CustomScrollView(
       slivers: <Widget>[
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) => list[index],
-            childCount: list.length,
-          ),
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) => list[index], childCount: list.length),
         ),
       ],
     );
