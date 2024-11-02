@@ -44,8 +44,7 @@ class MoneyScoreListAlert extends StatefulWidget {
 class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
   List<DispData> dispDataList = <DispData>[];
 
-  Map<String, Map<String, int>> monthlySpendTimePlaceMap =
-      <String, Map<String, int>>{};
+  Map<String, Map<String, int>> monthlySpendTimePlaceMap = <String, Map<String, int>>{};
 
   ///
   @override
@@ -81,14 +80,11 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
   void makeMonthlySpendTimePlaceList() {
     monthlySpendTimePlaceMap = <String, Map<String, int>>{};
 
-    final Map<String, Map<String, List<int>>> map =
-        <String, Map<String, List<int>>>{};
+    final Map<String, Map<String, List<int>>> map = <String, Map<String, List<int>>>{};
 
     final List<String> yearmonth = <String>[];
     for (final SpendTimePlace element in widget.allSpendTimePlaceList) {
-      yearmonth.add(
-        '${element.date.split('-')[0]}-${element.date.split('-')[1]}',
-      );
+      yearmonth.add('${element.date.split('-')[0]}-${element.date.split('-')[1]}');
     }
 
     for (final String element in yearmonth) {
@@ -96,8 +92,7 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
     }
 
     for (final SpendTimePlace element in widget.allSpendTimePlaceList) {
-      final String ym =
-          '${element.date.split('-')[0]}-${element.date.split('-')[1]}';
+      final String ym = '${element.date.split('-')[0]}-${element.date.split('-')[1]}';
 
       if (element.price > 0) {
         map[ym]?['minus']?.add(element.price);
@@ -112,10 +107,7 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
       value['minus']?.forEach((int element) => minusSum += element);
       value['plus']?.forEach((int element) => plusSum += element);
 
-      monthlySpendTimePlaceMap[key] = <String, int>{
-        'minus': minusSum,
-        'plus': plusSum,
-      };
+      monthlySpendTimePlaceMap[key] = <String, int>{'minus': minusSum, 'plus': plusSum};
     });
   }
 
@@ -123,15 +115,12 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
   void makeDispData() {
     dispDataList = <DispData>[];
 
-    final String thisMonthYearMonth =
-        DateTime(DateTime.now().year, DateTime.now().month).yyyymm;
+    final String thisMonthYearMonth = DateTime(DateTime.now().year, DateTime.now().month).yyyymm;
 
     for (final String element in widget.monthFirstDateList) {
       final List<String> exDate = element.split('-');
 
-      final String zenjitsu =
-          DateTime(exDate[0].toInt(), exDate[1].toInt(), exDate[2].toInt() - 1)
-              .yyyymmdd;
+      final String zenjitsu = DateTime(exDate[0].toInt(), exDate[1].toInt(), exDate[2].toInt() - 1).yyyymmdd;
 
       final int currencySum = widget.dateCurrencySumMap[zenjitsu] ?? 0;
       final int bankPriceTotal = widget.bankPriceTotalPadMap[zenjitsu] ?? 0;
@@ -149,11 +138,9 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
           lastDate = key;
           currency = value;
         });
-        widget.bankPriceTotalPadMap
-            .forEach((String key, int value) => bank = value);
+        widget.bankPriceTotalPadMap.forEach((String key, int value) => bank = value);
       } else {
-        lastDate =
-            DateTime(exDate[0].toInt(), exDate[1].toInt() + 1, 0).yyyymmdd;
+        lastDate = DateTime(exDate[0].toInt(), exDate[1].toInt() + 1, 0).yyyymmdd;
         currency = widget.dateCurrencySumMap[lastDate] ?? 0;
         bank = widget.bankPriceTotalPadMap[lastDate] ?? 0;
       }
@@ -171,14 +158,12 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
     for (final DispData element in dispDataList) {
       final int mark = (element.startPrice < element.lastPrice) ? 1 : 0;
 
-      final String ym =
-          '${element.startDate.split('-')[0]}-${element.startDate.split('-')[1]}';
+      final String ym = '${element.startDate.split('-')[0]}-${element.startDate.split('-')[1]}';
 
       list.add(Container(
         padding: const EdgeInsets.all(5),
         margin: const EdgeInsets.only(bottom: 5),
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.white.withOpacity(0.2))),
+        decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.2))),
         child: Column(
           children: <Widget>[
             Row(
@@ -189,10 +174,7 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
                     children: <Widget>[
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Text(element.startDate),
-                          Text(element.startPrice.toString().toCurrency())
-                        ],
+                        children: <Widget>[Text(element.startDate), Text(element.startPrice.toString().toCurrency())],
                       ),
                       Container(),
                     ],
@@ -200,21 +182,15 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Icon(Icons.arrow_forward,
-                      color: Colors.white.withOpacity(0.4)),
+                  child: Icon(Icons.arrow_forward, color: Colors.white.withOpacity(0.4)),
                 ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Text(element.lastDate),
-                      Text(element.lastPrice.toString().toCurrency())
-                    ],
+                    children: <Widget>[Text(element.lastDate), Text(element.lastPrice.toString().toCurrency())],
                   ),
                 ),
-                Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: dispUpDownIcon(mark: mark)),
+                Container(padding: const EdgeInsets.symmetric(horizontal: 10), child: dispUpDownIcon(mark: mark)),
               ],
             ),
             const SizedBox(height: 5),
@@ -222,33 +198,42 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(),
-                RichText(
-                  text: TextSpan(
-                    text: (monthlySpendTimePlaceMap[ym]?['minus'] ?? 0)
-                        .toString()
-                        .toCurrency(),
-                    style: const TextStyle(
-                        color: Colors.yellowAccent, fontSize: 12),
-                    children: <TextSpan>[
-                      const TextSpan(
-                          text: ' + ', style: TextStyle(color: Colors.white)),
-                      TextSpan(
-                          text: (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0)
-                              .toString()
-                              .toCurrency(),
-                          style: const TextStyle(color: Colors.greenAccent)),
-                      const TextSpan(
-                          text: ' = ', style: TextStyle(color: Colors.white)),
-                      TextSpan(
-                        text: ((monthlySpendTimePlaceMap[ym]?['minus'] ?? 0) +
-                                (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0))
+                Row(
+                  children: <Widget>[
+                    Container(
+                      width: 70,
+                      alignment: Alignment.topRight,
+                      child: Text(
+                        (monthlySpendTimePlaceMap[ym]?['minus'] ?? 0).toString().toCurrency(),
+                        style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text('+'),
+                    const SizedBox(width: 10),
+                    Container(
+                      width: 70,
+                      alignment: Alignment.topRight,
+                      child: Text(
+                        (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0).toString().toCurrency(),
+                        style: const TextStyle(color: Colors.greenAccent),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text('='),
+                    const SizedBox(width: 10),
+                    Container(
+                      width: 70,
+                      alignment: Alignment.topRight,
+                      child: Text(
+                        ((monthlySpendTimePlaceMap[ym]?['minus'] ?? 0) + (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0))
                             .toString()
                             .toCurrency(),
                         style: const TextStyle(color: Colors.orangeAccent),
                       ),
-                    ],
-                  ),
-                )
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
@@ -259,10 +244,8 @@ class _MoneyScoreListAlertState extends State<MoneyScoreListAlert> {
     return CustomScrollView(
       slivers: <Widget>[
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) => list[index],
-            childCount: list.length,
-          ),
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) => list[index], childCount: list.length),
         ),
       ],
     );
