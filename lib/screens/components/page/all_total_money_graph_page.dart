@@ -2,9 +2,6 @@
 
 import 'dart:math';
 
-// import 'package:collection/collection.dart';
-//
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -44,12 +41,10 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
   final List<SpendTimePlace> allSpendTimePlaceList;
 
   @override
-  ConsumerState<AllTotalMoneyGraphPage> createState() =>
-      _AllTotalMoneyGraphPageState();
+  ConsumerState<AllTotalMoneyGraphPage> createState() => _AllTotalMoneyGraphPageState();
 }
 
-class _AllTotalMoneyGraphPageState
-    extends ConsumerState<AllTotalMoneyGraphPage> {
+class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage> {
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
 
@@ -63,15 +58,14 @@ class _AllTotalMoneyGraphPageState
   Widget build(BuildContext context) {
     _setChartData();
 
-    double circleAvatarWidth =
-        (widget.alertWidth / widget.monthList.length) * 0.3;
+    double circleAvatarWidth = (widget.alertWidth / widget.monthList.length) * 0.3;
 
     if (circleAvatarWidth > 15) {
       circleAvatarWidth = 15;
     }
 
-    final int selectedGraphMonth = ref.watch(appParamProvider
-        .select((AppParamsResponseState value) => value.selectedGraphMonth));
+    final int selectedGraphMonth =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedGraphMonth));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -95,9 +89,7 @@ class _AllTotalMoneyGraphPageState
                       children: widget.monthList.map((int e) {
                         return GestureDetector(
                           onTap: () {
-                            ref
-                                .read(appParamProvider.notifier)
-                                .setSelectedGraphMonth(month: e);
+                            ref.read(appParamProvider.notifier).setSelectedGraphMonth(month: e);
 
                             MoneyDialog(
                               context: context,
@@ -105,17 +97,14 @@ class _AllTotalMoneyGraphPageState
                                 date: DateTime(widget.year, e),
                                 isar: widget.isar,
                                 monthlyDateSumMap: widget.monthlyDateSumMap,
-                                bankPriceTotalPadMap:
-                                    widget.bankPriceTotalPadMap,
+                                bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
                                 monthlySpendMap: widget.monthlySpendMap,
                                 graphMin: graphMin,
                                 graphMax: graphMax,
-                                thisMonthSpendTimePlaceList:
-                                    widget.thisMonthSpendTimePlaceList,
+                                thisMonthSpendTimePlaceList: widget.thisMonthSpendTimePlaceList,
                                 monthSTPList: widget.allSpendTimePlaceList
                                     .where((SpendTimePlace element) =>
-                                        element.date.split('-')[1] ==
-                                        e.toString().padLeft(2, '0'))
+                                        element.date.split('-')[1] == e.toString().padLeft(2, '0'))
                                     .toList(),
                               ),
                             );
@@ -184,12 +173,9 @@ class _AllTotalMoneyGraphPageState
 
       final List<String> exLastDate = lastDate.split('-');
 
-      final int lastDateMonthLastDay =
-          DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
+      final int lastDateMonthLastDay = DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
 
-      for (int i = list.length;
-          i <= (list.length + (lastDateMonthLastDay - exLastDate[2].toInt()));
-          i++) {
+      for (int i = list.length; i <= (list.length + (lastDateMonthLastDay - exLastDate[2].toInt())); i++) {
         _flspots.add(FlSpot(i.toDouble(), lastTotal.toDouble()));
       }
 
@@ -217,19 +203,14 @@ class _AllTotalMoneyGraphPageState
 
                 for (final LineBarSpot element in touchedSpots) {
                   final TextStyle textStyle = TextStyle(
-                    color: element.bar.gradient?.colors.first ??
-                        element.bar.color ??
-                        Colors.blueGrey,
+                    color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                   );
 
-                  final String price =
-                      element.y.round().toString().split('.')[0].toCurrency();
+                  final String price = element.y.round().toString().split('.')[0].toCurrency();
 
-                  final String day = DateTime(widget.year)
-                      .add(Duration(days: element.x.toInt() - 1))
-                      .yyyymmdd;
+                  final String day = DateTime(widget.year).add(Duration(days: element.x.toInt() - 1)).yyyymmdd;
 
                   list.add(
                     LineTooltipItem(
@@ -248,8 +229,7 @@ class _AllTotalMoneyGraphPageState
         gridData: FlGridData(
           verticalInterval: 1,
           getDrawingVerticalLine: (double value) {
-            final DateTime day =
-                DateTime(widget.year).add(Duration(days: value.toInt() - 1));
+            final DateTime day = DateTime(widget.year).add(Duration(days: value.toInt() - 1));
 
             final DateTime today = DateTime.now();
             final DateTime newYear = DateTime(today.year);
@@ -331,7 +311,24 @@ class _AllTotalMoneyGraphPageState
           //-------------------------// 左側の目盛り
 
           //-------------------------// 右側の目盛り
-          rightTitles: const AxisTitles(),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 70,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                if (value == graphMin || value == graphMax) {
+                  return const SizedBox();
+                }
+
+                return SideTitleWidget(
+                    axisSide: AxisSide.left,
+                    child: Text(
+                      value.toInt().toString().toCurrency(),
+                      style: const TextStyle(fontSize: 10),
+                    ));
+              },
+            ),
+          ),
           //-------------------------// 右側の目盛り
         ),
 
