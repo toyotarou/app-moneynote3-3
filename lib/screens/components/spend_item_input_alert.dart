@@ -17,10 +17,7 @@ import 'parts/spend_item_card.dart';
 
 class SpendItemInputAlert extends ConsumerStatefulWidget {
   const SpendItemInputAlert(
-      {super.key,
-      required this.isar,
-      required this.spendItemList,
-      required this.spendTimePlaceCountMap});
+      {super.key, required this.isar, required this.spendItemList, required this.spendTimePlaceCountMap});
 
   final Isar isar;
 
@@ -29,13 +26,11 @@ class SpendItemInputAlert extends ConsumerStatefulWidget {
   final Map<String, List<SpendTimePlace>> spendTimePlaceCountMap;
 
   @override
-  ConsumerState<SpendItemInputAlert> createState() =>
-      _SpendItemInputAlertState();
+  ConsumerState<SpendItemInputAlert> createState() => _SpendItemInputAlertState();
 }
 
 class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
-  final TextEditingController _spendItemEditingController =
-      TextEditingController();
+  final TextEditingController _spendItemEditingController = TextEditingController();
 
   List<DragAndDropItem> spendItemDDItemList = <DragAndDropItem>[];
   List<DragAndDropList> ddList = <DragAndDropList>[];
@@ -56,10 +51,8 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     super.initState();
 
     for (final SpendItem element in widget.spendItemList) {
-      final String colorCode =
-          (element.color != '') ? element.color : '0xffffffff';
-      final String defaultTime =
-          (element.defaultTime != '') ? element.defaultTime : '08:00';
+      final String colorCode = (element.color != '') ? element.color : '0xffffffff';
+      final String defaultTime = (element.defaultTime != '') ? element.defaultTime : '08:00';
 
       spendItemDDItemList.add(
         DragAndDropItem(
@@ -67,11 +60,9 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
             key: Key(element.id.toString()),
             spendItemName: element.spendItemName,
             deleteButtonPress: () => _showDeleteDialog(id: element.id),
-            colorPickerButtonPress: () =>
-                _showColorPickerDialog(id: element.id),
+            colorPickerButtonPress: () => _showColorPickerDialog(id: element.id),
             colorCode: colorCode,
-            defaultTimeButtonPress: () =>
-                _showDefaultTimeDialog(id: element.id),
+            defaultTimeButtonPress: () => _showDefaultTimeDialog(id: element.id),
             defaultTime: defaultTime,
             spendTimePlaceCountMap: widget.spendTimePlaceCountMap,
             isar: widget.isar,
@@ -122,9 +113,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
                             onTap: _inputSpendItem,
                             child: Text(
                               '消費アイテムを追加する',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context).colorScheme.primary),
+                              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
                             ),
                           ),
                         ],
@@ -138,9 +127,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
                             onTap: _settingReorderIds,
                             child: Text(
                               '並び順を保存する',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context).colorScheme.primary),
+                              style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
                             ),
                           ),
                         ],
@@ -161,9 +148,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
                       ///
                       itemDecorationWhileDragging: const BoxDecoration(
                         color: Colors.black,
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(color: Colors.white, blurRadius: 4)
-                        ],
+                        boxShadow: <BoxShadow>[BoxShadow(color: Colors.white, blurRadius: 4)],
                       ),
 
                       ///
@@ -183,12 +168,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   Widget _displayInputParts() {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-              blurRadius: 24,
-              spreadRadius: 16,
-              color: Colors.black.withOpacity(0.2))
-        ],
+        boxShadow: <BoxShadow>[BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -201,24 +181,20 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: TextField(
               controller: _spendItemEditingController,
               decoration: const InputDecoration(
                 isDense: true,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                 hintText: '消費アイテム(20文字以内)',
                 filled: true,
                 border: OutlineInputBorder(),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white54)),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
               ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
-              onTapOutside: (PointerDownEvent event) =>
-                  FocusManager.instance.primaryFocus?.unfocus(),
+              onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
             ),
           ),
         ),
@@ -238,8 +214,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       for (final List<Object> element in <List<Object>>[
         <Object>[_spendItemEditingController.text.trim(), 20]
       ]) {
-        if (!checkInputValueLengthCheck(
-            value: element[0].toString().trim(), length: element[1] as int)) {
+        if (!checkInputValueLengthCheck(value: element[0].toString().trim(), length: element[1] as int)) {
           errFlg = true;
         }
       }
@@ -279,11 +254,9 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   }
 
   ///
-  void _itemReorder(
-      int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
+  void _itemReorder(int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
     setState(() {
-      final DragAndDropItem movedItem =
-          ddList[oldListIndex].children.removeAt(oldItemIndex);
+      final DragAndDropItem movedItem = ddList[oldListIndex].children.removeAt(oldItemIndex);
 
       ddList[newListIndex].children.insert(newItemIndex, movedItem);
     });
@@ -294,8 +267,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   ///
   void _showDeleteDialog({required int id}) {
-    final Widget cancelButton = TextButton(
-        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {
@@ -318,24 +290,19 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   ///
   Future<void> _deleteSpendItem({required int id}) async {
     //-----------------------------------
-    final IsarCollection<SpendTimePlace> spendTimePlacesCollection =
-        widget.isar.spendTimePlaces;
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection = widget.isar.spendTimePlaces;
 
     final List<SpendTimePlace> getSpendTimePlaces =
-        await spendTimePlacesCollection
-            .filter()
-            .spendTypeEqualTo(spendItemNameMap[id]!)
-            .findAll();
+        await spendTimePlacesCollection.filter().spendTypeEqualTo(spendItemNameMap[id]!).findAll();
 
     await widget.isar
         // ignore: avoid_function_literals_in_foreach_calls
-        .writeTxn(() async => getSpendTimePlaces.forEach(
-            (SpendTimePlace element) async =>
-                widget.isar.spendTimePlaces.put(element..spendType = '')));
+        .writeTxn(() async => getSpendTimePlaces
+            // ignore: avoid_function_literals_in_foreach_calls
+            .forEach((SpendTimePlace element) async => widget.isar.spendTimePlaces.put(element..spendType = '')));
     //-----------------------------------
 
-    final IsarCollection<SpendItem> spendItemsCollection =
-        widget.isar.spendItems;
+    final IsarCollection<SpendItem> spendItemsCollection = widget.isar.spendItems;
     await widget.isar.writeTxn(() async => spendItemsCollection.delete(id));
 
     if (mounted) {
@@ -360,15 +327,11 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       }
     }
 
-    final IsarCollection<SpendItem> spendItemsCollection =
-        widget.isar.spendItems;
+    final IsarCollection<SpendItem> spendItemsCollection = widget.isar.spendItems;
 
     await widget.isar.writeTxn(() async {
       for (int i = 0; i < orderedIdList.length; i++) {
-        final SpendItem? getSpendItem = await spendItemsCollection
-            .filter()
-            .idEqualTo(orderedIdList[i])
-            .findFirst();
+        final SpendItem? getSpendItem = await spendItemsCollection.filter().idEqualTo(orderedIdList[i]).findFirst();
         if (getSpendItem != null) {
           getSpendItem
             ..spendItemName = spendItemNameMap[orderedIdList[i]].toString()
@@ -422,11 +385,9 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
               final List<String> exColor = color.toString().split(' ');
               String colorCode = '';
               if (exColor.length == 3) {
-                colorCode =
-                    exColor[2].replaceAll('Color(', '').replaceAll(')', '');
+                colorCode = exColor[2].replaceAll('Color(', '').replaceAll(')', '');
               } else {
-                colorCode =
-                    exColor[0].replaceAll('Color(', '').replaceAll(')', '');
+                colorCode = exColor[0].replaceAll('Color(', '').replaceAll(')', '');
               }
 
               // ignore: always_specify_types
@@ -445,8 +406,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   ///
   Future<void> _showDefaultTimeDialog({required int id}) async {
-    final int initialHour = (spendItemDefaultTimeMap[id] != null &&
-            spendItemDefaultTimeMap[id] != '')
+    final int initialHour = (spendItemDefaultTimeMap[id] != null && spendItemDefaultTimeMap[id] != '')
         ? spendItemDefaultTimeMap[id]!.split(':')[0].toInt()
         : 8;
 
@@ -477,31 +437,23 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
   }
 
   ///
-  Future<void> _updateColorCode(
-      {required int id, required String color}) async {
+  Future<void> _updateColorCode({required int id, required String color}) async {
     await widget.isar.writeTxn(() async {
-      await SpendItemsRepository()
-          .getSpendItem(isar: widget.isar, id: id)
-          .then((SpendItem? value) async {
+      await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((SpendItem? value) async {
         value!.color = color;
 
-        await SpendItemsRepository()
-            .updateSpendItem(isar: widget.isar, spendItem: value);
+        await SpendItemsRepository().updateSpendItem(isar: widget.isar, spendItem: value);
       });
     });
   }
 
   ///
-  Future<void> _updateDefaultTime(
-      {required int id, required String time}) async {
+  Future<void> _updateDefaultTime({required int id, required String time}) async {
     await widget.isar.writeTxn(() async {
-      await SpendItemsRepository()
-          .getSpendItem(isar: widget.isar, id: id)
-          .then((SpendItem? value) async {
+      await SpendItemsRepository().getSpendItem(isar: widget.isar, id: id).then((SpendItem? value) async {
         value!.defaultTime = time;
 
-        await SpendItemsRepository()
-            .updateSpendItem(isar: widget.isar, spendItem: value);
+        await SpendItemsRepository().updateSpendItem(isar: widget.isar, spendItem: value);
       });
     });
   }
