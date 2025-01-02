@@ -141,7 +141,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
   ///
   void _setChartData() {
-    final Map<String, int> map = <String, int>{};
+    Map<String, int> map = <String, int>{};
 
     final String displayGraphFlag =
         ref.watch(moneyGraphProvider.select((MoneyGraphResponseState value) => value.displayGraphFlag));
@@ -158,6 +158,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         });
 
       case 'diff':
+        map = {};
+
         final Map<String, List<int>> map100 = <String, List<int>>{};
 
         final int endDay = DateTime(widget.date.year, widget.date.month + 1, 0).day;
@@ -168,11 +170,15 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         }
 
         for (final SpendTimePlace element in widget.monthSTPList) {
-          map100[element.date] = <int>[];
+          if (element.date.split('-')[0] == DateTime.now().year.toString()) {
+            map100[element.date] = <int>[];
+          }
         }
 
         for (final SpendTimePlace element in widget.monthSTPList) {
-          map100[element.date]?.add(element.price);
+          if (element.date.split('-')[0] == DateTime.now().year.toString()) {
+            map100[element.date]?.add(element.price);
+          }
         }
 
         int total = 0;
@@ -196,11 +202,15 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         }
 
         for (final SpendTimePlace element in widget.monthSTPList) {
-          map100[element.date] = <int>[];
+          if (element.date.split('-')[0] == DateTime.now().year.toString()) {
+            map100[element.date] = <int>[];
+          }
         }
 
         for (final SpendTimePlace element in widget.monthSTPList) {
-          map100[element.date]?.add(element.price);
+          if (element.date.split('-')[0] == DateTime.now().year.toString()) {
+            map100[element.date]?.add(element.price);
+          }
         }
 
         int total = 0;
