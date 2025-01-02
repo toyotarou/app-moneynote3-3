@@ -141,7 +141,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
   ///
   void _setChartData() {
-    Map<String, int> map = <String, int>{};
+    final Map<String, int> map = <String, int>{};
 
     final String displayGraphFlag =
         ref.watch(moneyGraphProvider.select((MoneyGraphResponseState value) => value.displayGraphFlag));
@@ -158,8 +158,6 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         });
 
       case 'diff':
-        map = {};
-
         final Map<String, List<int>> map100 = <String, List<int>>{};
 
         final int endDay = DateTime(widget.date.year, widget.date.month + 1, 0).day;

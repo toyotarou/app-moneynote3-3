@@ -36,8 +36,7 @@ class AllTotalMoneyGraphAlert extends StatefulWidget {
 
   ///
   @override
-  State<AllTotalMoneyGraphAlert> createState() =>
-      _AllTotalMoneyGraphAlertState();
+  State<AllTotalMoneyGraphAlert> createState() => _AllTotalMoneyGraphAlertState();
 }
 
 class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
@@ -103,8 +102,7 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
   void _makeTab() {
     _tabs = <TabInfo>[];
 
-    final Map<int, List<Map<String, int>>> map =
-        <int, List<Map<String, int>>>{};
+    final Map<int, List<Map<String, int>>> map = <int, List<Map<String, int>>>{};
 
     final Map<int, List<int>> map2 = <int, List<int>>{};
 
@@ -136,24 +134,26 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
       map3[key] = monthList;
     });
 
-    for (final int element in widget.years) {
-      if (map[element]!.length > 1) {
-        _tabs.add(TabInfo(
-          element.toString(),
-          AllTotalMoneyGraphPage(
-            year: element,
-            data: map[element],
-            alertWidth: alertWidth,
-            monthList: map3[element] ?? <int>[],
-            isar: widget.isar,
-            monthlyDateSumMap: widget.monthlyDateSumMap,
-            bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
-            monthlySpendMap: widget.monthlySpendMap,
-            thisMonthSpendTimePlaceList: widget.thisMonthSpendTimePlaceList,
-            allSpendTimePlaceList: widget.allSpendTimePlaceList,
-          ),
-        ));
-      }
-    }
+    widget.years
+      ..sort((int a, int b) => -1 * a.compareTo(b))
+      ..forEach((int element) {
+        if (map[element]!.length > 1) {
+          _tabs.add(TabInfo(
+            element.toString(),
+            AllTotalMoneyGraphPage(
+              year: element,
+              data: map[element],
+              alertWidth: alertWidth,
+              monthList: map3[element] ?? <int>[],
+              isar: widget.isar,
+              monthlyDateSumMap: widget.monthlyDateSumMap,
+              bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
+              monthlySpendMap: widget.monthlySpendMap,
+              thisMonthSpendTimePlaceList: widget.thisMonthSpendTimePlaceList,
+              allSpendTimePlaceList: widget.allSpendTimePlaceList,
+            ),
+          ));
+        }
+      });
   }
 }
