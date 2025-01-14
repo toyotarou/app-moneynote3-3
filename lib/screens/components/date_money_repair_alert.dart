@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
@@ -6,21 +7,20 @@ import '../../collections/money.dart';
 import '../../extensions/extensions.dart';
 import '../../model/money_model.dart';
 import '../../repository/moneys_repository.dart';
+import '../../state/money_repair/money_repair.dart';
 
-class DateMoneyRepairAlert extends StatefulWidget {
+class DateMoneyRepairAlert extends ConsumerStatefulWidget {
   const DateMoneyRepairAlert({super.key, required this.date, required this.isar});
 
   final DateTime date;
   final Isar isar;
 
   @override
-  State<DateMoneyRepairAlert> createState() => _DateMoneyRepairAlertState();
+  ConsumerState<DateMoneyRepairAlert> createState() => _DateMoneyRepairAlertState();
 }
 
-class _DateMoneyRepairAlertState extends State<DateMoneyRepairAlert> {
+class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
   DateTime? selectedDate;
-
-  List<MoneyModel> moneyModelList = <MoneyModel>[];
 
   ///
   @override
@@ -105,33 +105,31 @@ class _DateMoneyRepairAlertState extends State<DateMoneyRepairAlert> {
     );
 
     if (selectedDate != null) {
-      MoneysRepository()
-          .getAfterDateMoneyList(isar: widget.isar, date: selectedDate!.yyyymmdd)
-          .then((List<Money>? value) {
-        if (mounted) {
-          setState(() {
-            if (value!.isNotEmpty) {
-              for (int i = 0; i < value.length; i++) {
-                final MoneyModel moneyModel = MoneyModel(
-                  date: value[i].date,
-                  yen_10000: value[i].yen_10000,
-                  yen_5000: value[i].yen_5000,
-                  yen_2000: value[i].yen_2000,
-                  yen_1000: value[i].yen_1000,
-                  yen_500: value[i].yen_500,
-                  yen_100: value[i].yen_100,
-                  yen_50: value[i].yen_50,
-                  yen_10: value[i].yen_10,
-                  yen_5: value[i].yen_5,
-                  yen_1: value[i].yen_1,
-                );
+      MoneysRepository().getAfterDateMoneyList(isar: widget.isar, date: selectedDate!.yyyymmdd).then(
+        (List<Money>? value) async {
+          if (value!.isNotEmpty) {
+            for (int i = 0; i < value.length; i++) {
+              final MoneyModel moneyModel = MoneyModel(
+                date: value[i].date,
+                yen_10000: value[i].yen_10000,
+                yen_5000: value[i].yen_5000,
+                yen_2000: value[i].yen_2000,
+                yen_1000: value[i].yen_1000,
+                yen_500: value[i].yen_500,
+                yen_100: value[i].yen_100,
+                yen_50: value[i].yen_50,
+                yen_10: value[i].yen_10,
+                yen_5: value[i].yen_5,
+                yen_1: value[i].yen_1,
+              );
 
-                moneyModelList.add(moneyModel);
-              }
+              await ref
+                  .read(moneyRepairControllerProvider.notifier)
+                  .replaceMoneyModelListData(pos: i, moneyModel: moneyModel);
             }
-          });
-        }
-      });
+          }
+        },
+      );
     }
   }
 
@@ -139,14 +137,50 @@ class _DateMoneyRepairAlertState extends State<DateMoneyRepairAlert> {
   Widget _displayAfterMoneyList() {
     final List<Widget> list = <Widget>[];
 
+    final List<MoneyModel> moneyModelList =
+        ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
+
     for (final MoneyModel element in moneyModelList) {
-      list.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(element.date),
-          Container(),
-        ],
-      ));
+      if (element.date != '') {
+        list.add(Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(element.date),
+                Container(),
+              ],
+            ),
+            Row(
+              children: <int>[
+                element.yen_10000,
+                element.yen_5000,
+                element.yen_2000,
+                element.yen_1000,
+                element.yen_500,
+                element.yen_100,
+                element.yen_50,
+                element.yen_10,
+                element.yen_5,
+                element.yen_1,
+              ]
+                  .map((int e) => Container(
+                        width: context.screenSize.width / 16,
+                        margin: const EdgeInsets.all(2),
+                        padding: const EdgeInsets.all(2),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.3))),
+                        child: Text(e.toString(), style: const TextStyle(fontSize: 8)),
+                      ))
+                  .toList(),
+            ),
+            Divider(
+              color: Colors.white.withOpacity(0.3),
+              thickness: 3,
+            ),
+          ],
+        ));
+      }
     }
 
     return SingleChildScrollView(child: Column(children: list));

@@ -27,6 +27,7 @@ import '../state/calendars/calendars_notifier.dart';
 import '../state/calendars/calendars_response_state.dart';
 import '../state/holidays/holidays_notifier.dart';
 import '../state/holidays/holidays_response_state.dart';
+import '../state/money_repair/money_repair.dart';
 import '../utilities/functions.dart';
 import '../utilities/utilities.dart';
 import 'components/___dummy_data_input_alert.dart';
@@ -539,6 +540,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () async {
+                  ref.read(moneyRepairControllerProvider.notifier).clearMoneyModelListData();
+
                   await MoneyDialog(
                     context: context,
                     widget: DateMoneyRepairAlert(
