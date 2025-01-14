@@ -42,4 +42,8 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
   ///
   void setSelectedYearlySpendCircleGraphSpendItem({required String item}) =>
       state = state.copyWith(selectedYearlySpendCircleGraphSpendItem: item);
+
+  ///
+  void setRepairSelectValue({required String date, required int kind}) =>
+      state = state.copyWith(repairSelectDate: date, repairSelectKind: kind);
 }

@@ -27,6 +27,8 @@ mixin _$AppParamsResponseState {
   bool get calendarDisp => throw _privateConstructorUsedError;
   String get selectedYearlySpendCircleGraphSpendItem =>
       throw _privateConstructorUsedError;
+  String get repairSelectDate => throw _privateConstructorUsedError;
+  int get repairSelectKind => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppParamsResponseStateCopyWith<AppParamsResponseState> get copyWith =>
@@ -49,7 +51,9 @@ abstract class $AppParamsResponseStateCopyWith<$Res> {
       int sameDaySelectedDay,
       int selectedGraphMonth,
       bool calendarDisp,
-      String selectedYearlySpendCircleGraphSpendItem});
+      String selectedYearlySpendCircleGraphSpendItem,
+      String repairSelectDate,
+      int repairSelectKind});
 }
 
 /// @nodoc
@@ -76,6 +80,8 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
     Object? selectedGraphMonth = null,
     Object? calendarDisp = null,
     Object? selectedYearlySpendCircleGraphSpendItem = null,
+    Object? repairSelectDate = null,
+    Object? repairSelectKind = null,
   }) {
     return _then(_value.copyWith(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -119,6 +125,14 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
           ? _value.selectedYearlySpendCircleGraphSpendItem
           : selectedYearlySpendCircleGraphSpendItem // ignore: cast_nullable_to_non_nullable
               as String,
+      repairSelectDate: null == repairSelectDate
+          ? _value.repairSelectDate
+          : repairSelectDate // ignore: cast_nullable_to_non_nullable
+              as String,
+      repairSelectKind: null == repairSelectKind
+          ? _value.repairSelectKind
+          : repairSelectKind // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -142,7 +156,9 @@ abstract class _$$AppParamsResponseStateImplCopyWith<$Res>
       int sameDaySelectedDay,
       int selectedGraphMonth,
       bool calendarDisp,
-      String selectedYearlySpendCircleGraphSpendItem});
+      String selectedYearlySpendCircleGraphSpendItem,
+      String repairSelectDate,
+      int repairSelectKind});
 }
 
 /// @nodoc
@@ -168,6 +184,8 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
     Object? selectedGraphMonth = null,
     Object? calendarDisp = null,
     Object? selectedYearlySpendCircleGraphSpendItem = null,
+    Object? repairSelectDate = null,
+    Object? repairSelectKind = null,
   }) {
     return _then(_$AppParamsResponseStateImpl(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -211,6 +229,14 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
           ? _value.selectedYearlySpendCircleGraphSpendItem
           : selectedYearlySpendCircleGraphSpendItem // ignore: cast_nullable_to_non_nullable
               as String,
+      repairSelectDate: null == repairSelectDate
+          ? _value.repairSelectDate
+          : repairSelectDate // ignore: cast_nullable_to_non_nullable
+              as String,
+      repairSelectKind: null == repairSelectKind
+          ? _value.repairSelectKind
+          : repairSelectKind // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -228,7 +254,9 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       this.sameDaySelectedDay = 0,
       this.selectedGraphMonth = 0,
       this.calendarDisp = true,
-      this.selectedYearlySpendCircleGraphSpendItem = ''});
+      this.selectedYearlySpendCircleGraphSpendItem = '',
+      this.repairSelectDate = '',
+      this.repairSelectKind = -1});
 
   @override
   final DateTime? calendarSelectedDate;
@@ -259,10 +287,16 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
   @override
   @JsonKey()
   final String selectedYearlySpendCircleGraphSpendItem;
+  @override
+  @JsonKey()
+  final String repairSelectDate;
+  @override
+  @JsonKey()
+  final int repairSelectKind;
 
   @override
   String toString() {
-    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem)';
+    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind)';
   }
 
   @override
@@ -292,7 +326,11 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
             (identical(other.selectedYearlySpendCircleGraphSpendItem,
                     selectedYearlySpendCircleGraphSpendItem) ||
                 other.selectedYearlySpendCircleGraphSpendItem ==
-                    selectedYearlySpendCircleGraphSpendItem));
+                    selectedYearlySpendCircleGraphSpendItem) &&
+            (identical(other.repairSelectDate, repairSelectDate) ||
+                other.repairSelectDate == repairSelectDate) &&
+            (identical(other.repairSelectKind, repairSelectKind) ||
+                other.repairSelectKind == repairSelectKind));
   }
 
   @override
@@ -307,7 +345,9 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       sameDaySelectedDay,
       selectedGraphMonth,
       calendarDisp,
-      selectedYearlySpendCircleGraphSpendItem);
+      selectedYearlySpendCircleGraphSpendItem,
+      repairSelectDate,
+      repairSelectKind);
 
   @JsonKey(ignore: true)
   @override
@@ -319,17 +359,18 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
 
 abstract class _AppParamsResponseState implements AppParamsResponseState {
   const factory _AppParamsResponseState(
-          {final DateTime? calendarSelectedDate,
-          final int menuNumber,
-          final String selectedIncomeYear,
-          final bool sameMonthIncomeDeleteFlag,
-          final String incomeInputDate,
-          final bool inputButtonClicked,
-          final int sameDaySelectedDay,
-          final int selectedGraphMonth,
-          final bool calendarDisp,
-          final String selectedYearlySpendCircleGraphSpendItem}) =
-      _$AppParamsResponseStateImpl;
+      {final DateTime? calendarSelectedDate,
+      final int menuNumber,
+      final String selectedIncomeYear,
+      final bool sameMonthIncomeDeleteFlag,
+      final String incomeInputDate,
+      final bool inputButtonClicked,
+      final int sameDaySelectedDay,
+      final int selectedGraphMonth,
+      final bool calendarDisp,
+      final String selectedYearlySpendCircleGraphSpendItem,
+      final String repairSelectDate,
+      final int repairSelectKind}) = _$AppParamsResponseStateImpl;
 
   @override
   DateTime? get calendarSelectedDate;
@@ -351,6 +392,10 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
   bool get calendarDisp;
   @override
   String get selectedYearlySpendCircleGraphSpendItem;
+  @override
+  String get repairSelectDate;
+  @override
+  int get repairSelectKind;
   @override
   @JsonKey(ignore: true)
   _$$AppParamsResponseStateImplCopyWith<_$AppParamsResponseStateImpl>

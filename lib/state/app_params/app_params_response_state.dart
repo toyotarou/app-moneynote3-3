@@ -15,5 +15,7 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default(0) int selectedGraphMonth,
     @Default(true) bool calendarDisp,
     @Default('') String selectedYearlySpendCircleGraphSpendItem,
+    @Default('') String repairSelectDate,
+    @Default(-1) int repairSelectKind,
   }) = _AppParamsResponseState;
 }
