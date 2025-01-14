@@ -1,6 +1,7 @@
 import 'package:isar/isar.dart';
 
 import '../collections/money.dart';
+import '../extensions/extensions.dart';
 
 class MoneysRepository {
   ///
@@ -19,18 +20,24 @@ class MoneysRepository {
   }
 
   ///
-  Future<List<Money>?> getDateMoneyList(
-      {required Isar isar, required Map<String, dynamic> param}) async {
+  Future<List<Money>?> getDateMoneyList({required Isar isar, required Map<String, dynamic> param}) async {
+    final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
+    return moneysCollection.filter().dateEqualTo(param['date'] as String).findAll();
+  }
+
+  ///
+  Future<List<Money>?> getAfterDateMoneyList({required Isar isar, required String date}) async {
     final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
     return moneysCollection
         .filter()
-        .dateEqualTo(param['date'] as String)
+        .dateGreaterThan(
+            DateTime(date.split('-')[0].toInt(), date.split('-')[1].toInt(), date.split('-')[2].toInt() - 1).yyyymmdd)
+        .sortByDate()
         .findAll();
   }
 
   ///
-  Future<void> inputMoneyList(
-      {required Isar isar, required List<Money> moneyList}) async {
+  Future<void> inputMoneyList({required Isar isar, required List<Money> moneyList}) async {
     for (final Money element in moneyList) {
       inputMoney(isar: isar, money: element);
     }

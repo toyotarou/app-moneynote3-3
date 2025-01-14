@@ -35,6 +35,7 @@ import 'components/bank_price_adjust_alert.dart';
 import 'components/csv_data/data_export_alert.dart';
 import 'components/csv_data/data_import_alert.dart';
 import 'components/daily_money_display_alert.dart';
+import 'components/date_money_repair_alert.dart';
 import 'components/deposit_tab_alert.dart';
 import 'components/download_data_list_alert.dart';
 import 'components/income_input_alert.dart';
@@ -531,6 +532,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                         margin: const EdgeInsets.all(5),
                         child: const Text('金融機関、電子マネー金額修正'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  await MoneyDialog(
+                    context: context,
+                    widget: DateMoneyRepairAlert(
+                      date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                      isar: widget.isar,
+                    ),
+                  );
+                },
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('金種枚数修正'),
                       ),
                     ),
                   ],
