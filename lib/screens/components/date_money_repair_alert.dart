@@ -140,44 +140,48 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
     final List<MoneyModel> moneyModelList =
         ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
 
-    for (final MoneyModel element in moneyModelList) {
-      if (element.date != '') {
+    for (int i = 0; i < moneyModelList.length; i++) {
+      if (moneyModelList[i].date != '') {
         list.add(Column(
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(element.date),
+                Text(moneyModelList[i].date),
                 Container(),
               ],
             ),
             Row(
               children: <int>[
-                element.yen_10000,
-                element.yen_5000,
-                element.yen_2000,
-                element.yen_1000,
-                element.yen_500,
-                element.yen_100,
-                element.yen_50,
-                element.yen_10,
-                element.yen_5,
-                element.yen_1,
-              ]
-                  .map((int e) => Container(
-                        width: context.screenSize.width / 16,
-                        margin: const EdgeInsets.all(2),
-                        padding: const EdgeInsets.all(2),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.3))),
-                        child: Text(e.toString(), style: const TextStyle(fontSize: 8)),
-                      ))
-                  .toList(),
+                moneyModelList[i].yen_10000,
+                moneyModelList[i].yen_5000,
+                moneyModelList[i].yen_2000,
+                moneyModelList[i].yen_1000,
+                moneyModelList[i].yen_500,
+                moneyModelList[i].yen_100,
+                moneyModelList[i].yen_50,
+                moneyModelList[i].yen_10,
+                moneyModelList[i].yen_5,
+                moneyModelList[i].yen_1,
+              ].asMap().entries.map(
+                (MapEntry<int, int> e) {
+                  return GestureDetector(
+                    onTap: () {
+                      print('${e.key} / ${e.value} | ${moneyModelList[i].date} || $i');
+                    },
+                    child: Container(
+                      width: context.screenSize.width / 16,
+                      margin: const EdgeInsets.all(2),
+                      padding: const EdgeInsets.all(2),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.3))),
+                      child: Text(e.value.toString(), style: const TextStyle(fontSize: 8)),
+                    ),
+                  );
+                },
+              ).toList(),
             ),
-            Divider(
-              color: Colors.white.withOpacity(0.3),
-              thickness: 3,
-            ),
+            Divider(color: Colors.white.withOpacity(0.3), thickness: 3),
           ],
         ));
       }
