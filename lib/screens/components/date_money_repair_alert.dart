@@ -111,22 +111,22 @@ class _DateMoneyRepairAlertState extends State<DateMoneyRepairAlert> {
         if (mounted) {
           setState(() {
             if (value!.isNotEmpty) {
-              for (final Money element in value) {
-                moneyModelList.add(
-                  MoneyModel(
-                    date: element.date,
-                    yen_10000: element.yen_10000,
-                    yen_5000: element.yen_5000,
-                    yen_2000: element.yen_2000,
-                    yen_1000: element.yen_1000,
-                    yen_500: element.yen_500,
-                    yen_100: element.yen_100,
-                    yen_50: element.yen_50,
-                    yen_10: element.yen_10,
-                    yen_5: element.yen_5,
-                    yen_1: element.yen_1,
-                  ),
+              for (int i = 0; i < value.length; i++) {
+                final MoneyModel moneyModel = MoneyModel(
+                  date: value[i].date,
+                  yen_10000: value[i].yen_10000,
+                  yen_5000: value[i].yen_5000,
+                  yen_2000: value[i].yen_2000,
+                  yen_1000: value[i].yen_1000,
+                  yen_500: value[i].yen_500,
+                  yen_100: value[i].yen_100,
+                  yen_50: value[i].yen_50,
+                  yen_10: value[i].yen_10,
+                  yen_5: value[i].yen_5,
+                  yen_1: value[i].yen_1,
                 );
+
+                moneyModelList.add(moneyModel);
               }
             }
           });
