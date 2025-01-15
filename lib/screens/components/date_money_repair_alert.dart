@@ -8,8 +8,10 @@ import '../../extensions/extensions.dart';
 import '../../model/money_model.dart';
 import '../../repository/moneys_repository.dart';
 import '../../state/app_params/app_params_notifier.dart';
+import '../../state/app_params/app_params_response_state.dart';
 import '../../state/money_repair/money_repair.dart';
 import 'parts/error_dialog.dart';
+import 'parts/money_overlay.dart';
 
 class DateMoneyRepairAlert extends ConsumerStatefulWidget {
   const DateMoneyRepairAlert({super.key, required this.date, required this.isar});
@@ -23,6 +25,12 @@ class DateMoneyRepairAlert extends ConsumerStatefulWidget {
 
 class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
   DateTime? selectedDate;
+
+  final List<OverlayEntry> _bigEntries = <OverlayEntry>[];
+
+  List<String> moneyKindList = <String>['10000', '5000', '2000', '1000', '500', '100', '50', '10', '5', '1'];
+
+  TextEditingController repairCountEditingController = TextEditingController();
 
   ///
   @override
@@ -72,6 +80,18 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: _displayAfterMoneyList()),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    child: const Text('isarデータ変更'),
+                  ),
+                  Container(),
+                ],
+              ),
             ],
           ),
         ),
@@ -107,37 +127,6 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
     );
 
     setState(() {});
-
-    // if (selectedDate != null) {
-    //   MoneysRepository().getAfterDateMoneyList(isar: widget.isar, date: selectedDate!.yyyymmdd).then(
-    //     (List<Money>? value) async {
-    //       if (value!.isNotEmpty) {
-    //         for (int i = 0; i < value.length; i++) {
-    //           final MoneyModel moneyModel = MoneyModel(
-    //             date: value[i].date,
-    //             yen_10000: value[i].yen_10000,
-    //             yen_5000: value[i].yen_5000,
-    //             yen_2000: value[i].yen_2000,
-    //             yen_1000: value[i].yen_1000,
-    //             yen_500: value[i].yen_500,
-    //             yen_100: value[i].yen_100,
-    //             yen_50: value[i].yen_50,
-    //             yen_10: value[i].yen_10,
-    //             yen_5: value[i].yen_5,
-    //             yen_1: value[i].yen_1,
-    //           );
-    //
-    //           await ref
-    //               .read(moneyRepairControllerProvider.notifier)
-    //               .replaceMoneyModelListData(pos: i, moneyModel: moneyModel);
-    //         }
-    //       }
-    //     },
-    //   );
-    // }
-    //
-    //
-    //
   }
 
   ///
@@ -187,7 +176,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
   Widget _displayAfterMoneyList() {
     final List<Widget> list = <Widget>[];
 
-    final appParamState = ref.watch(appParamProvider);
+    final AppParamsResponseState appParamState = ref.watch(appParamProvider);
 
     final List<MoneyModel> moneyModelList =
         ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
@@ -219,19 +208,22 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                 (MapEntry<int, int> e) {
                   return GestureDetector(
                     onTap: () {
-                      print('${e.key} / ${e.value} | ${moneyModelList[i].date} || $i');
-
-                      /*
-                      I/flutter ( 7303): 0 / 15 | 2025-01-01 || 0
-
-
-
-
-                      */
+                      repairCountEditingController.clear();
 
                       ref
                           .read(appParamProvider.notifier)
                           .setRepairSelectValue(date: moneyModelList[i].date, kind: e.key);
+
+                      addBigOverlay(
+                        context: context,
+                        bigEntries: _bigEntries,
+                        setStateCallback: setState,
+                        width: context.screenSize.width * 0.4,
+                        height: 300,
+                        color: Colors.blueGrey.withOpacity(0.3),
+                        initialPosition: Offset(context.screenSize.width * 0.6, context.screenSize.height * 0.6),
+                        widget: displayMoneyRepairInputParts(index: i, date: moneyModelList[i].date, data: e),
+                      );
                     },
                     child: Container(
                       width: context.screenSize.width / 16,
@@ -258,5 +250,37 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
     }
 
     return SingleChildScrollView(child: Column(children: list));
+  }
+
+  ///
+  Widget displayMoneyRepairInputParts({required int index, required String date, required MapEntry<int, int> data}) {
+    return Column(
+      children: <Widget>[
+        Text(index.toString()),
+        Text(date),
+        Text('${moneyKindList[data.key]}円'),
+        Text('変更前：${data.value}枚'),
+        Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+        TextField(
+          keyboardType: TextInputType.number,
+          controller: repairCountEditingController,
+          decoration: const InputDecoration(
+            isDense: true,
+            contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+            hintText: '(枚数)',
+            filled: true,
+            border: OutlineInputBorder(),
+            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+          ),
+          style: const TextStyle(fontSize: 13, color: Colors.white),
+          onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+        ),
+        ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+          child: const Text('変更'),
+        ),
+      ],
+    );
   }
 }
