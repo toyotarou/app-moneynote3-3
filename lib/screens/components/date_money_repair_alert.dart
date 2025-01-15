@@ -32,6 +32,8 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
 
   TextEditingController repairCountEditingController = TextEditingController();
 
+  int moneyModelListLength = 0;
+
   ///
   @override
   Widget build(BuildContext context) {
@@ -66,9 +68,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                             child: Text((selectedDate == null) ? '-' : selectedDate!.yyyymmdd),
                           ),
                           ElevatedButton(
-                            onPressed: () {
-                              callMoneyRecord();
-                            },
+                            onPressed: () => callMoneyRecord(),
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                             child: const Text('call'),
                           ),
@@ -181,6 +181,8 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
     final List<MoneyModel> moneyModelList =
         ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
 
+    moneyModelListLength = moneyModelList.length;
+
     for (int i = 0; i < moneyModelList.length; i++) {
       if (moneyModelList[i].date != '') {
         list.add(Column(
@@ -292,9 +294,8 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
         Row(
           children: <Widget>[
             IconButton(
-              onPressed: () {
-                ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: !appParamState.repairSelectFlag);
-              },
+              onPressed: () =>
+                  ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: !appParamState.repairSelectFlag),
               icon: Icon(
                 Icons.check,
                 color: (appParamState.repairSelectFlag) ? Colors.orangeAccent : Colors.grey,
@@ -304,16 +305,15 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
           ],
         ),
         ElevatedButton(
-          onPressed: () {
-            ref.read(moneyRepairControllerProvider.notifier).replaceMoneyModelListData(
-                  index: index,
-                  date: date,
-                  kind: moneyKindList[data.key],
-                  value: data.value,
-                  newValue: repairCountEditingController.text.trim(),
-                  repairSelectFlag: appParamState.repairSelectFlag,
-                );
-          },
+          onPressed: () => ref.read(moneyRepairControllerProvider.notifier).replaceMoneyModelListData(
+                index: index,
+                date: date,
+                kind: moneyKindList[data.key],
+                value: data.value,
+                newValue: repairCountEditingController.text.trim(),
+                repairSelectFlag: appParamState.repairSelectFlag,
+                moneyModelListLength: moneyModelListLength,
+              ),
           style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
           child: const Text('変更'),
         ),

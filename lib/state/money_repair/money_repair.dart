@@ -78,24 +78,45 @@ class MoneyRepairController extends _$MoneyRepairController {
       required String kind,
       required int value,
       required bool repairSelectFlag,
-      required String newValue}) {
+      required String newValue,
+      required int moneyModelListLength}) {
     final List<MoneyModel> list = <MoneyModel>[...state.moneyModelList];
 
-    final MoneyModel moneyModel = MoneyModel(
-      date: list[index].date,
-      yen_10000: (kind == '10000') ? newValue.toInt() : list[index].yen_10000,
-      yen_5000: (kind == '5000') ? newValue.toInt() : list[index].yen_5000,
-      yen_2000: (kind == '2000') ? newValue.toInt() : list[index].yen_2000,
-      yen_1000: (kind == '1000') ? newValue.toInt() : list[index].yen_1000,
-      yen_500: (kind == '500') ? newValue.toInt() : list[index].yen_500,
-      yen_100: (kind == '100') ? newValue.toInt() : list[index].yen_100,
-      yen_50: (kind == '50') ? newValue.toInt() : list[index].yen_50,
-      yen_10: (kind == '10') ? newValue.toInt() : list[index].yen_10,
-      yen_5: (kind == '5') ? newValue.toInt() : list[index].yen_5,
-      yen_1: (kind == '1') ? newValue.toInt() : list[index].yen_1,
-    );
+    if (repairSelectFlag) {
+      for (int i = index; i < moneyModelListLength; i++) {
+        final MoneyModel moneyModel = MoneyModel(
+          date: list[i].date,
+          yen_10000: (kind == '10000') ? newValue.toInt() : list[i].yen_10000,
+          yen_5000: (kind == '5000') ? newValue.toInt() : list[i].yen_5000,
+          yen_2000: (kind == '2000') ? newValue.toInt() : list[i].yen_2000,
+          yen_1000: (kind == '1000') ? newValue.toInt() : list[i].yen_1000,
+          yen_500: (kind == '500') ? newValue.toInt() : list[i].yen_500,
+          yen_100: (kind == '100') ? newValue.toInt() : list[i].yen_100,
+          yen_50: (kind == '50') ? newValue.toInt() : list[i].yen_50,
+          yen_10: (kind == '10') ? newValue.toInt() : list[i].yen_10,
+          yen_5: (kind == '5') ? newValue.toInt() : list[i].yen_5,
+          yen_1: (kind == '1') ? newValue.toInt() : list[i].yen_1,
+        );
 
-    list[index] = moneyModel;
+        list[i] = moneyModel;
+      }
+    } else {
+      final MoneyModel moneyModel = MoneyModel(
+        date: list[index].date,
+        yen_10000: (kind == '10000') ? newValue.toInt() : list[index].yen_10000,
+        yen_5000: (kind == '5000') ? newValue.toInt() : list[index].yen_5000,
+        yen_2000: (kind == '2000') ? newValue.toInt() : list[index].yen_2000,
+        yen_1000: (kind == '1000') ? newValue.toInt() : list[index].yen_1000,
+        yen_500: (kind == '500') ? newValue.toInt() : list[index].yen_500,
+        yen_100: (kind == '100') ? newValue.toInt() : list[index].yen_100,
+        yen_50: (kind == '50') ? newValue.toInt() : list[index].yen_50,
+        yen_10: (kind == '10') ? newValue.toInt() : list[index].yen_10,
+        yen_5: (kind == '5') ? newValue.toInt() : list[index].yen_5,
+        yen_1: (kind == '1') ? newValue.toInt() : list[index].yen_1,
+      );
+
+      list[index] = moneyModel;
+    }
 
     state = state.copyWith(moneyModelList: list);
   }
