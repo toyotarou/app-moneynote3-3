@@ -72,14 +72,14 @@ class MoneyRepairController extends _$MoneyRepairController {
   }
 
   ///
-  void replaceMoneyModelListData(
+  Future<void> replaceMoneyModelListData(
       {required int index,
       required String date,
       required String kind,
       required int value,
       required bool repairSelectFlag,
       required String newValue,
-      required int moneyModelListLength}) {
+      required int moneyModelListLength}) async {
     final List<MoneyModel> list = <MoneyModel>[...state.moneyModelList];
 
     if (repairSelectFlag) {
