@@ -165,7 +165,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
 
             await ref
                 .read(moneyRepairControllerProvider.notifier)
-                .replaceMoneyModelListData(pos: i, moneyModel: moneyModel);
+                .setMoneyModelListData(pos: i, moneyModel: moneyModel);
           }
         }
       },
@@ -222,7 +222,16 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                         height: 300,
                         color: Colors.blueGrey.withOpacity(0.3),
                         initialPosition: Offset(context.screenSize.width * 0.6, context.screenSize.height * 0.6),
-                        widget: displayMoneyRepairInputParts(index: i, date: moneyModelList[i].date, data: e),
+                        widget: Consumer(builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                          final AppParamsResponseState appParamState = ref.watch(appParamProvider);
+
+                          return displayMoneyRepairInputParts(
+                            index: i,
+                            date: moneyModelList[i].date,
+                            data: e,
+                            appParamState: appParamState,
+                          );
+                        }),
                       );
                     },
                     child: Container(
@@ -253,7 +262,12 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
   }
 
   ///
-  Widget displayMoneyRepairInputParts({required int index, required String date, required MapEntry<int, int> data}) {
+  Widget displayMoneyRepairInputParts({
+    required int index,
+    required String date,
+    required MapEntry<int, int> data,
+    required AppParamsResponseState appParamState,
+  }) {
     return Column(
       children: <Widget>[
         Text(index.toString()),
@@ -275,8 +289,31 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
           style: const TextStyle(fontSize: 13, color: Colors.white),
           onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
         ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              onPressed: () {
+                ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: !appParamState.repairSelectFlag);
+              },
+              icon: Icon(
+                Icons.check,
+                color: (appParamState.repairSelectFlag) ? Colors.orangeAccent : Colors.grey,
+              ),
+            ),
+            const Expanded(child: Text('以降の日付にも適用する')),
+          ],
+        ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            ref.read(moneyRepairControllerProvider.notifier).replaceMoneyModelListData(
+                  index: index,
+                  date: date,
+                  kind: moneyKindList[data.key],
+                  value: data.value,
+                  newValue: repairCountEditingController.text.trim(),
+                  repairSelectFlag: appParamState.repairSelectFlag,
+                );
+          },
           style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
           child: const Text('変更'),
         ),

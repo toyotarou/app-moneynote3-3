@@ -17,5 +17,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default('') String selectedYearlySpendCircleGraphSpendItem,
     @Default('') String repairSelectDate,
     @Default(-1) int repairSelectKind,
+    @Default(false) bool repairSelectFlag,
   }) = _AppParamsResponseState;
 }

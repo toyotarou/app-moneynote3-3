@@ -46,4 +46,7 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
   ///
   void setRepairSelectValue({required String date, required int kind}) =>
       state = state.copyWith(repairSelectDate: date, repairSelectKind: kind);
+
+  ///
+  void setRepairSelectFlag({required bool flag}) => state = state.copyWith(repairSelectFlag: flag);
 }

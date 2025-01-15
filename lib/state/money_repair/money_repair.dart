@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../extensions/extensions.dart';
 import '../../model/money_model.dart';
 
 part 'money_repair.freezed.dart';
@@ -41,7 +42,7 @@ class MoneyRepairController extends _$MoneyRepairController {
   }
 
   ///
-  Future<void> replaceMoneyModelListData({required int pos, required MoneyModel moneyModel}) async {
+  Future<void> setMoneyModelListData({required int pos, required MoneyModel moneyModel}) async {
     final List<MoneyModel> list = <MoneyModel>[...state.moneyModelList];
     list[pos] = moneyModel;
     state = state.copyWith(moneyModelList: list);
@@ -66,6 +67,35 @@ class MoneyRepairController extends _$MoneyRepairController {
         yen_1: 0,
       ),
     );
+
+    state = state.copyWith(moneyModelList: list);
+  }
+
+  ///
+  void replaceMoneyModelListData(
+      {required int index,
+      required String date,
+      required String kind,
+      required int value,
+      required bool repairSelectFlag,
+      required String newValue}) {
+    final List<MoneyModel> list = <MoneyModel>[...state.moneyModelList];
+
+    final MoneyModel moneyModel = MoneyModel(
+      date: list[index].date,
+      yen_10000: (kind == '10000') ? newValue.toInt() : list[index].yen_10000,
+      yen_5000: (kind == '5000') ? newValue.toInt() : list[index].yen_5000,
+      yen_2000: (kind == '2000') ? newValue.toInt() : list[index].yen_2000,
+      yen_1000: (kind == '1000') ? newValue.toInt() : list[index].yen_1000,
+      yen_500: (kind == '500') ? newValue.toInt() : list[index].yen_500,
+      yen_100: (kind == '100') ? newValue.toInt() : list[index].yen_100,
+      yen_50: (kind == '50') ? newValue.toInt() : list[index].yen_50,
+      yen_10: (kind == '10') ? newValue.toInt() : list[index].yen_10,
+      yen_5: (kind == '5') ? newValue.toInt() : list[index].yen_5,
+      yen_1: (kind == '1') ? newValue.toInt() : list[index].yen_1,
+    );
+
+    list[index] = moneyModel;
 
     state = state.copyWith(moneyModelList: list);
   }
