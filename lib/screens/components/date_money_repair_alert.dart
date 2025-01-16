@@ -297,16 +297,24 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                         height: 260,
                         color: Colors.blueGrey.withOpacity(0.3),
                         initialPosition: Offset(context.screenSize.width * 0.6, context.screenSize.height * 0.2),
-                        widget: Consumer(builder: (BuildContext context, WidgetRef ref, Widget? child) {
-                          final AppParamsResponseState appParamState = ref.watch(appParamProvider);
+                        widget: Consumer(
+                          builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                            final AppParamsResponseState appParamState = ref.watch(appParamProvider);
+                            return displayMoneyRepairInputParts(
+                              index: i,
+                              date: moneyModelList[i].date,
+                              data: e,
+                              appParamState: appParamState,
+                            );
+                          },
+                        ),
+                        onPositionChanged: (Offset newPos) {
+                          // print(newPos);
+                          //
+                          //
 
-                          return displayMoneyRepairInputParts(
-                            index: i,
-                            date: moneyModelList[i].date,
-                            data: e,
-                            appParamState: appParamState,
-                          );
-                        }),
+                          ref.read(appParamProvider.notifier).updateOverlayPosition(newPos);
+                        },
                       );
                     },
                     child: Container(

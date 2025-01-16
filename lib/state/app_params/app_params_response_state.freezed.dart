@@ -35,6 +35,7 @@ mixin _$AppParamsResponseState {
   List<OverlayEntry>? get bigEntries => throw _privateConstructorUsedError;
   void Function(void Function())? get setStateCallback =>
       throw _privateConstructorUsedError;
+  Offset? get overlayPosition => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppParamsResponseStateCopyWith<AppParamsResponseState> get copyWith =>
@@ -63,7 +64,8 @@ abstract class $AppParamsResponseStateCopyWith<$Res> {
       bool repairSelectFlag,
       List<int> selectedRepairRecordNumber,
       List<OverlayEntry>? bigEntries,
-      void Function(void Function())? setStateCallback});
+      void Function(void Function())? setStateCallback,
+      Offset? overlayPosition});
 }
 
 /// @nodoc
@@ -96,6 +98,7 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
     Object? selectedRepairRecordNumber = null,
     Object? bigEntries = freezed,
     Object? setStateCallback = freezed,
+    Object? overlayPosition = freezed,
   }) {
     return _then(_value.copyWith(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -163,6 +166,10 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
           ? _value.setStateCallback
           : setStateCallback // ignore: cast_nullable_to_non_nullable
               as void Function(void Function())?,
+      overlayPosition: freezed == overlayPosition
+          ? _value.overlayPosition
+          : overlayPosition // ignore: cast_nullable_to_non_nullable
+              as Offset?,
     ) as $Val);
   }
 }
@@ -192,7 +199,8 @@ abstract class _$$AppParamsResponseStateImplCopyWith<$Res>
       bool repairSelectFlag,
       List<int> selectedRepairRecordNumber,
       List<OverlayEntry>? bigEntries,
-      void Function(void Function())? setStateCallback});
+      void Function(void Function())? setStateCallback,
+      Offset? overlayPosition});
 }
 
 /// @nodoc
@@ -224,6 +232,7 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
     Object? selectedRepairRecordNumber = null,
     Object? bigEntries = freezed,
     Object? setStateCallback = freezed,
+    Object? overlayPosition = freezed,
   }) {
     return _then(_$AppParamsResponseStateImpl(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -291,6 +300,10 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
           ? _value.setStateCallback
           : setStateCallback // ignore: cast_nullable_to_non_nullable
               as void Function(void Function())?,
+      overlayPosition: freezed == overlayPosition
+          ? _value.overlayPosition
+          : overlayPosition // ignore: cast_nullable_to_non_nullable
+              as Offset?,
     ));
   }
 }
@@ -314,7 +327,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       this.repairSelectFlag = false,
       final List<int> selectedRepairRecordNumber = const <int>[],
       final List<OverlayEntry>? bigEntries,
-      this.setStateCallback})
+      this.setStateCallback,
+      this.overlayPosition})
       : _selectedRepairRecordNumber = selectedRepairRecordNumber,
         _bigEntries = bigEntries;
 
@@ -378,10 +392,12 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
 
   @override
   final void Function(void Function())? setStateCallback;
+  @override
+  final Offset? overlayPosition;
 
   @override
   String toString() {
-    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback)';
+    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback, overlayPosition: $overlayPosition)';
   }
 
   @override
@@ -424,7 +440,9 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
             const DeepCollectionEquality()
                 .equals(other._bigEntries, _bigEntries) &&
             (identical(other.setStateCallback, setStateCallback) ||
-                other.setStateCallback == setStateCallback));
+                other.setStateCallback == setStateCallback) &&
+            (identical(other.overlayPosition, overlayPosition) ||
+                other.overlayPosition == overlayPosition));
   }
 
   @override
@@ -445,7 +463,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       repairSelectFlag,
       const DeepCollectionEquality().hash(_selectedRepairRecordNumber),
       const DeepCollectionEquality().hash(_bigEntries),
-      setStateCallback);
+      setStateCallback,
+      overlayPosition);
 
   @JsonKey(ignore: true)
   @override
@@ -457,23 +476,23 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
 
 abstract class _AppParamsResponseState implements AppParamsResponseState {
   const factory _AppParamsResponseState(
-          {final DateTime? calendarSelectedDate,
-          final int menuNumber,
-          final String selectedIncomeYear,
-          final bool sameMonthIncomeDeleteFlag,
-          final String incomeInputDate,
-          final bool inputButtonClicked,
-          final int sameDaySelectedDay,
-          final int selectedGraphMonth,
-          final bool calendarDisp,
-          final String selectedYearlySpendCircleGraphSpendItem,
-          final String repairSelectDate,
-          final int repairSelectKind,
-          final bool repairSelectFlag,
-          final List<int> selectedRepairRecordNumber,
-          final List<OverlayEntry>? bigEntries,
-          final void Function(void Function())? setStateCallback}) =
-      _$AppParamsResponseStateImpl;
+      {final DateTime? calendarSelectedDate,
+      final int menuNumber,
+      final String selectedIncomeYear,
+      final bool sameMonthIncomeDeleteFlag,
+      final String incomeInputDate,
+      final bool inputButtonClicked,
+      final int sameDaySelectedDay,
+      final int selectedGraphMonth,
+      final bool calendarDisp,
+      final String selectedYearlySpendCircleGraphSpendItem,
+      final String repairSelectDate,
+      final int repairSelectKind,
+      final bool repairSelectFlag,
+      final List<int> selectedRepairRecordNumber,
+      final List<OverlayEntry>? bigEntries,
+      final void Function(void Function())? setStateCallback,
+      final Offset? overlayPosition}) = _$AppParamsResponseStateImpl;
 
   @override
   DateTime? get calendarSelectedDate;
@@ -507,6 +526,8 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
   List<OverlayEntry>? get bigEntries;
   @override
   void Function(void Function())? get setStateCallback;
+  @override
+  Offset? get overlayPosition;
   @override
   @JsonKey(ignore: true)
   _$$AppParamsResponseStateImplCopyWith<_$AppParamsResponseStateImpl>

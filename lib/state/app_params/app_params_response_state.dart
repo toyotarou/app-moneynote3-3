@@ -22,5 +22,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default(<int>[]) List<int> selectedRepairRecordNumber,
     List<OverlayEntry>? bigEntries,
     void Function(VoidCallback fn)? setStateCallback,
+    Offset? overlayPosition,
   }) = _AppParamsResponseState;
 }

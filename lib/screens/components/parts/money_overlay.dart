@@ -21,7 +21,6 @@ class DraggableOverlayItem {
 
 //=======================================================//
 
-///
 OverlayEntry createDraggableOverlayEntry({
   required BuildContext context,
   required Offset initialOffset,
@@ -30,6 +29,7 @@ OverlayEntry createDraggableOverlayEntry({
   required Color color,
   required VoidCallback onRemove,
   required Widget widget,
+  required ValueChanged<Offset> onPositionChanged,
 }) {
   final Size screenSize = MediaQuery.of(context).size;
 
@@ -66,6 +66,8 @@ OverlayEntry createDraggableOverlayEntry({
 
                         item.position = Offset(double.parse(clampedX.toString()), double.parse(clampedY.toString()));
 
+                        onPositionChanged(item.position);
+
                         item.entry.markNeedsBuild();
                       }
                     },
@@ -86,12 +88,6 @@ OverlayEntry createDraggableOverlayEntry({
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(width: double.infinity),
-                        // Text('Width: ${item.width}'),
-                        // Text('Height: ${item.height}'),
-                        // Text('dx: ${item.position.dx}'),
-                        // Text('dy: ${item.position.dy}'),
-                        // const SizedBox(height: 10),
-
                         widget,
                       ],
                     ),
@@ -111,7 +107,6 @@ OverlayEntry createDraggableOverlayEntry({
 
 //=======================================================//
 
-///
 void addBigOverlay({
   required BuildContext context,
   required List<OverlayEntry> bigEntries,
@@ -121,12 +116,12 @@ void addBigOverlay({
   required Color color,
   required Offset initialPosition,
   required Widget widget,
+  required ValueChanged<Offset> onPositionChanged,
 }) {
   if (bigEntries.isNotEmpty) {
     for (final OverlayEntry e in bigEntries) {
       e.remove();
     }
-
     setStateCallback(() => bigEntries.clear());
   }
 
@@ -139,14 +134,13 @@ void addBigOverlay({
     color: color,
     onRemove: () {
       entry.remove();
-
       setStateCallback(() => bigEntries.remove(entry));
     },
     widget: widget,
+    onPositionChanged: (Offset newOffset) => onPositionChanged(newOffset),
   );
 
   setStateCallback(() => bigEntries.add(entry));
-
   Overlay.of(context).insert(entry);
 }
 
@@ -154,14 +148,12 @@ void addBigOverlay({
 void closeAllOverlays({required WidgetRef ref}) {
   final List<OverlayEntry>? bigEntries =
       ref.watch(appParamProvider.select((AppParamsResponseState value) => value.bigEntries));
-  final void Function(void Function() p1)? setStateCallback =
+  final void Function(void Function())? setStateCallback =
       ref.watch(appParamProvider.select((AppParamsResponseState value) => value.setStateCallback));
 
   if (bigEntries != null && setStateCallback != null) {
     for (final OverlayEntry e in bigEntries) {
       e.remove();
     }
-
-//    setStateCallback(() => bigEntries.clear());
   }
 }

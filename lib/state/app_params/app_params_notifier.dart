@@ -68,4 +68,7 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
   }) {
     state = state.copyWith(bigEntries: bigEntries, setStateCallback: setStateCallback);
   }
+
+  ///
+  void updateOverlayPosition(Offset newPos) => state = state.copyWith(overlayPosition: newPos);
 }
