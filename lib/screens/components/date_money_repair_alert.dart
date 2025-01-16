@@ -37,9 +37,6 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final List<int> selectedRepairRecordNumber =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedRepairRecordNumber));
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -91,9 +88,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   ElevatedButton(
-                    onPressed: () {
-                      print(selectedRepairRecordNumber);
-                    },
+                    onPressed: () => replaceIsarMoneyRecord(),
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     child: const Text('isarデータ変更'),
                   ),
@@ -105,6 +100,39 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
         ),
       ),
     );
+  }
+
+  ///
+  Future<void> replaceIsarMoneyRecord() async {
+    final List<int> selectedRepairRecordNumber =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedRepairRecordNumber));
+
+    if (selectedRepairRecordNumber.isEmpty) {
+      // ignore: always_specify_types
+      Future.delayed(
+        Duration.zero,
+        () => error_dialog(
+            // ignore: use_build_context_synchronously
+            context: context,
+            title: '変更できません。',
+            content: '変更するレコードが設定されていません。'),
+      );
+
+      return;
+    }
+
+    //===================================================
+
+    final List<MoneyModel> moneyModelList =
+        ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
+
+    final List<MoneyModel> list = <MoneyModel>[];
+
+    selectedRepairRecordNumber.toSet().toList().forEach((int element) {
+      list.add(moneyModelList[element]);
+    });
+
+    //===================================================
   }
 
   ///
@@ -226,8 +254,6 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
 
                       ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: false);
 
-                      ref.read(appParamProvider.notifier).setSelectedRepairRecordNumber(number: e.key);
-
                       addBigOverlay(
                         context: context,
                         bigEntries: _bigEntries,
@@ -321,15 +347,25 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
             ],
           ),
           ElevatedButton(
-            onPressed: () => ref.read(moneyRepairControllerProvider.notifier).replaceMoneyModelListData(
-                  index: index,
-                  date: date,
-                  kind: moneyKindList[data.key],
-                  value: data.value,
-                  newValue: repairCountEditingController.text.trim(),
-                  repairSelectFlag: appParamState.repairSelectFlag,
-                  moneyModelListLength: moneyModelListLength,
-                ),
+            onPressed: () {
+              if (appParamState.repairSelectFlag) {
+                for (int i = index; i < moneyModelListLength; i++) {
+                  ref.read(appParamProvider.notifier).setSelectedRepairRecordNumber(number: i);
+                }
+              } else {
+                ref.read(appParamProvider.notifier).setSelectedRepairRecordNumber(number: index);
+              }
+
+              ref.read(moneyRepairControllerProvider.notifier).replaceMoneyModelListData(
+                    index: index,
+                    date: date,
+                    kind: moneyKindList[data.key],
+                    value: data.value,
+                    newValue: repairCountEditingController.text.trim(),
+                    repairSelectFlag: appParamState.repairSelectFlag,
+                    moneyModelListLength: moneyModelListLength,
+                  );
+            },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
             child: const Text('変更'),
           ),
