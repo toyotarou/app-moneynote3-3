@@ -49,12 +49,18 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('金種枚数修正'),
+                  Container(),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('金種枚数修正'),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+                    children: [
                       const Text('開始日付'),
                       Row(
                         children: <Widget>[
@@ -70,14 +76,14 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                               style: const TextStyle(fontSize: 10),
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () => callMoneyRecord(),
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                            child: const Text('call'),
-                          ),
                         ],
                       ),
                     ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () => callMoneyRecord(),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    child: const Text('call'),
                   ),
                 ],
               ),
