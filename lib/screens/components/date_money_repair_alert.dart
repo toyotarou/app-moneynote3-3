@@ -126,10 +126,37 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
     final List<MoneyModel> moneyModelList =
         ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
 
-    final List<MoneyModel> list = <MoneyModel>[];
+    selectedRepairRecordNumber.toSet().toList().forEach((int element) async {
+      await widget.isar.writeTxn(() async {
+        final MoneyModel moneyModel = moneyModelList[element];
 
-    selectedRepairRecordNumber.toSet().toList().forEach((int element) {
-      list.add(moneyModelList[element]);
+        await MoneysRepository().getDateMoney(
+            isar: widget.isar, param: <String, dynamic>{'date': moneyModel.date}).then((Money? value) async {
+          value!
+            ..date = moneyModel.date
+            ..yen_10000 = moneyModel.yen_10000
+            ..yen_5000 = moneyModel.yen_5000
+            ..yen_2000 = moneyModel.yen_2000
+            ..yen_1000 = moneyModel.yen_1000
+            ..yen_500 = moneyModel.yen_500
+            ..yen_100 = moneyModel.yen_100
+            ..yen_50 = moneyModel.yen_50
+            ..yen_10 = moneyModel.yen_10
+            ..yen_5 = moneyModel.yen_5
+            ..yen_1 = moneyModel.yen_1;
+
+          await MoneysRepository()
+              .updateMoney(isar: widget.isar, money: value)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+
+              Navigator.pop(context);
+            }
+          });
+        });
+      });
     });
 
     //===================================================
