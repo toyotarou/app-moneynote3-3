@@ -145,21 +145,26 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
             ..yen_5 = moneyModel.yen_5
             ..yen_1 = moneyModel.yen_1;
 
-          await MoneysRepository()
-              .updateMoney(isar: widget.isar, money: value)
-              // ignore: always_specify_types
-              .then((value) {
-            if (mounted) {
-              Navigator.pop(context);
-
-              Navigator.pop(context);
-            }
-          });
+          await MoneysRepository().updateMoney(isar: widget.isar, money: value);
+          //     // ignore: always_specify_types
+          //     .then((value) {
+          //   if (mounted) {
+          //     Navigator.pop(context);
+          //
+          //     Navigator.pop(context);
+          //   }
+          // });
         });
       });
     });
 
     //===================================================
+
+    if (mounted) {
+      Navigator.pop(context);
+
+      Navigator.pop(context);
+    }
   }
 
   ///
