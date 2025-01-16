@@ -7,7 +7,7 @@ part of 'money_repair.dart';
 // **************************************************************************
 
 String _$moneyRepairControllerHash() =>
-    r'3edf404cd8cb47d78dd64cab7489d18e984a98f5';
+    r'adbab184b4419f461757d3ea9fd776d323cecdaf';
 
 /// See also [MoneyRepairController].
 @ProviderFor(MoneyRepairController)

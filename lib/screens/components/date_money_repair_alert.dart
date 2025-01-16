@@ -37,6 +37,9 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    final List<int> selectedRepairRecordNumber =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedRepairRecordNumber));
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -64,8 +67,11 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                           ),
                           const SizedBox(width: 20),
                           SizedBox(
-                            width: 100,
-                            child: Text((selectedDate == null) ? '-' : selectedDate!.yyyymmdd),
+                            width: 70,
+                            child: Text(
+                              (selectedDate == null) ? '-' : selectedDate!.yyyymmdd,
+                              style: const TextStyle(fontSize: 10),
+                            ),
                           ),
                           ElevatedButton(
                             onPressed: () => callMoneyRecord(),
@@ -85,7 +91,9 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      print(selectedRepairRecordNumber);
+                    },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     child: const Text('isarデータ変更'),
                   ),
@@ -216,14 +224,18 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                           .read(appParamProvider.notifier)
                           .setRepairSelectValue(date: moneyModelList[i].date, kind: e.key);
 
+                      ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: false);
+
+                      ref.read(appParamProvider.notifier).setSelectedRepairRecordNumber(number: e.key);
+
                       addBigOverlay(
                         context: context,
                         bigEntries: _bigEntries,
                         setStateCallback: setState,
                         width: context.screenSize.width * 0.4,
-                        height: 300,
+                        height: 260,
                         color: Colors.blueGrey.withOpacity(0.3),
-                        initialPosition: Offset(context.screenSize.width * 0.6, context.screenSize.height * 0.6),
+                        initialPosition: Offset(context.screenSize.width * 0.6, context.screenSize.height * 0.2),
                         widget: Consumer(builder: (BuildContext context, WidgetRef ref, Widget? child) {
                           final AppParamsResponseState appParamState = ref.watch(appParamProvider);
 
@@ -237,12 +249,14 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                       );
                     },
                     child: Container(
-                      width: context.screenSize.width / 16,
+                      width: context.screenSize.width / 17,
                       margin: const EdgeInsets.all(2),
                       padding: const EdgeInsets.all(2),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white.withOpacity(0.3)),
+                        border: Border.all(
+                          color: (e.key < 4) ? Colors.greenAccent.withOpacity(0.3) : Colors.white.withOpacity(0.3),
+                        ),
                         color: (appParamState.repairSelectDate == moneyModelList[i].date &&
                                 appParamState.repairSelectKind == e.key)
                             ? Colors.yellowAccent.withOpacity(0.2)
@@ -270,54 +284,57 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
     required MapEntry<int, int> data,
     required AppParamsResponseState appParamState,
   }) {
-    return Column(
-      children: <Widget>[
-        Text(index.toString()),
-        Text(date),
-        Text('${moneyKindList[data.key]}円'),
-        Text('変更前：${data.value}枚'),
-        Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-        TextField(
-          keyboardType: TextInputType.number,
-          controller: repairCountEditingController,
-          decoration: const InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-            hintText: '(枚数)',
-            filled: true,
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
-          ),
-          style: const TextStyle(fontSize: 13, color: Colors.white),
-          onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
-        ),
-        Row(
-          children: <Widget>[
-            IconButton(
-              onPressed: () =>
-                  ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: !appParamState.repairSelectFlag),
-              icon: Icon(
-                Icons.check,
-                color: (appParamState.repairSelectFlag) ? Colors.orangeAccent : Colors.grey,
-              ),
+    return DefaultTextStyle(
+      style: const TextStyle(fontSize: 12),
+      child: Column(
+        children: <Widget>[
+          //        Text(index.toString()),
+          Text(date),
+          Text('${moneyKindList[data.key]}円'),
+          Text('変更前：${data.value}枚'),
+          Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+          TextField(
+            keyboardType: TextInputType.number,
+            controller: repairCountEditingController,
+            decoration: const InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              hintText: '(枚数)',
+              filled: true,
+              border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
             ),
-            const Expanded(child: Text('以降の日付にも適用する')),
-          ],
-        ),
-        ElevatedButton(
-          onPressed: () => ref.read(moneyRepairControllerProvider.notifier).replaceMoneyModelListData(
-                index: index,
-                date: date,
-                kind: moneyKindList[data.key],
-                value: data.value,
-                newValue: repairCountEditingController.text.trim(),
-                repairSelectFlag: appParamState.repairSelectFlag,
-                moneyModelListLength: moneyModelListLength,
+            style: const TextStyle(fontSize: 13, color: Colors.white),
+            onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+          ),
+          Row(
+            children: <Widget>[
+              IconButton(
+                onPressed: () =>
+                    ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: !appParamState.repairSelectFlag),
+                icon: Icon(
+                  Icons.check,
+                  color: (appParamState.repairSelectFlag) ? Colors.orangeAccent : Colors.grey,
+                ),
               ),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-          child: const Text('変更'),
-        ),
-      ],
+              const Expanded(child: Text('以降の日付にも適用する')),
+            ],
+          ),
+          ElevatedButton(
+            onPressed: () => ref.read(moneyRepairControllerProvider.notifier).replaceMoneyModelListData(
+                  index: index,
+                  date: date,
+                  kind: moneyKindList[data.key],
+                  value: data.value,
+                  newValue: repairCountEditingController.text.trim(),
+                  repairSelectFlag: appParamState.repairSelectFlag,
+                  moneyModelListLength: moneyModelListLength,
+                ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+            child: const Text('変更'),
+          ),
+        ],
+      ),
     );
   }
 }

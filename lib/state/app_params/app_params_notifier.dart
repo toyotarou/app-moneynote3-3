@@ -49,4 +49,14 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
 
   ///
   void setRepairSelectFlag({required bool flag}) => state = state.copyWith(repairSelectFlag: flag);
+
+  ///
+  void setSelectedRepairRecordNumber({required int number}) {
+    final List<int> list = <int>[...state.selectedRepairRecordNumber];
+    list.add(number);
+    state = state.copyWith(selectedRepairRecordNumber: list);
+  }
+
+  ///
+  void clearSelectedRepairRecordNumber() => state = state.copyWith(selectedRepairRecordNumber: <int>[]);
 }

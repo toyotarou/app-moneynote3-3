@@ -542,6 +542,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onTap: () async {
                   ref.read(moneyRepairControllerProvider.notifier).clearMoneyModelListData();
 
+                  ref.read(appParamProvider.notifier).setRepairSelectValue(date: '', kind: -1);
+
+                  ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: false);
+
+                  ref.read(appParamProvider.notifier).clearSelectedRepairRecordNumber();
+
                   await MoneyDialog(
                     context: context,
                     widget: DateMoneyRepairAlert(

@@ -18,5 +18,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default('') String repairSelectDate,
     @Default(-1) int repairSelectKind,
     @Default(false) bool repairSelectFlag,
+    @Default(<int>[]) List<int> selectedRepairRecordNumber,
   }) = _AppParamsResponseState;
 }
