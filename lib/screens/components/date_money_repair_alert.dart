@@ -49,10 +49,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('金種枚数修正'),
-                  Container(),
-                ],
+                children: <Widget>[const Text('金種枚数修正'), Container()],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,12 +57,16 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                 children: <Widget>[
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       const Text('開始日付'),
                       Row(
                         children: <Widget>[
                           GestureDetector(
-                            onTap: () => _showDP(),
+                            onTap: () {
+                              ref.read(moneyRepairControllerProvider.notifier).clearMoneyModelListData();
+
+                              _showDP();
+                            },
                             child: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
                           ),
                           const SizedBox(width: 20),

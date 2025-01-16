@@ -16,6 +16,7 @@ Future<void> MoneyDialog({
   bool? executeFunctionWhenDialogClose,
   WidgetRef? ref,
 }) {
+  // ignore: inference_failure_on_function_invocation
   return showDialog(
     context: context,
     barrierColor: clearBarrierColor ? Colors.transparent : Colors.blueGrey.withOpacity(0.3),
@@ -30,6 +31,7 @@ Future<void> MoneyDialog({
         ),
       );
     },
+    // ignore: always_specify_types
   ).then((value) {
     // ignore: use_if_null_to_convert_nulls_to_bools
     if (executeFunctionWhenDialogClose == true) {
