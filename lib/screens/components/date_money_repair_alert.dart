@@ -152,14 +152,6 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
             ..yen_1 = moneyModel.yen_1;
 
           await MoneysRepository().updateMoney(isar: widget.isar, money: value);
-          //     // ignore: always_specify_types
-          //     .then((value) {
-          //   if (mounted) {
-          //     Navigator.pop(context);
-          //
-          //     Navigator.pop(context);
-          //   }
-          // });
         });
       });
     });
@@ -291,6 +283,10 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                           .setRepairSelectValue(date: moneyModelList[i].date, kind: e.key);
 
                       ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: false);
+
+                      ref
+                          .read(appParamProvider.notifier)
+                          .setMoneyRepairInputParams(bigEntries: _bigEntries, setStateCallback: setState);
 
                       addBigOverlay(
                         context: context,

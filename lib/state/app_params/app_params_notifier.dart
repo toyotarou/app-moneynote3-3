@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'app_params_response_state.dart';
 
@@ -59,4 +60,12 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
 
   ///
   void clearSelectedRepairRecordNumber() => state = state.copyWith(selectedRepairRecordNumber: <int>[]);
+
+  ///
+  void setMoneyRepairInputParams({
+    required List<OverlayEntry>? bigEntries,
+    required void Function(VoidCallback fn)? setStateCallback,
+  }) {
+    state = state.copyWith(bigEntries: bigEntries, setStateCallback: setStateCallback);
+  }
 }

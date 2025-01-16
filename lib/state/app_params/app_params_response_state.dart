@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'app_params_response_state.freezed.dart';
@@ -19,5 +20,7 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default(-1) int repairSelectKind,
     @Default(false) bool repairSelectFlag,
     @Default(<int>[]) List<int> selectedRepairRecordNumber,
+    List<OverlayEntry>? bigEntries,
+    void Function(VoidCallback fn)? setStateCallback,
   }) = _AppParamsResponseState;
 }

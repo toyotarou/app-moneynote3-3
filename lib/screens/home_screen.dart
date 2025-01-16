@@ -554,6 +554,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
                       isar: widget.isar,
                     ),
+                    executeFunctionWhenDialogClose: true,
+                    ref: ref,
                   );
                 },
                 child: Row(

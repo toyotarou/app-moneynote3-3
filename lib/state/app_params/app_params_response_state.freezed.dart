@@ -32,6 +32,9 @@ mixin _$AppParamsResponseState {
   bool get repairSelectFlag => throw _privateConstructorUsedError;
   List<int> get selectedRepairRecordNumber =>
       throw _privateConstructorUsedError;
+  List<OverlayEntry>? get bigEntries => throw _privateConstructorUsedError;
+  void Function(void Function())? get setStateCallback =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppParamsResponseStateCopyWith<AppParamsResponseState> get copyWith =>
@@ -58,7 +61,9 @@ abstract class $AppParamsResponseStateCopyWith<$Res> {
       String repairSelectDate,
       int repairSelectKind,
       bool repairSelectFlag,
-      List<int> selectedRepairRecordNumber});
+      List<int> selectedRepairRecordNumber,
+      List<OverlayEntry>? bigEntries,
+      void Function(void Function())? setStateCallback});
 }
 
 /// @nodoc
@@ -89,6 +94,8 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
     Object? repairSelectKind = null,
     Object? repairSelectFlag = null,
     Object? selectedRepairRecordNumber = null,
+    Object? bigEntries = freezed,
+    Object? setStateCallback = freezed,
   }) {
     return _then(_value.copyWith(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -148,6 +155,14 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
           ? _value.selectedRepairRecordNumber
           : selectedRepairRecordNumber // ignore: cast_nullable_to_non_nullable
               as List<int>,
+      bigEntries: freezed == bigEntries
+          ? _value.bigEntries
+          : bigEntries // ignore: cast_nullable_to_non_nullable
+              as List<OverlayEntry>?,
+      setStateCallback: freezed == setStateCallback
+          ? _value.setStateCallback
+          : setStateCallback // ignore: cast_nullable_to_non_nullable
+              as void Function(void Function())?,
     ) as $Val);
   }
 }
@@ -175,7 +190,9 @@ abstract class _$$AppParamsResponseStateImplCopyWith<$Res>
       String repairSelectDate,
       int repairSelectKind,
       bool repairSelectFlag,
-      List<int> selectedRepairRecordNumber});
+      List<int> selectedRepairRecordNumber,
+      List<OverlayEntry>? bigEntries,
+      void Function(void Function())? setStateCallback});
 }
 
 /// @nodoc
@@ -205,6 +222,8 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
     Object? repairSelectKind = null,
     Object? repairSelectFlag = null,
     Object? selectedRepairRecordNumber = null,
+    Object? bigEntries = freezed,
+    Object? setStateCallback = freezed,
   }) {
     return _then(_$AppParamsResponseStateImpl(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -264,6 +283,14 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
           ? _value._selectedRepairRecordNumber
           : selectedRepairRecordNumber // ignore: cast_nullable_to_non_nullable
               as List<int>,
+      bigEntries: freezed == bigEntries
+          ? _value._bigEntries
+          : bigEntries // ignore: cast_nullable_to_non_nullable
+              as List<OverlayEntry>?,
+      setStateCallback: freezed == setStateCallback
+          ? _value.setStateCallback
+          : setStateCallback // ignore: cast_nullable_to_non_nullable
+              as void Function(void Function())?,
     ));
   }
 }
@@ -285,8 +312,11 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       this.repairSelectDate = '',
       this.repairSelectKind = -1,
       this.repairSelectFlag = false,
-      final List<int> selectedRepairRecordNumber = const <int>[]})
-      : _selectedRepairRecordNumber = selectedRepairRecordNumber;
+      final List<int> selectedRepairRecordNumber = const <int>[],
+      final List<OverlayEntry>? bigEntries,
+      this.setStateCallback})
+      : _selectedRepairRecordNumber = selectedRepairRecordNumber,
+        _bigEntries = bigEntries;
 
   @override
   final DateTime? calendarSelectedDate;
@@ -336,9 +366,22 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
     return EqualUnmodifiableListView(_selectedRepairRecordNumber);
   }
 
+  final List<OverlayEntry>? _bigEntries;
+  @override
+  List<OverlayEntry>? get bigEntries {
+    final value = _bigEntries;
+    if (value == null) return null;
+    if (_bigEntries is EqualUnmodifiableListView) return _bigEntries;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  final void Function(void Function())? setStateCallback;
+
   @override
   String toString() {
-    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber)';
+    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback)';
   }
 
   @override
@@ -377,7 +420,11 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
                 other.repairSelectFlag == repairSelectFlag) &&
             const DeepCollectionEquality().equals(
                 other._selectedRepairRecordNumber,
-                _selectedRepairRecordNumber));
+                _selectedRepairRecordNumber) &&
+            const DeepCollectionEquality()
+                .equals(other._bigEntries, _bigEntries) &&
+            (identical(other.setStateCallback, setStateCallback) ||
+                other.setStateCallback == setStateCallback));
   }
 
   @override
@@ -396,7 +443,9 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       repairSelectDate,
       repairSelectKind,
       repairSelectFlag,
-      const DeepCollectionEquality().hash(_selectedRepairRecordNumber));
+      const DeepCollectionEquality().hash(_selectedRepairRecordNumber),
+      const DeepCollectionEquality().hash(_bigEntries),
+      setStateCallback);
 
   @JsonKey(ignore: true)
   @override
@@ -421,7 +470,9 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
           final String repairSelectDate,
           final int repairSelectKind,
           final bool repairSelectFlag,
-          final List<int> selectedRepairRecordNumber}) =
+          final List<int> selectedRepairRecordNumber,
+          final List<OverlayEntry>? bigEntries,
+          final void Function(void Function())? setStateCallback}) =
       _$AppParamsResponseStateImpl;
 
   @override
@@ -452,6 +503,10 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
   bool get repairSelectFlag;
   @override
   List<int> get selectedRepairRecordNumber;
+  @override
+  List<OverlayEntry>? get bigEntries;
+  @override
+  void Function(void Function())? get setStateCallback;
   @override
   @JsonKey(ignore: true)
   _$$AppParamsResponseStateImplCopyWith<_$AppParamsResponseStateImpl>

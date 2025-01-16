@@ -1,6 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'money_overlay.dart';
 
 Future<void> MoneyDialog({
   required BuildContext context,
@@ -10,6 +13,8 @@ Future<void> MoneyDialog({
   double paddingBottom = 0,
   double paddingLeft = 0,
   bool clearBarrierColor = false,
+  bool? executeFunctionWhenDialogClose,
+  WidgetRef? ref,
 }) {
   return showDialog(
     context: context,
@@ -25,5 +30,15 @@ Future<void> MoneyDialog({
         ),
       );
     },
-  );
+  ).then((value) {
+    // ignore: use_if_null_to_convert_nulls_to_bools
+    if (executeFunctionWhenDialogClose == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ModalRoute<Object?>? route = ModalRoute.of(context);
+        if (route != null && route.isCurrent) {
+          closeAllOverlays(ref: ref!);
+        }
+      });
+    }
+  });
 }
