@@ -243,12 +243,18 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
   Widget _displayAfterMoneyList() {
     final List<Widget> list = <Widget>[];
 
-    final AppParamsResponseState appParamState = ref.watch(appParamProvider);
-
     final List<MoneyModel> moneyModelList =
         ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
 
     moneyModelListLength = moneyModelList.length;
+
+    final AppParamsResponseState appParamState = ref.watch(appParamProvider);
+
+    Offset initialPosition = Offset(context.screenSize.width * 0.6, context.screenSize.height * 0.2);
+
+    if (appParamState.overlayPosition != null) {
+      initialPosition = appParamState.overlayPosition!;
+    }
 
     for (int i = 0; i < moneyModelList.length; i++) {
       if (moneyModelList[i].date != '') {
@@ -296,7 +302,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                         width: context.screenSize.width * 0.4,
                         height: 260,
                         color: Colors.blueGrey.withOpacity(0.3),
-                        initialPosition: Offset(context.screenSize.width * 0.6, context.screenSize.height * 0.2),
+                        initialPosition: initialPosition,
                         widget: Consumer(
                           builder: (BuildContext context, WidgetRef ref, Widget? child) {
                             final AppParamsResponseState appParamState = ref.watch(appParamProvider);
@@ -308,13 +314,8 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                             );
                           },
                         ),
-                        onPositionChanged: (Offset newPos) {
-                          // print(newPos);
-                          //
-                          //
-
-                          ref.read(appParamProvider.notifier).updateOverlayPosition(newPos);
-                        },
+                        onPositionChanged: (Offset newPos) =>
+                            ref.read(appParamProvider.notifier).updateOverlayPosition(newPos),
                       );
                     },
                     child: Container(
