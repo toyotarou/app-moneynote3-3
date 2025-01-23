@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../state/app_params/app_params_notifier.dart';
 import 'money_overlay.dart';
 
 Future<void> MoneyDialog({
@@ -15,6 +16,7 @@ Future<void> MoneyDialog({
   bool clearBarrierColor = false,
   bool? executeFunctionWhenDialogClose,
   WidgetRef? ref,
+  String? from,
 }) {
   // ignore: inference_failure_on_function_invocation
   return showDialog(
@@ -39,6 +41,10 @@ Future<void> MoneyDialog({
         final ModalRoute<Object?>? route = ModalRoute.of(context);
         if (route != null && route.isCurrent) {
           closeAllOverlays(ref: ref!);
+
+          if (from == 'AllTotalMoneyGraphPage') {
+            ref.read(appParamProvider.notifier).setSelectedGraphMonth(month: -1);
+          }
         }
       });
     }

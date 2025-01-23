@@ -107,6 +107,9 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
                                         element.date.split('-')[1] == e.toString().padLeft(2, '0'))
                                     .toList(),
                               ),
+                              executeFunctionWhenDialogClose: true,
+                              ref: ref,
+                              from: 'AllTotalMoneyGraphPage',
                             );
                           },
                           child: CircleAvatar(
