@@ -233,7 +233,11 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
 
             final DateTime today = DateTime.now();
             final DateTime newYear = DateTime(today.year);
-            final int dayOfYear = today.difference(newYear).inDays + 1;
+            int dayOfYear = today.difference(newYear).inDays + 1;
+
+            if (widget.year != DateTime.now().year) {
+              dayOfYear = -1;
+            }
 
             return FlLine(
               color: (value.toInt() == dayOfYear)

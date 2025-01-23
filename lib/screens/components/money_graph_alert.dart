@@ -168,13 +168,13 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         }
 
         for (final SpendTimePlace element in widget.monthSTPList) {
-          if (element.date.split('-')[0] == DateTime.now().year.toString()) {
+          if (element.date.split('-')[0] == widget.date.yyyy) {
             map100[element.date] = <int>[];
           }
         }
 
         for (final SpendTimePlace element in widget.monthSTPList) {
-          if (element.date.split('-')[0] == DateTime.now().year.toString()) {
+          if (element.date.split('-')[0] == widget.date.yyyy) {
             map100[element.date]?.add(element.price);
           }
         }
@@ -200,13 +200,13 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
         }
 
         for (final SpendTimePlace element in widget.monthSTPList) {
-          if (element.date.split('-')[0] == DateTime.now().year.toString()) {
+          if (element.date.split('-')[0] == widget.date.yyyy) {
             map100[element.date] = <int>[];
           }
         }
 
         for (final SpendTimePlace element in widget.monthSTPList) {
-          if (element.date.split('-')[0] == DateTime.now().year.toString()) {
+          if (element.date.split('-')[0] == widget.date.yyyy) {
             map100[element.date]?.add(element.price);
           }
         }
@@ -319,6 +319,10 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
           getDrawingVerticalLine: (double value) {
             final String youbi =
                 DateTime(widget.date.year, widget.date.month).add(Duration(days: value.toInt() - 1)).youbiStr;
+
+            if (widget.date.year != DateTime.now().year) {
+              value = -1;
+            }
 
             return FlLine(
               color: (value.toInt() == DateTime.now().day)
