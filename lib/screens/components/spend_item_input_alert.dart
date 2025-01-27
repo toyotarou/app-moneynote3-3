@@ -382,21 +382,29 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
             onColorChanged: (Color color) async {
               mycolor = color;
 
-              final List<String> exColor = color.toString().split(' ');
-              String colorCode = '';
-              if (exColor.length == 3) {
-                colorCode = exColor[2].replaceAll('Color(', '').replaceAll(')', '');
-              } else {
-                colorCode = exColor[0].replaceAll('Color(', '').replaceAll(')', '');
+              final List<String> exColor = color.toString().split('(');
+
+              final RegExp reg = RegExp('0xff');
+
+              String colorParts = '';
+              for (final String elements in exColor) {
+                if (reg.firstMatch(elements) != null) {
+                  colorParts = elements;
+                }
               }
 
-              // ignore: always_specify_types
-              await _updateColorCode(id: id, color: colorCode).then((value) {
-                // ignore: use_build_context_synchronously
-                Navigator.pop(context);
-                // ignore: use_build_context_synchronously
-                Navigator.pop(context);
-              });
+              if (colorParts != '') {
+                final String colorCode = colorParts.replaceAll(')', '');
+
+                // ignore: always_specify_types
+                await _updateColorCode(id: id, color: colorCode).then((value) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.pop(context);
+
+                  // ignore: use_build_context_synchronously
+                  Navigator.pop(context);
+                });
+              }
             },
           ),
         );
