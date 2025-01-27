@@ -6,7 +6,15 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
+
+        // ここを最新 (1.8.x～1.9.x など) に合わせる
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
+        // 既にあるかもしれませんが、Android Gradle Plugin もアップデートしておくと良いです
+        classpath "com.android.tools.build:gradle:8.1.0"
+
     }
 }
 
