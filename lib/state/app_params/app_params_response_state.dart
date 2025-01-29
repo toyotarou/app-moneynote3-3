@@ -23,5 +23,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     List<OverlayEntry>? bigEntries,
     void Function(VoidCallback fn)? setStateCallback,
     Offset? overlayPosition,
+    @Default('') String selectedBankPriceYear,
   }) = _AppParamsResponseState;
 }

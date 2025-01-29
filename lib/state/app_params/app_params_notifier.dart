@@ -71,4 +71,7 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
 
   ///
   void updateOverlayPosition(Offset newPos) => state = state.copyWith(overlayPosition: newPos);
+
+  ///
+  void setSelectedBankPriceYear({required String year}) => state = state.copyWith(selectedBankPriceYear: year);
 }

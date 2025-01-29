@@ -11,6 +11,8 @@ import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/bank_prices_repository.dart';
+import '../../state/app_params/app_params_notifier.dart';
+import '../../state/app_params/app_params_response_state.dart';
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
@@ -92,6 +94,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                   ],
                 ),
               ],
+              displayBankYearSelector(),
               Row(
                 children: <Widget>[
                   const SizedBox(width: 50),
@@ -131,12 +134,64 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   }
 
   ///
+  Widget displayBankYearSelector() {
+    final List<Widget> list = <Widget>[
+      GestureDetector(
+        onTap: () => ref.read(appParamProvider.notifier).setSelectedBankPriceYear(year: ''),
+        child: Container(
+          decoration:
+              BoxDecoration(color: Colors.orangeAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          child: const Text('-'),
+        ),
+      ),
+    ];
+
+    final List<String> yearList = <String>[];
+
+    bankPriceList?.forEach((BankPrice element) {
+      if (!yearList.contains(element.date.split('-')[0])) {
+        yearList.add(element.date.split('-')[0]);
+      }
+    });
+
+    if (yearList.length == 1) {
+      return Container();
+    }
+
+    for (final String element in yearList) {
+      list.add(
+        GestureDetector(
+          onTap: () {
+            ref.read(appParamProvider.notifier).setSelectedBankPriceYear(year: element);
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            child: Text(element),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      height: 40,
+      margin: const EdgeInsets.only(bottom: 10),
+      width: context.screenSize.width,
+      child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: list)),
+    );
+  }
+
+  ///
   Widget _displayInputParts() {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: <BoxShadow>[
-          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
-        ],
+        boxShadow: <BoxShadow>[BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -256,6 +311,9 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   Future<List<Widget>> _displayBankPrices() async {
     await _makeBankPriceList();
 
+    final String selectedBankPriceYear =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedBankPriceYear));
+
     final List<Widget> list = <Widget>[];
 
     bankPriceList?.sort((BankPrice a, BankPrice b) => a.date.compareTo(b.date));
@@ -264,41 +322,48 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
 
     for (int i = 0; i < bankPriceList!.length; i++) {
       final DateTime genDate = DateTime.parse('${bankPriceList![i].date} 00:00:00');
-
       final int diff = widget.date.difference(genDate).inDays;
 
       if (diff < 0) {
         continue;
       }
 
-      list.add(Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-        child: Row(
-          children: <Widget>[
-            SizedBox(
-              width: 50,
-              child: Column(
-                children: <Widget>[
-                  Text(bankPriceList![i].date.split('-')[0]),
-                  Text('${bankPriceList![i].date.split('-')[1]}-${bankPriceList![i].date.split('-')[2]}')
-                ],
-              ),
-            ),
-            Expanded(
+      final String year = bankPriceList![i].date.split('-')[0];
+      if (selectedBankPriceYear.isNotEmpty && year != selectedBankPriceYear) {
+        continue;
+      }
+
+      list.add(
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          child: Row(
+            children: <Widget>[
+              SizedBox(
+                width: 50,
                 child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                displayRecordRow(data: bankPriceList!, index: i, beforePrice: keepPrice),
-                GestureDetector(
-                  onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
-                  child: Text('delete', style: TextStyle(fontSize: 12, color: contextBlue)),
+                  children: <Widget>[
+                    Text(bankPriceList![i].date.split('-')[0]),
+                    Text('${bankPriceList![i].date.split('-')[1]}-${bankPriceList![i].date.split('-')[2]}')
+                  ],
                 ),
-              ],
-            )),
-          ],
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    displayRecordRow(data: bankPriceList!, index: i, beforePrice: keepPrice),
+                    GestureDetector(
+                      onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
+                      child: Text('delete', style: TextStyle(fontSize: 12, color: contextBlue)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ));
+      );
 
       keepPrice = bankPriceList![i].price;
     }
