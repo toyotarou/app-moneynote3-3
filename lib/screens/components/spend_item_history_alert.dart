@@ -31,16 +31,16 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
   List<SpendTimePlace>? _spendItemPlaceHistoryList = <SpendTimePlace>[];
 
   ///
-  void _init() {
+  @override
+  void initState() {
+    super.initState();
+
     _makeSpendItemPlaceHistoryList();
   }
 
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -82,8 +82,7 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
 
     await SpendTimePlacesRepository()
         .getSpendTypeSpendTimePlaceList(isar: widget.isar, param: param)
-        .then((List<SpendTimePlace>? value) =>
-            setState(() => _spendItemPlaceHistoryList = value));
+        .then((List<SpendTimePlace>? value) => setState(() => _spendItemPlaceHistoryList = value));
   }
 
   ///

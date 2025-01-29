@@ -117,7 +117,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<Income>? _incomeList = <Income>[];
 
   ///
-  void _init() {
+  @override
+  void initState() {
+    super.initState();
+
     _makeMoneyList();
     _makeBankPriceList();
 
@@ -137,9 +140,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
-
     if (widget.baseYm != null) {
       // ignore: always_specify_types
       Future(() => ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm));

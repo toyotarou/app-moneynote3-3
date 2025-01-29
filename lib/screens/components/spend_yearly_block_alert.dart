@@ -19,19 +19,14 @@ import 'parts/money_dialog.dart';
 import 'spend_yearly_graph_alert.dart';
 
 class SpendYearlyBlockAlert extends ConsumerStatefulWidget {
-  const SpendYearlyBlockAlert(
-      {super.key,
-      required this.date,
-      required this.isar,
-      required this.allSpendTimePlaceList});
+  const SpendYearlyBlockAlert({super.key, required this.date, required this.isar, required this.allSpendTimePlaceList});
 
   final DateTime date;
   final Isar isar;
   final List<SpendTimePlace> allSpendTimePlaceList;
 
   @override
-  ConsumerState<SpendYearlyBlockAlert> createState() =>
-      _SpendYearlyBlockAlertState();
+  ConsumerState<SpendYearlyBlockAlert> createState() => _SpendYearlyBlockAlertState();
 }
 
 class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
@@ -43,7 +38,10 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   List<SpendItem>? _spendItemList = <SpendItem>[];
 
   ///
-  void _init() {
+  @override
+  void initState() {
+    super.initState();
+
     _makeYearlySpendSumMap();
 
     _makeSpendItemList();
@@ -52,9 +50,6 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -67,10 +62,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text('年間使用金額比較'),
-                  Text(widget.date.yyyy)
-                ],
+                children: <Widget>[const Text('年間使用金額比較'), Text(widget.date.yyyy)],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
@@ -87,8 +79,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                         ),
                       );
                     },
-                    child: Icon(Icons.summarize_outlined,
-                        color: Colors.white.withOpacity(0.6), size: 20),
+                    child: Icon(Icons.summarize_outlined, color: Colors.white.withOpacity(0.6), size: 20),
                   ),
                 ],
               ),
@@ -112,8 +103,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
         yearlySpendTimePlaceList = value;
 
         if (value != null) {
-          _yearlySpendSumMap = makeYearlySpendItemSumMap(
-              spendItemList: _spendItemList, spendTimePlaceList: value);
+          _yearlySpendSumMap = makeYearlySpendItemSumMap(spendItemList: _spendItemList, spendTimePlaceList: value);
         }
       });
     });
@@ -173,9 +163,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
       if (map.isNotEmpty) {
         final String? lineColor =
-            (spendItemColorMap[key] != null && spendItemColorMap[key] != '')
-                ? spendItemColorMap[key]
-                : '0xffffffff';
+            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
 
         list.add(Container(
           width: context.screenSize.width,
@@ -183,10 +171,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
           margin: const EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: <Color>[
-                Colors.indigo.withOpacity(0.8),
-                Colors.transparent
-              ],
+              colors: <Color>[Colors.indigo.withOpacity(0.8), Colors.transparent],
               stops: const <double>[0.7, 1],
             ),
           ),
@@ -237,21 +222,16 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                   width: oneWidth,
                   padding: const EdgeInsets.all(2),
                   margin: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white.withOpacity(0.4))),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.4))),
                   alignment: Alignment.topRight,
                   child: Text(
                     element.toString().toCurrency(),
-                    style: TextStyle(
-                        color: (i == widget.date.month)
-                            ? Colors.yellowAccent
-                            : Colors.white),
+                    style: TextStyle(color: (i == widget.date.month) ? Colors.yellowAccent : Colors.white),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.all(5),
-                  child: Text(i.toString().padLeft(2, '0'),
-                      style: const TextStyle(color: Colors.grey)),
+                  child: Text(i.toString().padLeft(2, '0'), style: const TextStyle(color: Colors.grey)),
                 ),
               ],
             ),
@@ -271,29 +251,24 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
           children: <Widget>[
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              decoration:
-                  BoxDecoration(color: Colors.yellowAccent.withOpacity(0.1)),
+              decoration: BoxDecoration(color: Colors.yellowAccent.withOpacity(0.1)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Text('Total',
-                      style: TextStyle(color: Colors.yellowAccent)),
-                  Text(allTotal.toString().toCurrency(),
-                      style: const TextStyle(color: Colors.yellowAccent)),
+                  const Text('Total', style: TextStyle(color: Colors.yellowAccent)),
+                  Text(allTotal.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
                 ],
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              decoration:
-                  BoxDecoration(color: Colors.blueAccent.withOpacity(0.1)),
+              decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      const Text('Spend Total',
-                          style: TextStyle(color: Colors.lightBlueAccent)),
+                      const Text('Spend Total', style: TextStyle(color: Colors.lightBlueAccent)),
                       const SizedBox(width: 20),
                       if (spendTotalMap.isNotEmpty)
                         GestureDetector(
@@ -308,15 +283,13 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                             ),
                             clearBarrierColor: true,
                           ),
-                          child: const Icon(Icons.pie_chart,
-                              color: Colors.lightBlueAccent, size: 15),
+                          child: const Icon(Icons.pie_chart, color: Colors.lightBlueAccent, size: 15),
                         )
                       else
                         Container(),
                     ],
                   ),
-                  Text(spendTotal.toString().toCurrency(),
-                      style: const TextStyle(color: Colors.lightBlueAccent)),
+                  Text(spendTotal.toString().toCurrency(), style: const TextStyle(color: Colors.lightBlueAccent)),
                 ],
               ),
             ),

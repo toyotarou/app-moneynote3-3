@@ -24,26 +24,24 @@ class IncomeInputAlert extends ConsumerStatefulWidget {
 }
 
 class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
-  final TextEditingController _incomePriceEditingController =
-      TextEditingController();
-  final TextEditingController _incomeSourceEditingController =
-      TextEditingController();
+  final TextEditingController _incomePriceEditingController = TextEditingController();
+  final TextEditingController _incomeSourceEditingController = TextEditingController();
 
   List<Income>? _incomeList = <Income>[];
 
   List<String> _yearList = <String>[];
 
   ///
-  void _init() {
+  @override
+  void initState() {
+    super.initState();
+
     _makeIncomeList();
   }
 
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -56,10 +54,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text('収入履歴登録'),
-                  Text(widget.date.yyyymm)
-                ],
+                children: <Widget>[const Text('収入履歴登録'), Text(widget.date.yyyymm)],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               _displayInputParts(),
@@ -67,8 +62,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(),
-                  TextButton(
-                      onPressed: _insertIncome, child: const Text('入力する')),
+                  TextButton(onPressed: _insertIncome, child: const Text('入力する')),
                 ],
               ),
               SizedBox(height: 40, child: _displayYearButton()),
@@ -82,16 +76,13 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Widget _displayInputParts() {
-    final String incomeInputDate = ref.watch(appParamProvider
-        .select((AppParamsResponseState value) => value.incomeInputDate));
+    final String incomeInputDate =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.incomeInputDate));
 
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
-          BoxShadow(
-              blurRadius: 24,
-              spreadRadius: 16,
-              color: Colors.black.withOpacity(0.2)),
+          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
         ],
       ),
       child: ClipRRect(
@@ -105,8 +96,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,14 +105,12 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: _showDP,
-                      child: Icon(Icons.calendar_month,
-                          color: Colors.greenAccent.withOpacity(0.6)),
+                      child: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
                     ),
                     const SizedBox(width: 10),
                     SizedBox(
                       width: context.screenSize.width / 6,
-                      child: Text(incomeInputDate,
-                          style: const TextStyle(fontSize: 10)),
+                      child: Text(incomeInputDate, style: const TextStyle(fontSize: 10)),
                     ),
                   ],
                 ),
@@ -131,33 +119,27 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
                   controller: _incomePriceEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '金額(10桁以内)',
                     filled: true,
                     border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (PointerDownEvent event) =>
-                      FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
                 ),
                 TextField(
                   controller: _incomeSourceEditingController,
                   decoration: const InputDecoration(
                     isDense: true,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: '支払い元(30文字以内)',
                     filled: true,
                     border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white54)),
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
-                  onTapOutside: (PointerDownEvent event) =>
-                      FocusManager.instance.primaryFocus?.unfocus(),
+                  onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
                 ),
               ],
             ),
@@ -195,9 +177,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
     );
 
     if (selectedDate != null) {
-      ref
-          .read(appParamProvider.notifier)
-          .setIncomeInputDate(date: selectedDate.yyyymmdd);
+      ref.read(appParamProvider.notifier).setIncomeInputDate(date: selectedDate.yyyymmdd);
     }
   }
 
@@ -205,9 +185,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
   Future<void> _makeIncomeList() async {
     _yearList = <String>[];
 
-    await IncomesRepository()
-        .getIncomeList(isar: widget.isar)
-        .then((List<Income>? value) {
+    await IncomesRepository().getIncomeList(isar: widget.isar).then((List<Income>? value) {
       setState(() {
         _incomeList = value;
 
@@ -224,24 +202,20 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   Widget _displayYearButton() {
-    final String selectedIncomeYear = ref.watch(appParamProvider
-        .select((AppParamsResponseState value) => value.selectedIncomeYear));
+    final String selectedIncomeYear =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedIncomeYear));
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: <Widget>[
           GestureDetector(
-            onTap: () async => ref
-                .read(appParamProvider.notifier)
-                .setSelectedIncomeYear(year: ''),
+            onTap: () async => ref.read(appParamProvider.notifier).setSelectedIncomeYear(year: ''),
             child: Container(
               margin: const EdgeInsets.all(5),
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               decoration: BoxDecoration(
-                color: (selectedIncomeYear == '')
-                    ? Colors.yellowAccent.withOpacity(0.2)
-                    : Colors.black,
+                color: (selectedIncomeYear == '') ? Colors.yellowAccent.withOpacity(0.2) : Colors.black,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Icon(Icons.close, size: 14),
@@ -251,17 +225,12 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _yearList.map((String e) {
               return GestureDetector(
-                onTap: () async => ref
-                    .read(appParamProvider.notifier)
-                    .setSelectedIncomeYear(year: e),
+                onTap: () async => ref.read(appParamProvider.notifier).setSelectedIncomeYear(year: e),
                 child: Container(
                   margin: const EdgeInsets.all(5),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   decoration: BoxDecoration(
-                    color: (selectedIncomeYear == e)
-                        ? Colors.yellowAccent.withOpacity(0.2)
-                        : Colors.black,
+                    color: (selectedIncomeYear == e) ? Colors.yellowAccent.withOpacity(0.2) : Colors.black,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(e),
@@ -281,8 +250,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
     List<Income> icList = <Income>[];
 
     if (_incomeList!.isNotEmpty) {
-      final String selectedIncomeYear = ref.watch(appParamProvider
-          .select((AppParamsResponseState value) => value.selectedIncomeYear));
+      final String selectedIncomeYear =
+          ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedIncomeYear));
 
       if (selectedIncomeYear == '') {
         icList = _incomeList!;
@@ -299,9 +268,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       list.add(
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -312,15 +279,12 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
                   Text(element.price.toString().toCurrency()),
                 ],
               ),
-              Text(element.sourceName,
-                  maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text(element.sourceName, maxLines: 1, overflow: TextOverflow.ellipsis),
               GestureDetector(
                 onTap: () async => _showDeleteDialog(id: element.id),
                 child: Text(
                   'delete',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.primary),
+                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
                 ),
               ),
             ],
@@ -345,8 +309,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
   Future<void> _insertIncome() async {
     bool errFlg = false;
 
-    if (_incomePriceEditingController.text.trim() == '' ||
-        _incomeSourceEditingController.text.trim() == '') {
+    if (_incomePriceEditingController.text.trim() == '' || _incomeSourceEditingController.text.trim() == '') {
       errFlg = true;
     }
 
@@ -355,8 +318,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
         <Object>[_incomePriceEditingController.text.trim(), 10],
         <Object>[_incomeSourceEditingController.text.trim(), 30]
       ]) {
-        if (!checkInputValueLengthCheck(
-            value: element[0].toString(), length: element[1] as int)) {
+        if (!checkInputValueLengthCheck(value: element[0].toString(), length: element[1] as int)) {
           errFlg = true;
         }
       }
@@ -376,8 +338,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
       return;
     }
 
-    final String incomeInputDate = ref.watch(appParamProvider
-        .select((AppParamsResponseState value) => value.incomeInputDate));
+    final String incomeInputDate =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.incomeInputDate));
 
     final Income income = Income()
       ..date = incomeInputDate
@@ -398,8 +360,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
 
   ///
   void _showDeleteDialog({required int id}) {
-    final Widget cancelButton = TextButton(
-        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {

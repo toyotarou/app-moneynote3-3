@@ -14,15 +14,13 @@ import '../../utilities/functions.dart';
 import '../../utilities/utilities.dart';
 
 class SpendMonthlyListAlert extends ConsumerStatefulWidget {
-  const SpendMonthlyListAlert(
-      {super.key, required this.date, required this.isar});
+  const SpendMonthlyListAlert({super.key, required this.date, required this.isar});
 
   final DateTime date;
   final Isar isar;
 
   @override
-  ConsumerState<SpendMonthlyListAlert> createState() =>
-      _SpendMonthlyListAlertState();
+  ConsumerState<SpendMonthlyListAlert> createState() => _SpendMonthlyListAlertState();
 }
 
 class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
@@ -31,15 +29,17 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   // ignore: use_late_for_private_fields_and_variables
   List<SpendTimePlace>? monthlySpendTimePlaceList = <SpendTimePlace>[];
 
-  final Map<String, Map<String, int>> _monthlySpendTimePlaceMap =
-      <String, Map<String, int>>{};
+  final Map<String, Map<String, int>> _monthlySpendTimePlaceMap = <String, Map<String, int>>{};
 
   Map<String, String> _holidayMap = <String, String>{};
 
   List<SpendItem>? _spendItemList = <SpendItem>[];
 
   ///
-  void _init() {
+  @override
+  void initState() {
+    super.initState();
+
     _makeMonthlySpendTimePlaceList();
 
     _makeSpendItemList();
@@ -48,9 +48,6 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -86,17 +83,13 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
         monthlySpendTimePlaceList = value;
 
         if (value!.isNotEmpty) {
-          final Map<String, List<SpendTimePlace>> map =
-              <String, List<SpendTimePlace>>{};
+          final Map<String, List<SpendTimePlace>> map = <String, List<SpendTimePlace>>{};
           value
-            ..forEach((SpendTimePlace element) =>
-                map[element.date] = <SpendTimePlace>[])
-            ..forEach(
-                (SpendTimePlace element) => map[element.date]?.add(element));
+            ..forEach((SpendTimePlace element) => map[element.date] = <SpendTimePlace>[])
+            ..forEach((SpendTimePlace element) => map[element.date]?.add(element));
 
-          map.forEach((String key, List<SpendTimePlace> value) =>
-              _monthlySpendTimePlaceMap[key] = makeMonthlySpendItemSumMap(
-                  spendTimePlaceList: value, spendItemList: _spendItemList));
+          map.forEach((String key, List<SpendTimePlace> value) => _monthlySpendTimePlaceMap[key] =
+              makeMonthlySpendItemSumMap(spendTimePlaceList: value, spendItemList: _spendItemList));
         }
       });
     });
@@ -119,40 +112,28 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
       }
     }
 
-    final int roopNum =
-        DateTime(widget.date.year, widget.date.month + 1, 0).day;
+    final int roopNum = DateTime(widget.date.year, widget.date.month + 1, 0).day;
 
     for (int i = 1; i <= roopNum; i++) {
-      final String genDate = DateTime(
-              widget.date.yyyymmdd.split('-')[0].toInt(),
-              widget.date.yyyymmdd.split('-')[1].toInt(),
-              i)
-          .yyyymmdd;
+      final String genDate =
+          DateTime(widget.date.yyyymmdd.split('-')[0].toInt(), widget.date.yyyymmdd.split('-')[1].toInt(), i).yyyymmdd;
 
       int sum = 0;
-      _monthlySpendTimePlaceMap[genDate]
-          ?.forEach((String key, int value) => sum += value);
+      _monthlySpendTimePlaceMap[genDate]?.forEach((String key, int value) => sum += value);
 
       final List<Widget> list2 = <Widget>[];
       _monthlySpendTimePlaceMap[genDate]?.forEach((String key, int value) {
         final String? lineColor =
-            (spendItemColorMap[key] != null && spendItemColorMap[key] != '')
-                ? spendItemColorMap[key]
-                : '0xffffffff';
+            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
 
         list2.add(Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: DefaultTextStyle(
             style: TextStyle(color: Color(lineColor!.toInt()), fontSize: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(key),
-                Text(value.toString().toCurrency())
-              ],
+              children: <Widget>[Text(key), Text(value.toString().toCurrency())],
             ),
           ),
         ));
@@ -180,10 +161,7 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
                         children: <Widget>[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(genDate),
-                              Text(sum.toString().toCurrency())
-                            ],
+                            children: <Widget>[Text(genDate), Text(sum.toString().toCurrency())],
                           ),
                           const SizedBox(height: 10),
                           Column(children: list2),
