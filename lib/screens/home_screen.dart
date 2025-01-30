@@ -117,10 +117,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<Income>? _incomeList = <Income>[];
 
   ///
-  @override
-  void initState() {
-    super.initState();
-
+  void _init() {
     _makeMoneyList();
     _makeBankPriceList();
 
@@ -140,6 +137,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
+    Future(_init);
+
     if (widget.baseYm != null) {
       // ignore: always_specify_types
       Future(() => ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm));
@@ -180,20 +180,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           if (calendarDisp)
             Row(
               children: <Widget>[
-                IconButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        // ignore: inference_failure_on_instance_creation, always_specify_types
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => HomeScreen(
-                            isar: widget.isar,
-                            baseYm: (widget.baseYm != '') ? widget.baseYm : DateTime.now().yyyymm,
-                          ),
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.refresh, color: Colors.white.withOpacity(0.6), size: 20)),
                 IconButton(
                   onPressed: () {
                     final List<int> years = <int>[];
