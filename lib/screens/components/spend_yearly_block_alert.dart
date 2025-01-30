@@ -38,10 +38,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   List<SpendItem>? _spendItemList = <SpendItem>[];
 
   ///
-  @override
-  void initState() {
-    super.initState();
-
+  void _init() {
     _makeYearlySpendSumMap();
 
     _makeSpendItemList();
@@ -50,6 +47,9 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
+    Future(_init);
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(

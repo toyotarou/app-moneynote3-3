@@ -36,10 +36,7 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   List<SpendItem>? _spendItemList = <SpendItem>[];
 
   ///
-  @override
-  void initState() {
-    super.initState();
-
+  void _init() {
     _makeMonthlySpendTimePlaceList();
 
     _makeSpendItemList();
@@ -48,6 +45,9 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
+    Future(_init);
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
