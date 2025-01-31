@@ -32,16 +32,16 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
   List<String> _yearList = <String>[];
 
   ///
-  @override
-  void initState() {
-    super.initState();
-
+  void _init() {
     _makeIncomeList();
   }
 
   ///
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
+    Future(_init);
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
