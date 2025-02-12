@@ -267,7 +267,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
       graphData = LineChartData(
         ///
-        minX: 0,
+        minX: 1,
         maxX: _flspots.length.toDouble(),
         //
         minY: graphMin.toDouble(),
@@ -351,7 +351,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
 
       graphData2 = LineChartData(
         ///
-        minX: 0,
+        minX: 1,
         maxX: _flspots.length.toDouble(),
         //
         minY: graphMin.toDouble(),
