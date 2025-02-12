@@ -191,7 +191,7 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
 
       graphData = LineChartData(
         ///
-        minX: 1,
+        minX: 0,
         maxX: _flspots.length.toDouble(),
         //
         minY: graphMin.toDouble(),
@@ -272,7 +272,7 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
 
       graphData2 = LineChartData(
         ///
-        minX: 1,
+        minX: 0,
         maxX: _flspots.length.toDouble(),
         //
         minY: graphMin.toDouble(),
