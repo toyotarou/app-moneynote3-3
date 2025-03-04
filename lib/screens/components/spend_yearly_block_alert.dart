@@ -124,8 +124,6 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
     int allTotal = 0;
     int spendTotal = 0;
-    final Map<String, int> spendTotalMap = <String, int>{};
-    int amari = 0;
 
     final Map<String, int> eachItemSpendMap = <String, int>{};
 
@@ -137,12 +135,6 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
       int sum = 0;
 
       for (final int element in value) {
-        // if (element > 0) {
-        //   map[element] = '';
-        //
-        //   sum += element;
-        // }
-
         map[element] = '';
         sum += element;
       }
@@ -153,12 +145,6 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
       if (sum >= 0) {
         spendTotal += sum;
-
-        if ((sum / 100000).floor() > 1) {
-          spendTotalMap[key] = sum;
-        } else {
-          amari += sum;
-        }
       }
 
       if (map.isNotEmpty) {
@@ -270,14 +256,12 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                     children: <Widget>[
                       const Text('Spend Total', style: TextStyle(color: Colors.lightBlueAccent)),
                       const SizedBox(width: 20),
-                      if (spendTotalMap.isNotEmpty)
+                      if (spendTotal > 0)
                         GestureDetector(
                           onTap: () => MoneyDialog(
                             context: context,
                             widget: SpendYearlyGraphAlert(
                               spendTotal: spendTotal,
-                              spendTotalMap: spendTotalMap,
-                              amari: amari,
                               spendItemList: _spendItemList ?? <SpendItem>[],
                               eachItemSpendMap: eachItemSpendMap,
                             ),
