@@ -13,31 +13,27 @@ import '../../state/app_params/app_params_notifier.dart';
 import '../../state/app_params/app_params_response_state.dart';
 
 class SameDaySpendPriceListAlert extends ConsumerStatefulWidget {
-  const SameDaySpendPriceListAlert(
-      {super.key, required this.isar, required this.spendTimePlaceList});
+  const SameDaySpendPriceListAlert({super.key, required this.isar, required this.spendTimePlaceList});
 
   final Isar isar;
   final List<SpendTimePlace> spendTimePlaceList;
 
   @override
-  ConsumerState<SameDaySpendPriceListAlert> createState() =>
-      _SameDaySpendPriceListAlertState();
+  ConsumerState<SameDaySpendPriceListAlert> createState() => _SameDaySpendPriceListAlertState();
 }
 
-class _SameDaySpendPriceListAlertState
-    extends ConsumerState<SameDaySpendPriceListAlert> {
+class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceListAlert> {
   final ItemScrollController controller = ItemScrollController();
   final ItemPositionsListener listener = ItemPositionsListener.create();
 
   ///
   @override
   Widget build(BuildContext context) {
-    final int sameDaySelectedDay = ref.watch(appParamProvider
-        .select((AppParamsResponseState value) => value.sameDaySelectedDay));
+    final int sameDaySelectedDay =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.sameDaySelectedDay));
 
     if (sameDaySelectedDay == DateTime.now().day) {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) async => controller.jumpTo(index: DateTime.now().day - 1));
+      WidgetsBinding.instance.addPostFrameCallback((_) async => controller.jumpTo(index: DateTime.now().day - 1));
     }
 
     return Scaffold(
@@ -52,6 +48,13 @@ class _SameDaySpendPriceListAlertState
               SizedBox(width: context.screenSize.width),
               const Text('同日消費比較'),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: <Widget>[
+              //     const SizedBox.shrink(),
+              //     TextButton(onPressed: () {}, child: const Text('年別')),
+              //   ],
+              // ),
               Expanded(
                 child: SizedBox(
                   width: context.screenSize.width,
@@ -59,11 +62,7 @@ class _SameDaySpendPriceListAlertState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Expanded(child: _displaySameDaySpendPriceList()),
-                      Container(
-                        width: 60,
-                        alignment: Alignment.topRight,
-                        child: _displayDayList(),
-                      ),
+                      Container(width: 60, alignment: Alignment.topRight, child: _displayDayList()),
                     ],
                   ),
                 ),
@@ -77,8 +76,8 @@ class _SameDaySpendPriceListAlertState
 
   ///
   Widget _displayDayList() {
-    final int sameDaySelectedDay = ref.watch(appParamProvider
-        .select((AppParamsResponseState value) => value.sameDaySelectedDay));
+    final int sameDaySelectedDay =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.sameDaySelectedDay));
 
     final List<int> list = <int>[];
 
@@ -96,18 +95,14 @@ class _SameDaySpendPriceListAlertState
           margin: const EdgeInsets.symmetric(vertical: 5),
           child: GestureDetector(
             onTap: () {
-              ref
-                  .read(appParamProvider.notifier)
-                  .setSameDaySelectedDay(day: index + 1);
+              ref.read(appParamProvider.notifier).setSameDaySelectedDay(day: index + 1);
 
               controller.jumpTo(index: index);
             },
             child: CircleAvatar(
-              backgroundColor: ((sameDaySelectedDay - 1) == index)
-                  ? Colors.orangeAccent.withOpacity(0.3)
-                  : Colors.black,
-              child: Text((index + 1).toString(),
-                  style: const TextStyle(fontSize: 12, color: Colors.white)),
+              backgroundColor:
+                  ((sameDaySelectedDay - 1) == index) ? Colors.orangeAccent.withOpacity(0.3) : Colors.black,
+              child: Text((index + 1).toString(), style: const TextStyle(fontSize: 12, color: Colors.white)),
             ),
           ),
         );
@@ -117,13 +112,12 @@ class _SameDaySpendPriceListAlertState
 
   ///
   Widget _displaySameDaySpendPriceList() {
-    final int sameDaySelectedDay = ref.watch(appParamProvider
-        .select((AppParamsResponseState value) => value.sameDaySelectedDay));
+    final int sameDaySelectedDay =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.sameDaySelectedDay));
 
     final List<Widget> list = <Widget>[];
 
-    final Map<String, List<SpendTimePlace>> spendTimePlaceMap =
-        <String, List<SpendTimePlace>>{};
+    final Map<String, List<SpendTimePlace>> spendTimePlaceMap = <String, List<SpendTimePlace>>{};
 
     for (final SpendTimePlace element in widget.spendTimePlaceList) {
       final List<String> exDate = element.date.split('-');
@@ -158,45 +152,67 @@ class _SameDaySpendPriceListAlertState
       eachMonthMinusPriceMap[key] = sum2;
     });
 
-    spendTimePlacePriceMap.forEach((String key, int value) {
-      list.add(Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    spendTimePlacePriceMap.forEach(
+      (String key, int value) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(key),
-                Text(value.toString().toCurrency()),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                const SizedBox(),
-                Text(
-                  (eachMonthMinusPriceMap[key] != null)
-                      ? eachMonthMinusPriceMap[key].toString().toCurrency()
-                      : 0.toString(),
-                  style: const TextStyle(color: Colors.grey),
+                SizedBox(
+                  width: context.screenSize.width * 0.2,
+                  child: Text(key),
+                ),
+                const SizedBox(width: 30),
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        decoration:
+                            BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            const Text('消費'),
+                            Text(
+                              (eachMonthMinusPriceMap[key] != null)
+                                  ? eachMonthMinusPriceMap[key].toString().toCurrency()
+                                  : 0.toString(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      DefaultTextStyle(
+                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        child: Container(
+                          decoration:
+                              BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              const Text('収支'),
+                              Text(value.toString().toCurrency()),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ],
-        ),
-      ));
-    });
+          ),
+        );
+      },
+    );
 
     return CustomScrollView(
       slivers: <Widget>[
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) => list[index],
-            childCount: list.length,
-          ),
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) => list[index], childCount: list.length),
         ),
       ],
     );
