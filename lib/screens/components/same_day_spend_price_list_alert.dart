@@ -11,6 +11,8 @@ import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
 import '../../state/app_params/app_params_notifier.dart';
 import '../../state/app_params/app_params_response_state.dart';
+import 'parts/money_dialog.dart';
+import 'same_year_day_spend_price_list_alert.dart';
 
 class SameDaySpendPriceListAlert extends ConsumerStatefulWidget {
   const SameDaySpendPriceListAlert({super.key, required this.isar, required this.spendTimePlaceList});
@@ -48,13 +50,20 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
               SizedBox(width: context.screenSize.width),
               const Text('同日消費比較'),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: <Widget>[
-              //     const SizedBox.shrink(),
-              //     TextButton(onPressed: () {}, child: const Text('年別')),
-              //   ],
-              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const SizedBox.shrink(),
+                  TextButton(
+                      onPressed: () {
+                        MoneyDialog(
+                          context: context,
+                          widget: SameYearDaySpendPriceListAlert(spendTimePlaceList: widget.spendTimePlaceList),
+                        );
+                      },
+                      child: const Text('年別')),
+                ],
+              ),
               Expanded(
                 child: SizedBox(
                   width: context.screenSize.width,
