@@ -51,10 +51,10 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (calendarYear == DateTime.now().year) {
-        final diffDays = DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
-        final index = (diffDays / 7).floor();
+        final int diffDays = DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
+        final int index = (diffDays / 7).floor();
 
-        final target = globalKeyList[index].currentContext!;
+        final BuildContext target = globalKeyList[index].currentContext!;
 
         await Scrollable.ensureVisible(
           target,
