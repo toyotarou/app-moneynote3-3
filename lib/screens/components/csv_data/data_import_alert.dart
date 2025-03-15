@@ -57,8 +57,8 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
   ///
   Future<void> _pickAndLoadCsvFile() async {
-    final FilePickerResult? result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: <String>['csv']);
+    final FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: <String>['csv']);
 
     if (result != null) {
       ///
@@ -119,8 +119,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _pickAndLoadCsvFile,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                       child: const Text('CSV選択'),
                     ),
                   ),
@@ -128,8 +127,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: registData,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                       child: const Text('登録'),
                     ),
                   ),
@@ -141,7 +139,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(),
+                    const SizedBox.shrink(),
                     Text(
                       '${csvContentsList.length} records.',
                       style: const TextStyle(color: Colors.yellowAccent),
@@ -197,8 +195,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white.withOpacity(0.2)),
             ),
-            child:
-                Text(exLine[j], maxLines: 1, overflow: TextOverflow.ellipsis),
+            child: Text(exLine[j], maxLines: 1, overflow: TextOverflow.ellipsis),
           ),
         );
       }
@@ -304,9 +301,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
     switch (csvName) {
       case 'bankName':
         await BankNamesRepository()
-            .inputBankNameList(
-                isar: widget.isar,
-                bankNameList: importDataList as List<BankName>)
+            .inputBankNameList(isar: widget.isar, bankNameList: importDataList as List<BankName>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {
@@ -316,9 +311,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       case 'bankPrice':
         await BankPricesRepository()
-            .inputBankPriceList(
-                isar: widget.isar,
-                bankPriceList: importDataList as List<BankPrice>)
+            .inputBankPriceList(isar: widget.isar, bankPriceList: importDataList as List<BankPrice>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {
@@ -328,9 +321,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       case 'emoneyName':
         await EmoneyNamesRepository()
-            .inputEmoneyNameList(
-                isar: widget.isar,
-                emoneyNameList: importDataList as List<EmoneyName>)
+            .inputEmoneyNameList(isar: widget.isar, emoneyNameList: importDataList as List<EmoneyName>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {
@@ -340,8 +331,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       case 'income':
         await IncomesRepository()
-            .inputIncomeList(
-                isar: widget.isar, incomeList: importDataList as List<Income>)
+            .inputIncomeList(isar: widget.isar, incomeList: importDataList as List<Income>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {
@@ -351,8 +341,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       case 'money':
         await MoneysRepository()
-            .inputMoneyList(
-                isar: widget.isar, moneyList: importDataList as List<Money>)
+            .inputMoneyList(isar: widget.isar, moneyList: importDataList as List<Money>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {
@@ -362,9 +351,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       case 'spendItem':
         await SpendItemsRepository()
-            .inputSpendItemList(
-                isar: widget.isar,
-                spendItemList: importDataList as List<SpendItem>)
+            .inputSpendItemList(isar: widget.isar, spendItemList: importDataList as List<SpendItem>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {
@@ -374,9 +361,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
       case 'spendTimePlace':
         await SpendTimePlacesRepository()
-            .inputSpendTimePriceList(
-                isar: widget.isar,
-                spendTimePriceList: importDataList as List<SpendTimePlace>)
+            .inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: importDataList as List<SpendTimePlace>)
             // ignore: always_specify_types
             .then((value) {
           if (mounted) {

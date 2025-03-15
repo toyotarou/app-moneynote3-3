@@ -115,9 +115,9 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
             children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[const Text('年間消費金額比率'), Container()],
+                children: <Widget>[Text('年間消費金額比率'), SizedBox.shrink()],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Row(
@@ -131,7 +131,7 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(),
+                    const SizedBox.shrink(),
                     GestureDetector(
                       onTap: () =>
                           ref.read(appParamProvider.notifier).setSelectedYearlySpendCircleGraphSpendItem(item: ''),
@@ -205,7 +205,7 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
                             },
                             child: CircleAvatar(radius: 10, backgroundColor: lineColor.withOpacity(0.4)),
                           )
-                        : Container(),
+                        : const SizedBox.shrink(),
                   ),
                   Text(entry.key),
                 ],

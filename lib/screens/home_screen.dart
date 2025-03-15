@@ -345,7 +345,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
             ],
-            if (!calendarDisp) ...<Widget>[Container()],
+            if (!calendarDisp) ...<Widget>[const SizedBox.shrink()],
             RichText(
               text: TextSpan(
                 text: minusVal.toString().toCurrency(),
@@ -430,7 +430,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   ),
                 ],
-                if (!calendarDisp) ...<Widget>[Container()],
+                if (!calendarDisp) ...<Widget>[const SizedBox.shrink()],
                 Row(
                   children: <Widget>[
                     IconButton(
@@ -935,7 +935,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           children: <Widget>[
                             Text(_calendarDays[i].padLeft(2, '0')),
                             if (dateDiff > 0 || dateSum == 0)
-                              Container()
+                              const SizedBox.shrink()
                             else
                               Row(
                                 children: <Widget>[
@@ -961,9 +961,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Container(),
+                                  const SizedBox.shrink(),
                                   if (dateDiff > 0 || dateSum == 0)
-                                    Container()
+                                    const SizedBox.shrink()
                                   else
                                     Text((zenjitsuSum - dateSum).toString().toCurrency()),
                                 ],
@@ -971,9 +971,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Container(),
+                                  const SizedBox.shrink(),
                                   if (dateDiff > 0 || dateSum == 0)
-                                    Container()
+                                    const SizedBox.shrink()
                                   else
                                     Text(dateSum.toString().toCurrency()),
                                 ],

@@ -89,7 +89,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(),
+                    const SizedBox.shrink(),
                     TextButton(onPressed: _insertBankMoney, child: const Text('残高を入力する')),
                   ],
                 ),
@@ -106,7 +106,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                       child: Container(
                           alignment: Alignment.topRight,
                           child: const Text('plus', style: TextStyle(color: Colors.grey)))),
-                  Expanded(child: Container()),
+                  const Expanded(child: SizedBox.shrink()),
                 ],
               ),
               const SizedBox(height: 10),
@@ -123,7 +123,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
                     );
                   }
 
-                  return Container();
+                  return const SizedBox.shrink();
                 },
               ),
             ],
@@ -157,7 +157,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
     });
 
     if (yearList.length == 1) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
     for (final String element in yearList) {

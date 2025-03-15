@@ -61,7 +61,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(),
+                  const SizedBox.shrink(),
                   TextButton(onPressed: _insertIncome, child: const Text('入力する')),
                 ],
               ),

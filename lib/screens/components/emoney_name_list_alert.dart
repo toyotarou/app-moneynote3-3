@@ -22,8 +22,7 @@ class EmoneyNameListAlert extends ConsumerStatefulWidget {
   final Isar isar;
 
   @override
-  ConsumerState<EmoneyNameListAlert> createState() =>
-      _EmoneyNameListAlertState();
+  ConsumerState<EmoneyNameListAlert> createState() => _EmoneyNameListAlertState();
 }
 
 class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
@@ -53,7 +52,7 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(),
+                  const SizedBox.shrink(),
                   TextButton(
                     onPressed: () => MoneyDialog(
                       context: context,
@@ -62,15 +61,13 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
                         isar: widget.isar,
                       ),
                     ),
-                    child: const Text('電子マネーを追加する',
-                        style: TextStyle(fontSize: 12)),
+                    child: const Text('電子マネーを追加する', style: TextStyle(fontSize: 12)),
                   ),
                 ],
               ),
               FutureBuilder<List<Widget>>(
                 future: _displayEmoneyNames(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Widget>> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(
                       child: SingleChildScrollView(
@@ -79,7 +76,7 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
                     );
                   }
 
-                  return Container();
+                  return const SizedBox.shrink();
                 },
               ),
             ],
@@ -91,8 +88,9 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
 
   ///
   Future<void> _makeEmoneyNameList() async {
-    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then(
-        (List<EmoneyName>? value) => setState(() => _emoneyNameList = value));
+    await EmoneyNamesRepository()
+        .getEmoneyNameList(isar: widget.isar)
+        .then((List<EmoneyName>? value) => setState(() => _emoneyNameList = value));
   }
 
   ///
@@ -142,8 +140,7 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
           width: context.screenSize.width,
           margin: const EdgeInsets.all(3),
           padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.white.withOpacity(0.4))),
+          decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.4))),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -162,8 +159,7 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
                         emoneyName: _emoneyNameList![i],
                       ),
                     ),
-                    child: Icon(Icons.edit,
-                        size: 16, color: Colors.greenAccent.withOpacity(0.6)),
+                    child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
                   ),
                 ],
               ),

@@ -77,7 +77,7 @@ class _MoneyScoreListPageState extends State<MoneyScoreListPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(),
+                    const SizedBox.shrink(),
                     Row(
                       children: <Widget>[
                         Container(
@@ -227,7 +227,7 @@ class _MoneyScoreListPageState extends State<MoneyScoreListPage> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[Text(element.startDate), Text(element.startPrice.toString().toCurrency())],
                         ),
-                        Container(),
+                        const SizedBox.shrink(),
                       ],
                     ),
                   ),
@@ -248,7 +248,7 @@ class _MoneyScoreListPageState extends State<MoneyScoreListPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(),
+                  const SizedBox.shrink(),
                   Row(
                     children: <Widget>[
                       Container(

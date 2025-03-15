@@ -359,7 +359,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Container(),
+                            const SizedBox.shrink(),
                             GestureDetector(
                               onTap: () {
                                 MoneyDialog(
@@ -451,7 +451,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-          child: child ?? Container(),
+          child: child ?? const SizedBox.shrink(),
         );
       },
     );

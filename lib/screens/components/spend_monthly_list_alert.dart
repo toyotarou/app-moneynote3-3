@@ -58,9 +58,9 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
             children: <Widget>[
               const SizedBox(height: 20),
               Container(width: context.screenSize.width),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[const Text('月間使用用途履歴'), Container()],
+                children: <Widget>[Text('月間使用用途履歴'), SizedBox.shrink()],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: _displayMonthlySpendItemPlaceList()),
@@ -169,7 +169,7 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
                       ),
               ),
             ),
-            if (sum == 0) Expanded(flex: 2, child: Container()),
+            if (sum == 0) const Expanded(flex: 2, child: SizedBox.shrink()),
           ],
         ),
       );

@@ -94,9 +94,9 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
               children: <Widget>[
                 const SizedBox(height: 20),
                 Container(width: context.screenSize.width),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[const Text('消費アイテム管理'), Container()],
+                  children: <Widget>[Text('消費アイテム管理'), SizedBox.shrink()],
                 ),
                 Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
                 _displayInputParts(),
@@ -108,7 +108,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Container(),
+                          const SizedBox.shrink(),
                           GestureDetector(
                             onTap: _inputSpendItem,
                             child: Text(
@@ -122,7 +122,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Container(),
+                          const SizedBox.shrink(),
                           GestureDetector(
                             onTap: _settingReorderIds,
                             child: Text(
@@ -409,7 +409,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-          child: child ?? Container(),
+          child: child ?? const SizedBox.shrink(),
         );
       },
     );

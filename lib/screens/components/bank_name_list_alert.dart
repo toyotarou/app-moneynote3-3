@@ -51,12 +51,11 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(),
+                  const SizedBox.shrink(),
                   TextButton(
                     onPressed: () => MoneyDialog(
                       context: context,
-                      widget: BankNameInputAlert(
-                          isar: widget.isar, depositType: DepositType.bank),
+                      widget: BankNameInputAlert(isar: widget.isar, depositType: DepositType.bank),
                     ),
                     child: const Text('金融機関を追加する'),
                   ),
@@ -64,8 +63,7 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
               ),
               FutureBuilder<List<Widget>>(
                 future: _displayBankNames(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Widget>> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(
                       child: SingleChildScrollView(
@@ -74,7 +72,7 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
                     );
                   }
 
-                  return Container();
+                  return const SizedBox.shrink();
                 },
               ),
             ],
@@ -144,8 +142,7 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
           width: context.screenSize.width,
           margin: const EdgeInsets.all(3),
           padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.white.withOpacity(0.4))),
+          decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.4))),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -156,10 +153,8 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
                     Text(
                       '${_bankNameList![i].depositType}-${_bankNameList![i].id}: ${_bankNameList![i].bankName} (${_bankNameList![i].bankNumber}) ',
                     ),
-                    Text(
-                        '${_bankNameList![i].branchName} (${_bankNameList![i].branchNumber})'),
-                    Text(
-                        '${_bankNameList![i].accountType} ${_bankNameList![i].accountNumber}'),
+                    Text('${_bankNameList![i].branchName} (${_bankNameList![i].branchNumber})'),
+                    Text('${_bankNameList![i].accountType} ${_bankNameList![i].accountNumber}'),
                   ],
                 ),
               ),
@@ -169,12 +164,9 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
                     onTap: () => MoneyDialog(
                       context: context,
                       widget: BankNameInputAlert(
-                          depositType: DepositType.bank,
-                          isar: widget.isar,
-                          bankName: _bankNameList![i]),
+                          depositType: DepositType.bank, isar: widget.isar, bankName: _bankNameList![i]),
                     ),
-                    child: Icon(Icons.edit,
-                        size: 16, color: Colors.greenAccent.withOpacity(0.6)),
+                    child: Icon(Icons.edit, size: 16, color: Colors.greenAccent.withOpacity(0.6)),
                   ),
                 ],
               ),

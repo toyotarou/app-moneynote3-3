@@ -73,18 +73,12 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
               Container(width: context.screenSize.width),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text('月間金額推移'),
-                  Text(widget.date.yyyymm)
-                ],
+                children: <Widget>[const Text('月間金額推移'), Text(widget.date.yyyymm)],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              if (widget.moneyList!.isNotEmpty) ...<Widget>[
-                Expanded(child: _dispDateMoneyList())
-              ],
+              if (widget.moneyList!.isNotEmpty) ...<Widget>[Expanded(child: _dispDateMoneyList())],
               if (widget.moneyList!.isEmpty) ...<Widget>[
-                const Text('no data',
-                    style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
+                const Text('no data', style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
               ],
             ],
           ),
@@ -105,7 +99,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
   ///
   Widget _dispDateMoneyList() {
     if (_dateMoneyMap.isEmpty) {
-      return Container();
+      return const SizedBox.shrink();
     }
 
     final HolidaysResponseState holidayState = ref.watch(holidayProvider);
@@ -140,10 +134,8 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         if (widget.date.yyyymm == genDate.yyyymm) {
           list.add(DecoratedBox(
             decoration: BoxDecoration(
-              color: _utility.getYoubiColor(
-                  date: genDate.yyyymmdd,
-                  youbiStr: genDate.youbiStr,
-                  holidayMap: _holidayMap),
+              color:
+                  _utility.getYoubiColor(date: genDate.yyyymmdd, youbiStr: genDate.youbiStr, holidayMap: _holidayMap),
             ),
             child: Row(
               children: <Widget>[
@@ -165,10 +157,8 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
         if (widget.date.yyyymm == genDate.yyyymm) {
           list2.add(DecoratedBox(
             decoration: BoxDecoration(
-              color: _utility.getYoubiColor(
-                  date: genDate.yyyymmdd,
-                  youbiStr: genDate.youbiStr,
-                  holidayMap: _holidayMap),
+              color:
+                  _utility.getYoubiColor(date: genDate.yyyymmdd, youbiStr: genDate.youbiStr, holidayMap: _holidayMap),
             ),
             child: Row(
               children: <Widget>[
@@ -417,8 +407,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     return Row(
       children: widget.bankNameList!.map((BankName e) {
         return MoneyListDisplayCell(
-          widget:
-              Column(children: <Widget>[Text(e.bankName), Text(e.branchName)]),
+          widget: Column(children: <Widget>[Text(e.bankName), Text(e.branchName)]),
           width: 100,
           minHeight: 30,
           color: Colors.yellowAccent.withOpacity(0.1),
@@ -436,8 +425,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     return (widget.bankNameList!.isNotEmpty)
         ? Row(
             children: widget.bankNameList!.map((BankName e) {
-              final Map<String, int>? bankPricePadData =
-                  widget.bankPricePadMap['${e.depositType}-${e.id}'];
+              final Map<String, int>? bankPricePadData = widget.bankPricePadMap['${e.depositType}-${e.id}'];
 
               if (bankPricePadData == null) {
                 return MoneyListDisplayCell(
@@ -462,7 +450,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
               );
             }).toList(),
           )
-        : Container();
+        : const SizedBox.shrink();
   }
 
   ///
@@ -488,8 +476,7 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     return (widget.emoneyNameList!.isNotEmpty)
         ? Row(
             children: widget.emoneyNameList!.map((EmoneyName e) {
-              final Map<String, int>? bankPricePadData =
-                  widget.bankPricePadMap['${e.depositType}-${e.id}'];
+              final Map<String, int>? bankPricePadData = widget.bankPricePadMap['${e.depositType}-${e.id}'];
 
               if (bankPricePadData == null) {
                 return MoneyListDisplayCell(
@@ -514,6 +501,6 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
               );
             }).toList(),
           )
-        : Container();
+        : const SizedBox.shrink();
   }
 }

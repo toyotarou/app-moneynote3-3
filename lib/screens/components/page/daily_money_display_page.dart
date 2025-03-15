@@ -226,7 +226,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
     }
 
     if (text == '') {
-      return Container();
+      return const SizedBox.shrink();
     }
 
     return Row(
@@ -277,7 +277,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Container(),
+              const SizedBox.shrink(),
               Text(
                 widget.onedayMoneyTotal.toString().toCurrency(),
                 style: const TextStyle(color: Colors.yellowAccent),
@@ -354,7 +354,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Container(),
+            const SizedBox.shrink(),
             Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
           ],
         ),
@@ -468,7 +468,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Container(),
+            const SizedBox.shrink(),
             Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
           ],
         ),
@@ -652,7 +652,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Container(),
+            const SizedBox.shrink(),
             Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
           ],
         ),

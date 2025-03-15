@@ -68,7 +68,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(),
+                  const SizedBox.shrink(),
                   GestureDetector(
                     onTap: () {
                       MoneyDialog(
@@ -270,7 +270,7 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
                           child: const Icon(Icons.pie_chart, color: Colors.lightBlueAccent, size: 15),
                         )
                       else
-                        Container(),
+                        const SizedBox.shrink(),
                     ],
                   ),
                   Text(spendTotal.toString().toCurrency(), style: const TextStyle(color: Colors.lightBlueAccent)),

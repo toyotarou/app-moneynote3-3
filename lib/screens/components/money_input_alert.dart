@@ -148,7 +148,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
                     Expanded(child: _displayInputTextFieldParts(name: '500', tec: _tecYen500)),
                     Expanded(child: _displayInputTextFieldParts(name: '100', tec: _tecYen100)),
                     Expanded(child: _displayInputTextFieldParts(name: '50', tec: _tecYen50)),
-                    Expanded(child: Container()),
+                    const Expanded(child: SizedBox.shrink()),
                   ],
                 ),
                 Row(
@@ -156,7 +156,7 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
                     Expanded(child: _displayInputTextFieldParts(name: '10', tec: _tecYen10)),
                     Expanded(child: _displayInputTextFieldParts(name: '5', tec: _tecYen5)),
                     Expanded(child: _displayInputTextFieldParts(name: '1', tec: _tecYen1)),
-                    Expanded(child: Container()),
+                    const Expanded(child: SizedBox.shrink()),
                   ],
                 ),
               ],
