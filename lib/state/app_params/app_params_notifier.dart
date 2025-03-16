@@ -74,4 +74,8 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
 
   ///
   void setSelectedBankPriceYear({required String year}) => state = state.copyWith(selectedBankPriceYear: year);
+
+  ///
+  void setSameYearDayCalendarSelectDate({required String date}) =>
+      state = state.copyWith(sameYearDayCalendarSelectDate: date);
 }

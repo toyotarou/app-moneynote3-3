@@ -5,6 +5,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
+import '../../state/app_params/app_params_notifier.dart';
+import '../../state/app_params/app_params_response_state.dart';
 import '../../state/holidays/holidays_notifier.dart';
 import '../../state/holidays/holidays_response_state.dart';
 import '../../utilities/utilities.dart';
@@ -37,6 +39,10 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
   int calendarYear = 2025;
 
+  Map<String, int> dateMoneySumMap = <String, int>{};
+
+  List<String> yearList = <String>[];
+
   ///
   @override
   void initState() {
@@ -44,6 +50,26 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
     // ignore: always_specify_types
     globalKeyList = List.generate(100, (int index) => GlobalKey());
+
+    widget.spendTimePlaceList.sort((SpendTimePlace a, SpendTimePlace b) => a.date.compareTo(b.date));
+
+    String keepDate = '';
+    int sum = 0;
+    for (final SpendTimePlace element in widget.spendTimePlaceList) {
+      if (element.date != keepDate) {
+        sum = 0;
+      }
+
+      if (!yearList.contains(element.date.split('-')[0])) {
+        yearList.add(element.date.split('-')[0]);
+      }
+
+      sum += element.price;
+
+      dateMoneySumMap[element.date] = sum;
+
+      keepDate = element.date;
+    }
   }
 
   ///
@@ -63,6 +89,9 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
       }
     });
 
+    final String sameYearDayCalendarSelectDate =
+        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.sameYearDayCalendarSelectDate));
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -75,17 +104,11 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
               SizedBox(width: context.screenSize.width),
               const Text('年別同日消費比較'),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-
               SizedBox(height: 300, child: _getCalendar()),
-
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-
-              // Expanded(child: displayYearDaySpendPriceList()),
-              //
-              //
-              //
-              //
-              //
+              Text(sameYearDayCalendarSelectDate),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              Expanded(child: displayYearDaySpendPriceList()),
             ],
           ),
         ),
@@ -101,16 +124,30 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
     final List<Widget> list = <Widget>[];
 
-    widget.spendTimePlaceList.sort((SpendTimePlace a, SpendTimePlace b) => a.date.compareTo(b.date));
+    for (final String element in yearList) {
+      list.add(
+        Text(element),
+      );
+    }
 
-    final Map<int, List<String>> yearsDateListMap = makeYearsDateListMap();
+    //
+    // widget.spendTimePlaceList.sort((SpendTimePlace a, SpendTimePlace b) => a.date.compareTo(b.date));
 
-    final Map<int, Map<String, int>> yearDatePriceMap = makeYearDatePriceMap(yearsDateListMap: yearsDateListMap);
-
-    yearDatePriceMap.forEach((int key, Map<String, int> value) {
-      print('$key / ${value.length}');
-      print('$key / ${value['$key-01-01']}');
-    });
+    //
+    //
+    //
+    //
+    // final Map<int, List<String>> yearsDateListMap = makeYearsDateListMap();
+    //
+    // final Map<int, Map<String, int>> yearDatePriceMap = makeYearDatePriceMap(yearsDateListMap: yearsDateListMap);
+    //
+    // yearDatePriceMap.forEach((int key, Map<String, int> value) {
+    //   print('$key / ${value.length}');
+    //   print('$key / ${value['$key-01-01']}');
+    // });
+    //
+    //
+    //
 
     return CustomScrollView(
       slivers: <Widget>[
@@ -122,85 +159,83 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
     );
   }
 
-  ///
-  Map<int, Map<String, int>> makeYearDatePriceMap({required Map<int, List<String>> yearsDateListMap}) {
-    final Map<int, Map<String, int>> map = <int, Map<String, int>>{};
+  // ///
+  // Map<int, Map<String, int>> makeYearDatePriceMap({required Map<int, List<String>> yearsDateListMap}) {
+  //   final Map<int, Map<String, int>> map = <int, Map<String, int>>{};
+  //
+  //   yearsDateListMap.forEach((int key, List<String> value) {
+  //     final Map<String, int> map2 = <String, int>{};
+  //
+  //     for (final String element in value) {
+  //       int price = 0;
+  //       for (final SpendTimePlace element2 in widget.spendTimePlaceList) {
+  //         if (element == element2.date) {
+  //           price += element2.price;
+  //         }
+  //       }
+  //
+  //       map2[element] = price;
+  //     }
+  //
+  //     map[key] = map2;
+  //   });
+  //
+  //   return map;
+  // }
 
-    yearsDateListMap.forEach((int key, List<String> value) {
-      final Map<String, int> map2 = <String, int>{};
+  // ///
+  // Map<int, List<String>> makeYearsDateListMap() {
+  //   final Map<int, List<String>> map = <int, List<String>>{};
+  //
+  //   final String firstDate = widget.spendTimePlaceList.first.date;
+  //
+  //   final List<String> exFirstDate = firstDate.split('-');
+  //
+  //   // ignore: literal_only_boolean_expressions
+  //   if ('01-01' != '${exFirstDate[1]}-${exFirstDate[2]}') {
+  //     firstYearStartFromFirst = false;
+  //   }
+  //
+  //   final String firstYear = exFirstDate[0];
+  //
+  //   final String lastDate = widget.spendTimePlaceList.last.date;
+  //
+  //   final List<String> exLastDate = lastDate.split('-');
+  //
+  //   final String lastYear = exLastDate[0];
+  //
+  //   if (firstYear == lastYear) {
+  //     map[firstYear.toInt()] = makeYearDaysList(startDate: firstDate, endDate: lastDate);
+  //   } else {
+  //     for (int i = firstYear.toInt(); i <= lastYear.toInt(); i++) {
+  //       if (i == firstYear.toInt()) {
+  //         map[firstYear.toInt()] = makeYearDaysList(startDate: firstDate, endDate: DateTime(i + 1, 1, 0).yyyymmdd);
+  //       } else if (i == lastYear.toInt()) {
+  //         map[lastYear.toInt()] = makeYearDaysList(startDate: DateTime(i).yyyymmdd, endDate: DateTime.now().yyyymmdd);
+  //       } else {
+  //         map[i] = makeYearDaysList(startDate: DateTime(i).yyyymmdd, endDate: DateTime(i + 1, 1, 0).yyyymmdd);
+  //       }
+  //     }
+  //   }
+  //
+  //   return map;
+  // }
 
-      for (final String element in value) {
-        int price = 0;
-        for (final SpendTimePlace element2 in widget.spendTimePlaceList) {
-          if (element == element2.date) {
-            price += element2.price;
-          }
-        }
-
-        map2[element] = price;
-      }
-
-      map[key] = map2;
-    });
-
-    return map;
-  }
-
-  ///
-  Map<int, List<String>> makeYearsDateListMap() {
-    final Map<int, List<String>> map = <int, List<String>>{};
-
-    final String firstDate = widget.spendTimePlaceList.first.date;
-
-    final List<String> exFirstDate = firstDate.split('-');
-
-    // ignore: literal_only_boolean_expressions
-    if ('01-01' != '${exFirstDate[1]}-${exFirstDate[2]}') {
-      firstYearStartFromFirst = false;
-    }
-
-    final String firstYear = exFirstDate[0];
-
-    final String lastDate = widget.spendTimePlaceList.last.date;
-
-    final List<String> exLastDate = lastDate.split('-');
-
-    final String lastYear = exLastDate[0];
-
-    if (firstYear == lastYear) {
-      map[firstYear.toInt()] = makeYearDaysList(firstDate: firstDate, lastDate: lastDate);
-    } else {
-      for (int i = firstYear.toInt(); i <= lastYear.toInt(); i++) {
-        if (i == firstYear.toInt()) {
-          map[firstYear.toInt()] = makeYearDaysList(firstDate: firstDate, lastDate: DateTime(i + 1).yyyymmdd);
-        } else if (i == lastYear.toInt()) {
-          map[lastYear.toInt()] = makeYearDaysList(firstDate: DateTime(i).yyyymmdd, lastDate: DateTime.now().yyyymmdd);
-        } else {
-          map[i] = makeYearDaysList(firstDate: DateTime(i).yyyymmdd, lastDate: DateTime(i + 1).yyyymmdd);
-        }
-      }
-    }
-
-    return map;
-  }
-
-  ///
-  List<String> makeYearDaysList({required String firstDate, required String lastDate}) {
-    final List<String> list = <String>[];
-
-    for (DateTime date = DateTime.parse('$firstDate 00:00:00');
-        date.isBefore(DateTime.parse('$lastDate 00:00:00').add(const Duration(days: 1)));
-        date = date.add(const Duration(days: 1))) {
-      final String formattedDate =
-          "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-
-      if (firstDate.split('-')[0].toInt() == date.year) {
-        list.add(formattedDate);
-      }
-    }
-
-    return list;
-  }
+  // ///
+  // List<String> makeYearDaysList({required String startDate, required String endDate}) {
+  //   final List<String> list = <String>[];
+  //
+  //   for (DateTime date = DateTime.parse('$startDate 00:00:00');
+  //       date.isBefore(DateTime.parse('$endDate 00:00:00').add(const Duration(days: 1)));
+  //       date = date.add(const Duration(days: 1))) {
+  //     final String formattedDate =
+  //         "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  //
+  //     list.add(formattedDate);
+  //   }
+  //
+  //   return list;
+  // }
 
   ///
   Widget _getCalendar() {
@@ -249,7 +284,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
           child: (days[i] == '')
               ? Container()
               : GestureDetector(
-                  onTap: () {},
+                  onTap: () => ref.read(appParamProvider.notifier).setSameYearDayCalendarSelectDate(date: days[i]),
                   child: Container(
                     margin: const EdgeInsets.all(3),
                     padding: const EdgeInsets.all(3),

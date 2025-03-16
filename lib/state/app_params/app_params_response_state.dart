@@ -24,5 +24,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     void Function(VoidCallback fn)? setStateCallback,
     Offset? overlayPosition,
     @Default('') String selectedBankPriceYear,
+    @Default('') String sameYearDayCalendarSelectDate,
   }) = _AppParamsResponseState;
 }
