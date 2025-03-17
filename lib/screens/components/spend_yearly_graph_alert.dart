@@ -4,9 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../collections/spend_item.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
-import '../../state/app_params/app_params_notifier.dart';
-import '../../state/app_params/app_params_response_state.dart';
 
 class SpendYearlyGraphAlert extends ConsumerStatefulWidget {
   const SpendYearlyGraphAlert({
@@ -25,7 +24,8 @@ class SpendYearlyGraphAlert extends ConsumerStatefulWidget {
   ConsumerState<SpendYearlyGraphAlert> createState() => _SpendYearlyGraphAlertState();
 }
 
-class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
+class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert>
+    with ControllersMixin<SpendYearlyGraphAlert> {
   List<PieChartSectionData> graphDataList = <PieChartSectionData>[];
 
   ///
@@ -37,9 +37,6 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
     for (final SpendItem element in widget.spendItemList) {
       spendItemColorMap[element.spendItemName] = element.color;
     }
-
-    final String selectedYearlySpendCircleGraphSpendItem = ref.watch(
-        appParamProvider.select((AppParamsResponseState value) => value.selectedYearlySpendCircleGraphSpendItem));
 
     final List<MapEntry<String, int>> sortedEntries = widget.eachItemSpendMap.entries.toList()
       ..sort((MapEntry<String, int> a, MapEntry<String, int> b) => a.value.compareTo(b.value) * -1);
@@ -64,9 +61,9 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
                 ? Color(spendItemColorMap[entry.key]!.toInt()).withOpacity(0.2)
                 : Colors.grey.withOpacity(0.2),
             value: val,
-            title: (selectedYearlySpendCircleGraphSpendItem == '')
+            title: (appParamState.selectedYearlySpendCircleGraphSpendItem == '')
                 ? '${entry.key}\n${entry.value.toString().toCurrency()}\n${percent.toStringAsFixed(2)} %'
-                : (entry.key == selectedYearlySpendCircleGraphSpendItem)
+                : (entry.key == appParamState.selectedYearlySpendCircleGraphSpendItem)
                     ? '${entry.key}\n${entry.value.toString().toCurrency()}\n${percent.toStringAsFixed(2)} %'
                     : '',
             radius: 140,
@@ -90,7 +87,7 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
         borderSide: const BorderSide(color: Colors.white),
         color: Colors.grey.withOpacity(0.2),
         value: val,
-        title: (selectedYearlySpendCircleGraphSpendItem == '')
+        title: (appParamState.selectedYearlySpendCircleGraphSpendItem == '')
             ? 'その他\n${amari.toString().toCurrency()}\n${percent.toStringAsFixed(2)} %'
             : '',
         radius: 140,
@@ -133,8 +130,7 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
                   children: <Widget>[
                     const SizedBox.shrink(),
                     GestureDetector(
-                      onTap: () =>
-                          ref.read(appParamProvider.notifier).setSelectedYearlySpendCircleGraphSpendItem(item: ''),
+                      onTap: () => appParamNotifier.setSelectedYearlySpendCircleGraphSpendItem(item: ''),
                       child: Text(
                         'clear',
                         style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary),
@@ -199,9 +195,7 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert> {
                     child: (i < 10)
                         ? GestureDetector(
                             onTap: () {
-                              ref
-                                  .read(appParamProvider.notifier)
-                                  .setSelectedYearlySpendCircleGraphSpendItem(item: entry.key);
+                              appParamNotifier.setSelectedYearlySpendCircleGraphSpendItem(item: entry.key);
                             },
                             child: CircleAvatar(radius: 10, backgroundColor: lineColor.withOpacity(0.4)),
                           )

@@ -8,11 +8,11 @@ import 'package:isar/isar.dart';
 import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
 import '../../collections/emoney_name.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/bank_prices_repository.dart';
-import '../../state/app_params/app_params_notifier.dart';
-import '../../state/app_params/app_params_response_state.dart';
+
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
@@ -41,7 +41,7 @@ class BankPriceInputAlert extends ConsumerStatefulWidget {
   ConsumerState<BankPriceInputAlert> createState() => _BankPriceInputAlertState();
 }
 
-class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
+class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> with ControllersMixin<BankPriceInputAlert> {
   List<BankPrice>? bankPriceList = <BankPrice>[];
 
   final TextEditingController _bankPriceEditingController = TextEditingController();
@@ -137,7 +137,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   Widget displayBankYearSelector() {
     final List<Widget> list = <Widget>[
       GestureDetector(
-        onTap: () => ref.read(appParamProvider.notifier).setSelectedBankPriceYear(year: ''),
+        onTap: () => appParamNotifier.setSelectedBankPriceYear(year: ''),
         child: Container(
           decoration:
               BoxDecoration(color: Colors.orangeAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
@@ -164,7 +164,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       list.add(
         GestureDetector(
           onTap: () {
-            ref.read(appParamProvider.notifier).setSelectedBankPriceYear(year: element);
+            appParamNotifier.setSelectedBankPriceYear(year: element);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -311,9 +311,6 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
   Future<List<Widget>> _displayBankPrices() async {
     await _makeBankPriceList();
 
-    final String selectedBankPriceYear =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedBankPriceYear));
-
     final List<Widget> list = <Widget>[];
 
     bankPriceList?.sort((BankPrice a, BankPrice b) => a.date.compareTo(b.date));
@@ -329,7 +326,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> {
       }
 
       final String year = bankPriceList![i].date.split('-')[0];
-      if (selectedBankPriceYear.isNotEmpty && year != selectedBankPriceYear) {
+      if (appParamState.selectedBankPriceYear.isNotEmpty && year != appParamState.selectedBankPriceYear) {
         continue;
       }
 

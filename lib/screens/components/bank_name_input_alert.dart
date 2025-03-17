@@ -6,12 +6,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/bank_name.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../enums/account_type.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/bank_names_repository.dart';
-import '../../state/bank_names/bank_names_notifier.dart';
-import '../../state/bank_names/bank_names_response_state.dart';
+
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 
@@ -26,7 +26,7 @@ class BankNameInputAlert extends ConsumerStatefulWidget {
   ConsumerState<BankNameInputAlert> createState() => _BankNameInputAlertState();
 }
 
-class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
+class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with ControllersMixin<BankNameInputAlert> {
   final TextEditingController _bankNumberEditingController = TextEditingController();
   final TextEditingController _bankNameEditingController = TextEditingController();
   final TextEditingController _branchNumberEditingController = TextEditingController();
@@ -89,9 +89,9 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                           onTap: () {
                             switch (widget.bankName!.accountType) {
                               case '普通口座':
-                                ref.read(bankNamesProvider.notifier).setAccountType(accountType: AccountType.normal);
+                                bankNamesNotifier.setAccountType(accountType: AccountType.normal);
                               case '定期口座':
-                                ref.read(bankNamesProvider.notifier).setAccountType(accountType: AccountType.fixed);
+                                bankNamesNotifier.setAccountType(accountType: AccountType.fixed);
                             }
 
                             _updateBankName();
@@ -125,8 +125,6 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Widget _displayInputParts() {
-    final BankNamesResponseState bankNamesSettingState = ref.watch(bankNamesProvider);
-
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
@@ -239,9 +237,9 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
                         }).toList(),
                         value: (_selectedAccountType != AccountType.blank)
                             ? _selectedAccountType
-                            : bankNamesSettingState.accountType,
+                            : bankNamesState.accountType,
                         onChanged: (AccountType? value) {
-                          ref.read(bankNamesProvider.notifier).setAccountType(accountType: value!);
+                          bankNamesNotifier.setAccountType(accountType: value!);
                         },
                       ),
                     ),
@@ -275,9 +273,6 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _inputBankName() async {
-    final AccountType accountType =
-        ref.watch(bankNamesProvider.select((BankNamesResponseState value) => value.accountType));
-
     bool errFlg = false;
 
     if (_bankNumberEditingController.text.trim() == '' ||
@@ -285,7 +280,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
         _branchNumberEditingController.text.trim() == '' ||
         _branchNameEditingController.text.trim() == '' ||
         _accountNumberEditingController.text.trim() == '' ||
-        (accountType == AccountType.blank)) {
+        (bankNamesState.accountType == AccountType.blank)) {
       errFlg = true;
     }
 
@@ -322,7 +317,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
       ..bankName = _bankNameEditingController.text.trim()
       ..branchNumber = _branchNumberEditingController.text.trim()
       ..branchName = _branchNameEditingController.text.trim()
-      ..accountType = accountType.japanName
+      ..accountType = bankNamesState.accountType.japanName
       ..accountNumber = _accountNumberEditingController.text.trim()
       ..depositType = widget.depositType.japanName;
 
@@ -344,9 +339,6 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
 
   ///
   Future<void> _updateBankName() async {
-    final AccountType accountType =
-        ref.watch(bankNamesProvider.select((BankNamesResponseState value) => value.accountType));
-
     bool errFlg = false;
 
     if (_bankNumberEditingController.text.trim() == '' ||
@@ -354,7 +346,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
         _branchNumberEditingController.text.trim() == '' ||
         _branchNameEditingController.text.trim() == '' ||
         _accountNumberEditingController.text.trim() == '' ||
-        (accountType == AccountType.blank)) {
+        (bankNamesState.accountType == AccountType.blank)) {
       errFlg = true;
     }
 
@@ -393,7 +385,7 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> {
           ..bankName = _bankNameEditingController.text.trim()
           ..branchNumber = _branchNumberEditingController.text.trim()
           ..branchName = _branchNameEditingController.text.trim()
-          ..accountType = accountType.japanName
+          ..accountType = bankNamesState.accountType.japanName
           ..accountNumber = _accountNumberEditingController.text.trim()
           ..depositType = widget.depositType.japanName;
 

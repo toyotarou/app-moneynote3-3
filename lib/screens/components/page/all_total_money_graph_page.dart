@@ -8,9 +8,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../../../collections/spend_time_place.dart';
+import '../../../controllers/controllers_mixin.dart';
 import '../../../extensions/extensions.dart';
-import '../../../state/app_params/app_params_notifier.dart';
-import '../../../state/app_params/app_params_response_state.dart';
+
 import '../money_graph_alert.dart';
 import '../parts/money_dialog.dart';
 
@@ -44,7 +44,8 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
   ConsumerState<AllTotalMoneyGraphPage> createState() => _AllTotalMoneyGraphPageState();
 }
 
-class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage> {
+class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
+    with ControllersMixin<AllTotalMoneyGraphPage> {
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
 
@@ -63,9 +64,6 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
     if (circleAvatarWidth > 15) {
       circleAvatarWidth = 15;
     }
-
-    final int selectedGraphMonth =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedGraphMonth));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -89,7 +87,7 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
                       children: widget.monthList.map((int e) {
                         return GestureDetector(
                           onTap: () {
-                            ref.read(appParamProvider.notifier).setSelectedGraphMonth(month: e);
+                            appParamNotifier.setSelectedGraphMonth(month: e);
 
                             MoneyDialog(
                               context: context,
@@ -114,7 +112,7 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
                           },
                           child: CircleAvatar(
                             radius: circleAvatarWidth,
-                            backgroundColor: (selectedGraphMonth == e)
+                            backgroundColor: (appParamState.selectedGraphMonth == e)
                                 ? Colors.yellowAccent.withOpacity(0.2)
                                 : Colors.white.withOpacity(0.2),
                             child: Text(

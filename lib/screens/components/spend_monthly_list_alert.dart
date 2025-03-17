@@ -5,11 +5,11 @@ import 'package:isar/isar.dart';
 
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
 import '../../repository/spend_time_places_repository.dart';
-import '../../state/holidays/holidays_notifier.dart';
-import '../../state/holidays/holidays_response_state.dart';
+
 import '../../utilities/functions.dart';
 import '../../utilities/utilities.dart';
 
@@ -23,7 +23,8 @@ class SpendMonthlyListAlert extends ConsumerStatefulWidget {
   ConsumerState<SpendMonthlyListAlert> createState() => _SpendMonthlyListAlertState();
 }
 
-class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
+class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert>
+    with ControllersMixin<SpendMonthlyListAlert> {
   final Utility _utility = Utility();
 
   // ignore: use_late_for_private_fields_and_variables
@@ -98,8 +99,6 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert> {
   ///
   Widget _displayMonthlySpendItemPlaceList() {
     final List<Widget> list = <Widget>[];
-
-    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
 
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;

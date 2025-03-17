@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../state/app_params/app_params_notifier.dart';
+import '../../../controllers//app_params/app_params_notifier.dart';
 import 'money_overlay.dart';
 
 Future<void> MoneyDialog({

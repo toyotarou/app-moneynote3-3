@@ -14,9 +14,10 @@ import '../../../collections/emoney_name.dart';
 import '../../../collections/money.dart';
 import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
+import '../../../controllers/controllers_mixin.dart';
 import '../../../enums/deposit_type.dart';
 import '../../../extensions/extensions.dart';
-import '../../../state/app_params/app_params_notifier.dart';
+
 import '../../../utilities/functions.dart';
 import '../bank_price_input_alert.dart';
 import '../money_input_alert.dart';
@@ -65,7 +66,8 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
   ConsumerState<DailyMoneyDisplayPage> createState() => _DailyMoneyDisplayAlertState();
 }
 
-class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> {
+class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
+    with ControllersMixin<DailyMoneyDisplayPage> {
   ///
   @override
   Widget build(BuildContext context) {
@@ -396,7 +398,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                     const SizedBox(width: 20),
                     GestureDetector(
                       onTap: () {
-                        ref.read(appParamProvider.notifier).setSelectedBankPriceYear(year: '');
+                        appParamNotifier.setSelectedBankPriceYear(year: '');
 
                         MoneyDialog(
                           context: context,
@@ -505,7 +507,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                     const SizedBox(width: 20),
                     GestureDetector(
                       onTap: () {
-                        ref.read(appParamProvider.notifier).setSelectedBankPriceYear(year: '');
+                        appParamNotifier.setSelectedBankPriceYear(year: '');
 
                         MoneyDialog(
                           context: context,
@@ -611,7 +613,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage> 
                         ? widget.bankPriceTotalPadMap[beforeDate.yyyymmdd]
                         : 0;
 
-                    ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+                    appParamNotifier.setInputButtonClicked(flag: false);
 
                     if (mounted) {
                       await MoneyDialog(

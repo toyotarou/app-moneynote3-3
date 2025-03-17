@@ -8,13 +8,11 @@ import 'package:isar/isar.dart';
 import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
 import '../../collections/emoney_name.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/bank_prices_repository.dart';
-import '../../state/app_params/app_params_notifier.dart';
-import '../../state/app_params/app_params_response_state.dart';
-import '../../state/bank_price_adjust/bank_price_adjust_notifier.dart';
-import '../../state/bank_price_adjust/bank_price_adjust_response_state.dart';
+
 import '../../utilities/functions.dart';
 import 'bank_price_input_alert.dart';
 import 'parts/error_dialog.dart';
@@ -28,8 +26,7 @@ class Deposit {
 }
 
 class BankPriceAdjustAlert extends ConsumerStatefulWidget {
-  const BankPriceAdjustAlert(
-      {super.key, required this.isar, this.bankNameList, this.emoneyNameList});
+  const BankPriceAdjustAlert({super.key, required this.isar, this.bankNameList, this.emoneyNameList});
 
   final Isar isar;
 
@@ -38,11 +35,11 @@ class BankPriceAdjustAlert extends ConsumerStatefulWidget {
   final List<EmoneyName>? emoneyNameList;
 
   @override
-  ConsumerState<BankPriceAdjustAlert> createState() =>
-      _BankPriceAdjustAlertState();
+  ConsumerState<BankPriceAdjustAlert> createState() => _BankPriceAdjustAlertState();
 }
 
-class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
+class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert>
+    with ControllersMixin<BankPriceAdjustAlert> {
   final List<TextEditingController> _bankPriceTecs = <TextEditingController>[];
 
   Map<int, BankName> bankNameMap = <int, BankName>{};
@@ -59,9 +56,6 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final bool inputButtonClicked = ref.watch(appParamProvider
-        .select((AppParamsResponseState value) => value.inputButtonClicked));
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -77,17 +71,14 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                 children: <Widget>[
                   const Text('金融機関、電子マネー金額修正'),
                   ElevatedButton(
-                    onPressed: inputButtonClicked
+                    onPressed: appParamState.inputButtonClicked
                         ? null
                         : () {
-                            ref
-                                .read(appParamProvider.notifier)
-                                .setInputButtonClicked(flag: true);
+                            appParamNotifier.setInputButtonClicked(flag: true);
 
                             _inputBankPriceAdjust();
                           },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     child: const Text('input'),
                   ),
                 ],
@@ -110,9 +101,6 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
   ///
   Widget _displayInputParts() {
-    final BankPriceAdjustResponseState bankPriceAdjustState =
-        ref.watch(bankPriceAdjustProvider);
-
     final List<Widget> list = <Widget>[];
 
     final List<DepoItem> depoItemList = <DepoItem>[];
@@ -121,22 +109,18 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
 
     widget.bankNameList?.forEach((BankName element) {
       depositNameList.add(
-        Deposit('${element.depositType}-${element.id}',
-            '${element.bankName} ${element.branchName}'),
+        Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
       );
 
-      depoItemList.add(DepoItem(element.id,
-          '${element.bankName}\n${element.branchName}', DepositType.bank));
+      depoItemList.add(DepoItem(element.id, '${element.bankName}\n${element.branchName}', DepositType.bank));
 
       bankNameMap[element.id] = element;
     });
 
     widget.emoneyNameList?.forEach((EmoneyName element) {
-      depositNameList.add(
-          Deposit('${element.depositType}-${element.id}', element.emoneyName));
+      depositNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName));
 
-      depoItemList
-          .add(DepoItem(element.id, element.emoneyName, DepositType.emoney));
+      depoItemList.add(DepoItem(element.id, element.emoneyName, DepositType.emoney));
 
       emoneyNameMap[element.id] = element;
     });
@@ -198,20 +182,14 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     }
 
     list
-      ..add(SingleChildScrollView(
-          scrollDirection: Axis.horizontal, child: Row(children: list2)))
+      ..add(SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: list2)))
       ..add(const SizedBox(height: 10));
     //==============================================
 
     for (int i = 0; i < 10; i++) {
       list.add(DecoratedBox(
         decoration: BoxDecoration(
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                blurRadius: 24,
-                spreadRadius: 16,
-                color: Colors.black.withOpacity(0.2))
-          ],
+          boxShadow: <BoxShadow>[BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
@@ -224,8 +202,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                   right: 15,
                   child: Text(
                     (i + 1).toString().padLeft(2, '0'),
-                    style: TextStyle(
-                        fontSize: 60, color: Colors.grey.withOpacity(0.3)),
+                    style: TextStyle(fontSize: 60, color: Colors.grey.withOpacity(0.3)),
                   ),
                 ),
                 Container(
@@ -235,8 +212,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        color: Colors.white.withOpacity(0.2), width: 1.5),
+                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
                   ),
                   child: Column(
                     children: <Widget>[
@@ -244,14 +220,13 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () => _showDP(pos: i),
-                            child: Icon(Icons.calendar_month,
-                                color: Colors.greenAccent.withOpacity(0.6)),
+                            child: Icon(Icons.calendar_month, color: Colors.greenAccent.withOpacity(0.6)),
                           ),
                           const SizedBox(width: 10),
                           SizedBox(
                             width: context.screenSize.width / 6,
-                            child: Text(bankPriceAdjustState.adjustDate[i],
-                                style: const TextStyle(fontSize: 10)),
+                            child:
+                                Text(bankPriceAdjustState.adjustDate[i], style: const TextStyle(fontSize: 10)),
                           ),
                           const SizedBox(width: 20),
                           Expanded(
@@ -264,15 +239,12 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                                 // ignore: always_specify_types
                                 return DropdownMenuItem(
                                   value: e.flag,
-                                  child: Text(e.name,
-                                      style: const TextStyle(fontSize: 12)),
+                                  child: Text(e.name, style: const TextStyle(fontSize: 12)),
                                 );
                               }).toList(),
                               value: bankPriceAdjustState.adjustDeposit[i],
                               onChanged: (String? value) {
-                                ref
-                                    .read(bankPriceAdjustProvider.notifier)
-                                    .setAdjustDeposit(pos: i, value: value!);
+                                bankPriceAdjustNotifier.setAdjustDeposit(pos: i, value: value!);
                               },
                             ),
                           ),
@@ -286,25 +258,17 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
                               controller: _bankPriceTecs[i],
                               decoration: const InputDecoration(
                                 isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 4),
+                                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                                 hintText: '金額(10桁以内)',
                                 filled: true,
                                 border: OutlineInputBorder(),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.white54)),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
                               ),
-                              style: const TextStyle(
-                                  fontSize: 13, color: Colors.white),
-                              onTapOutside: (PointerDownEvent event) =>
-                                  FocusManager.instance.primaryFocus?.unfocus(),
+                              style: const TextStyle(fontSize: 13, color: Colors.white),
+                              onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
                               onChanged: (String value) {
                                 if (value != '') {
-                                  ref
-                                      .read(bankPriceAdjustProvider.notifier)
-                                      .setAdjustPrice(
-                                          pos: i, value: value.trim().toInt());
+                                  bankPriceAdjustNotifier.setAdjustPrice(pos: i, value: value.trim().toInt());
                                 }
                               },
                             ),
@@ -361,17 +325,12 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     );
 
     if (selectedDate != null) {
-      await ref
-          .read(bankPriceAdjustProvider.notifier)
-          .setAdjustDate(pos: pos, value: selectedDate.yyyymmdd);
+      await bankPriceAdjustNotifier.setAdjustDate(pos: pos, value: selectedDate.yyyymmdd);
     }
   }
 
   ///
   Future<void> _inputBankPriceAdjust() async {
-    final BankPriceAdjustResponseState bankPriceAdjustState =
-        ref.watch(bankPriceAdjustProvider);
-
     final List<BankPrice> list = <BankPrice>[];
 
     bool errFlg = false;
@@ -389,8 +348,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
       if (bankPriceAdjustState.adjustDate[i] != '日付' &&
           bankPriceAdjustState.adjustDeposit[i] != '' &&
           bankPriceAdjustState.adjustPrice[i] >= 0) {
-        final List<String> exDeposit =
-            bankPriceAdjustState.adjustDeposit[i].split('-');
+        final List<String> exDeposit = bankPriceAdjustState.adjustDeposit[i].split('-');
 
         list.add(
           BankPrice()
@@ -400,8 +358,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
             ..price = bankPriceAdjustState.adjustPrice[i],
         );
 
-        insertBankPriceList.add(
-            '${exDeposit[0]}|${exDeposit[1]}|${bankPriceAdjustState.adjustDate[i]}');
+        insertBankPriceList.add('${exDeposit[0]}|${exDeposit[1]}|${bankPriceAdjustState.adjustDate[i]}');
       }
       //===============================================
 
@@ -439,8 +396,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
         for (final List<int> element2 in <List<int>>[
           <int>[element.price, 10]
         ]) {
-          if (!checkInputValueLengthCheck(
-              value: element2[0].toString().trim(), length: element2[1])) {
+          if (!checkInputValueLengthCheck(value: element2[0].toString().trim(), length: element2[1])) {
             errFlg = true;
           }
         }
@@ -458,14 +414,13 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
             content: '値を正しく入力してください。'),
       );
 
-      ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+      appParamNotifier.setInputButtonClicked(flag: false);
 
       return;
     }
 
     //---------------------------//
-    final IsarCollection<BankPrice> bankPricesCollection =
-        BankPricesRepository().getCollection(isar: widget.isar);
+    final IsarCollection<BankPrice> bankPricesCollection = BankPricesRepository().getCollection(isar: widget.isar);
 
     // ignore: avoid_function_literals_in_foreach_calls
     insertBankPriceList.forEach((String element) async {
@@ -479,8 +434,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
           .findAll();
 
       if (getBankPrices.isNotEmpty) {
-        await BankPricesRepository().deleteBankPriceList(
-            isar: widget.isar, bankPriceList: getBankPrices);
+        await BankPricesRepository().deleteBankPriceList(isar: widget.isar, bankPriceList: getBankPrices);
       }
     });
 
@@ -489,8 +443,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert> {
     await BankPricesRepository()
         .inputBankPriceList(isar: widget.isar, bankPriceList: list)
         // ignore: always_specify_types
-        .then((value) async => ref
-                .read(bankPriceAdjustProvider.notifier)
+        .then((value) async => bankPriceAdjustNotifier
                 .clearInputValue()
                 // ignore: always_specify_types
                 .then((value) {

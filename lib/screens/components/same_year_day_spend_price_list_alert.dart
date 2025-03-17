@@ -4,11 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../collections/spend_time_place.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
-import '../../state/app_params/app_params_notifier.dart';
-import '../../state/app_params/app_params_response_state.dart';
-import '../../state/holidays/holidays_notifier.dart';
-import '../../state/holidays/holidays_response_state.dart';
+
 import '../../utilities/utilities.dart';
 
 class SameYearDaySpendPriceListAlert extends ConsumerStatefulWidget {
@@ -20,7 +18,8 @@ class SameYearDaySpendPriceListAlert extends ConsumerStatefulWidget {
   ConsumerState<SameYearDaySpendPriceListAlert> createState() => _SameYearDaySpendPriceListAlertState();
 }
 
-class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpendPriceListAlert> {
+class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpendPriceListAlert>
+    with ControllersMixin<SameYearDaySpendPriceListAlert> {
   bool firstYearStartFromFirst = true;
 
   DateTime yearFirst = DateTime.now();
@@ -89,9 +88,6 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
       }
     });
 
-    final String sameYearDayCalendarSelectDate =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.sameYearDayCalendarSelectDate));
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -106,7 +102,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               SizedBox(height: 300, child: _getCalendar()),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              Text(sameYearDayCalendarSelectDate),
+              Text(appParamState.sameYearDayCalendarSelectDate),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: displayYearDaySpendPriceList()),
             ],
@@ -284,7 +280,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
           child: (days[i] == '')
               ? Container()
               : GestureDetector(
-                  onTap: () => ref.read(appParamProvider.notifier).setSameYearDayCalendarSelectDate(date: days[i]),
+                  onTap: () => appParamNotifier.setSameYearDayCalendarSelectDate(date: days[i]),
                   child: Container(
                     margin: const EdgeInsets.all(3),
                     padding: const EdgeInsets.all(3),
@@ -343,8 +339,6 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
     }
 
     final DateTime genDate = DateTime.parse('$calendarYear-$mmdd');
-
-    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
 
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;

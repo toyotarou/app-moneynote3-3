@@ -4,12 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/money.dart';
+import '../../controllers/app_params/app_params_response_state.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 import '../../model/money_model.dart';
 import '../../repository/moneys_repository.dart';
-import '../../state/app_params/app_params_notifier.dart';
-import '../../state/app_params/app_params_response_state.dart';
-import '../../state/money_repair/money_repair.dart';
+
 import 'parts/error_dialog.dart';
 import 'parts/money_overlay.dart';
 
@@ -23,7 +23,8 @@ class DateMoneyRepairAlert extends ConsumerStatefulWidget {
   ConsumerState<DateMoneyRepairAlert> createState() => _DateMoneyRepairAlertState();
 }
 
-class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
+class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert>
+    with ControllersMixin<DateMoneyRepairAlert> {
   DateTime? selectedDate;
 
   final List<OverlayEntry> _bigEntries = <OverlayEntry>[];
@@ -63,7 +64,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () {
-                              ref.read(moneyRepairControllerProvider.notifier).clearMoneyModelListData();
+                              moneyRepairControllerNotifier.clearMoneyModelListData();
 
                               _showDP();
                             },
@@ -111,10 +112,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
 
   ///
   Future<void> replaceIsarMoneyRecord() async {
-    final List<int> selectedRepairRecordNumber =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.selectedRepairRecordNumber));
-
-    if (selectedRepairRecordNumber.isEmpty) {
+    if (appParamState.selectedRepairRecordNumber.isEmpty) {
       // ignore: always_specify_types
       Future.delayed(
         Duration.zero,
@@ -130,12 +128,9 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
 
     //===================================================
 
-    final List<MoneyModel> moneyModelList =
-        ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
-
-    selectedRepairRecordNumber.toSet().toList().forEach((int element) async {
+    appParamState.selectedRepairRecordNumber.toSet().toList().forEach((int element) async {
       await widget.isar.writeTxn(() async {
-        final MoneyModel moneyModel = moneyModelList[element];
+        final MoneyModel moneyModel = moneyRepairControllerState.moneyModelList[element];
 
         await MoneysRepository().getDateMoney(
             isar: widget.isar, param: <String, dynamic>{'date': moneyModel.date}).then((Money? value) async {
@@ -230,9 +225,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
               yen_1: value[i].yen_1,
             );
 
-            await ref
-                .read(moneyRepairControllerProvider.notifier)
-                .setMoneyModelListData(pos: i, moneyModel: moneyModel);
+            await moneyRepairControllerNotifier.setMoneyModelListData(pos: i, moneyModel: moneyModel);
           }
         }
       },
@@ -243,12 +236,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
   Widget _displayAfterMoneyList() {
     final List<Widget> list = <Widget>[];
 
-    final List<MoneyModel> moneyModelList =
-        ref.watch(moneyRepairControllerProvider.select((MoneyRepairControllerState value) => value.moneyModelList));
-
-    moneyModelListLength = moneyModelList.length;
-
-    final AppParamsResponseState appParamState = ref.watch(appParamProvider);
+    moneyModelListLength = moneyRepairControllerState.moneyModelList.length;
 
     Offset initialPosition = Offset(context.screenSize.width * 0.6, context.screenSize.height * 0.2);
 
@@ -256,44 +244,41 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
       initialPosition = appParamState.overlayPosition!;
     }
 
-    for (int i = 0; i < moneyModelList.length; i++) {
-      if (moneyModelList[i].date != '') {
+    for (int i = 0; i < moneyRepairControllerState.moneyModelList.length; i++) {
+      if (moneyRepairControllerState.moneyModelList[i].date != '') {
         list.add(Column(
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(moneyModelList[i].date),
+                Text(moneyRepairControllerState.moneyModelList[i].date),
                 const SizedBox.shrink(),
               ],
             ),
             Row(
               children: <int>[
-                moneyModelList[i].yen_10000,
-                moneyModelList[i].yen_5000,
-                moneyModelList[i].yen_2000,
-                moneyModelList[i].yen_1000,
-                moneyModelList[i].yen_500,
-                moneyModelList[i].yen_100,
-                moneyModelList[i].yen_50,
-                moneyModelList[i].yen_10,
-                moneyModelList[i].yen_5,
-                moneyModelList[i].yen_1,
+                moneyRepairControllerState.moneyModelList[i].yen_10000,
+                moneyRepairControllerState.moneyModelList[i].yen_5000,
+                moneyRepairControllerState.moneyModelList[i].yen_2000,
+                moneyRepairControllerState.moneyModelList[i].yen_1000,
+                moneyRepairControllerState.moneyModelList[i].yen_500,
+                moneyRepairControllerState.moneyModelList[i].yen_100,
+                moneyRepairControllerState.moneyModelList[i].yen_50,
+                moneyRepairControllerState.moneyModelList[i].yen_10,
+                moneyRepairControllerState.moneyModelList[i].yen_5,
+                moneyRepairControllerState.moneyModelList[i].yen_1,
               ].asMap().entries.map(
                 (MapEntry<int, int> e) {
                   return GestureDetector(
                     onTap: () {
                       repairCountEditingController.clear();
 
-                      ref
-                          .read(appParamProvider.notifier)
-                          .setRepairSelectValue(date: moneyModelList[i].date, kind: e.key);
+                      appParamNotifier.setRepairSelectValue(
+                          date: moneyRepairControllerState.moneyModelList[i].date, kind: e.key);
 
-                      ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: false);
+                      appParamNotifier.setRepairSelectFlag(flag: false);
 
-                      ref
-                          .read(appParamProvider.notifier)
-                          .setMoneyRepairInputParams(bigEntries: _bigEntries, setStateCallback: setState);
+                      appParamNotifier.setMoneyRepairInputParams(bigEntries: _bigEntries, setStateCallback: setState);
 
                       addBigOverlay(
                         context: context,
@@ -305,17 +290,15 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                         initialPosition: initialPosition,
                         widget: Consumer(
                           builder: (BuildContext context, WidgetRef ref, Widget? child) {
-                            final AppParamsResponseState appParamState = ref.watch(appParamProvider);
                             return displayMoneyRepairInputParts(
                               index: i,
-                              date: moneyModelList[i].date,
+                              date: moneyRepairControllerState.moneyModelList[i].date,
                               data: e,
                               appParamState: appParamState,
                             );
                           },
                         ),
-                        onPositionChanged: (Offset newPos) =>
-                            ref.read(appParamProvider.notifier).updateOverlayPosition(newPos),
+                        onPositionChanged: (Offset newPos) => appParamNotifier.updateOverlayPosition(newPos),
                       );
                     },
                     child: Container(
@@ -327,7 +310,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
                         border: Border.all(
                           color: (e.key < 4) ? Colors.greenAccent.withOpacity(0.3) : Colors.white.withOpacity(0.3),
                         ),
-                        color: (appParamState.repairSelectDate == moneyModelList[i].date &&
+                        color: (appParamState.repairSelectDate == moneyRepairControllerState.moneyModelList[i].date &&
                                 appParamState.repairSelectKind == e.key)
                             ? Colors.yellowAccent.withOpacity(0.2)
                             : Colors.transparent,
@@ -380,8 +363,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
           Row(
             children: <Widget>[
               IconButton(
-                onPressed: () =>
-                    ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: !appParamState.repairSelectFlag),
+                onPressed: () => appParamNotifier.setRepairSelectFlag(flag: !appParamState.repairSelectFlag),
                 icon: Icon(
                   Icons.check,
                   color: (appParamState.repairSelectFlag) ? Colors.orangeAccent : Colors.grey,
@@ -394,21 +376,21 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert> {
             onPressed: () {
               if (appParamState.repairSelectFlag) {
                 for (int i = index; i < moneyModelListLength; i++) {
-                  ref.read(appParamProvider.notifier).setSelectedRepairRecordNumber(number: i);
+                  appParamNotifier.setSelectedRepairRecordNumber(number: i);
                 }
               } else {
-                ref.read(appParamProvider.notifier).setSelectedRepairRecordNumber(number: index);
+                appParamNotifier.setSelectedRepairRecordNumber(number: index);
               }
 
-              ref.read(moneyRepairControllerProvider.notifier).replaceMoneyModelListData(
-                    index: index,
-                    date: date,
-                    kind: moneyKindList[data.key],
-                    value: data.value,
-                    newValue: repairCountEditingController.text.trim(),
-                    repairSelectFlag: appParamState.repairSelectFlag,
-                    moneyModelListLength: moneyModelListLength,
-                  );
+              moneyRepairControllerNotifier.replaceMoneyModelListData(
+                index: index,
+                date: date,
+                kind: moneyKindList[data.key],
+                value: data.value,
+                newValue: repairCountEditingController.text.trim(),
+                repairSelectFlag: appParamState.repairSelectFlag,
+                moneyModelListLength: moneyModelListLength,
+              );
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
             child: const Text('変更'),

@@ -8,9 +8,9 @@ import 'package:isar/isar.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../collections/spend_time_place.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
-import '../../state/app_params/app_params_notifier.dart';
-import '../../state/app_params/app_params_response_state.dart';
+
 import 'parts/money_dialog.dart';
 import 'same_year_day_spend_price_list_alert.dart';
 
@@ -24,17 +24,15 @@ class SameDaySpendPriceListAlert extends ConsumerStatefulWidget {
   ConsumerState<SameDaySpendPriceListAlert> createState() => _SameDaySpendPriceListAlertState();
 }
 
-class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceListAlert> {
+class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceListAlert>
+    with ControllersMixin<SameDaySpendPriceListAlert> {
   final ItemScrollController controller = ItemScrollController();
   final ItemPositionsListener listener = ItemPositionsListener.create();
 
   ///
   @override
   Widget build(BuildContext context) {
-    final int sameDaySelectedDay =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.sameDaySelectedDay));
-
-    if (sameDaySelectedDay == DateTime.now().day) {
+    if (appParamState.sameDaySelectedDay == DateTime.now().day) {
       WidgetsBinding.instance.addPostFrameCallback((_) async => controller.jumpTo(index: DateTime.now().day - 1));
     }
 
@@ -85,9 +83,6 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
 
   ///
   Widget _displayDayList() {
-    final int sameDaySelectedDay =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.sameDaySelectedDay));
-
     final List<int> list = <int>[];
 
     for (int i = 1; i <= 31; i++) {
@@ -104,13 +99,14 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
           margin: const EdgeInsets.symmetric(vertical: 5),
           child: GestureDetector(
             onTap: () {
-              ref.read(appParamProvider.notifier).setSameDaySelectedDay(day: index + 1);
+              appParamNotifier.setSameDaySelectedDay(day: index + 1);
 
               controller.jumpTo(index: index);
             },
             child: CircleAvatar(
-              backgroundColor:
-                  ((sameDaySelectedDay - 1) == index) ? Colors.orangeAccent.withOpacity(0.3) : Colors.black,
+              backgroundColor: ((appParamState.sameDaySelectedDay - 1) == index)
+                  ? Colors.orangeAccent.withOpacity(0.3)
+                  : Colors.black,
               child: Text((index + 1).toString(), style: const TextStyle(fontSize: 12, color: Colors.white)),
             ),
           ),
@@ -121,9 +117,6 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
 
   ///
   Widget _displaySameDaySpendPriceList() {
-    final int sameDaySelectedDay =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.sameDaySelectedDay));
-
     final List<Widget> list = <Widget>[];
 
     final Map<String, List<SpendTimePlace>> spendTimePlaceMap = <String, List<SpendTimePlace>>{};
@@ -136,7 +129,7 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
     for (final SpendTimePlace element in widget.spendTimePlaceList) {
       final List<String> exDate = element.date.split('-');
 
-      if (exDate[2].toInt() <= sameDaySelectedDay) {
+      if (exDate[2].toInt() <= appParamState.sameDaySelectedDay) {
         spendTimePlaceMap['${exDate[0]}-${exDate[1]}']?.add(element);
       }
     }

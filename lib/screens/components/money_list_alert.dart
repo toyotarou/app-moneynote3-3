@@ -6,9 +6,9 @@ import 'package:isar/isar.dart';
 import '../../collections/bank_name.dart';
 import '../../collections/emoney_name.dart';
 import '../../collections/money.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
-import '../../state/holidays/holidays_notifier.dart';
-import '../../state/holidays/holidays_response_state.dart';
+
 import '../../utilities/utilities.dart';
 import 'parts/money_list_display_cell.dart';
 
@@ -37,7 +37,7 @@ class MoneyListAlert extends ConsumerStatefulWidget {
   ConsumerState<MoneyListAlert> createState() => _MoneyListAlertState();
 }
 
-class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
+class _MoneyListAlertState extends ConsumerState<MoneyListAlert> with ControllersMixin<MoneyListAlert> {
   final Utility _utility = Utility();
 
   final Map<String, Money> _dateMoneyMap = <String, Money>{};
@@ -101,8 +101,6 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> {
     if (_dateMoneyMap.isEmpty) {
       return const SizedBox.shrink();
     }
-
-    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
 
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;

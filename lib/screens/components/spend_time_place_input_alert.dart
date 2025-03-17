@@ -10,13 +10,12 @@ import 'package:isar/isar.dart';
 
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
+import '../../controllers//spend_time_places/spend_time_places_notifier.dart';
+import '../../controllers//spend_time_places/spend_time_places_response_state.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
 import '../../repository/spend_time_places_repository.dart';
-import '../../state/app_params/app_params_notifier.dart';
-import '../../state/app_params/app_params_response_state.dart';
-import '../../state/spend_time_places/spend_time_places_notifier.dart';
-import '../../state/spend_time_places/spend_time_places_response_state.dart';
 import '../../utilities/functions.dart';
 import 'parts/error_dialog.dart';
 import 'parts/money_dialog.dart';
@@ -41,7 +40,7 @@ class SpendTimePlaceInputAlert extends ConsumerStatefulWidget {
 }
 
 class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAlert>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, ControllersMixin<SpendTimePlaceInputAlert> {
   late AnimationController _animationController;
 
   ///
@@ -124,9 +123,6 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     // ignore: always_specify_types
     Future(() => ref.read(spendTimePlaceProvider.notifier).setBaseDiff(baseDiff: widget.spend.toString()));
 
-    final bool inputButtonClicked =
-        ref.watch(appParamProvider.select((AppParamsResponseState value) => value.inputButtonClicked));
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -158,10 +154,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                     ],
                   ),
                   ElevatedButton(
-                    onPressed: inputButtonClicked
+                    onPressed: appParamState.inputButtonClicked
                         ? null
                         : () {
-                            ref.read(appParamProvider.notifier).setInputButtonClicked(flag: true);
+                            appParamNotifier.setInputButtonClicked(flag: true);
 
                             _inputSpendTimePlace();
                           },
@@ -569,7 +565,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
             content: '値を正しく入力してください。'),
       );
 
-      ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+      appParamNotifier.setInputButtonClicked(flag: false);
 
       return;
     }

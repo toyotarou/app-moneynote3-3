@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import '../../collections/spend_time_place.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
-import '../../state/money_graph/money_graph_notifier.dart';
-import '../../state/money_graph/money_graph_response_state.dart';
 
 class MoneyGraphAlert extends ConsumerStatefulWidget {
   const MoneyGraphAlert({
@@ -42,7 +41,7 @@ class MoneyGraphAlert extends ConsumerStatefulWidget {
   ConsumerState<MoneyGraphAlert> createState() => _MoneyGraphAlertState();
 }
 
-class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
+class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> with ControllersMixin<MoneyGraphAlert> {
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
 
@@ -54,9 +53,6 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
   @override
   Widget build(BuildContext context) {
     _setChartData();
-
-    final String displayGraphFlag =
-        ref.watch(moneyGraphProvider.select((MoneyGraphResponseState value) => value.displayGraphFlag));
 
     return AlertDialog(
       backgroundColor: Colors.transparent,
@@ -90,36 +86,36 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
                     Column(
                       children: <Widget>[
                         GestureDetector(
-                          onTap: () => ref.read(moneyGraphProvider.notifier).setDisplayGraphFlag(flag: 'total'),
+                          onTap: () => moneyGraphNotifier.setDisplayGraphFlag(flag: 'total'),
                           child: Text(
                             '所持金額',
                             style: TextStyle(
                                 fontSize: 12,
-                                color: (displayGraphFlag == 'total')
+                                color: (moneyGraphState.displayGraphFlag == 'total')
                                     ? Colors.yellowAccent
                                     : Theme.of(context).colorScheme.primary),
                           ),
                         ),
                         const SizedBox(height: 5),
                         GestureDetector(
-                          onTap: () => ref.read(moneyGraphProvider.notifier).setDisplayGraphFlag(flag: 'diff'),
+                          onTap: () => moneyGraphNotifier.setDisplayGraphFlag(flag: 'diff'),
                           child: Text(
                             '繰越比較',
                             style: TextStyle(
                                 fontSize: 12,
-                                color: (displayGraphFlag == 'diff')
+                                color: (moneyGraphState.displayGraphFlag == 'diff')
                                     ? Colors.yellowAccent
                                     : Theme.of(context).colorScheme.primary),
                           ),
                         ),
                         const SizedBox(height: 5),
                         GestureDetector(
-                          onTap: () => ref.read(moneyGraphProvider.notifier).setDisplayGraphFlag(flag: 'spend'),
+                          onTap: () => moneyGraphNotifier.setDisplayGraphFlag(flag: 'spend'),
                           child: Text(
                             '使用金額',
                             style: TextStyle(
                                 fontSize: 12,
-                                color: (displayGraphFlag == 'spend')
+                                color: (moneyGraphState.displayGraphFlag == 'spend')
                                     ? Colors.yellowAccent
                                     : Theme.of(context).colorScheme.primary),
                           ),
@@ -143,12 +139,9 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
   void _setChartData() {
     final Map<String, int> map = <String, int>{};
 
-    final String displayGraphFlag =
-        ref.watch(moneyGraphProvider.select((MoneyGraphResponseState value) => value.displayGraphFlag));
-
     int warisuu = 500000;
 
-    switch (displayGraphFlag) {
+    switch (moneyGraphState.displayGraphFlag) {
       case 'total':
         widget.monthlyDateSumMap.forEach((String key, int value) {
           if (widget.date.yyyymm == DateTime.parse('$key 00:00:00').yyyymm) {
@@ -248,7 +241,7 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
       i++;
     });
 
-    if (displayGraphFlag == 'total') {
+    if (moneyGraphState.displayGraphFlag == 'total') {
       final List<String> exLastDate = lastDate.split('-');
 
       final int lastDateMonthLastDay = DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
@@ -262,8 +255,12 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> {
       final int minValue = list.reduce(min);
       final int maxValue = list.reduce(max);
 
-      final int graphMin = (displayGraphFlag == 'total') ? widget.graphMin : ((minValue / warisuu).floor()) * warisuu;
-      final int graphMax = (displayGraphFlag == 'total') ? widget.graphMax : ((maxValue / warisuu).ceil()) * warisuu;
+      final int graphMin = (moneyGraphState.displayGraphFlag == 'total')
+          ? widget.graphMin
+          : ((minValue / warisuu).floor()) * warisuu;
+      final int graphMax = (moneyGraphState.displayGraphFlag == 'total')
+          ? widget.graphMax
+          : ((maxValue / warisuu).ceil()) * warisuu;
 
       graphData = LineChartData(
         ///

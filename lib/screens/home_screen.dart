@@ -13,6 +13,7 @@ import '../collections/income.dart';
 import '../collections/money.dart';
 import '../collections/spend_item.dart';
 import '../collections/spend_time_place.dart';
+import '../controllers/controllers_mixin.dart';
 import '../extensions/extensions.dart';
 import '../repository/bank_names_repository.dart';
 import '../repository/bank_prices_repository.dart';
@@ -21,13 +22,7 @@ import '../repository/incomes_repository.dart';
 import '../repository/moneys_repository.dart';
 import '../repository/spend_items_repository.dart';
 import '../repository/spend_time_places_repository.dart';
-import '../state/app_params/app_params_notifier.dart';
-import '../state/app_params/app_params_response_state.dart';
-import '../state/calendars/calendars_notifier.dart';
-import '../state/calendars/calendars_response_state.dart';
-import '../state/holidays/holidays_notifier.dart';
-import '../state/holidays/holidays_response_state.dart';
-import '../state/money_repair/money_repair.dart';
+
 import '../utilities/functions.dart';
 import '../utilities/utilities.dart';
 import 'components/___dummy_data_input_alert.dart';
@@ -64,7 +59,7 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<HomeScreen> {
   DateTime _calendarMonthFirst = DateTime.now();
   final List<String> _youbiList = <String>[
     'Sunday',
@@ -142,12 +137,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     if (widget.baseYm != null) {
       // ignore: always_specify_types
-      Future(() => ref.read(calendarProvider.notifier).setCalendarYearMonth(baseYm: widget.baseYm));
+      Future(() => calendarNotifier.setCalendarYearMonth(baseYm: widget.baseYm));
     }
 
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-
-    final bool calendarDisp = ref.watch(appParamProvider.select((AppParamsResponseState value) => value.calendarDisp));
+    // final CalendarsResponseState calendarState = ref.watch(calendarProvider);
+    //
+    // final bool calendarDisp = ref.watch(appParamProvider.select((AppParamsResponseState value) => value.calendarDisp));
 
     return Scaffold(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
@@ -156,17 +151,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(
         title: Row(
           children: <Widget>[
-            Text(calendarState.baseYearMonth),
+            Text(calendarsState.baseYearMonth),
             const SizedBox(width: 10),
             IconButton(
               onPressed: _goPrevMonth,
               icon: Icon(Icons.arrow_back_ios, color: Colors.white.withOpacity(0.8), size: 14),
             ),
             IconButton(
-              onPressed: (DateTime.now().yyyymm == calendarState.baseYearMonth) ? null : _goNextMonth,
+              onPressed: (DateTime.now().yyyymm == calendarsState.baseYearMonth) ? null : _goNextMonth,
               icon: Icon(
                 Icons.arrow_forward_ios,
-                color: (DateTime.now().yyyymm == calendarState.baseYearMonth)
+                color: (DateTime.now().yyyymm == calendarsState.baseYearMonth)
                     ? Colors.grey.withOpacity(0.6)
                     : Colors.white.withOpacity(0.8),
                 size: 14,
@@ -177,7 +172,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         centerTitle: false,
         backgroundColor: Colors.transparent,
         actions: <Widget>[
-          if (calendarDisp)
+          if (appParamState.calendarDisp)
             Row(
               children: <Widget>[
                 IconButton(
@@ -257,13 +252,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Column(
               children: <Widget>[
                 _displayKurikoshiPrice(),
-                if (calendarDisp) ...<Widget>[
+                if (appParamState.calendarDisp) ...<Widget>[
                   ConstrainedBox(
                     constraints: BoxConstraints(minHeight: context.screenSize.height * 0.45),
                     child: _getCalendar(),
                   ),
                 ],
-                if (!calendarDisp) ...<Widget>[
+                if (!appParamState.calendarDisp) ...<Widget>[
                   const SizedBox(height: 10),
                 ],
                 _displayMonthSum(),
@@ -292,8 +287,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
-    final bool calendarDisp = ref.watch(appParamProvider.select((AppParamsResponseState value) => value.calendarDisp));
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DefaultTextStyle(
@@ -301,7 +294,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            if (calendarDisp) ...<Widget>[
+            if (appParamState.calendarDisp) ...<Widget>[
               Row(
                 children: <Widget>[
                   GestureDetector(
@@ -345,7 +338,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
             ],
-            if (!calendarDisp) ...<Widget>[const SizedBox.shrink()],
+            if (!appParamState.calendarDisp) ...<Widget>[const SizedBox.shrink()],
             RichText(
               text: TextSpan(
                 text: minusVal.toString().toCurrency(),
@@ -385,8 +378,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     //=================================
 
-    final bool calendarDisp = ref.watch(appParamProvider.select((AppParamsResponseState value) => value.calendarDisp));
-
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2))],
@@ -406,7 +397,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                if (calendarDisp) ...<Widget>[
+                if (appParamState.calendarDisp) ...<Widget>[
                   Row(
                     children: <Widget>[
                       const SizedBox(width: 10),
@@ -430,20 +421,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   ),
                 ],
-                if (!calendarDisp) ...<Widget>[const SizedBox.shrink()],
+                if (!appParamState.calendarDisp) ...<Widget>[const SizedBox.shrink()],
                 Row(
                   children: <Widget>[
                     IconButton(
                       onPressed: () {
-                        ref.read(appParamProvider.notifier).setCalendarDisp(flag: !calendarDisp);
+                        appParamNotifier.setCalendarDisp(flag: !appParamState.calendarDisp);
                       },
                       icon: Icon(
                         Icons.calendar_month,
-                        color: calendarDisp ? Colors.white.withOpacity(0.6) : Colors.grey.withOpacity(0.6),
+                        color:
+                            appParamState.calendarDisp ? Colors.white.withOpacity(0.6) : Colors.grey.withOpacity(0.6),
                         size: 16,
                       ),
                     ),
-                    if (calendarDisp) ...<Widget>[
+                    if (appParamState.calendarDisp) ...<Widget>[
                       IconButton(
                         onPressed: () {
                           MoneyDialog(
@@ -516,7 +508,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  ref.read(appParamProvider.notifier).setInputButtonClicked(flag: false);
+                  appParamNotifier.setInputButtonClicked(flag: false);
 
                   MoneyDialog(
                     context: context,
@@ -540,13 +532,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () async {
-                  ref.read(moneyRepairControllerProvider.notifier).clearMoneyModelListData();
+                  moneyRepairControllerNotifier.clearMoneyModelListData();
 
-                  ref.read(appParamProvider.notifier).setRepairSelectValue(date: '', kind: -1);
+                  appParamNotifier.setRepairSelectValue(date: '', kind: -1);
 
-                  ref.read(appParamProvider.notifier).setRepairSelectFlag(flag: false);
+                  appParamNotifier.setRepairSelectFlag(flag: false);
 
-                  ref.read(appParamProvider.notifier).clearSelectedRepairRecordNumber();
+                  appParamNotifier.clearSelectedRepairRecordNumber();
 
                   await MoneyDialog(
                     context: context,
@@ -574,7 +566,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               GestureDetector(
                 onTap: () async {
-                  ref.read(appParamProvider.notifier).setSelectedIncomeYear(year: '');
+                  appParamNotifier.setSelectedIncomeYear(year: '');
 
                   if (mounted) {
                     await MoneyDialog(
@@ -628,8 +620,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               if (spendTypeBlankSpendTimePlaceList.isNotEmpty) ...<Widget>[
                 GestureDetector(
                   onTap: () async {
-                    await ref
-                        .read(appParamProvider.notifier)
+                    await appParamNotifier
                         .setInputButtonClicked(flag: false)
                         // ignore: always_specify_types
                         .then((value) {
@@ -796,17 +787,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _getCalendar() {
     monthlySpendMap = <String, int>{};
 
-    final HolidaysResponseState holidayState = ref.watch(holidayProvider);
-
     if (holidayState.holidayMap.value != null) {
       _holidayMap = holidayState.holidayMap.value!;
     }
 
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
+    _calendarMonthFirst = DateTime.parse('${calendarsState.baseYearMonth}-01 00:00:00');
 
-    _calendarMonthFirst = DateTime.parse('${calendarState.baseYearMonth}-01 00:00:00');
-
-    final DateTime monthEnd = DateTime.parse('${calendarState.nextYearMonth}-00 00:00:00');
+    final DateTime monthEnd = DateTime.parse('${calendarsState.nextYearMonth}-00 00:00:00');
 
     final int diff = monthEnd.difference(_calendarMonthFirst).inDays;
     final int monthDaysNum = diff + 1;
@@ -1267,25 +1254,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   ///
   void _goPrevMonth() {
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-
     Navigator.pushReplacement(
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarState.prevYearMonth)),
+          builder: (BuildContext context) =>
+              HomeScreen(isar: widget.isar, baseYm: calendarsState.prevYearMonth)),
     );
   }
 
   ///
   void _goNextMonth() {
-    final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-
     Navigator.pushReplacement(
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarState.nextYearMonth)),
+          builder: (BuildContext context) =>
+              HomeScreen(isar: widget.isar, baseYm: calendarsState.nextYearMonth)),
     );
   }
 

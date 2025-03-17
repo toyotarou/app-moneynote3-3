@@ -6,27 +6,26 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/spend_time_place.dart';
+import '../../controllers//spend_time_places/spend_time_places_notifier.dart';
+import '../../controllers//spend_time_places/spend_time_places_response_state.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_time_places_repository.dart';
-import '../../state/spend_time_places/spend_time_places_notifier.dart';
-import '../../state/spend_time_places/spend_time_places_response_state.dart';
 import 'parts/error_dialog.dart';
 
 class SpendTimePlaceItemModifyAlert extends ConsumerStatefulWidget {
-  const SpendTimePlaceItemModifyAlert(
-      {super.key, required this.isar, required this.spendTimePlace});
+  const SpendTimePlaceItemModifyAlert({super.key, required this.isar, required this.spendTimePlace});
 
   final Isar isar;
   final SpendTimePlace spendTimePlace;
 
   ///
   @override
-  ConsumerState<SpendTimePlaceItemModifyAlert> createState() =>
-      _SpendTimePlaceItemModifyAlertState();
+  ConsumerState<SpendTimePlaceItemModifyAlert> createState() => _SpendTimePlaceItemModifyAlertState();
 }
 
-class _SpendTimePlaceItemModifyAlertState
-    extends ConsumerState<SpendTimePlaceItemModifyAlert> {
+class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceItemModifyAlert>
+    with ControllersMixin<SpendTimePlaceItemModifyAlert> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -61,10 +60,7 @@ class _SpendTimePlaceItemModifyAlertState
     return DecoratedBox(
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
-          BoxShadow(
-              blurRadius: 24,
-              spreadRadius: 16,
-              color: Colors.black.withOpacity(0.2)),
+          BoxShadow(blurRadius: 24, spreadRadius: 16, color: Colors.black.withOpacity(0.2)),
         ],
       ),
       child: ClipRRect(
@@ -78,17 +74,13 @@ class _SpendTimePlaceItemModifyAlertState
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+              border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
             ),
             child: Column(
               children: <Widget>[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -99,10 +91,7 @@ class _SpendTimePlaceItemModifyAlertState
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -113,10 +102,7 @@ class _SpendTimePlaceItemModifyAlertState
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -127,10 +113,7 @@ class _SpendTimePlaceItemModifyAlertState
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -141,10 +124,7 @@ class _SpendTimePlaceItemModifyAlertState
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.white.withOpacity(0.3)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -164,23 +144,19 @@ class _SpendTimePlaceItemModifyAlertState
   ///
   Widget displayButtonColumn() {
     final String spendTimePlaceItemChangeDate = ref.watch(
-        spendTimePlaceProvider.select((SpendTimePlacesResponseState value) =>
-            value.spendTimePlaceItemChangeDate));
+        spendTimePlaceProvider.select((SpendTimePlacesResponseState value) => value.spendTimePlaceItemChangeDate));
 
     return Column(
       children: <Widget>[
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               const Text('このレコードを削除する'),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                 onPressed: _showDeleteDialog,
                 child: const Text('削除'),
               ),
@@ -189,9 +165,7 @@ class _SpendTimePlaceItemModifyAlertState
         ),
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: Row(
             children: <Widget>[
               Expanded(
@@ -216,8 +190,7 @@ class _SpendTimePlaceItemModifyAlertState
                 ),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                 onPressed: () {
                   if (spendTimePlaceItemChangeDate == '') {
                     // ignore: always_specify_types
@@ -272,31 +245,24 @@ class _SpendTimePlaceItemModifyAlertState
     );
 
     if (selectedDate != null) {
-      await ref
-          .read(spendTimePlaceProvider.notifier)
-          .setSpendTimePlaceItemChangeDate(date: selectedDate.yyyymmdd);
+      await ref.read(spendTimePlaceProvider.notifier).setSpendTimePlaceItemChangeDate(date: selectedDate.yyyymmdd);
     }
   }
 
   ///
   Future<void> _updateSpendTimePlaceItem() async {
     final String spendTimePlaceItemChangeDate = ref.watch(
-        spendTimePlaceProvider.select((SpendTimePlacesResponseState value) =>
-            value.spendTimePlaceItemChangeDate));
+        spendTimePlaceProvider.select((SpendTimePlacesResponseState value) => value.spendTimePlaceItemChangeDate));
 
-    final SpendTimePlace spendTimePlaceItem = widget.spendTimePlace
-      ..date = spendTimePlaceItemChangeDate;
+    final SpendTimePlace spendTimePlaceItem = widget.spendTimePlace..date = spendTimePlaceItemChangeDate;
 
     await widget.isar.writeTxn(() async {
       // ignore: always_specify_types
       await SpendTimePlacesRepository()
-          .updateSpendTimePlace(
-              isar: widget.isar, spendTimePlace: spendTimePlaceItem)
+          .updateSpendTimePlace(isar: widget.isar, spendTimePlace: spendTimePlaceItem)
           // ignore: always_specify_types
           .then((value) async {
-        await ref
-            .read(spendTimePlaceProvider.notifier)
-            .setSpendTimePlaceItemChangeDate(date: '');
+        await ref.read(spendTimePlaceProvider.notifier).setSpendTimePlaceItemChangeDate(date: '');
 
         if (mounted) {
           Navigator.pop(context);
@@ -309,8 +275,7 @@ class _SpendTimePlaceItemModifyAlertState
 
   ///
   void _showDeleteDialog() {
-    final Widget cancelButton = TextButton(
-        onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
+    final Widget cancelButton = TextButton(onPressed: () => Navigator.pop(context), child: const Text('いいえ'));
 
     final Widget continueButton = TextButton(
         onPressed: () {

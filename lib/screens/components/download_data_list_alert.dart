@@ -13,11 +13,11 @@ import '../../collections/income.dart';
 import '../../collections/money.dart';
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
+import '../../controllers/controllers_mixin.dart';
 import '../../enums/data_download_data_type.dart';
 import '../../enums/data_download_date_type.dart';
 import '../../extensions/extensions.dart';
-import '../../state/data_download/data_download_notifier.dart';
-import '../../state/data_download/data_download_response_state.dart';
+
 import 'parts/error_dialog.dart';
 
 class DownloadDataListAlert extends ConsumerStatefulWidget {
@@ -47,7 +47,8 @@ class DownloadDataListAlert extends ConsumerStatefulWidget {
   ConsumerState<DownloadDataListAlert> createState() => _DownloadDataListAlertState();
 }
 
-class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
+class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert>
+    with ControllersMixin<DownloadDataListAlert> {
   Map<String, List<SpendTimePlace>> spendTimePlaceMap = <String, List<SpendTimePlace>>{};
 
   List<String> outputValuesList = <String>[];
@@ -76,8 +77,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final DataDownloadResponseState dataDownloadState = ref.watch(dataDownloadProvider);
-
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
@@ -107,7 +106,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bankName);
+                      dataDownloadNotifier.setDataType(dataType: DateDownloadDataType.bankName);
                     },
                     child: const Text('bank name', style: TextStyle(fontSize: 10)),
                   ),
@@ -118,7 +117,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spendItem);
+                      dataDownloadNotifier.setDataType(dataType: DateDownloadDataType.spendItem);
                     },
                     child: const Text('spend item', style: TextStyle(fontSize: 10)),
                   ),
@@ -129,7 +128,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                             ? Colors.yellowAccent.withOpacity(0.3)
                             : Colors.pinkAccent.withOpacity(0.2)),
                     onPressed: () {
-                      ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.income);
+                      dataDownloadNotifier.setDataType(dataType: DateDownloadDataType.income);
                     },
                     child: const Text('income', style: TextStyle(fontSize: 10)),
                   ),
@@ -149,9 +148,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                             children: <Widget>[
                               IconButton(
                                 onPressed: () {
-                                  ref
-                                      .read(dataDownloadProvider.notifier)
-                                      .setDataType(dataType: DateDownloadDataType.none);
+                                  dataDownloadNotifier.setDataType(dataType: DateDownloadDataType.none);
 
                                   _showDP(pos: DateDownloadDateType.start);
                                 },
@@ -170,9 +167,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                           children: <Widget>[
                             IconButton(
                               onPressed: () {
-                                ref
-                                    .read(dataDownloadProvider.notifier)
-                                    .setDataType(dataType: DateDownloadDataType.none);
+                                dataDownloadNotifier.setDataType(dataType: DateDownloadDataType.none);
 
                                 _showDP(pos: DateDownloadDateType.end);
                               },
@@ -199,7 +194,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                               return;
                             }
 
-                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.money);
+                            dataDownloadNotifier.setDataType(dataType: DateDownloadDataType.money);
                           },
                           child: const Text('money', style: TextStyle(fontSize: 10)),
                         ),
@@ -215,7 +210,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                               return;
                             }
 
-                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.bank);
+                            dataDownloadNotifier.setDataType(dataType: DateDownloadDataType.bank);
                           },
                           child: const Text('bank', style: TextStyle(fontSize: 10)),
                         ),
@@ -231,7 +226,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
                               return;
                             }
 
-                            ref.read(dataDownloadProvider.notifier).setDataType(dataType: DateDownloadDataType.spend);
+                            dataDownloadNotifier.setDataType(dataType: DateDownloadDataType.spend);
                           },
                           child: const Text('spend', style: TextStyle(fontSize: 10)),
                         ),
@@ -308,9 +303,9 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
     if (selectedDate != null) {
       switch (pos) {
         case DateDownloadDateType.start:
-          await ref.read(dataDownloadProvider.notifier).setStartDate(date: selectedDate.yyyymmdd);
+          await dataDownloadNotifier.setStartDate(date: selectedDate.yyyymmdd);
         case DateDownloadDateType.end:
-          await ref.read(dataDownloadProvider.notifier).setEndDate(date: selectedDate.yyyymmdd);
+          await dataDownloadNotifier.setEndDate(date: selectedDate.yyyymmdd);
       }
     }
   }
@@ -318,8 +313,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
   ///
   Widget _displayDownloadData() {
     final List<Widget> list = <Widget>[];
-
-    final DataDownloadResponseState dataDownloadState = ref.watch(dataDownloadProvider);
 
     if (dataDownloadState.dataType != null) {
       //=====================//
@@ -572,9 +565,6 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
       return;
     }
 
-    final DateDownloadDataType? dataType =
-        ref.watch(dataDownloadProvider.select((DataDownloadResponseState value) => value.dataType));
-
     final DateTime now = DateTime.now();
     final DateFormat timeFormat = DateFormat('HHmmss');
     final String currentTime = timeFormat.format(now);
@@ -583,7 +573,7 @@ class _DownloadDataListAlertState extends ConsumerState<DownloadDataListAlert> {
     final String month = now.month.toString().padLeft(2, '0');
     final String day = now.day.toString().padLeft(2, '0');
 
-    final String dateStr = '${dataType!.japanName}_$year$month$day$currentTime';
+    final String dateStr = '${dataDownloadState.dataType!.japanName}_$year$month$day$currentTime';
     final String sendFileName = '$dateStr.csv';
 
     final String contents = outputValuesList.join('\n');
