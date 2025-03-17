@@ -5,9 +5,12 @@ import 'app_params_response_state.dart';
 final AutoDisposeStateNotifierProvider<AppParamNotifier, AppParamsResponseState> appParamProvider =
     StateNotifierProvider.autoDispose<AppParamNotifier, AppParamsResponseState>(
         (AutoDisposeStateNotifierProviderRef<AppParamNotifier, AppParamsResponseState> ref) {
-  final int day = DateTime.now().day;
-
-  return AppParamNotifier(AppParamsResponseState(sameDaySelectedDay: day));
+  return AppParamNotifier(
+    AppParamsResponseState(
+      sameDaySelectedDay: DateTime.now().day,
+      sameYearDayCalendarSelectDate: '${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day}',
+    ),
+  );
 });
 
 class AppParamNotifier extends StateNotifier<AppParamsResponseState> {

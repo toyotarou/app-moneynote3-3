@@ -38,9 +38,15 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
   int calendarYear = 2025;
 
+  Map<String, int> dateMoneySpendMap = <String, int>{};
+
   Map<String, int> dateMoneySumMap = <String, int>{};
 
   List<String> yearList = <String>[];
+
+  String firstDate = '';
+
+  String lastDate = '';
 
   ///
   @override
@@ -53,9 +59,18 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
     widget.spendTimePlaceList.sort((SpendTimePlace a, SpendTimePlace b) => a.date.compareTo(b.date));
 
     String keepDate = '';
+
+    int spend = 0;
     int sum = 0;
     for (final SpendTimePlace element in widget.spendTimePlaceList) {
+      if (firstDate == '') {
+        firstDate = element.date;
+      }
+
+      lastDate = element.date;
+
       if (element.date != keepDate) {
+        spend = 0;
         sum = 0;
       }
 
@@ -66,6 +81,12 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
       sum += element.price;
 
       dateMoneySumMap[element.date] = sum;
+
+      if (element.price > 0) {
+        spend += element.price;
+
+        dateMoneySpendMap[element.date] = spend;
+      }
 
       keepDate = element.date;
     }
@@ -102,8 +123,6 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               SizedBox(height: 300, child: _getCalendar()),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              Text(appParamState.sameYearDayCalendarSelectDate),
-              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: displayYearDaySpendPriceList()),
             ],
           ),
@@ -121,29 +140,198 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
     final List<Widget> list = <Widget>[];
 
     for (final String element in yearList) {
-      list.add(
-        Text(element),
-      );
+      if (element == firstDate.split('-')[0]) {
+        int dispSpend = 0;
+        makeYearDaysList(
+          startDate: firstDate,
+          endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
+        ).forEach((String element2) {
+          if (dateMoneySpendMap[element2] != null) {
+            dispSpend += dateMoneySpendMap[element2]!;
+          }
+        });
+
+        int dispSum = 0;
+        makeYearDaysList(
+          startDate: firstDate,
+          endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
+        ).forEach((String element2) {
+          if (dateMoneySumMap[element2] != null) {
+            dispSum += dateMoneySumMap[element2]!;
+          }
+        });
+
+        list.add(
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+            child: DefaultTextStyle(
+              style: const TextStyle(fontSize: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Text(firstDate),
+                          const Text(' - '),
+                          Text('$element-${appParamState.sameYearDayCalendarSelectDate}'),
+                        ],
+                      ),
+                      const SizedBox(width: 30),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text('消費'),
+                                  Text(
+                                    (DateTime.parse('$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
+                                            .isAfter(
+                                      DateTime.now(),
+                                    ))
+                                        ? '-'
+                                        : dispSpend.toString().toCurrency(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: DefaultTextStyle(
+                                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    const Text('収支'),
+                                    Text(
+                                      (DateTime.parse(
+                                                  '$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
+                                              .isAfter(
+                                        DateTime.now(),
+                                      ))
+                                          ? '-'
+                                          : dispSum.toString().toCurrency(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      } else {
+        int dispSpend = 0;
+        makeYearDaysList(
+          startDate: '$element-01-01',
+          endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
+        ).forEach((String element2) {
+          if (dateMoneySpendMap[element2] != null) {
+            dispSpend += dateMoneySpendMap[element2]!;
+          }
+        });
+
+        int dispSum = 0;
+        makeYearDaysList(
+          startDate: '$element-01-01',
+          endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
+        ).forEach((String element2) {
+          if (dateMoneySumMap[element2] != null) {
+            dispSum += dateMoneySumMap[element2]!;
+          }
+        });
+
+        list.add(
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+            child: DefaultTextStyle(
+              style: const TextStyle(fontSize: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Text('$element-01-01'),
+                          const Text(' - '),
+                          Text('$element-${appParamState.sameYearDayCalendarSelectDate}'),
+                        ],
+                      ),
+                      const SizedBox(width: 30),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text('消費'),
+                                  Text(
+                                    (DateTime.parse('$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
+                                            .isAfter(
+                                      DateTime.now(),
+                                    ))
+                                        ? '-'
+                                        : dispSpend.toString().toCurrency(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: DefaultTextStyle(
+                                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    const Text('収支'),
+                                    Text(
+                                      (DateTime.parse(
+                                                  '$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
+                                              .isAfter(
+                                        DateTime.now(),
+                                      ))
+                                          ? '-'
+                                          : dispSum.toString().toCurrency(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
     }
-
-    //
-    // widget.spendTimePlaceList.sort((SpendTimePlace a, SpendTimePlace b) => a.date.compareTo(b.date));
-
-    //
-    //
-    //
-    //
-    // final Map<int, List<String>> yearsDateListMap = makeYearsDateListMap();
-    //
-    // final Map<int, Map<String, int>> yearDatePriceMap = makeYearDatePriceMap(yearsDateListMap: yearsDateListMap);
-    //
-    // yearDatePriceMap.forEach((int key, Map<String, int> value) {
-    //   print('$key / ${value.length}');
-    //   print('$key / ${value['$key-01-01']}');
-    // });
-    //
-    //
-    //
 
     return CustomScrollView(
       slivers: <Widget>[
@@ -155,83 +343,21 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
     );
   }
 
-  // ///
-  // Map<int, Map<String, int>> makeYearDatePriceMap({required Map<int, List<String>> yearsDateListMap}) {
-  //   final Map<int, Map<String, int>> map = <int, Map<String, int>>{};
-  //
-  //   yearsDateListMap.forEach((int key, List<String> value) {
-  //     final Map<String, int> map2 = <String, int>{};
-  //
-  //     for (final String element in value) {
-  //       int price = 0;
-  //       for (final SpendTimePlace element2 in widget.spendTimePlaceList) {
-  //         if (element == element2.date) {
-  //           price += element2.price;
-  //         }
-  //       }
-  //
-  //       map2[element] = price;
-  //     }
-  //
-  //     map[key] = map2;
-  //   });
-  //
-  //   return map;
-  // }
+  ///
+  List<String> makeYearDaysList({required String startDate, required String endDate}) {
+    final List<String> list = <String>[];
 
-  // ///
-  // Map<int, List<String>> makeYearsDateListMap() {
-  //   final Map<int, List<String>> map = <int, List<String>>{};
-  //
-  //   final String firstDate = widget.spendTimePlaceList.first.date;
-  //
-  //   final List<String> exFirstDate = firstDate.split('-');
-  //
-  //   // ignore: literal_only_boolean_expressions
-  //   if ('01-01' != '${exFirstDate[1]}-${exFirstDate[2]}') {
-  //     firstYearStartFromFirst = false;
-  //   }
-  //
-  //   final String firstYear = exFirstDate[0];
-  //
-  //   final String lastDate = widget.spendTimePlaceList.last.date;
-  //
-  //   final List<String> exLastDate = lastDate.split('-');
-  //
-  //   final String lastYear = exLastDate[0];
-  //
-  //   if (firstYear == lastYear) {
-  //     map[firstYear.toInt()] = makeYearDaysList(startDate: firstDate, endDate: lastDate);
-  //   } else {
-  //     for (int i = firstYear.toInt(); i <= lastYear.toInt(); i++) {
-  //       if (i == firstYear.toInt()) {
-  //         map[firstYear.toInt()] = makeYearDaysList(startDate: firstDate, endDate: DateTime(i + 1, 1, 0).yyyymmdd);
-  //       } else if (i == lastYear.toInt()) {
-  //         map[lastYear.toInt()] = makeYearDaysList(startDate: DateTime(i).yyyymmdd, endDate: DateTime.now().yyyymmdd);
-  //       } else {
-  //         map[i] = makeYearDaysList(startDate: DateTime(i).yyyymmdd, endDate: DateTime(i + 1, 1, 0).yyyymmdd);
-  //       }
-  //     }
-  //   }
-  //
-  //   return map;
-  // }
+    for (DateTime date = DateTime.parse('$startDate 00:00:00');
+        date.isBefore(DateTime.parse('$endDate 00:00:00').add(const Duration(days: 1)));
+        date = date.add(const Duration(days: 1))) {
+      final String formattedDate =
+          "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
 
-  // ///
-  // List<String> makeYearDaysList({required String startDate, required String endDate}) {
-  //   final List<String> list = <String>[];
-  //
-  //   for (DateTime date = DateTime.parse('$startDate 00:00:00');
-  //       date.isBefore(DateTime.parse('$endDate 00:00:00').add(const Duration(days: 1)));
-  //       date = date.add(const Duration(days: 1))) {
-  //     final String formattedDate =
-  //         "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-  //
-  //     list.add(formattedDate);
-  //   }
-  //
-  //   return list;
-  // }
+      list.add(formattedDate);
+    }
+
+    return list;
+  }
 
   ///
   Widget _getCalendar() {
@@ -344,7 +470,13 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
       _holidayMap = holidayState.holidayMap.value!;
     }
 
-    return _utility.getYoubiColor(date: genDate.yyyymmdd, youbiStr: genDate.youbiStr, holidayMap: _holidayMap);
+    Color color = _utility.getYoubiColor(date: genDate.yyyymmdd, youbiStr: genDate.youbiStr, holidayMap: _holidayMap);
+
+    if (mmdd == appParamState.sameYearDayCalendarSelectDate) {
+      color = Colors.yellowAccent.withOpacity(0.2);
+    }
+
+    return color;
   }
 
   ///
