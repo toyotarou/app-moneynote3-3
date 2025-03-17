@@ -16,9 +16,7 @@ import 'holidays/holidays_response_state.dart';
 import 'money_graph/money_graph_notifier.dart';
 import 'money_graph/money_graph_response_state.dart';
 import 'money_repair/money_repair.dart';
-
-// import 'spend_time_places/spend_time_places_notifier.dart';
-// import 'spend_time_places/spend_time_places_response_state.dart';
+import 'spend_time_place/spend_time_place.dart';
 
 mixin ControllersMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   //==========================================//
@@ -70,9 +68,9 @@ mixin ControllersMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
 //==========================================//
 
-// SpendTimePlacesResponseState get spendTimePlacesResponseState => ref.watch(spendTimePlaceProvider);
-//
-// AutoDisposeStateNotifierProvider get stateNotifierProvider => ref.read(spendTimePlaceProvider.notifier);
+  SpendTimePlacesControllerState get spendTimePlacesControllerState => ref.watch(spendTimePlacesControllerProvider);
+
+  SpendTimePlacesController get spendTimePlacesNotifier => ref.read(spendTimePlacesControllerProvider.notifier);
 
 //==========================================//
 }

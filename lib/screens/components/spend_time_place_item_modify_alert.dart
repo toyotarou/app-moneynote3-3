@@ -6,8 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../../collections/spend_time_place.dart';
-import '../../controllers//spend_time_places/spend_time_places_notifier.dart';
-import '../../controllers//spend_time_places/spend_time_places_response_state.dart';
+
 import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_time_places_repository.dart';
@@ -143,9 +142,6 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
 
   ///
   Widget displayButtonColumn() {
-    final String spendTimePlaceItemChangeDate = ref.watch(
-        spendTimePlaceProvider.select((SpendTimePlacesResponseState value) => value.spendTimePlaceItemChangeDate));
-
     return Column(
       children: <Widget>[
         Container(
@@ -183,7 +179,7 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
                           ),
                         ),
                         const SizedBox(width: 10),
-                        Text(spendTimePlaceItemChangeDate),
+                        Text(spendTimePlacesControllerState.spendTimePlaceItemChangeDate),
                       ],
                     ),
                   ],
@@ -192,7 +188,7 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                 onPressed: () {
-                  if (spendTimePlaceItemChangeDate == '') {
+                  if (spendTimePlacesControllerState.spendTimePlaceItemChangeDate == '') {
                     // ignore: always_specify_types
                     Future.delayed(
                       Duration.zero,
@@ -245,16 +241,14 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
     );
 
     if (selectedDate != null) {
-      await ref.read(spendTimePlaceProvider.notifier).setSpendTimePlaceItemChangeDate(date: selectedDate.yyyymmdd);
+      spendTimePlacesNotifier.setSpendTimePlaceItemChangeDate(date: selectedDate.yyyymmdd);
     }
   }
 
   ///
   Future<void> _updateSpendTimePlaceItem() async {
-    final String spendTimePlaceItemChangeDate = ref.watch(
-        spendTimePlaceProvider.select((SpendTimePlacesResponseState value) => value.spendTimePlaceItemChangeDate));
-
-    final SpendTimePlace spendTimePlaceItem = widget.spendTimePlace..date = spendTimePlaceItemChangeDate;
+    final SpendTimePlace spendTimePlaceItem = widget.spendTimePlace
+      ..date = spendTimePlacesControllerState.spendTimePlaceItemChangeDate;
 
     await widget.isar.writeTxn(() async {
       // ignore: always_specify_types
@@ -262,7 +256,7 @@ class _SpendTimePlaceItemModifyAlertState extends ConsumerState<SpendTimePlaceIt
           .updateSpendTimePlace(isar: widget.isar, spendTimePlace: spendTimePlaceItem)
           // ignore: always_specify_types
           .then((value) async {
-        await ref.read(spendTimePlaceProvider.notifier).setSpendTimePlaceItemChangeDate(date: '');
+        spendTimePlacesNotifier.setSpendTimePlaceItemChangeDate(date: '');
 
         if (mounted) {
           Navigator.pop(context);

@@ -1,56 +1,72 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../collections/spend_time_place.dart';
 import '../../extensions/extensions.dart';
-import 'spend_time_places_response_state.dart';
 
-final AutoDisposeStateNotifierProvider<SpendTimePlaceNotifier,
-        SpendTimePlacesResponseState> spendTimePlaceProvider =
-    StateNotifierProvider.autoDispose<SpendTimePlaceNotifier,
-        SpendTimePlacesResponseState>((AutoDisposeStateNotifierProviderRef<
-            SpendTimePlaceNotifier, SpendTimePlacesResponseState>
-        ref) {
-  // ignore: always_specify_types
-  final List<String> spendTime = List.generate(20, (index) => '時間');
-  // ignore: always_specify_types
-  final List<String> spendPlace = List.generate(20, (int index) => '');
-  // ignore: always_specify_types
-  final List<String> spendItem = List.generate(20, (int index) => '項目名');
-  // ignore: always_specify_types
-  final List<int> spendPrice = List.generate(20, (int index) => 0);
+part 'spend_time_place.freezed.dart';
 
-  // ignore: always_specify_types
-  final List<bool> minusCheck = List.generate(20, (int index) => false);
+part 'spend_time_place.g.dart';
 
-  return SpendTimePlaceNotifier(
-    SpendTimePlacesResponseState(
+@freezed
+class SpendTimePlacesControllerState with _$SpendTimePlacesControllerState {
+  const factory SpendTimePlacesControllerState({
+    @Default(-1) int itemPos,
+    //
+    @Default(0) int diff,
+    @Default('') String baseDiff,
+    //
+    @Default(<String>[]) List<String> spendItem,
+    @Default(<String>[]) List<String> spendTime,
+    @Default(<String>[]) List<String> spendPlace,
+    @Default(<int>[]) List<int> spendPrice,
+    @Default(<bool>[]) List<bool> minusCheck,
+
+    //
+    @Default(false) bool blinkingFlag,
+
+    //
+    @Default('') String spendTimePlaceItemChangeDate,
+  }) = _SpendTimePlacesControllerState;
+}
+
+@Riverpod(keepAlive: true)
+class SpendTimePlacesController extends _$SpendTimePlacesController {
+  ///
+  @override
+  SpendTimePlacesControllerState build() {
+    // ignore: always_specify_types
+    final List<String> spendTime = List.generate(20, (index) => '時間');
+    // ignore: always_specify_types
+    final List<String> spendPlace = List.generate(20, (int index) => '');
+    // ignore: always_specify_types
+    final List<String> spendItem = List.generate(20, (int index) => '項目名');
+    // ignore: always_specify_types
+    final List<int> spendPrice = List.generate(20, (int index) => 0);
+
+    // ignore: always_specify_types
+    final List<bool> minusCheck = List.generate(20, (int index) => false);
+
+    return SpendTimePlacesControllerState(
       spendTime: spendTime,
       spendPlace: spendPlace,
       spendItem: spendItem,
       spendPrice: spendPrice,
       minusCheck: minusCheck,
-    ),
-  );
-});
-
-class SpendTimePlaceNotifier
-    extends StateNotifier<SpendTimePlacesResponseState> {
-  SpendTimePlaceNotifier(super.state);
+    );
+  }
 
   ///
-  Future<void> setBaseDiff({required String baseDiff}) async =>
-      state = state.copyWith(baseDiff: baseDiff);
+  void setBaseDiff({required String baseDiff}) => state = state.copyWith(baseDiff: baseDiff);
 
   ///
-  Future<void> setBlinkingFlag({required bool blinkingFlag}) async =>
-      state = state.copyWith(blinkingFlag: blinkingFlag);
+  void setBlinkingFlag({required bool blinkingFlag}) => state = state.copyWith(blinkingFlag: blinkingFlag);
 
   ///
-  Future<void> setItemPos({required int pos}) async =>
-      state = state.copyWith(itemPos: pos);
+  void setItemPos({required int pos}) => state = state.copyWith(itemPos: pos);
 
   ///
-  Future<void> setSpendItem({required int pos, required String item}) async {
+  void setSpendItem({required int pos, required String item}) {
     final List<String> spendItem = <String>[...state.spendItem];
 
     spendItem[pos] = item;
@@ -59,14 +75,14 @@ class SpendTimePlaceNotifier
   }
 
   ///
-  Future<void> setTime({required int pos, required String time}) async {
+  void setTime({required int pos, required String time}) {
     final List<String> spendTime = <String>[...state.spendTime];
     spendTime[pos] = time;
     state = state.copyWith(spendTime: spendTime);
   }
 
   ///
-  Future<void> setMinusCheck({required int pos}) async {
+  void setMinusCheck({required int pos}) {
     final List<bool> minusChecks = <bool>[...state.minusCheck];
     final bool check = minusChecks[pos];
     minusChecks[pos] = !check;
@@ -74,14 +90,14 @@ class SpendTimePlaceNotifier
   }
 
   ///
-  Future<void> setPlace({required int pos, required String place}) async {
+  void setPlace({required int pos, required String place}) {
     final List<String> spendPlace = <String>[...state.spendPlace];
     spendPlace[pos] = place;
     state = state.copyWith(spendPlace: spendPlace);
   }
 
   ///
-  Future<void> setSpendPrice({required int pos, required int price}) async {
+  void setSpendPrice({required int pos, required int price}) {
     final List<int> spendPrice = <int>[...state.spendPrice];
     spendPrice[pos] = price;
 
@@ -101,7 +117,7 @@ class SpendTimePlaceNotifier
   }
 
   ///
-  Future<void> clearInputValue() async {
+  Future<void> clearInputValue() async{
     // ignore: always_specify_types
     final List<String> spendTime = List.generate(20, (int index) => '時間');
     // ignore: always_specify_types
@@ -126,7 +142,7 @@ class SpendTimePlaceNotifier
   }
 
   ///
-  Future<void> clearOneBox({required int pos}) async {
+  void clearOneBox({required int pos}) {
     final List<String> spendItem = <String>[...state.spendItem];
     final List<String> spendTime = <String>[...state.spendTime];
     final List<int> spendPrice = <int>[...state.spendPrice];
@@ -161,9 +177,7 @@ class SpendTimePlaceNotifier
   }
 
   ///
-  Future<void> setUpdateSpendTimePlace(
-      {required List<SpendTimePlace> updateSpendTimePlace,
-      required int baseDiff}) async {
+  void setUpdateSpendTimePlace({required List<SpendTimePlace> updateSpendTimePlace, required int baseDiff}) {
     try {
       final List<String> spendItem = <String>[...state.spendItem];
       final List<String> spendTime = <String>[...state.spendTime];
@@ -203,6 +217,6 @@ class SpendTimePlaceNotifier
   }
 
   ///
-  Future<void> setSpendTimePlaceItemChangeDate({required String date}) async =>
+  void setSpendTimePlaceItemChangeDate({required String date}) =>
       state = state.copyWith(spendTimePlaceItemChangeDate: date);
 }

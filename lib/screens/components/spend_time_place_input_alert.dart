@@ -10,8 +10,7 @@ import 'package:isar/isar.dart';
 
 import '../../collections/spend_item.dart';
 import '../../collections/spend_time_place.dart';
-import '../../controllers//spend_time_places/spend_time_places_notifier.dart';
-import '../../controllers//spend_time_places/spend_time_places_response_state.dart';
+
 import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
@@ -91,10 +90,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     if (widget.spendTimePlaceList!.isNotEmpty) {
       // ignore: always_specify_types
       await Future(
-        () => ref.read(spendTimePlaceProvider.notifier).setUpdateSpendTimePlace(
-              updateSpendTimePlace: widget.spendTimePlaceList!,
-              baseDiff: widget.spend,
-            ),
+        () => spendTimePlacesNotifier.setUpdateSpendTimePlace(
+          updateSpendTimePlace: widget.spendTimePlaceList!,
+          baseDiff: widget.spend,
+        ),
       );
 
       // widget.spendTimePlaceList!.mapIndexed((index, element) {
@@ -118,10 +117,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
   ///
   @override
   Widget build(BuildContext context) {
-    final SpendTimePlacesResponseState spendTimePlaceState = ref.watch(spendTimePlaceProvider);
-
     // ignore: always_specify_types
-    Future(() => ref.read(spendTimePlaceProvider.notifier).setBaseDiff(baseDiff: widget.spend.toString()));
+    Future(() => spendTimePlacesNotifier.setBaseDiff(baseDiff: widget.spend.toString()));
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -142,13 +139,13 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                       const Text('Spend'),
                       const SizedBox(width: 10),
                       Text(
-                        (spendTimePlaceState.diff != 0)
-                            ? spendTimePlaceState.diff.toString().toCurrency()
-                            : (spendTimePlaceState.baseDiff == '')
+                        (spendTimePlacesControllerState.diff != 0)
+                            ? spendTimePlacesControllerState.diff.toString().toCurrency()
+                            : (spendTimePlacesControllerState.baseDiff == '')
                                 ? ''
-                                : spendTimePlaceState.baseDiff.toCurrency(),
+                                : spendTimePlacesControllerState.baseDiff.toCurrency(),
                         style: TextStyle(
-                          color: (spendTimePlaceState.diff == 0) ? Colors.yellowAccent : Colors.white,
+                          color: (spendTimePlacesControllerState.diff == 0) ? Colors.yellowAccent : Colors.white,
                         ),
                       ),
                     ],
@@ -173,7 +170,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                   child: Row(
                     children: <Widget>[
                       Expanded(child: _displayInputParts()),
-                      if (spendTimePlaceState.blinkingFlag)
+                      if (spendTimePlacesControllerState.blinkingFlag)
                         DecoratedBoxTransition(
                           decoration: _decorationTween.animate(_animationController),
                           child: SizedBox(
@@ -209,13 +206,11 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
   Widget _displayInputParts() {
     final List<Widget> list = <Widget>[];
 
-    final SpendTimePlacesResponseState spendTimePlaceState = ref.watch(spendTimePlaceProvider);
-
     for (int i = 0; i < 20; i++) {
-      final String item = spendTimePlaceState.spendItem[i];
-      final String time = spendTimePlaceState.spendTime[i];
-      final int price = spendTimePlaceState.spendPrice[i];
-      final String place = spendTimePlaceState.spendPlace[i];
+      final String item = spendTimePlacesControllerState.spendItem[i];
+      final String time = spendTimePlacesControllerState.spendTime[i];
+      final int price = spendTimePlacesControllerState.spendPrice[i];
+      final String place = spendTimePlacesControllerState.spendPlace[i];
 
       list.add(
         DecoratedBox(
@@ -256,11 +251,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                           flex: 2,
                           child: GestureDetector(
                             onTap: () {
-                              ref
-                                  .read(spendTimePlaceProvider.notifier)
-                                  .setBlinkingFlag(blinkingFlag: !spendTimePlaceState.blinkingFlag);
+                              spendTimePlacesNotifier.setBlinkingFlag(
+                                  blinkingFlag: !spendTimePlacesControllerState.blinkingFlag);
 
-                              ref.read(spendTimePlaceProvider.notifier).setItemPos(pos: i);
+                              spendTimePlacesNotifier.setItemPos(pos: i);
                             },
                             child: Container(
                               padding: const EdgeInsets.all(5),
@@ -302,10 +296,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                     Row(
                       children: <Widget>[
                         GestureDetector(
-                          onTap: () => ref.read(spendTimePlaceProvider.notifier).setMinusCheck(pos: i),
+                          onTap: () => spendTimePlacesNotifier.setMinusCheck(pos: i),
                           child: Icon(
                             Icons.remove,
-                            color: (spendTimePlaceState.minusCheck[i]) ? Colors.redAccent : Colors.white,
+                            color: (spendTimePlacesControllerState.minusCheck[i]) ? Colors.redAccent : Colors.white,
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -322,12 +316,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                               focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
                             ),
                             style: const TextStyle(fontSize: 12),
-                            onChanged: (String value) {
-                              ref.read(spendTimePlaceProvider.notifier).setSpendPrice(
-                                    pos: i,
-                                    price: (value == '') ? 0 : value.toInt(),
-                                  );
-                            },
+                            onChanged: (String value) =>
+                                spendTimePlacesNotifier.setSpendPrice(pos: i, price: (value == '') ? 0 : value.toInt()),
                             onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
                           ),
                         ),
@@ -345,8 +335,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                         focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
                       ),
                       style: const TextStyle(fontSize: 12),
-                      onChanged: (String value) =>
-                          ref.read(spendTimePlaceProvider.notifier).setPlace(pos: i, place: value.trim()),
+                      onChanged: (String value) => spendTimePlacesNotifier.setPlace(pos: i, place: value.trim()),
                       onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
                     ),
                     if (i < widget.spendTimePlaceList!.length) ...<Widget>[
@@ -399,22 +388,19 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
   ///
   Widget _spendItemSetPanel() {
-    final int itemPos = ref.watch(spendTimePlaceProvider.select((SpendTimePlacesResponseState value) => value.itemPos));
-    final List<String> spendItem =
-        ref.watch(spendTimePlaceProvider.select((SpendTimePlacesResponseState value) => value.spendItem));
-
     return SingleChildScrollView(
       child: Column(
         children: (_spendItemList != null)
             ? _spendItemList!.map((SpendItem e) {
                 return GestureDetector(
-                  onTap: () async {
-                    await ref.read(spendTimePlaceProvider.notifier).setBlinkingFlag(blinkingFlag: false);
+                  onTap: () {
+                    spendTimePlacesNotifier.setBlinkingFlag(blinkingFlag: false);
 
-                    await ref.read(spendTimePlaceProvider.notifier).setSpendItem(pos: itemPos, item: e.spendItemName);
+                    spendTimePlacesNotifier.setSpendItem(
+                        pos: spendTimePlacesControllerState.itemPos, item: e.spendItemName);
 
                     if (_timeUnknownItem.contains(e.spendItemName)) {
-                      await ref.read(spendTimePlaceProvider.notifier).setTime(pos: itemPos, time: '00:00');
+                      spendTimePlacesNotifier.setTime(pos: spendTimePlacesControllerState.itemPos, time: '00:00');
                     }
                   },
                   child: Container(
@@ -423,7 +409,9 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                     padding: const EdgeInsets.all(5),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: (itemPos > -1 && e.spendItemName == spendItem[itemPos])
+                      color: (spendTimePlacesControllerState.itemPos > -1 &&
+                              e.spendItemName ==
+                                  spendTimePlacesControllerState.spendItem[spendTimePlacesControllerState.itemPos])
                           ? Colors.yellowAccent.withOpacity(0.2)
                           : Colors.blueGrey.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
@@ -455,7 +443,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     if (selectedTime != null) {
       final String time =
           '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
-      await ref.read(spendTimePlaceProvider.notifier).setTime(pos: pos, time: time);
+
+      spendTimePlacesNotifier.setTime(pos: pos, time: time);
     }
   }
 
@@ -464,13 +453,11 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     _priceTecs[pos].clear();
     _placeTecs[pos].clear();
 
-    await ref.read(spendTimePlaceProvider.notifier).clearOneBox(pos: pos);
+    spendTimePlacesNotifier.clearOneBox(pos: pos);
   }
 
   ///
   Future<void> _inputSpendTimePlace() async {
-    final SpendTimePlacesResponseState spendTimePlaceState = ref.watch(spendTimePlaceProvider);
-
     final List<SpendTimePlace> list = <SpendTimePlace>[];
 
     bool errFlg = false;
@@ -484,39 +471,39 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
     for (int i = 0; i < 20; i++) {
       //===============================================
-      if (spendTimePlaceState.spendItem[i].trim() != '項目名' &&
-          spendTimePlaceState.spendTime[i].trim() != '時間' &&
-          spendTimePlaceState.spendPlace[i].trim() != '' &&
-          spendTimePlaceState.spendPrice[i].toString().trim() != '') {
-        final int price = (spendTimePlaceState.minusCheck[i])
-            ? spendTimePlaceState.spendPrice[i] * -1
-            : spendTimePlaceState.spendPrice[i];
+      if (spendTimePlacesControllerState.spendItem[i].trim() != '項目名' &&
+          spendTimePlacesControllerState.spendTime[i].trim() != '時間' &&
+          spendTimePlacesControllerState.spendPlace[i].trim() != '' &&
+          spendTimePlacesControllerState.spendPrice[i].toString().trim() != '') {
+        final int price = (spendTimePlacesControllerState.minusCheck[i])
+            ? spendTimePlacesControllerState.spendPrice[i] * -1
+            : spendTimePlacesControllerState.spendPrice[i];
 
         list.add(
           SpendTimePlace()
             ..date = widget.date.yyyymmdd
-            ..spendType = spendTimePlaceState.spendItem[i].trim()
-            ..time = spendTimePlaceState.spendTime[i].trim()
+            ..spendType = spendTimePlacesControllerState.spendItem[i].trim()
+            ..time = spendTimePlacesControllerState.spendTime[i].trim()
             ..price = price
-            ..place = spendTimePlaceState.spendPlace[i].trim(),
+            ..place = spendTimePlacesControllerState.spendPlace[i].trim(),
         );
       }
       //===============================================
 
       ////////////////////////// 同数チェック
-      if (spendTimePlaceState.spendItem[i] != '項目名') {
+      if (spendTimePlacesControllerState.spendItem[i] != '項目名') {
         spendItemCount++;
       }
 
-      if (spendTimePlaceState.spendTime[i] != '時間') {
+      if (spendTimePlacesControllerState.spendTime[i] != '時間') {
         spendTimeCount++;
       }
 
-      if (spendTimePlaceState.spendPlace[i] != '') {
+      if (spendTimePlacesControllerState.spendPlace[i] != '') {
         spendPlaceCount++;
       }
 
-      if (spendTimePlaceState.spendPrice[i] != 0) {
+      if (spendTimePlacesControllerState.spendPrice[i] != 0) {
         spendPriceCount++;
       }
       ////////////////////////// 同数チェック
@@ -552,7 +539,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
       }
     }
 
-    final int diff = spendTimePlaceState.diff;
+    final int diff = spendTimePlacesControllerState.diff;
 
     if (diff != 0 || errFlg) {
       // ignore: always_specify_types
@@ -578,8 +565,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
           .inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: list)
           // ignore: always_specify_types
           .then((value2) async {
-        await ref
-            .read(spendTimePlaceProvider.notifier)
+        await spendTimePlacesNotifier
             .clearInputValue()
             // ignore: always_specify_types
             .then((value3) async {
