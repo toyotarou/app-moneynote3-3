@@ -134,27 +134,38 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
       }
     }
 
-    final Map<String, int> spendTimePlacePriceMap = <String, int>{};
+    final Map<String, int> shishutsuPriceMap = <String, int>{};
 
-    final Map<String, int> eachMonthMinusPriceMap = <String, int>{};
+    final Map<String, int> shuunyuuPriceMap = <String, int>{};
+
+    final Map<String, int> shuushiPriceMap = <String, int>{};
 
     spendTimePlaceMap.forEach((String key, List<SpendTimePlace> value) {
       int sum = 0;
       int sum2 = 0;
+
+      int sum3 = 0;
+
       for (final SpendTimePlace element in value) {
         sum += element.price;
 
         if (element.price > 0) {
           sum2 += element.price;
         }
+
+        if (element.price < 0) {
+          sum3 += element.price;
+        }
       }
 
-      spendTimePlacePriceMap[key] = sum;
+      shishutsuPriceMap[key] = sum2;
 
-      eachMonthMinusPriceMap[key] = sum2;
+      shuunyuuPriceMap[key] = sum3;
+
+      shuushiPriceMap[key] = sum;
     });
 
-    spendTimePlacePriceMap.forEach(
+    shuushiPriceMap.forEach(
       (String key, int value) {
         list.add(
           Container(
@@ -163,10 +174,7 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
-                  width: context.screenSize.width * 0.2,
-                  child: Text(key),
-                ),
+                SizedBox(width: context.screenSize.width * 0.2, child: Text(key)),
                 const SizedBox(width: 30),
                 Expanded(
                   child: Column(
@@ -181,8 +189,8 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
                             children: <Widget>[
                               const Text('支出'),
                               Text(
-                                (eachMonthMinusPriceMap[key] != null)
-                                    ? eachMonthMinusPriceMap[key].toString().toCurrency()
+                                (shishutsuPriceMap[key] != null)
+                                    ? shishutsuPriceMap[key].toString().toCurrency()
                                     : 0.toString(),
                               ),
                             ],
@@ -199,9 +207,9 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
                             children: <Widget>[
                               const Text('収入'),
                               Text(
-                                (eachMonthMinusPriceMap[key] != null)
-                                    ? ((eachMonthMinusPriceMap[key]! - value) * -1).toString().toCurrency()
-                                    : ((0 + value) * -1).toString(),
+                                (shuunyuuPriceMap[key] != null)
+                                    ? (shuunyuuPriceMap[key]! * -1).toString().toCurrency()
+                                    : (0 * -1).toString(),
                               ),
                             ],
                           ),
@@ -214,10 +222,7 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
                               BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              const Text('収支'),
-                              Text(value.toString().toCurrency()),
-                            ],
+                            children: <Widget>[const Text('収支'), Text((value * -1).toString().toCurrency())],
                           ),
                         ),
                       ),

@@ -173,56 +173,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
         backgroundColor: Colors.transparent,
         actions: <Widget>[
           if (appParamState.calendarDisp)
-            Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    final List<int> years = <int>[];
+            IconButton(
+              onPressed: () {
+                final List<int> years = <int>[];
 
-                    dateCurrencySumMap.forEach((String key, int value) {
-                      final List<String> exKey = key.split('-');
-                      if (!years.contains(exKey[0].toInt())) {
-                        years.add(exKey[0].toInt());
-                      }
+                dateCurrencySumMap.forEach((String key, int value) {
+                  final List<String> exKey = key.split('-');
+                  if (!years.contains(exKey[0].toInt())) {
+                    years.add(exKey[0].toInt());
+                  }
 
-                      allTotalMoneyMap[key] = dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
-                    });
+                  allTotalMoneyMap[key] = dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
+                });
 
-                    final Map<String, int> spendMapMonthly = <String, int>{};
+                final Map<String, int> spendMapMonthly = <String, int>{};
 
-                    int mSpend = 0;
-                    monthlySpendMap.forEach((String key, int value) {
-                      mSpend += value;
-                      spendMapMonthly[key] = mSpend;
-                    });
+                int mSpend = 0;
+                monthlySpendMap.forEach((String key, int value) {
+                  mSpend += value;
+                  spendMapMonthly[key] = mSpend;
+                });
 
-                    MoneyDialog(
-                      context: context,
-                      widget: AllTotalMoneyGraphAlert(
-                        allTotalMoneyMap: allTotalMoneyMap,
-                        years: years,
-                        isar: widget.isar,
-                        monthlyDateSumMap: dateCurrencySumMap,
-                        bankPriceTotalPadMap: bankPriceTotalPadMap,
-                        monthlySpendMap: spendMapMonthly,
-                        thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
-                        allSpendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[],
-                      ),
-                    );
-                  },
-                  icon: Icon(Icons.stacked_line_chart, color: Colors.white.withOpacity(0.6), size: 20),
-                ),
-                IconButton(
-                  onPressed: () {
-                    MoneyDialog(
-                      context: context,
-                      widget: SameDaySpendPriceListAlert(
-                          isar: widget.isar, spendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[]),
-                    );
-                  },
-                  icon: Icon(FontAwesomeIcons.diamond, color: Colors.white.withOpacity(0.6), size: 20),
-                ),
-              ],
+                MoneyDialog(
+                  context: context,
+                  widget: AllTotalMoneyGraphAlert(
+                    allTotalMoneyMap: allTotalMoneyMap,
+                    years: years,
+                    isar: widget.isar,
+                    monthlyDateSumMap: dateCurrencySumMap,
+                    bankPriceTotalPadMap: bankPriceTotalPadMap,
+                    monthlySpendMap: spendMapMonthly,
+                    thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
+                    allSpendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[],
+                  ),
+                );
+              },
+              icon: Icon(Icons.stacked_line_chart, color: Colors.white.withOpacity(0.6), size: 20),
             ),
           IconButton(
             onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
@@ -342,7 +328,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
             Row(
               children: <Widget>[
                 DefaultTextStyle(
-                  style: const TextStyle(color: Colors.yellowAccent),
+                  style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -353,25 +339,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
                 const Text('　+　'),
                 DefaultTextStyle(
-                  style: const TextStyle(color: Colors.greenAccent),
+                  style: const TextStyle(color: Colors.greenAccent, fontSize: 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       const Text('収入'),
-                      Text(plusVal.toString().toCurrency()),
+                      Text((plusVal * -1).toString().toCurrency()),
                     ],
                   ),
                 ),
                 const Text('　=　'),
                 DefaultTextStyle(
-                  style: const TextStyle(color: Colors.orangeAccent),
+                  style: const TextStyle(color: Colors.orangeAccent, fontSize: 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       const Text('収支'),
-                      Text((minusVal + plusVal).toString().toCurrency()),
+                      Text(((minusVal + plusVal) * -1).toString().toCurrency()),
                     ],
                   ),
+                ),
+                const SizedBox(width: 20),
+                GestureDetector(
+                  onTap: () {
+                    appParamNotifier.setSameDaySelectedDay(day: DateTime.now().day);
+
+                    MoneyDialog(
+                      context: context,
+                      widget: SameDaySpendPriceListAlert(
+                        isar: widget.isar,
+                        spendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[],
+                      ),
+                    );
+                  },
+                  child: Icon(FontAwesomeIcons.diamond, color: Colors.white.withOpacity(0.6), size: 20),
                 ),
               ],
             ),
@@ -1184,7 +1185,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   alignment: Alignment.topRight,
                   child: FittedBox(
                     child: Text(
-                      minusSum.toString().toCurrency(),
+                      (minusSum * -1).toString().toCurrency(),
                       style: const TextStyle(color: Colors.greenAccent, fontSize: 10),
                     ),
                   ),
@@ -1195,7 +1196,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   alignment: Alignment.topRight,
                   child: FittedBox(
                     child: Text(
-                      (plusSum + minusSum).toString().toCurrency(),
+                      ((plusSum + minusSum) * -1).toString().toCurrency(),
                       style: const TextStyle(color: Colors.orangeAccent, fontSize: 10),
                     ),
                   ),

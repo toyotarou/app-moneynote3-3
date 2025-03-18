@@ -245,7 +245,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                                         DateTime.now(),
                                       ))
                                           ? '-'
-                                          : dispSum.toString().toCurrency(),
+                                          : (dispSum * -1).toString().toCurrency(),
                                     ),
                                   ],
                                 ),
@@ -462,10 +462,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                   child: Container(
                     margin: const EdgeInsets.all(3),
                     padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      border: _getBorder(mmdd: days[i]),
-                      color: _getBgColor(mmdd: days[i]),
-                    ),
+                    decoration: BoxDecoration(border: _getBorder(mmdd: days[i]), color: _getBgColor(mmdd: days[i])),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -481,10 +478,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            _dispRowNum(mmdd: days[i], rowNum: rowNum),
-                            const SizedBox.shrink(),
-                          ],
+                          children: <Widget>[_dispRowNum(mmdd: days[i], rowNum: rowNum), const SizedBox.shrink()],
                         ),
                       ],
                     ),
@@ -494,11 +488,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
       );
     }
 
-    return Row(
-      key: globalKeyList[rowNum],
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: list,
-    );
+    return Row(key: globalKeyList[rowNum], crossAxisAlignment: CrossAxisAlignment.start, children: list);
   }
 
   ///
