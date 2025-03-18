@@ -339,21 +339,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               ),
             ],
             if (!appParamState.calendarDisp) ...<Widget>[const SizedBox.shrink()],
-            RichText(
-              text: TextSpan(
-                text: minusVal.toString().toCurrency(),
-                style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
-                children: <TextSpan>[
-                  const TextSpan(text: ' + ', style: TextStyle(color: Colors.white)),
-                  TextSpan(text: plusVal.toString().toCurrency(), style: const TextStyle(color: Colors.greenAccent)),
-                  const TextSpan(text: ' = ', style: TextStyle(color: Colors.white)),
-                  TextSpan(
-                    text: (plusVal + minusVal).toString().toCurrency(),
-                    style: const TextStyle(color: Colors.orangeAccent),
+            Row(
+              children: <Widget>[
+                DefaultTextStyle(
+                  style: const TextStyle(color: Colors.yellowAccent),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const Text('支出'),
+                      Text(minusVal.toString().toCurrency()),
+                    ],
                   ),
-                ],
-              ),
-            )
+                ),
+                const Text('　+　'),
+                DefaultTextStyle(
+                  style: const TextStyle(color: Colors.greenAccent),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const Text('収入'),
+                      Text(plusVal.toString().toCurrency()),
+                    ],
+                  ),
+                ),
+                const Text('　=　'),
+                DefaultTextStyle(
+                  style: const TextStyle(color: Colors.orangeAccent),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const Text('収支'),
+                      Text((minusVal + plusVal).toString().toCurrency()),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -1258,8 +1279,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (BuildContext context) =>
-              HomeScreen(isar: widget.isar, baseYm: calendarsState.prevYearMonth)),
+          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarsState.prevYearMonth)),
     );
   }
 
@@ -1269,8 +1289,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (BuildContext context) =>
-              HomeScreen(isar: widget.isar, baseYm: calendarsState.nextYearMonth)),
+          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarsState.nextYearMonth)),
     );
   }
 

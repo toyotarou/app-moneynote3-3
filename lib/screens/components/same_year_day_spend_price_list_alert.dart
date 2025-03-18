@@ -188,26 +188,52 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                             Container(
                               decoration: BoxDecoration(
                                   border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  const Text('消費'),
-                                  Text(
-                                    (DateTime.parse('$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
-                                            .isAfter(
-                                      DateTime.now(),
-                                    ))
-                                        ? '-'
-                                        : dispSpend.toString().toCurrency(),
-                                  ),
-                                ],
+                              child: DefaultTextStyle(
+                                style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    const Text('支出'),
+                                    Text(
+                                      (DateTime.parse(
+                                                  '$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
+                                              .isAfter(
+                                        DateTime.now(),
+                                      ))
+                                          ? '-'
+                                          : dispSpend.toString().toCurrency(),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Container(
                               decoration: BoxDecoration(
                                   border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
                               child: DefaultTextStyle(
-                                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                style: const TextStyle(color: Colors.greenAccent, fontSize: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    const Text('収入'),
+                                    Text(
+                                      (DateTime.parse(
+                                                  '$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
+                                              .isAfter(
+                                        DateTime.now(),
+                                      ))
+                                          ? '-'
+                                          : (dispSpend - dispSum).toString().toCurrency(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: DefaultTextStyle(
+                                style: const TextStyle(color: Colors.orangeAccent, fontSize: 12),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
@@ -283,26 +309,52 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                             Container(
                               decoration: BoxDecoration(
                                   border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  const Text('消費'),
-                                  Text(
-                                    (DateTime.parse('$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
-                                            .isAfter(
-                                      DateTime.now(),
-                                    ))
-                                        ? '-'
-                                        : dispSpend.toString().toCurrency(),
-                                  ),
-                                ],
+                              child: DefaultTextStyle(
+                                style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    const Text('支出'),
+                                    Text(
+                                      (DateTime.parse(
+                                                  '$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
+                                              .isAfter(
+                                        DateTime.now(),
+                                      ))
+                                          ? '-'
+                                          : dispSpend.toString().toCurrency(),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Container(
                               decoration: BoxDecoration(
                                   border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
                               child: DefaultTextStyle(
-                                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                style: const TextStyle(color: Colors.greenAccent, fontSize: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    const Text('収入'),
+                                    Text(
+                                      (DateTime.parse(
+                                                  '$element-${appParamState.sameYearDayCalendarSelectDate} 00:00:00')
+                                              .isAfter(
+                                        DateTime.now(),
+                                      ))
+                                          ? '-'
+                                          : (dispSpend - dispSum).toString().toCurrency(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: DefaultTextStyle(
+                                style: const TextStyle(color: Colors.orangeAccent, fontSize: 12),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[

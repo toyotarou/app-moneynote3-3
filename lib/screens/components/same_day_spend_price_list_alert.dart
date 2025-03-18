@@ -171,23 +171,44 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
                 Expanded(
                   child: Column(
                     children: <Widget>[
-                      Container(
-                        decoration:
-                            BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            const Text('消費'),
-                            Text(
-                              (eachMonthMinusPriceMap[key] != null)
-                                  ? eachMonthMinusPriceMap[key].toString().toCurrency()
-                                  : 0.toString(),
-                            ),
-                          ],
+                      DefaultTextStyle(
+                        style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                        child: Container(
+                          decoration:
+                              BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              const Text('支出'),
+                              Text(
+                                (eachMonthMinusPriceMap[key] != null)
+                                    ? eachMonthMinusPriceMap[key].toString().toCurrency()
+                                    : 0.toString(),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       DefaultTextStyle(
-                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        style: const TextStyle(color: Colors.greenAccent, fontSize: 12),
+                        child: Container(
+                          decoration:
+                              BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              const Text('収入'),
+                              Text(
+                                (eachMonthMinusPriceMap[key] != null)
+                                    ? ((eachMonthMinusPriceMap[key]! - value) * -1).toString().toCurrency()
+                                    : ((0 + value) * -1).toString(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      DefaultTextStyle(
+                        style: const TextStyle(color: Colors.orangeAccent, fontSize: 12),
                         child: Container(
                           decoration:
                               BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
