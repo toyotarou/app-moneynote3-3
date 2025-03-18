@@ -54,6 +54,8 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
                   const SizedBox.shrink(),
                   TextButton(
                       onPressed: () {
+                        appParamNotifier.setSameYearDayCalendarSelectDate(date: DateTime.now().mmdd);
+
                         MoneyDialog(
                           context: context,
                           widget: SameYearDaySpendPriceListAlert(spendTimePlaceList: widget.spendTimePlaceList),

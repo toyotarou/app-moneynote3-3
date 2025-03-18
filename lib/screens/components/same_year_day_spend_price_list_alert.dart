@@ -38,9 +38,11 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
   int calendarYear = 2025;
 
-  Map<String, int> dateMoneySpendMap = <String, int>{};
+  Map<String, int> yearShishutsuMap = <String, int>{};
 
-  Map<String, int> dateMoneySumMap = <String, int>{};
+  Map<String, int> yearShuunyuuMap = <String, int>{};
+
+  Map<String, int> yearShuushiMap = <String, int>{};
 
   List<String> yearList = <String>[];
 
@@ -60,8 +62,10 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
     String keepDate = '';
 
-    int spend = 0;
     int sum = 0;
+    int sum2 = 0;
+    int sum3 = 0;
+
     for (final SpendTimePlace element in widget.spendTimePlaceList) {
       if (firstDate == '') {
         firstDate = element.date;
@@ -70,8 +74,9 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
       lastDate = element.date;
 
       if (element.date != keepDate) {
-        spend = 0;
         sum = 0;
+        sum2 = 0;
+        sum3 = 0;
       }
 
       if (!yearList.contains(element.date.split('-')[0])) {
@@ -80,12 +85,18 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
       sum += element.price;
 
-      dateMoneySumMap[element.date] = sum;
+      yearShuushiMap[element.date] = sum;
 
       if (element.price > 0) {
-        spend += element.price;
+        sum2 += element.price;
 
-        dateMoneySpendMap[element.date] = spend;
+        yearShishutsuMap[element.date] = sum2;
+      }
+
+      if (element.price < 0) {
+        sum3 += element.price;
+
+        yearShuunyuuMap[element.date] = sum3;
       }
 
       keepDate = element.date;
@@ -141,23 +152,33 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
     for (final String element in yearList) {
       if (element == firstDate.split('-')[0]) {
-        int dispSpend = 0;
+        int dispShishutsu = 0;
         makeYearDaysList(
           startDate: firstDate,
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (dateMoneySpendMap[element2] != null) {
-            dispSpend += dateMoneySpendMap[element2]!;
+          if (yearShishutsuMap[element2] != null) {
+            dispShishutsu += yearShishutsuMap[element2]!;
           }
         });
 
-        int dispSum = 0;
+        int dispShuunyuu = 0;
         makeYearDaysList(
           startDate: firstDate,
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (dateMoneySumMap[element2] != null) {
-            dispSum += dateMoneySumMap[element2]!;
+          if (yearShuunyuuMap[element2] != null) {
+            dispShuunyuu += yearShuunyuuMap[element2]!;
+          }
+        });
+
+        int dispShuushi = 0;
+        makeYearDaysList(
+          startDate: firstDate,
+          endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
+        ).forEach((String element2) {
+          if (yearShuushiMap[element2] != null) {
+            dispShuushi += yearShuushiMap[element2]!;
           }
         });
 
@@ -201,7 +222,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                                         DateTime.now(),
                                       ))
                                           ? '-'
-                                          : dispSpend.toString().toCurrency(),
+                                          : dispShishutsu.toString().toCurrency(),
                                     ),
                                   ],
                                 ),
@@ -223,7 +244,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                                         DateTime.now(),
                                       ))
                                           ? '-'
-                                          : (dispSpend - dispSum).toString().toCurrency(),
+                                          : (dispShuunyuu * -1).toString().toCurrency(),
                                     ),
                                   ],
                                 ),
@@ -245,7 +266,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                                         DateTime.now(),
                                       ))
                                           ? '-'
-                                          : (dispSum * -1).toString().toCurrency(),
+                                          : (dispShuushi * -1).toString().toCurrency(),
                                     ),
                                   ],
                                 ),
@@ -262,23 +283,33 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
           ),
         );
       } else {
-        int dispSpend = 0;
+        int dispShishutsu = 0;
         makeYearDaysList(
           startDate: '$element-01-01',
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (dateMoneySpendMap[element2] != null) {
-            dispSpend += dateMoneySpendMap[element2]!;
+          if (yearShishutsuMap[element2] != null) {
+            dispShishutsu += yearShishutsuMap[element2]!;
           }
         });
 
-        int dispSum = 0;
+        int dispShuunyuu = 0;
         makeYearDaysList(
           startDate: '$element-01-01',
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (dateMoneySumMap[element2] != null) {
-            dispSum += dateMoneySumMap[element2]!;
+          if (yearShuunyuuMap[element2] != null) {
+            dispShuunyuu += yearShuunyuuMap[element2]!;
+          }
+        });
+
+        int dispShuushi = 0;
+        makeYearDaysList(
+          startDate: '$element-01-01',
+          endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
+        ).forEach((String element2) {
+          if (yearShuushiMap[element2] != null) {
+            dispShuushi += yearShuushiMap[element2]!;
           }
         });
 
@@ -322,7 +353,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                                         DateTime.now(),
                                       ))
                                           ? '-'
-                                          : dispSpend.toString().toCurrency(),
+                                          : dispShishutsu.toString().toCurrency(),
                                     ),
                                   ],
                                 ),
@@ -344,7 +375,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                                         DateTime.now(),
                                       ))
                                           ? '-'
-                                          : (dispSpend - dispSum).toString().toCurrency(),
+                                          : (dispShuunyuu * -1).toString().toCurrency(),
                                     ),
                                   ],
                                 ),
@@ -366,7 +397,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                                         DateTime.now(),
                                       ))
                                           ? '-'
-                                          : dispSum.toString().toCurrency(),
+                                          : (dispShuushi * -1).toString().toCurrency(),
                                     ),
                                   ],
                                 ),
