@@ -91,33 +91,29 @@ class _SpendItemHistoryAlertState extends State<SpendItemHistoryAlert> {
 
     for (int i = 0; i < _spendItemPlaceHistoryList!.length; i++) {
       if (widget.from == 'home_screen') {
-        if (widget.date.yyyymm ==
+        if (widget.date.yyyymm !=
             '${_spendItemPlaceHistoryList![i].date.split('-')[0]}-${_spendItemPlaceHistoryList![i].date.split('-')[1]}') {
-          list.add(Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.white.withOpacity(0.3)),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text(_spendItemPlaceHistoryList![i].date),
-                    const SizedBox(width: 10),
-                    Text(_spendItemPlaceHistoryList![i].time),
-                  ],
-                ),
-                Text(
-                  _spendItemPlaceHistoryList![i].price.toString().toCurrency(),
-                ),
-              ],
-            ),
-          ));
+          continue;
         }
       }
+
+      list.add(Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Text(_spendItemPlaceHistoryList![i].date),
+                const SizedBox(width: 10),
+                Text(_spendItemPlaceHistoryList![i].time),
+              ],
+            ),
+            Text(_spendItemPlaceHistoryList![i].price.toString().toCurrency()),
+          ],
+        ),
+      ));
     }
 
     return CustomScrollView(
