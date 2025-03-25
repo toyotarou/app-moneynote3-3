@@ -8,6 +8,8 @@ import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 
 import '../../utilities/utilities.dart';
+import 'parts/money_dialog.dart';
+import 'same_year_day_spend_graph_alert.dart';
 
 class SameYearDaySpendPriceListAlert extends ConsumerStatefulWidget {
   const SameYearDaySpendPriceListAlert({super.key, required this.spendTimePlaceList});
@@ -147,13 +149,10 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                     right: 0,
                     child: GestureDetector(
                       onTap: () {
-                        // print(graphData['2024']);
-                        //
-                        //
-                        //
-                        //yearList
-                        //
-                        //
+                        MoneyDialog(
+                          context: context,
+                          widget: SameYearDaySpendGraphAlert(yearList: yearList, graphData: graphData),
+                        );
                       },
                       child: const Icon(Icons.graphic_eq),
                     ),
