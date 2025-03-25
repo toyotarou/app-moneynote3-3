@@ -68,7 +68,7 @@ class _SameYearDaySpendGraphAlertState extends ConsumerState<SameYearDaySpendGra
               Column(
                 children: <Widget>[
                   const SizedBox(height: 20),
-                  const Text('年別収支金額'),
+                  const Text('年別収支金額推移'),
                   Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
                   Container(
                     alignment: Alignment.topLeft,
