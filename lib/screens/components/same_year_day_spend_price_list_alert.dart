@@ -50,6 +50,8 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
   String lastDate = '';
 
+  Map<String, Map<String, int>> graphData = <String, Map<String, int>>{};
+
   ///
   @override
   void initState() {
@@ -129,9 +131,35 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
           child: Column(
             children: <Widget>[
               const SizedBox(height: 20),
-              SizedBox(width: context.screenSize.width),
-              const Text('年別同日消費比較'),
-              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              Stack(
+                children: <Widget>[
+                  Container(
+                    width: context.screenSize.width,
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: <Widget>[
+                        const Text('年別同日消費比較'),
+                        Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () {
+                        // print(graphData['2024']);
+                        //
+                        //
+                        //
+                        //yearList
+                        //
+                        //
+                      },
+                      child: const Icon(Icons.graphic_eq),
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: 300, child: _getCalendar()),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: displayYearDaySpendPriceList()),
@@ -157,9 +185,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
           startDate: firstDate,
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (yearShishutsuMap[element2] != null) {
-            dispShishutsu += yearShishutsuMap[element2]!;
-          }
+          dispShishutsu += (yearShishutsuMap[element2] == null) ? 0 : yearShishutsuMap[element2]!;
         });
 
         int dispShuunyuu = 0;
@@ -167,20 +193,22 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
           startDate: firstDate,
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (yearShuunyuuMap[element2] != null) {
-            dispShuunyuu += yearShuunyuuMap[element2]!;
-          }
+          dispShuunyuu += (yearShuunyuuMap[element2] == null) ? 0 : yearShuunyuuMap[element2]!;
         });
+
+        final Map<String, int> graphDataItem = <String, int>{};
 
         int dispShuushi = 0;
         makeYearDaysList(
           startDate: firstDate,
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (yearShuushiMap[element2] != null) {
-            dispShuushi += yearShuushiMap[element2]!;
-          }
+          dispShuushi += (yearShuushiMap[element2] == null) ? 0 : yearShuushiMap[element2]!;
+
+          graphDataItem[element2] = dispShuushi * -1;
         });
+
+        graphData[element] = graphDataItem;
 
         list.add(
           Container(
@@ -288,9 +316,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
           startDate: '$element-01-01',
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (yearShishutsuMap[element2] != null) {
-            dispShishutsu += yearShishutsuMap[element2]!;
-          }
+          dispShishutsu += (yearShishutsuMap[element2] == null) ? 0 : yearShishutsuMap[element2]!;
         });
 
         int dispShuunyuu = 0;
@@ -298,20 +324,22 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
           startDate: '$element-01-01',
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (yearShuunyuuMap[element2] != null) {
-            dispShuunyuu += yearShuunyuuMap[element2]!;
-          }
+          dispShuunyuu += (yearShuunyuuMap[element2] == null) ? 0 : yearShuunyuuMap[element2]!;
         });
+
+        final Map<String, int> graphDataItem = <String, int>{};
 
         int dispShuushi = 0;
         makeYearDaysList(
           startDate: '$element-01-01',
           endDate: '$element-${appParamState.sameYearDayCalendarSelectDate}',
         ).forEach((String element2) {
-          if (yearShuushiMap[element2] != null) {
-            dispShuushi += yearShuushiMap[element2]!;
-          }
+          dispShuushi += (yearShuushiMap[element2] == null) ? 0 : yearShuushiMap[element2]!;
+
+          graphDataItem[element2] = dispShuushi * -1;
         });
+
+        graphData[element] = graphDataItem;
 
         list.add(
           Container(
