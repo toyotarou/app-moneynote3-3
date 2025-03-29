@@ -211,6 +211,11 @@ class _MoneyScoreListPageState extends State<MoneyScoreListPage> {
 
         final String ym = '${element.startDate.split('-')[0]}-${element.startDate.split('-')[1]}';
 
+        final int shishutsu = monthlySpendTimePlaceMap[ym]?['minus'] ?? 0;
+        final int shuunyuu = (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0) * -1;
+        final int shuushi =
+            ((monthlySpendTimePlaceMap[ym]?['minus'] ?? 0) + (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0)) * -1;
+
         list.add(Container(
           padding: const EdgeInsets.all(5),
           margin: const EdgeInsets.only(bottom: 5),
@@ -251,36 +256,43 @@ class _MoneyScoreListPageState extends State<MoneyScoreListPage> {
                   const SizedBox.shrink(),
                   Row(
                     children: <Widget>[
-                      Container(
+                      SizedBox(
                         width: 70,
-                        alignment: Alignment.topRight,
-                        child: Text(
-                          (monthlySpendTimePlaceMap[ym]?['minus'] ?? 0).toString().toCurrency(),
-                          style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const Text('支出', style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
+                            Text(
+                              shishutsu.toString().toCurrency(),
+                              style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(width: 10),
                       const Text('+'),
                       const SizedBox(width: 10),
-                      Container(
+                      SizedBox(
                         width: 70,
-                        alignment: Alignment.topRight,
-                        child: Text(
-                          (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0).toString().toCurrency(),
-                          style: const TextStyle(color: Colors.greenAccent),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const Text('収入', style: TextStyle(color: Colors.greenAccent)),
+                            Text(shuunyuu.toString().toCurrency(), style: const TextStyle(color: Colors.greenAccent)),
+                          ],
                         ),
                       ),
                       const SizedBox(width: 10),
                       const Text('='),
                       const SizedBox(width: 10),
-                      Container(
+                      SizedBox(
                         width: 70,
-                        alignment: Alignment.topRight,
-                        child: Text(
-                          ((monthlySpendTimePlaceMap[ym]?['minus'] ?? 0) + (monthlySpendTimePlaceMap[ym]?['plus'] ?? 0))
-                              .toString()
-                              .toCurrency(),
-                          style: const TextStyle(color: Colors.orangeAccent),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const Text('収支', style: TextStyle(color: Colors.orangeAccent)),
+                            Text(shuushi.toString().toCurrency(), style: const TextStyle(color: Colors.orangeAccent)),
+                          ],
                         ),
                       ),
                     ],

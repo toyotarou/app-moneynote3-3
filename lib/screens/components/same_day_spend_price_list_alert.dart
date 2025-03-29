@@ -169,67 +169,73 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
 
     shuushiPriceMap.forEach(
       (String key, int value) {
+        final String shishutsu =
+            (shishutsuPriceMap[key] != null) ? shishutsuPriceMap[key].toString().toCurrency() : 0.toString();
+
+        final String shuunyuu = (shuunyuuPriceMap[key] != null)
+            ? (shuunyuuPriceMap[key]! * -1).toString().toCurrency()
+            : (0 * -1).toString();
+
+        final String shuushi = (value * -1).toString().toCurrency();
+
+        final int mark = ((value * -1) > 0)
+            ? 1
+            : (value == 0)
+                ? 9
+                : 0;
+
         list.add(
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: <Widget>[
-                SizedBox(width: context.screenSize.width * 0.2, child: Text(key)),
-                const SizedBox(width: 30),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      DefaultTextStyle(
-                        style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
-                        child: Container(
-                          decoration:
-                              BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              const Text('支出'),
-                              Text(
-                                (shishutsuPriceMap[key] != null)
-                                    ? shishutsuPriceMap[key].toString().toCurrency()
-                                    : 0.toString(),
+                Positioned(left: 0, bottom: 0, child: dispUpDownIcon(mark: mark)),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(width: context.screenSize.width * 0.2, child: Text(key)),
+                    const SizedBox(width: 30),
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          DefaultTextStyle(
+                            style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[const Text('支出'), Text(shishutsu)],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                      DefaultTextStyle(
-                        style: const TextStyle(color: Colors.greenAccent, fontSize: 12),
-                        child: Container(
-                          decoration:
-                              BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              const Text('収入'),
-                              Text(
-                                (shuunyuuPriceMap[key] != null)
-                                    ? (shuunyuuPriceMap[key]! * -1).toString().toCurrency()
-                                    : (0 * -1).toString(),
+                          DefaultTextStyle(
+                            style: const TextStyle(color: Colors.greenAccent, fontSize: 12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[const Text('収入'), Text(shuunyuu)],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                      DefaultTextStyle(
-                        style: const TextStyle(color: Colors.orangeAccent, fontSize: 12),
-                        child: Container(
-                          decoration:
-                              BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[const Text('収支'), Text((value * -1).toString().toCurrency())],
+                          DefaultTextStyle(
+                            style: const TextStyle(color: Colors.orangeAccent, fontSize: 12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[const Text('収支'), Text(shuushi)],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -246,5 +252,17 @@ class _SameDaySpendPriceListAlertState extends ConsumerState<SameDaySpendPriceLi
         ),
       ],
     );
+  }
+
+  ///
+  Widget dispUpDownIcon({required int mark}) {
+    switch (mark) {
+      case 1:
+        return const Icon(Icons.arrow_upward, color: Colors.greenAccent);
+      case 0:
+        return const Icon(Icons.arrow_downward, color: Colors.redAccent);
+      default:
+        return const Icon(Icons.crop_square, color: Colors.black);
+    }
   }
 }
