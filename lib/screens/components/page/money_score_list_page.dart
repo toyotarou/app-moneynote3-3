@@ -95,7 +95,7 @@ class _MoneyScoreListPageState extends State<MoneyScoreListPage> {
                           width: 70,
                           alignment: Alignment.topRight,
                           child: Text(
-                            totalPlus.toString().toCurrency(),
+                            totalPlus.abs().toString().toCurrency(),
                             style: const TextStyle(color: Colors.greenAccent),
                           ),
                         ),
@@ -106,7 +106,7 @@ class _MoneyScoreListPageState extends State<MoneyScoreListPage> {
                           width: 70,
                           alignment: Alignment.topRight,
                           child: Text(
-                            totalDiff.toString().toCurrency(),
+                            (totalPlus.abs() - totalMinus).toString().toCurrency(),
                             style: const TextStyle(color: Colors.orangeAccent),
                           ),
                         ),
