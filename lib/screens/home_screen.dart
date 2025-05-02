@@ -974,7 +974,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                   if (dateDiff > 0 || dateSum == 0)
                                     const SizedBox.shrink()
                                   else
-                                    Text((zenjitsuSum - dateSum).toString().toCurrency()),
+                                    Text(
+                                      (zenjitsuSum - dateSum).toString().toCurrency(),
+                                      style: const TextStyle(fontSize: 8),
+                                    ),
                                 ],
                               ),
                               Row(
@@ -984,7 +987,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                                   if (dateDiff > 0 || dateSum == 0)
                                     const SizedBox.shrink()
                                   else
-                                    Text(dateSum.toString().toCurrency()),
+                                    Text(dateSum.toString().toCurrency(), style: const TextStyle(fontSize: 8)),
                                 ],
                               ),
                             ],

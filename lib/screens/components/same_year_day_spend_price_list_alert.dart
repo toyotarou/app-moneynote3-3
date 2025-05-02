@@ -526,13 +526,17 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
                       children: <Widget>[
                         ConstrainedBox(
                           constraints: BoxConstraints(minHeight: context.screenSize.height / 40),
-                          child: Text(
-                            (exDays[1] == '01') ? exDays[0] : days[i],
-                            style: TextStyle(
-                              fontSize: (exDays[1] == '01') ? 12 : 8,
-                              color: (exDays[1] == '01') ? const Color(0xFFFBB6CE) : Colors.white,
-                            ),
-                          ),
+                          child: (exDays[1] == '01')
+                              ? Text(
+                                  exDays[0],
+                                  style: const TextStyle(fontSize: 12, color: Color(0xFFFBB6CE)),
+                                )
+                              : Column(
+                                  children: <Widget>[
+                                    Text(days[i].split('-')[0], style: const TextStyle(fontSize: 8)),
+                                    Text(days[i].split('-')[1], style: const TextStyle(fontSize: 8)),
+                                  ],
+                                ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

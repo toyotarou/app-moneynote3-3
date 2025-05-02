@@ -285,11 +285,6 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        GestureDetector(
-                          onTap: () => _clearOneBox(pos: i),
-                          child: const Icon(Icons.close, color: Colors.redAccent),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -344,7 +339,10 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            const SizedBox.shrink(),
+                            GestureDetector(
+                              onTap: () => _clearOneBox(pos: i),
+                              child: const Icon(Icons.close, color: Colors.redAccent),
+                            ),
                             GestureDetector(
                               onTap: () {
                                 MoneyDialog(

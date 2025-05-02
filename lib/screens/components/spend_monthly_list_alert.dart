@@ -168,7 +168,7 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert>
                       ),
               ),
             ),
-            if (sum == 0) const Expanded(flex: 2, child: SizedBox.shrink()),
+            if (sum == 0) const Expanded(child: SizedBox.shrink()),
           ],
         ),
       );
