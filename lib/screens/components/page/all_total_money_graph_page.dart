@@ -305,7 +305,8 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
                 }
 
                 return SideTitleWidget(
-                    axisSide: AxisSide.left,
+                    meta: meta,
+                    space: 4,
                     child: Text(
                       value.toInt().toString().toCurrency(),
                       style: const TextStyle(fontSize: 10),
@@ -326,7 +327,8 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
                 }
 
                 return SideTitleWidget(
-                    axisSide: AxisSide.left,
+                    meta: meta,
+                    space: 4,
                     child: Text(
                       value.toInt().toString().toCurrency(),
                       style: const TextStyle(fontSize: 10),

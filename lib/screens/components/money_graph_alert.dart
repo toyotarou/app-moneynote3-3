@@ -255,12 +255,10 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> with Controll
       final int minValue = list.reduce(min);
       final int maxValue = list.reduce(max);
 
-      final int graphMin = (moneyGraphState.displayGraphFlag == 'total')
-          ? widget.graphMin
-          : ((minValue / warisuu).floor()) * warisuu;
-      final int graphMax = (moneyGraphState.displayGraphFlag == 'total')
-          ? widget.graphMax
-          : ((maxValue / warisuu).ceil()) * warisuu;
+      final int graphMin =
+          (moneyGraphState.displayGraphFlag == 'total') ? widget.graphMin : ((minValue / warisuu).floor()) * warisuu;
+      final int graphMax =
+          (moneyGraphState.displayGraphFlag == 'total') ? widget.graphMax : ((maxValue / warisuu).ceil()) * warisuu;
 
       graphData = LineChartData(
         ///
@@ -383,7 +381,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> with Controll
                 }
 
                 return SideTitleWidget(
-                    axisSide: AxisSide.left,
+                    meta: meta,
+                    space: 4,
                     child: Text(
                       value.toInt().toString().toCurrency(),
                       style: const TextStyle(fontSize: 10),
@@ -404,7 +403,8 @@ class _MoneyGraphAlertState extends ConsumerState<MoneyGraphAlert> with Controll
                 }
 
                 return SideTitleWidget(
-                    axisSide: AxisSide.left,
+                    meta: meta,
+                    space: 4,
                     child: Text(
                       value.toInt().toString().toCurrency(),
                       style: const TextStyle(fontSize: 10),

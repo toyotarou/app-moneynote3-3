@@ -1,22 +1,4 @@
-buildscript {
-    ext.kotlin_version = '2.0.20'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
-
-        // ここを最新 (1.8.x～1.9.x など) に合わせる
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
-        // 既にあるかもしれませんが、Android Gradle Plugin もアップデートしておくと良いです
-        classpath "com.android.tools.build:gradle:8.1.0"
-
-    }
-}
+// android/build.gradle  ── もう “repositories だけ” にする
 
 allprojects {
     repositories {
@@ -25,35 +7,27 @@ allprojects {
     }
 }
 
-rootProject.buildDir = '../build'
-subprojects {
-
-    //  fix for verifyReleaseResources
-    // ============
-    afterEvaluate { project ->
-        if (project.plugins.hasPlugin("com.android.application") ||
-                project.plugins.hasPlugin("com.android.library")) {
-            project.android {
-                compileSdkVersion 34
-                buildToolsVersion "34.0.0"
-            }
-        }
-        if (project.hasProperty("android")) {
-            project.android {
-                if (namespace == null) {
-                    namespace project.group
-                }
+subprojects { sub ->
+    // isar_flutter_libs が Android ライブラリとして評価された後に namespace を補完
+    if (sub.name == "isar_flutter_libs") {
+        sub.afterEvaluate {
+            if (sub.plugins.hasPlugin("com.android.library")) {
+                sub.android { namespace "com.github.isar_flutter_libs" }
             }
         }
     }
-    // ============
-
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(':app')
 }
 
-tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+/* ----- 既存内容の末尾に追加 ↓ ----- */
+subprojects { sub ->
+    if (sub.name == "isar_flutter_libs") {
+        sub.afterEvaluate {
+            // AndroidManifest.xml の package="dev.isar.isar_flutter_libs" を削除
+            def mf = file("${sub.projectDir}/src/main/AndroidManifest.xml")
+            if (mf.exists()) {
+                mf.text = mf.text.replace('package="dev.isar.isar_flutter_libs"', '')
+            }
+        }
+    }
 }
+/* ----- ここまで ----- */

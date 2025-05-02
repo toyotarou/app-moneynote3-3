@@ -1,29 +1,31 @@
-pluginManagement {
-    def flutterSdkPath = {
-        def properties = new Properties()
-        file("local.properties").withInputStream { properties.load(it) }
-        def flutterSdkPath = properties.getProperty("flutter.sdk")
-        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
-        return flutterSdkPath
-    }
-    settings.ext.flutterSdkPath = flutterSdkPath()
+// android/settings.gradle  ── Flutter 3.29 / AGP 8.7 用
 
-    includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
+pluginManagement {
+    // Flutter SDK パスを取得
+    def props = new Properties()
+    file("local.properties").withInputStream { props.load(it) }
+    def flutterSdkPath = props.getProperty("flutter.sdk")
+    assert flutterSdkPath != null : "flutter.sdk not set in local.properties"
+
+    // Flutter の Gradle プラグインをローカル includeBuild で読み込む
+    includeBuild("${flutterSdkPath}/packages/flutter_tools/gradle")
 
     repositories {
         google()
         mavenCentral()
         gradlePluginPortal()
-    }
-
-    plugins {
-        id "dev.flutter.flutter-gradle-plugin" version "1.0.0" apply false
+        maven { url "https://storage.googleapis.com/download.flutter.io" }
     }
 }
 
+/* ★ ここで “apply false” 付きでバージョンだけ宣言 ★ */
 plugins {
+
+    id "com.android.application" version "8.2.2" apply false
+    id "com.android.library"    version "8.2.2" apply false
+
+    id "org.jetbrains.kotlin.android" version "1.9.22" apply false
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "7.3.0" apply false
 }
 
 include ":app"

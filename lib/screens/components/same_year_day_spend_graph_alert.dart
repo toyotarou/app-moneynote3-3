@@ -220,7 +220,8 @@ class _SameYearDaySpendGraphAlertState extends ConsumerState<SameYearDaySpendGra
               }
 
               return SideTitleWidget(
-                  axisSide: AxisSide.left,
+                  meta: meta,
+                  space: 4,
                   child: Text(
                     value.toInt().toString().toCurrency(),
                     style: const TextStyle(fontSize: 10),
@@ -241,7 +242,8 @@ class _SameYearDaySpendGraphAlertState extends ConsumerState<SameYearDaySpendGra
               }
 
               return SideTitleWidget(
-                  axisSide: AxisSide.left,
+                  meta: meta,
+                  space: 4,
                   child: Text(
                     value.toInt().toString().toCurrency(),
                     style: const TextStyle(fontSize: 10),
