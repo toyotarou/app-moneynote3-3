@@ -92,16 +92,12 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert>
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: _displayAfterMoneyList()),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () => replaceIsarMoneyRecord(),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                    child: const Text('isarデータ変更'),
-                  ),
-                  const SizedBox.shrink(),
-                ],
+              Center(
+                child: ElevatedButton(
+                  onPressed: () => replaceIsarMoneyRecord(),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                  child: const Text('isarデータ変更'),
+                ),
               ),
             ],
           ),

@@ -140,10 +140,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       Future(() => calendarNotifier.setCalendarYearMonth(baseYm: widget.baseYm));
     }
 
-    // final CalendarsResponseState calendarState = ref.watch(calendarProvider);
-    //
-    // final bool calendarDisp = ref.watch(appParamProvider.select((AppParamsResponseState value) => value.calendarDisp));
-
     return Scaffold(
       backgroundColor: Colors.blueGrey.withOpacity(0.3),
       key: _scaffoldKey,
@@ -244,9 +240,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                     child: _getCalendar(),
                   ),
                 ],
-                if (!appParamState.calendarDisp) ...<Widget>[
-                  const SizedBox(height: 10),
-                ],
+                if (!appParamState.calendarDisp) ...<Widget>[const SizedBox(height: 10)],
                 _displayMonthSum(),
                 Expanded(child: _displayMonthlySpendTimePlaceList()),
               ],
@@ -301,7 +295,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                       ],
                     ),
                   ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 10),
                   GestureDetector(
                     onTap: () {
                       MoneyDialog(
@@ -328,7 +322,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
             Row(
               children: <Widget>[
                 DefaultTextStyle(
-                  style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                  style: const TextStyle(color: Colors.yellowAccent, fontSize: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -339,7 +333,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
                 const Text('　+　'),
                 DefaultTextStyle(
-                  style: const TextStyle(color: Colors.greenAccent, fontSize: 12),
+                  style: const TextStyle(color: Colors.greenAccent, fontSize: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -350,7 +344,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
                 const Text('　=　'),
                 DefaultTextStyle(
-                  style: const TextStyle(color: Colors.orangeAccent, fontSize: 12),
+                  style: const TextStyle(color: Colors.orangeAccent, fontSize: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -1164,10 +1158,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   flex: 2,
                   child: Row(
                     children: <Widget>[
-                      CircleAvatar(
-                        radius: 10,
-                        backgroundColor: Color(element.color.toInt()).withOpacity(0.3),
-                      ),
+                      CircleAvatar(radius: 10, backgroundColor: Color(element.color.toInt()).withOpacity(0.3)),
                       const SizedBox(width: 10),
                       Text(element.spendItemName),
                     ],
