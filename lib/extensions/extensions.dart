@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 ///
@@ -8,6 +9,16 @@ extension ContextEx on BuildContext {
   ColorScheme get colorTheme => Theme.of(this).colorScheme;
 
   Size get screenSize => MediaQuery.of(this).size;
+
+  void showKeyboard(FocusNode node) {
+    FocusScope.of(this).requestFocus(node);
+    SystemChannels.textInput.invokeMethod('TextInput.show');
+  }
+
+  // void hideKeyboard() {
+  //   SystemChannels.textInput.invokeMethod('TextInput.hide');
+  //   FocusScope.of(this).unfocus();
+  // }
 }
 
 ///
@@ -75,9 +86,7 @@ extension StringEx on String {
     final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
     final Iterable<String> string = runes.map<String>((int rune) {
       final String char = String.fromCharCode(rune);
-      return regex.hasMatch(char)
-          ? String.fromCharCode(rune + _fullLengthCode)
-          : char;
+      return regex.hasMatch(char) ? String.fromCharCode(rune + _fullLengthCode) : char;
     });
     return string.join();
   }
@@ -86,9 +95,7 @@ extension StringEx on String {
     final RegExp regex = RegExp(r'^[Ａ-Ｚａ-ｚ０-９]+$');
     final Iterable<String> string = runes.map<String>((int rune) {
       final String char = String.fromCharCode(rune);
-      return regex.hasMatch(char)
-          ? String.fromCharCode(rune - _fullLengthCode)
-          : char;
+      return regex.hasMatch(char) ? String.fromCharCode(rune - _fullLengthCode) : char;
     });
     return string.join();
   }

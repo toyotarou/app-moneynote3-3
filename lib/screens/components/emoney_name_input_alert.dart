@@ -27,6 +27,8 @@ class EmoneyNameInputAlert extends ConsumerStatefulWidget {
 class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
   final TextEditingController _emoneyNameEditingController = TextEditingController();
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
   ///
   @override
   void initState() {
@@ -35,6 +37,9 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
     if (widget.emoneyName != null) {
       _emoneyNameEditingController.text = widget.emoneyName!.emoneyName.trim();
     }
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(100, (int index) => FocusNode());
   }
 
   ///
@@ -126,6 +131,8 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
               ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
               onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+              focusNode: focusNodeList[0],
+              onTap: () => context.showKeyboard(focusNodeList[0]),
             ),
           ),
         ),

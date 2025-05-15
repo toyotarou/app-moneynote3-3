@@ -38,6 +38,8 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
   final TextEditingController _tecYen5 = TextEditingController();
   final TextEditingController _tecYen1 = TextEditingController();
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
   ///
   @override
   void initState() {
@@ -55,6 +57,9 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       _tecYen5.text = widget.onedayMoneyList![0].yen_5.toString().trim();
       _tecYen1.text = widget.onedayMoneyList![0].yen_1.toString().trim();
     }
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(100, (int index) => FocusNode());
   }
 
   ///
@@ -169,6 +174,10 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
   ///
   Widget _displayInputTextFieldParts({required String name, required TextEditingController tec}) {
+    var moneyKind = [10000, 5000, 2000, 1000, 500, 100, 50, 10, 5, 1];
+
+    final int pos = moneyKind.indexWhere((element) => element == name.toInt());
+
     return Container(
       padding: const EdgeInsets.all(10),
       child: TextField(
@@ -177,6 +186,8 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
         decoration: InputDecoration(labelText: name),
         style: const TextStyle(fontSize: 13, color: Colors.white),
         onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+        focusNode: focusNodeList[pos],
+        onTap: () => context.showKeyboard(focusNodeList[pos]),
       ),
     );
   }

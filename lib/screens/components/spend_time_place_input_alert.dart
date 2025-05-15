@@ -55,6 +55,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
   List<SpendItem>? _spendItemList = <SpendItem>[];
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
   ///
   @override
   void initState() {
@@ -71,6 +73,9 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     } catch (e) {}
 
     _makeSpendItemList();
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(200, (int index) => FocusNode());
   }
 
   ///
@@ -314,6 +319,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                             onChanged: (String value) =>
                                 spendTimePlacesNotifier.setSpendPrice(pos: i, price: (value == '') ? 0 : value.toInt()),
                             onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                            focusNode: focusNodeList[i],
+                            onTap: () => context.showKeyboard(focusNodeList[i]),
                           ),
                         ),
                       ],
@@ -332,6 +339,8 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
                       style: const TextStyle(fontSize: 12),
                       onChanged: (String value) => spendTimePlacesNotifier.setPlace(pos: i, place: value.trim()),
                       onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                      focusNode: focusNodeList[i + 100],
+                      onTap: () => context.showKeyboard(focusNodeList[i + 100]),
                     ),
                     if (i < widget.spendTimePlaceList!.length) ...<Widget>[
                       Container(

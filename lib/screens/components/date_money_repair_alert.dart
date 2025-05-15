@@ -35,6 +35,17 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert>
 
   int moneyModelListLength = 0;
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(100, (int index) => FocusNode());
+  }
+
   ///
   @override
   Widget build(BuildContext context) {
@@ -340,7 +351,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert>
           //        Text(index.toString()),
           Text(date),
           Text('${moneyKindList[data.key]}円'),
-          Text('変更前：${data.value}枚'),
+          Text('変更前：${data.value}枚', style: const TextStyle(color: Colors.yellowAccent)),
           Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
           TextField(
             keyboardType: TextInputType.number,
@@ -355,6 +366,8 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert>
             ),
             style: const TextStyle(fontSize: 13, color: Colors.white),
             onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+            focusNode: focusNodeList[0],
+            onTap: () => context.showKeyboard(focusNodeList[0]),
           ),
           Row(
             children: <Widget>[

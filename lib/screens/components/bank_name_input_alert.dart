@@ -35,6 +35,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with Co
 
   AccountType _selectedAccountType = AccountType.blank;
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
   ///
   @override
   void initState() {
@@ -54,6 +56,9 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with Co
           _selectedAccountType = AccountType.fixed;
       }
     }
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(100, (int index) => FocusNode());
   }
 
   ///
@@ -162,6 +167,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with Co
                         ),
                         style: const TextStyle(fontSize: 13, color: Colors.white),
                         onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        focusNode: focusNodeList[0],
+                        onTap: () => context.showKeyboard(focusNodeList[0]),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -179,6 +186,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with Co
                         ),
                         style: const TextStyle(fontSize: 13, color: Colors.white),
                         onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        focusNode: focusNodeList[1],
+                        onTap: () => context.showKeyboard(focusNodeList[1]),
                       ),
                     )
                   ],
@@ -199,6 +208,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with Co
                         ),
                         style: const TextStyle(fontSize: 13, color: Colors.white),
                         onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        focusNode: focusNodeList[2],
+                        onTap: () => context.showKeyboard(focusNodeList[2]),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -216,6 +227,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with Co
                         ),
                         style: const TextStyle(fontSize: 13, color: Colors.white),
                         onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        focusNode: focusNodeList[3],
+                        onTap: () => context.showKeyboard(focusNodeList[3]),
                       ),
                     )
                   ],
@@ -259,6 +272,8 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with Co
                         ),
                         style: const TextStyle(fontSize: 13, color: Colors.white),
                         onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                        focusNode: focusNodeList[4],
+                        onTap: () => context.showKeyboard(focusNodeList[4]),
                       ),
                     ),
                   ],

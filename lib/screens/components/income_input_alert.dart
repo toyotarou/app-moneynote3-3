@@ -31,6 +31,17 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
 
   List<String> _yearList = <String>[];
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(100, (int index) => FocusNode());
+  }
+
   ///
   void _init() {
     _makeIncomeList();
@@ -124,6 +135,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
                   onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                  focusNode: focusNodeList[0],
+                  onTap: () => context.showKeyboard(focusNodeList[0]),
                 ),
                 TextField(
                   controller: _incomeSourceEditingController,
@@ -137,6 +150,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
                   onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+                  focusNode: focusNodeList[1],
+                  onTap: () => context.showKeyboard(focusNodeList[1]),
                 ),
               ],
             ),

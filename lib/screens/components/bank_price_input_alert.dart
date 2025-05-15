@@ -48,6 +48,17 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> with 
 
   late Color contextBlue;
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(100, (int index) => FocusNode());
+  }
+
   ///
   @override
   Widget build(BuildContext context) {
@@ -219,6 +230,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> with 
               ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
               onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+              focusNode: focusNodeList[0],
+              onTap: () => context.showKeyboard(focusNodeList[0]),
             ),
           ),
         ),

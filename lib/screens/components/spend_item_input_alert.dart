@@ -45,6 +45,8 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   Map<int, String> spendItemNameMap = <int, String>{};
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
   ///
   @override
   void initState() {
@@ -78,6 +80,9 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     }
 
     ddList.add(DragAndDropList(children: spendItemDDItemList));
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(100, (int index) => FocusNode());
   }
 
   ///
@@ -195,6 +200,8 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
               ),
               style: const TextStyle(fontSize: 13, color: Colors.white),
               onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
+              focusNode: focusNodeList[0],
+              onTap: () => context.showKeyboard(focusNodeList[0]),
             ),
           ),
         ),

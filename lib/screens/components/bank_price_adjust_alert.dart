@@ -45,12 +45,17 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert>
   Map<int, BankName> bankNameMap = <int, BankName>{};
   Map<int, EmoneyName> emoneyNameMap = <int, EmoneyName>{};
 
+  List<FocusNode> focusNodeList = <FocusNode>[];
+
   ///
   @override
   void initState() {
     super.initState();
 
     _makeTecs();
+
+    // ignore: always_specify_types
+    focusNodeList = List.generate(100, (int index) => FocusNode());
   }
 
   ///
@@ -225,8 +230,7 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert>
                           const SizedBox(width: 10),
                           SizedBox(
                             width: context.screenSize.width / 6,
-                            child:
-                                Text(bankPriceAdjustState.adjustDate[i], style: const TextStyle(fontSize: 10)),
+                            child: Text(bankPriceAdjustState.adjustDate[i], style: const TextStyle(fontSize: 10)),
                           ),
                           const SizedBox(width: 20),
                           Expanded(
@@ -271,6 +275,8 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert>
                                   bankPriceAdjustNotifier.setAdjustPrice(pos: i, value: value.trim().toInt());
                                 }
                               },
+                              focusNode: focusNodeList[i],
+                              onTap: () => context.showKeyboard(focusNodeList[i]),
                             ),
                           ),
                         ],
