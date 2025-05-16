@@ -174,9 +174,9 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
   ///
   Widget _displayInputTextFieldParts({required String name, required TextEditingController tec}) {
-    var moneyKind = [10000, 5000, 2000, 1000, 500, 100, 50, 10, 5, 1];
+    final List<int> moneyKind = <int>[10000, 5000, 2000, 1000, 500, 100, 50, 10, 5, 1];
 
-    final int pos = moneyKind.indexWhere((element) => element == name.toInt());
+    final int pos = moneyKind.indexWhere((int element) => element == name.toInt());
 
     return Container(
       padding: const EdgeInsets.all(10),

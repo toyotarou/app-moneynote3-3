@@ -17,8 +17,8 @@ import '../parts/money_dialog.dart';
 class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
   const AllTotalMoneyGraphPage({
     super.key,
-    this.data,
-    required this.year,
+//    this.data,
+    this.year,
     required this.alertWidth,
     required this.monthList,
     required this.isar,
@@ -27,10 +27,11 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
     required this.monthlySpendMap,
     required this.thisMonthSpendTimePlaceList,
     required this.allSpendTimePlaceList,
+    required this.dataMap,
   });
 
-  final List<Map<String, int>>? data;
-  final int year;
+//  final List<Map<String, int>>? data;
+  final int? year;
   final double alertWidth;
   final List<int> monthList;
   final Isar isar;
@@ -39,6 +40,7 @@ class AllTotalMoneyGraphPage extends ConsumerStatefulWidget {
   final Map<String, int> monthlySpendMap;
   final List<SpendTimePlace> thisMonthSpendTimePlaceList;
   final List<SpendTimePlace> allSpendTimePlaceList;
+  final Map<int, List<Map<String, int>>> dataMap;
 
   @override
   ConsumerState<AllTotalMoneyGraphPage> createState() => _AllTotalMoneyGraphPageState();
@@ -89,26 +91,28 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
                           onTap: () {
                             appParamNotifier.setSelectedGraphMonth(month: e);
 
-                            MoneyDialog(
-                              context: context,
-                              widget: MoneyGraphAlert(
-                                date: DateTime(widget.year, e),
-                                isar: widget.isar,
-                                monthlyDateSumMap: widget.monthlyDateSumMap,
-                                bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
-                                monthlySpendMap: widget.monthlySpendMap,
-                                graphMin: graphMin,
-                                graphMax: graphMax,
-                                thisMonthSpendTimePlaceList: widget.thisMonthSpendTimePlaceList,
-                                monthSTPList: widget.allSpendTimePlaceList
-                                    .where((SpendTimePlace element) =>
-                                        element.date.split('-')[1] == e.toString().padLeft(2, '0'))
-                                    .toList(),
-                              ),
-                              executeFunctionWhenDialogClose: true,
-                              ref: ref,
-                              from: 'AllTotalMoneyGraphPage',
-                            );
+                            if (widget.year != null) {
+                              MoneyDialog(
+                                context: context,
+                                widget: MoneyGraphAlert(
+                                  date: DateTime(widget.year!, e),
+                                  isar: widget.isar,
+                                  monthlyDateSumMap: widget.monthlyDateSumMap,
+                                  bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
+                                  monthlySpendMap: widget.monthlySpendMap,
+                                  graphMin: graphMin,
+                                  graphMax: graphMax,
+                                  thisMonthSpendTimePlaceList: widget.thisMonthSpendTimePlaceList,
+                                  monthSTPList: widget.allSpendTimePlaceList
+                                      .where((SpendTimePlace element) =>
+                                          element.date.split('-')[1] == e.toString().padLeft(2, '0'))
+                                      .toList(),
+                                ),
+                                executeFunctionWhenDialogClose: true,
+                                ref: ref,
+                                from: 'AllTotalMoneyGraphPage',
+                              );
+                            }
                           },
                           child: CircleAvatar(
                             radius: circleAvatarWidth,
@@ -150,13 +154,13 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
   void _setChartData() {
     _flspots = <FlSpot>[];
 
-    if (widget.data != null) {
+    if (widget.dataMap[widget.year] != null) {
       String lastDate = '';
       int lastTotal = 0;
 
       int i = 0;
       final List<int> list = <int>[];
-      for (final Map<String, int> element in widget.data!) {
+      for (final Map<String, int> element in widget.dataMap[widget.year]!) {
         for (final MapEntry<String, int> element2 in element.entries) {
           _flspots.add(FlSpot((i + 1).toDouble(), element2.value.toDouble()));
 
@@ -203,23 +207,25 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
                 final List<LineTooltipItem> list = <LineTooltipItem>[];
 
                 for (final LineBarSpot element in touchedSpots) {
-                  final TextStyle textStyle = TextStyle(
-                    color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  );
+                  if (widget.year != null) {
+                    final TextStyle textStyle = TextStyle(
+                      color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    );
 
-                  final String price = element.y.round().toString().split('.')[0].toCurrency();
+                    final String price = element.y.round().toString().split('.')[0].toCurrency();
 
-                  final String day = DateTime(widget.year).add(Duration(days: element.x.toInt() - 1)).yyyymmdd;
+                    final String day = DateTime(widget.year!).add(Duration(days: element.x.toInt() - 1)).yyyymmdd;
 
-                  list.add(
-                    LineTooltipItem(
-                      '$day\n$price',
-                      textStyle,
-                      textAlign: TextAlign.end,
-                    ),
-                  );
+                    list.add(
+                      LineTooltipItem(
+                        '$day\n$price',
+                        textStyle,
+                        textAlign: TextAlign.end,
+                      ),
+                    );
+                  }
                 }
 
                 return list;
@@ -230,7 +236,8 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
         gridData: FlGridData(
           verticalInterval: 1,
           getDrawingVerticalLine: (double value) {
-            final DateTime day = DateTime(widget.year).add(Duration(days: value.toInt() - 1));
+            final int day =
+                (widget.year != null) ? DateTime(widget.year!).add(Duration(days: value.toInt() - 1)).day : 0;
 
             final DateTime today = DateTime.now();
             final DateTime newYear = DateTime(today.year);
@@ -243,7 +250,7 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
             return FlLine(
               color: (value.toInt() == dayOfYear)
                   ? const Color(0xFFFBB6CE).withOpacity(0.3)
-                  : (day.day == 1)
+                  : (day == 1)
                       ? Colors.yellowAccent.withOpacity(0.3)
                       : Colors.transparent,
               strokeWidth: (value.toInt() == dayOfYear) ? 3 : 1,

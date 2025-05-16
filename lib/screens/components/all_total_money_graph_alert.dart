@@ -142,7 +142,8 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
             element.toString(),
             AllTotalMoneyGraphPage(
               year: element,
-              data: map[element],
+//              data: map[element],
+              dataMap: map,
               alertWidth: alertWidth,
               monthList: map3[element] ?? <int>[],
               isar: widget.isar,
