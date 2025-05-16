@@ -154,36 +154,53 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
   void _setChartData() {
     _flspots = <FlSpot>[];
 
-    if (widget.dataMap[widget.year] != null) {
-      String lastDate = '';
-      int lastTotal = 0;
+    String lastDate = '';
+    int lastTotal = 0;
 
-      int i = 0;
-      final List<int> list = <int>[];
-      for (final Map<String, int> element in widget.dataMap[widget.year]!) {
-        for (final MapEntry<String, int> element2 in element.entries) {
-          _flspots.add(FlSpot((i + 1).toDouble(), element2.value.toDouble()));
+    int i = 0;
+    final List<int> list = <int>[];
 
-          list.add(element2.value);
+    widget.dataMap.forEach((int key, List<Map<String, int>> value) {
+      bool flag = false;
 
-          lastDate = element2.key;
-
-          if (element2.value > 0) {
-            lastTotal = element2.value;
-          }
-
-          i++;
+      if (widget.year != null) {
+        if (key == widget.year) {
+          flag = true;
         }
+      } else {
+        flag = true;
       }
 
-      final List<String> exLastDate = lastDate.split('-');
+      if (flag) {
+        for (final Map<String, int> element in value) {
+          for (final MapEntry<String, int> element2 in element.entries) {
+            _flspots.add(FlSpot((i + 1).toDouble(), element2.value.toDouble()));
 
+            list.add(element2.value);
+
+            lastDate = element2.key;
+
+            if (element2.value > 0) {
+              lastTotal = element2.value;
+            }
+
+            i++;
+          }
+        }
+      }
+    });
+
+    final List<String> exLastDate = lastDate.split('-');
+
+    if (exLastDate[0] != '') {
       final int lastDateMonthLastDay = DateTime(exLastDate[0].toInt(), exLastDate[1].toInt() + 1, 0).day;
 
       for (int i = list.length; i <= (list.length + (lastDateMonthLastDay - exLastDate[2].toInt())); i++) {
         _flspots.add(FlSpot(i.toDouble(), lastTotal.toDouble()));
       }
+    }
 
+    if (list.isNotEmpty) {
       const int warisuu = 500000;
       final int minValue = list.reduce(min);
       final int maxValue = list.reduce(max);
@@ -200,37 +217,39 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
         maxY: graphMax.toDouble(),
 
         ///
-        lineTouchData: LineTouchData(
-          touchTooltipData: LineTouchTooltipData(
-              tooltipRoundedRadius: 2,
-              getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                final List<LineTooltipItem> list = <LineTooltipItem>[];
+        lineTouchData: (widget.year == null)
+            ? const LineTouchData(enabled: false)
+            : LineTouchData(
+                touchTooltipData: LineTouchTooltipData(
+                    tooltipRoundedRadius: 2,
+                    getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                      final List<LineTooltipItem> list = <LineTooltipItem>[];
 
-                for (final LineBarSpot element in touchedSpots) {
-                  if (widget.year != null) {
-                    final TextStyle textStyle = TextStyle(
-                      color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    );
+                      for (final LineBarSpot element in touchedSpots) {
+                        if (widget.year != null) {
+                          final TextStyle textStyle = TextStyle(
+                            color: element.bar.gradient?.colors.first ?? element.bar.color ?? Colors.blueGrey,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          );
 
-                    final String price = element.y.round().toString().split('.')[0].toCurrency();
+                          final String price = element.y.round().toString().split('.')[0].toCurrency();
 
-                    final String day = DateTime(widget.year!).add(Duration(days: element.x.toInt() - 1)).yyyymmdd;
+                          final String day = DateTime(widget.year!).add(Duration(days: element.x.toInt() - 1)).yyyymmdd;
 
-                    list.add(
-                      LineTooltipItem(
-                        '$day\n$price',
-                        textStyle,
-                        textAlign: TextAlign.end,
-                      ),
-                    );
-                  }
-                }
+                          list.add(
+                            LineTooltipItem(
+                              '$day\n$price',
+                              textStyle,
+                              textAlign: TextAlign.end,
+                            ),
+                          );
+                        }
+                      }
 
-                return list;
-              }),
-        ),
+                      return list;
+                    }),
+              ),
 
         ///
         gridData: FlGridData(
@@ -268,7 +287,7 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
         lineBarsData: <LineChartBarData>[
           LineChartBarData(
             spots: _flspots,
-            color: Colors.yellowAccent,
+            color: (widget.year == null) ? Colors.greenAccent : Colors.yellowAccent,
             dotData: const FlDotData(show: false),
             barWidth: 1,
           ),

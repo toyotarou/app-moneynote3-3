@@ -7,10 +7,11 @@ import '../../extensions/extensions.dart';
 import 'page/all_total_money_graph_page.dart';
 
 class TabInfo {
-  TabInfo(this.label, this.widget);
+  TabInfo(this.label, this.widget, {this.highlight = false});
 
   String label;
   Widget widget;
+  bool highlight;
 }
 
 class AllTotalMoneyGraphAlert extends StatefulWidget {
@@ -76,8 +77,19 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
 
             bottom: TabBar(
               isScrollable: true,
+              tabAlignment: TabAlignment.start,
               indicatorColor: Colors.blueAccent,
-              tabs: _tabs.map((TabInfo tab) => Tab(text: tab.label)).toList(),
+              tabs: _tabs.map((TabInfo tab) {
+                return Tab(
+                  child: Text(
+                    tab.label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: tab.highlight ? Colors.greenAccent : Colors.white,
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ),
@@ -134,8 +146,23 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
       map3[key] = monthList;
     });
 
+    _tabs.add(TabInfo(
+        '[ALL]',
+        AllTotalMoneyGraphPage(
+          dataMap: map,
+          alertWidth: alertWidth,
+          monthList: const <int>[],
+          isar: widget.isar,
+          monthlyDateSumMap: widget.monthlyDateSumMap,
+          bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
+          monthlySpendMap: widget.monthlySpendMap,
+          thisMonthSpendTimePlaceList: widget.thisMonthSpendTimePlaceList,
+          allSpendTimePlaceList: widget.allSpendTimePlaceList,
+        ),
+        highlight: true));
+
     widget.years
-      ..sort((int a, int b) => -1 * a.compareTo(b))
+      ..sort((int a, int b) => a.compareTo(b))
       ..forEach((int element) {
         if (map[element]!.length > 1) {
           _tabs.add(TabInfo(
