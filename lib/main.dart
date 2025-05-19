@@ -15,10 +15,14 @@ import 'collections/income.dart';
 import 'collections/money.dart';
 import 'collections/spend_item.dart';
 import 'collections/spend_time_place.dart';
+import 'page_size_checker.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final int size = getOsPageSize();
+  debugPrint('⚙️  OS page size = $size bytes'); // 16384 なら 16 KB
 
   final Directory dir = await getApplicationSupportDirectory();
 
