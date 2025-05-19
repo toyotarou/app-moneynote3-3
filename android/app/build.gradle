@@ -1,4 +1,4 @@
-// android/app/build.gradle  –  copy & paste OK
+// android/app/build.gradle
 
 plugins {
     id "com.android.application"
@@ -19,9 +19,7 @@ android {
     namespace "com.example.money_note"
 
     compileSdk 35
-
     ndkVersion "27.0.12077973"
-
 
     defaultConfig {
         applicationId "com.example.money_note"
@@ -35,20 +33,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    kotlinOptions { jvmTarget = "17" }
 
-    sourceSets {
-        main.java.srcDirs += "src/main/kotlin"
-    }
+    sourceSets { main.java.srcDirs += "src/main/kotlin" }
 
     buildTypes {
-        debug {  // デバッグビルド
-            // 追加設定があればここに
-        }
+        debug   { /* 追加があればここに */ }
         release {
-            // TODO: 本番では release 用 keystore に差し替える
             signingConfig signingConfigs.debug
             minifyEnabled false
             shrinkResources false
@@ -56,16 +47,12 @@ android {
     }
 }
 
-flutter {
-    // Flutter プロジェクトのルートを指す
-    source "../.."
-}
+flutter { source "../.." }
 
 dependencies {
-    // 追加ライブラリがあればここへ記述
+    // 追加ライブラリがあればここへ
 }
 
-// --- Flutter が期待する flutter-apk ディレクトリへ APK をコピー ---
 afterEvaluate {
     android.applicationVariants.all { variant ->
         if (variant.buildType.name == "debug") {
