@@ -10,8 +10,10 @@ import 'package:path_provider/path_provider.dart';
 
 import 'collections/bank_name.dart';
 import 'collections/bank_price.dart';
+import 'collections/config.dart';
 import 'collections/emoney_name.dart';
 import 'collections/income.dart';
+import 'collections/login_account.dart';
 import 'collections/money.dart';
 import 'collections/spend_item.dart';
 import 'collections/spend_time_place.dart';
@@ -35,6 +37,8 @@ void main() async {
     MoneySchema,
     SpendTimePlaceSchema,
     SpendItemSchema,
+    ConfigSchema,
+    LoginAccountSchema
   ], directory: dir.path);
 
   await SystemChrome.setPreferredOrientations(
