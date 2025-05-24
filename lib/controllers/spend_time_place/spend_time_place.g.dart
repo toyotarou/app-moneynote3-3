@@ -7,7 +7,7 @@ part of 'spend_time_place.dart';
 // **************************************************************************
 
 String _$spendTimePlacesControllerHash() =>
-    r'1517aac17f57cff21fca254322d7216539c957f8';
+    r'4ab45ae4a96e9d1563624ff156a705dd68608ecb';
 
 /// See also [SpendTimePlacesController].
 @ProviderFor(SpendTimePlacesController)
