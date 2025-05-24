@@ -18,7 +18,7 @@ import 'collections/money.dart';
 import 'collections/spend_item.dart';
 import 'collections/spend_time_place.dart';
 import 'page_size_checker.dart';
-import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -78,7 +78,7 @@ class MyApp extends ConsumerWidget {
       themeMode: ThemeMode.dark,
       title: 'money note',
       debugShowCheckedModeBanner: false,
-      home: GestureDetector(onTap: () => primaryFocus?.unfocus(), child: HomeScreen(isar: isar)),
+      home: GestureDetector(onTap: () => primaryFocus?.unfocus(), child: LoginScreen(isar: isar)),
     );
   }
 }

@@ -18,9 +18,7 @@ class BackGroundImage extends StatelessWidget {
               Container(
                 width: context.screenSize.width / 2.5,
                 height: 140,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/images/coinpig.png'))),
+                decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/coinpig.png'))),
               ),
               Row(
                 children: <Widget>[
@@ -28,13 +26,12 @@ class BackGroundImage extends StatelessWidget {
                     width: context.screenSize.width / 2.5,
                     height: 30,
                     decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(
-                                'assets/images/moneynote_title.png'))),
+                        image: DecorationImage(image: AssetImage('assets/images/moneynote_title.png'))),
                   ),
                   const SizedBox(width: 5),
                 ],
               ),
+              const SizedBox(height: 50),
             ],
           ),
           const SizedBox(width: 20),
