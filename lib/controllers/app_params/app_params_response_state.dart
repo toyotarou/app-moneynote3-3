@@ -25,5 +25,8 @@ class AppParamsResponseState with _$AppParamsResponseState {
     Offset? overlayPosition,
     @Default('') String selectedBankPriceYear,
     @Default('') String sameYearDayCalendarSelectDate,
+    @Default(true) bool configUseEasyLoginFlag,
+    @Default(true) bool configUseBankManageFlag,
+    @Default(true) bool configUseEmoneyManageFlag,
   }) = _AppParamsResponseState;
 }

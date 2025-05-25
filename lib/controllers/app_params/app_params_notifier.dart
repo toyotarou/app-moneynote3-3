@@ -81,4 +81,13 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
   ///
   void setSameYearDayCalendarSelectDate({required String date}) =>
       state = state.copyWith(sameYearDayCalendarSelectDate: date);
+
+  ///
+  void setConfigUseEasyLoginFlag({required bool flag}) => state = state.copyWith(configUseEasyLoginFlag: flag);
+
+  ///
+  void setConfigUseBankManageFlag({required bool flag}) => state = state.copyWith(configUseBankManageFlag: flag);
+
+  ///
+  void setConfigUseEmoneyManageFlag({required bool flag}) => state = state.copyWith(configUseEmoneyManageFlag: flag);
 }

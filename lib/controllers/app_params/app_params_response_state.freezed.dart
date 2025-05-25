@@ -39,6 +39,9 @@ mixin _$AppParamsResponseState {
   String get selectedBankPriceYear => throw _privateConstructorUsedError;
   String get sameYearDayCalendarSelectDate =>
       throw _privateConstructorUsedError;
+  bool get configUseEasyLoginFlag => throw _privateConstructorUsedError;
+  bool get configUseBankManageFlag => throw _privateConstructorUsedError;
+  bool get configUseEmoneyManageFlag => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppParamsResponseStateCopyWith<AppParamsResponseState> get copyWith =>
@@ -70,7 +73,10 @@ abstract class $AppParamsResponseStateCopyWith<$Res> {
       void Function(void Function())? setStateCallback,
       Offset? overlayPosition,
       String selectedBankPriceYear,
-      String sameYearDayCalendarSelectDate});
+      String sameYearDayCalendarSelectDate,
+      bool configUseEasyLoginFlag,
+      bool configUseBankManageFlag,
+      bool configUseEmoneyManageFlag});
 }
 
 /// @nodoc
@@ -106,6 +112,9 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
     Object? overlayPosition = freezed,
     Object? selectedBankPriceYear = null,
     Object? sameYearDayCalendarSelectDate = null,
+    Object? configUseEasyLoginFlag = null,
+    Object? configUseBankManageFlag = null,
+    Object? configUseEmoneyManageFlag = null,
   }) {
     return _then(_value.copyWith(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -185,6 +194,18 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
           ? _value.sameYearDayCalendarSelectDate
           : sameYearDayCalendarSelectDate // ignore: cast_nullable_to_non_nullable
               as String,
+      configUseEasyLoginFlag: null == configUseEasyLoginFlag
+          ? _value.configUseEasyLoginFlag
+          : configUseEasyLoginFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
+      configUseBankManageFlag: null == configUseBankManageFlag
+          ? _value.configUseBankManageFlag
+          : configUseBankManageFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
+      configUseEmoneyManageFlag: null == configUseEmoneyManageFlag
+          ? _value.configUseEmoneyManageFlag
+          : configUseEmoneyManageFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -217,7 +238,10 @@ abstract class _$$AppParamsResponseStateImplCopyWith<$Res>
       void Function(void Function())? setStateCallback,
       Offset? overlayPosition,
       String selectedBankPriceYear,
-      String sameYearDayCalendarSelectDate});
+      String sameYearDayCalendarSelectDate,
+      bool configUseEasyLoginFlag,
+      bool configUseBankManageFlag,
+      bool configUseEmoneyManageFlag});
 }
 
 /// @nodoc
@@ -252,6 +276,9 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
     Object? overlayPosition = freezed,
     Object? selectedBankPriceYear = null,
     Object? sameYearDayCalendarSelectDate = null,
+    Object? configUseEasyLoginFlag = null,
+    Object? configUseBankManageFlag = null,
+    Object? configUseEmoneyManageFlag = null,
   }) {
     return _then(_$AppParamsResponseStateImpl(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -331,6 +358,18 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
           ? _value.sameYearDayCalendarSelectDate
           : sameYearDayCalendarSelectDate // ignore: cast_nullable_to_non_nullable
               as String,
+      configUseEasyLoginFlag: null == configUseEasyLoginFlag
+          ? _value.configUseEasyLoginFlag
+          : configUseEasyLoginFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
+      configUseBankManageFlag: null == configUseBankManageFlag
+          ? _value.configUseBankManageFlag
+          : configUseBankManageFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
+      configUseEmoneyManageFlag: null == configUseEmoneyManageFlag
+          ? _value.configUseEmoneyManageFlag
+          : configUseEmoneyManageFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -357,7 +396,10 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       this.setStateCallback,
       this.overlayPosition,
       this.selectedBankPriceYear = '',
-      this.sameYearDayCalendarSelectDate = ''})
+      this.sameYearDayCalendarSelectDate = '',
+      this.configUseEasyLoginFlag = true,
+      this.configUseBankManageFlag = true,
+      this.configUseEmoneyManageFlag = true})
       : _selectedRepairRecordNumber = selectedRepairRecordNumber,
         _bigEntries = bigEntries;
 
@@ -429,10 +471,19 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
   @override
   @JsonKey()
   final String sameYearDayCalendarSelectDate;
+  @override
+  @JsonKey()
+  final bool configUseEasyLoginFlag;
+  @override
+  @JsonKey()
+  final bool configUseBankManageFlag;
+  @override
+  @JsonKey()
+  final bool configUseEmoneyManageFlag;
 
   @override
   String toString() {
-    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback, overlayPosition: $overlayPosition, selectedBankPriceYear: $selectedBankPriceYear, sameYearDayCalendarSelectDate: $sameYearDayCalendarSelectDate)';
+    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback, overlayPosition: $overlayPosition, selectedBankPriceYear: $selectedBankPriceYear, sameYearDayCalendarSelectDate: $sameYearDayCalendarSelectDate, configUseEasyLoginFlag: $configUseEasyLoginFlag, configUseBankManageFlag: $configUseBankManageFlag, configUseEmoneyManageFlag: $configUseEmoneyManageFlag)';
   }
 
   @override
@@ -446,8 +497,7 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
                 other.menuNumber == menuNumber) &&
             (identical(other.selectedIncomeYear, selectedIncomeYear) ||
                 other.selectedIncomeYear == selectedIncomeYear) &&
-            (identical(other.sameMonthIncomeDeleteFlag,
-                    sameMonthIncomeDeleteFlag) ||
+            (identical(other.sameMonthIncomeDeleteFlag, sameMonthIncomeDeleteFlag) ||
                 other.sameMonthIncomeDeleteFlag == sameMonthIncomeDeleteFlag) &&
             (identical(other.incomeInputDate, incomeInputDate) ||
                 other.incomeInputDate == incomeInputDate) &&
@@ -480,10 +530,16 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
                 other.overlayPosition == overlayPosition) &&
             (identical(other.selectedBankPriceYear, selectedBankPriceYear) ||
                 other.selectedBankPriceYear == selectedBankPriceYear) &&
-            (identical(other.sameYearDayCalendarSelectDate,
-                    sameYearDayCalendarSelectDate) ||
+            (identical(other.sameYearDayCalendarSelectDate, sameYearDayCalendarSelectDate) ||
                 other.sameYearDayCalendarSelectDate ==
-                    sameYearDayCalendarSelectDate));
+                    sameYearDayCalendarSelectDate) &&
+            (identical(other.configUseEasyLoginFlag, configUseEasyLoginFlag) ||
+                other.configUseEasyLoginFlag == configUseEasyLoginFlag) &&
+            (identical(other.configUseBankManageFlag, configUseBankManageFlag) ||
+                other.configUseBankManageFlag == configUseBankManageFlag) &&
+            (identical(
+                    other.configUseEmoneyManageFlag, configUseEmoneyManageFlag) ||
+                other.configUseEmoneyManageFlag == configUseEmoneyManageFlag));
   }
 
   @override
@@ -507,7 +563,10 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
         setStateCallback,
         overlayPosition,
         selectedBankPriceYear,
-        sameYearDayCalendarSelectDate
+        sameYearDayCalendarSelectDate,
+        configUseEasyLoginFlag,
+        configUseBankManageFlag,
+        configUseEmoneyManageFlag
       ]);
 
   @JsonKey(ignore: true)
@@ -520,26 +579,28 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
 
 abstract class _AppParamsResponseState implements AppParamsResponseState {
   const factory _AppParamsResponseState(
-          {final DateTime? calendarSelectedDate,
-          final int menuNumber,
-          final String selectedIncomeYear,
-          final bool sameMonthIncomeDeleteFlag,
-          final String incomeInputDate,
-          final bool inputButtonClicked,
-          final int sameDaySelectedDay,
-          final int selectedGraphMonth,
-          final bool calendarDisp,
-          final String selectedYearlySpendCircleGraphSpendItem,
-          final String repairSelectDate,
-          final int repairSelectKind,
-          final bool repairSelectFlag,
-          final List<int> selectedRepairRecordNumber,
-          final List<OverlayEntry>? bigEntries,
-          final void Function(void Function())? setStateCallback,
-          final Offset? overlayPosition,
-          final String selectedBankPriceYear,
-          final String sameYearDayCalendarSelectDate}) =
-      _$AppParamsResponseStateImpl;
+      {final DateTime? calendarSelectedDate,
+      final int menuNumber,
+      final String selectedIncomeYear,
+      final bool sameMonthIncomeDeleteFlag,
+      final String incomeInputDate,
+      final bool inputButtonClicked,
+      final int sameDaySelectedDay,
+      final int selectedGraphMonth,
+      final bool calendarDisp,
+      final String selectedYearlySpendCircleGraphSpendItem,
+      final String repairSelectDate,
+      final int repairSelectKind,
+      final bool repairSelectFlag,
+      final List<int> selectedRepairRecordNumber,
+      final List<OverlayEntry>? bigEntries,
+      final void Function(void Function())? setStateCallback,
+      final Offset? overlayPosition,
+      final String selectedBankPriceYear,
+      final String sameYearDayCalendarSelectDate,
+      final bool configUseEasyLoginFlag,
+      final bool configUseBankManageFlag,
+      final bool configUseEmoneyManageFlag}) = _$AppParamsResponseStateImpl;
 
   @override
   DateTime? get calendarSelectedDate;
@@ -579,6 +640,12 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
   String get selectedBankPriceYear;
   @override
   String get sameYearDayCalendarSelectDate;
+  @override
+  bool get configUseEasyLoginFlag;
+  @override
+  bool get configUseBankManageFlag;
+  @override
+  bool get configUseEmoneyManageFlag;
   @override
   @JsonKey(ignore: true)
   _$$AppParamsResponseStateImplCopyWith<_$AppParamsResponseStateImpl>

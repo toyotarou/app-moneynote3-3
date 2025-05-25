@@ -99,6 +99,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
                 ),
                 const SizedBox(height: 20),
                 _displayInputParts(),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    mailAddressEditingController.text = 'hide.toyoda@gmail.com';
+                    passwordEditingController.text = 'hidechy4819';
+                  },
+                  child: const Text('hide'),
+                ),
               ],
             ),
           ),

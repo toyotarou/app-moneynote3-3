@@ -28,6 +28,7 @@ import '../utilities/utilities.dart';
 import 'components/___dummy_data_input_alert.dart';
 import 'components/all_total_money_graph_alert.dart';
 import 'components/bank_price_adjust_alert.dart';
+import 'components/config_setting_alert.dart';
 import 'components/csv_data/data_export_alert.dart';
 import 'components/csv_data/data_import_alert.dart';
 import 'components/daily_money_display_alert.dart';
@@ -507,6 +508,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   ),
                 ),
               ],
+              GestureDetector(
+                onTap: () => MoneyDialog(context: context, widget: ConfigSettingAlert(isar: widget.isar)),
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('設定'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               GestureDetector(
                 onTap: () => MoneyDialog(context: context, widget: DepositTabAlert(isar: widget.isar)),
                 child: Row(
@@ -1030,118 +1048,139 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   ///
   Future<void> _makeMoneyList() async {
-    await MoneysRepository().getMoneyList(isar: widget.isar).then((List<Money>? value) {
-      if (mounted) {
-        setState(() {
-          moneyList = value;
+    await MoneysRepository().getMoneyList(isar: widget.isar).then(
+      (List<Money>? value) {
+        if (mounted) {
+          setState(
+            () {
+              moneyList = value;
 
-          if (value!.isNotEmpty) {
-            value
-              ..forEach((Money element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element))
-              ..forEach((Money element) => moneyMap[element.date] = element)
-              ..forEach((Money element) {
-                final List<String> exDate = element.date.split('-');
-                if (exDate[2].toInt() == 1) {
-                  if (!monthFirstDateList.contains(element.date)) {
-                    monthFirstDateList.add(element.date);
-                  }
-                }
-              });
-          }
-        });
-      }
-    });
+              if (value!.isNotEmpty) {
+                value
+                  ..forEach(
+                      (Money element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element))
+                  ..forEach((Money element) => moneyMap[element.date] = element)
+                  ..forEach(
+                    (Money element) {
+                      final List<String> exDate = element.date.split('-');
+                      if (exDate[2].toInt() == 1) {
+                        if (!monthFirstDateList.contains(element.date)) {
+                          monthFirstDateList.add(element.date);
+                        }
+                      }
+                    },
+                  );
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   ///
   Future<void> _makeBankPriceList() async {
-    await BankPricesRepository().getBankPriceList(isar: widget.isar).then((List<BankPrice>? value) {
-      if (mounted) {
-        setState(() {
-          bankPriceList = value;
+    await BankPricesRepository().getBankPriceList(isar: widget.isar).then(
+      (List<BankPrice>? value) {
+        if (mounted) {
+          setState(
+            () {
+              bankPriceList = value;
 
-          if (value != null) {
-            final Map<String, dynamic> bankPriceMap = makeBankPriceMap(bankPriceList: value);
-            bankPricePadMap = bankPriceMap['bankPriceDatePadMap'] as Map<String, Map<String, int>>;
-            bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'] as Map<String, int>;
-          }
-        });
-      }
-    });
+              if (value != null) {
+                final Map<String, dynamic> bankPriceMap = makeBankPriceMap(bankPriceList: value);
+                bankPricePadMap = bankPriceMap['bankPriceDatePadMap'] as Map<String, Map<String, int>>;
+                bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'] as Map<String, int>;
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   ///
   Future<void> _makeSpendTimePlaceList() async {
     spendTypeBlankSpendTimePlaceList = <SpendTimePlace>[];
 
-    await SpendTimePlacesRepository().getSpendTimePlaceList(isar: widget.isar).then((List<SpendTimePlace>? value) {
-      if (mounted) {
-        setState(() {
-          allSpendTimePlaceList = value;
+    await SpendTimePlacesRepository().getSpendTimePlaceList(isar: widget.isar).then(
+      (List<SpendTimePlace>? value) {
+        if (mounted) {
+          setState(
+            () {
+              allSpendTimePlaceList = value;
 
-          if (value!.isNotEmpty) {
-            final String? yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
+              if (value!.isNotEmpty) {
+                final String? yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
 
-            final String prevYearMonth =
-                DateTime(yearmonth!.split('-')[0].toInt(), yearmonth.split('-')[1].toInt() - 1).yyyymm;
+                final String prevYearMonth =
+                    DateTime(yearmonth!.split('-')[0].toInt(), yearmonth.split('-')[1].toInt() - 1).yyyymm;
 
-            if (_spendItemList != null) {
-              final Map<String, List<SpendTimePlace>> map = <String, List<SpendTimePlace>>{};
-              for (final SpendItem element in _spendItemList!) {
-                map[element.spendItemName] = <SpendTimePlace>[];
+                if (_spendItemList != null) {
+                  final Map<String, List<SpendTimePlace>> map = <String, List<SpendTimePlace>>{};
+                  for (final SpendItem element in _spendItemList!) {
+                    map[element.spendItemName] = <SpendTimePlace>[];
+                  }
+                  for (final SpendTimePlace element in value) {
+                    map[element.spendType]?.add(element);
+                  }
+                  spendTimePlaceCountMap = map;
+                }
+
+                final List<SpendTimePlace> list = <SpendTimePlace>[];
+                final List<SpendTimePlace> list2 = <SpendTimePlace>[];
+
+                final Map<String, List<int>> map = <String, List<int>>{};
+
+                value
+                  ..forEach(
+                    (SpendTimePlace element) {
+                      final List<String> exDate = element.date.split('-');
+
+                      if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
+                        map[element.date] = <int>[];
+                      }
+                    },
+                  )
+                  ..forEach(
+                    (SpendTimePlace element) {
+                      final List<String> exDate = element.date.split('-');
+
+                      if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
+                        map[element.date]?.add(element.price);
+
+                        list.add(element);
+                      }
+
+                      if ('${exDate[0]}-${exDate[1]}' == prevYearMonth) {
+                        list2.add(element);
+                      }
+
+                      if (element.spendType == '') {
+                        spendTypeBlankSpendTimePlaceList.add(element);
+                      }
+                    },
+                  );
+
+                map.forEach(
+                  (String key, List<int> value) {
+                    int sum = 0;
+                    for (final int element in value) {
+                      sum += element;
+                    }
+                    monthlySpendTimePlaceSumMap[key] = sum;
+                  },
+                );
+
+                thisMonthSpendTimePlaceList = list;
+
+                prevMonthSpendTimePlaceList = list2;
               }
-              for (final SpendTimePlace element in value) {
-                map[element.spendType]?.add(element);
-              }
-              spendTimePlaceCountMap = map;
-            }
-
-            final List<SpendTimePlace> list = <SpendTimePlace>[];
-            final List<SpendTimePlace> list2 = <SpendTimePlace>[];
-
-            final Map<String, List<int>> map = <String, List<int>>{};
-
-            value
-              ..forEach((SpendTimePlace element) {
-                final List<String> exDate = element.date.split('-');
-
-                if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
-                  map[element.date] = <int>[];
-                }
-              })
-              ..forEach((SpendTimePlace element) {
-                final List<String> exDate = element.date.split('-');
-
-                if ('${exDate[0]}-${exDate[1]}' == yearmonth) {
-                  map[element.date]?.add(element.price);
-
-                  list.add(element);
-                }
-
-                if ('${exDate[0]}-${exDate[1]}' == prevYearMonth) {
-                  list2.add(element);
-                }
-
-                if (element.spendType == '') {
-                  spendTypeBlankSpendTimePlaceList.add(element);
-                }
-              });
-
-            map.forEach((String key, List<int> value) {
-              int sum = 0;
-              for (final int element in value) {
-                sum += element;
-              }
-              monthlySpendTimePlaceSumMap[key] = sum;
-            });
-
-            thisMonthSpendTimePlaceList = list;
-
-            prevMonthSpendTimePlaceList = list2;
-          }
-        });
-      }
-    });
+            },
+          );
+        }
+      },
+    );
   }
 
   ///
@@ -1151,94 +1190,102 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
     final Map<String, List<int>> stpListMinus = <String, List<int>>{};
     final Map<String, List<int>> stpListPlus = <String, List<int>>{};
 
-    _spendItemList?.forEach((SpendItem element) {
-      stpListMinus[element.spendItemName] = <int>[];
-      stpListPlus[element.spendItemName] = <int>[];
-    });
+    _spendItemList?.forEach(
+      (SpendItem element) {
+        stpListMinus[element.spendItemName] = <int>[];
+        stpListPlus[element.spendItemName] = <int>[];
+      },
+    );
 
-    thisMonthSpendTimePlaceList?.forEach((SpendTimePlace element) {
-      if (element.price < 0) {
-        stpListMinus[element.spendType]?.add(element.price);
-      } else {
-        stpListPlus[element.spendType]?.add(element.price);
-      }
-    });
+    thisMonthSpendTimePlaceList?.forEach(
+      (SpendTimePlace element) {
+        if (element.price < 0) {
+          stpListMinus[element.spendType]?.add(element.price);
+        } else {
+          stpListPlus[element.spendType]?.add(element.price);
+        }
+      },
+    );
 
-    _spendItemList?.forEach((SpendItem element) {
-      int minusSum = 0;
-      stpListMinus[element.spendItemName]?.forEach((int element2) => minusSum += element2);
+    _spendItemList?.forEach(
+      (SpendItem element) {
+        int minusSum = 0;
+        stpListMinus[element.spendItemName]?.forEach((int element2) => minusSum += element2);
 
-      int plusSum = 0;
-      stpListPlus[element.spendItemName]?.forEach((int element2) => plusSum += element2);
+        int plusSum = 0;
+        stpListPlus[element.spendItemName]?.forEach((int element2) => plusSum += element2);
 
-      if (minusSum == 0 && plusSum == 0) {
-      } else {
-        list.add(Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                  flex: 2,
-                  child: Row(
-                    children: <Widget>[
-                      CircleAvatar(radius: 10, backgroundColor: Color(element.color.toInt()).withOpacity(0.3)),
-                      const SizedBox(width: 10),
-                      Text(element.spendItemName),
-                    ],
-                  )),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: FittedBox(
-                    child: Text(
-                      plusSum.toString().toCurrency(),
-                      style: const TextStyle(color: Colors.yellowAccent, fontSize: 10),
+        if (minusSum == 0 && plusSum == 0) {
+        } else {
+          list.add(
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      flex: 2,
+                      child: Row(
+                        children: <Widget>[
+                          CircleAvatar(radius: 10, backgroundColor: Color(element.color.toInt()).withOpacity(0.3)),
+                          const SizedBox(width: 10),
+                          Text(element.spendItemName),
+                        ],
+                      )),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: FittedBox(
+                        child: Text(
+                          plusSum.toString().toCurrency(),
+                          style: const TextStyle(color: Colors.yellowAccent, fontSize: 10),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: FittedBox(
-                    child: Text(
-                      (minusSum * -1).toString().toCurrency(),
-                      style: const TextStyle(color: Colors.greenAccent, fontSize: 10),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: FittedBox(
+                        child: Text(
+                          (minusSum * -1).toString().toCurrency(),
+                          style: const TextStyle(color: Colors.greenAccent, fontSize: 10),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: FittedBox(
-                    child: Text(
-                      ((plusSum + minusSum) * -1).toString().toCurrency(),
-                      style: const TextStyle(color: Colors.orangeAccent, fontSize: 10),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: FittedBox(
+                        child: Text(
+                          ((plusSum + minusSum) * -1).toString().toCurrency(),
+                          style: const TextStyle(color: Colors.orangeAccent, fontSize: 10),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              GestureDetector(
-                onTap: () => MoneyDialog(
-                  context: context,
-                  widget: SpendItemHistoryAlert(
-                    date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
-                    isar: widget.isar,
-                    item: element.spendItemName,
-                    sum: plusSum + minusSum,
-                    from: 'home_screen',
+                  const SizedBox(width: 20),
+                  GestureDetector(
+                    onTap: () => MoneyDialog(
+                      context: context,
+                      widget: SpendItemHistoryAlert(
+                        date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                        isar: widget.isar,
+                        item: element.spendItemName,
+                        sum: plusSum + minusSum,
+                        from: 'home_screen',
+                      ),
+                    ),
+                    child: Icon(Icons.info_outline_rounded, color: Colors.blueAccent.withOpacity(0.6)),
                   ),
-                ),
-                child: Icon(Icons.info_outline_rounded, color: Colors.blueAccent.withOpacity(0.6)),
+                ],
               ),
-            ],
-          ),
-        ));
-      }
-    });
+            ),
+          );
+        }
+      },
+    );
 
     return CustomScrollView(
       slivers: <Widget>[
@@ -1257,39 +1304,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   Future<void> _makeBankNameList() async {
     depoNameList = <Deposit>[];
 
-    await BankNamesRepository().getBankNameList(isar: widget.isar).then((List<BankName>? value) {
-      if (mounted) {
-        setState(() {
-          bankNameList = value;
+    await BankNamesRepository().getBankNameList(isar: widget.isar).then(
+      (List<BankName>? value) {
+        if (mounted) {
+          setState(
+            () {
+              bankNameList = value;
 
-          if (value!.isNotEmpty) {
-            for (final BankName element in value) {
-              depoNameList
-                  .add(Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'));
-            }
-          }
-        });
-      }
-    });
+              if (value!.isNotEmpty) {
+                for (final BankName element in value) {
+                  depoNameList.add(
+                      Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'));
+                }
+              }
+            },
+          );
+        }
+      },
+    );
 
     await _makeEmoneyNameList();
   }
 
   ///
   Future<void> _makeEmoneyNameList() async {
-    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((List<EmoneyName>? value) {
-      if (mounted) {
-        setState(() {
-          emoneyNameList = value;
+    await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then(
+      (List<EmoneyName>? value) {
+        if (mounted) {
+          setState(
+            () {
+              emoneyNameList = value;
 
-          if (value!.isNotEmpty) {
-            for (final EmoneyName element in value) {
-              depoNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName));
-            }
-          }
-        });
-      }
-    });
+              if (value!.isNotEmpty) {
+                for (final EmoneyName element in value) {
+                  depoNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName));
+                }
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   ///
@@ -1313,18 +1368,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   }
 
   ///
-  Future<void> _makeSpendItemList() async =>
-      SpendItemsRepository().getSpendItemList(isar: widget.isar).then((List<SpendItem>? value) {
-        if (mounted) {
-          setState(() => _spendItemList = value);
-        }
-      });
+  Future<void> _makeSpendItemList() async => SpendItemsRepository().getSpendItemList(isar: widget.isar).then(
+        (List<SpendItem>? value) {
+          if (mounted) {
+            setState(() => _spendItemList = value);
+          }
+        },
+      );
 
   ///
-  Future<void> _makeIncomeList() async =>
-      IncomesRepository().getIncomeList(isar: widget.isar).then((List<Income>? value) {
-        if (mounted) {
-          setState(() => _incomeList = value);
-        }
-      });
+  Future<void> _makeIncomeList() async => IncomesRepository().getIncomeList(isar: widget.isar).then(
+        (List<Income>? value) {
+          if (mounted) {
+            setState(() => _incomeList = value);
+          }
+        },
+      );
 }
