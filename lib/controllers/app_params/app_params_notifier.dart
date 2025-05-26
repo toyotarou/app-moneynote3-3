@@ -4,14 +4,18 @@ import 'app_params_response_state.dart';
 
 final AutoDisposeStateNotifierProvider<AppParamNotifier, AppParamsResponseState> appParamProvider =
     StateNotifierProvider.autoDispose<AppParamNotifier, AppParamsResponseState>(
-        (AutoDisposeStateNotifierProviderRef<AppParamNotifier, AppParamsResponseState> ref) {
-  return AppParamNotifier(
-    AppParamsResponseState(
-      sameDaySelectedDay: DateTime.now().day,
-      sameYearDayCalendarSelectDate: '${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day}',
-    ),
-  );
-});
+  (AutoDisposeStateNotifierProviderRef<AppParamNotifier, AppParamsResponseState> ref) {
+    return AppParamNotifier(
+      AppParamsResponseState(
+        sameDaySelectedDay: DateTime.now().day,
+        sameYearDayCalendarSelectDate: '${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day}',
+        configUseEasyLoginFlag: false,
+        configUseBankManageFlag: false,
+        configUseEmoneyManageFlag: false,
+      ),
+    );
+  },
+);
 
 class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
   AppParamNotifier(super.state);
