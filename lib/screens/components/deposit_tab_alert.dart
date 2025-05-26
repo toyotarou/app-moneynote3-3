@@ -17,10 +17,11 @@ class TabInfo {
 
 // ignore: must_be_immutable
 class DepositTabAlert extends HookConsumerWidget {
-  DepositTabAlert({super.key, this.index, required this.isar});
+  DepositTabAlert({super.key, this.index, required this.isar, required this.buttonLabelTextList});
 
   int? index;
   final Isar isar;
+  final List<String> buttonLabelTextList;
 
   ///
   @override
@@ -31,8 +32,7 @@ class DepositTabAlert extends HookConsumerWidget {
     ];
 
     // 最初に開くタブを指定する
-    final TabController tabController =
-        useTabController(initialLength: tabs.length);
+    final TabController tabController = useTabController(initialLength: tabs.length);
     if (index != null) {
       tabController.index = index!;
     }
@@ -47,8 +47,7 @@ class DepositTabAlert extends HookConsumerWidget {
           child: AppBar(
             backgroundColor: Colors.transparent,
             //-------------------------//これを消すと「←」が出てくる（消さない）
-            leading: const Icon(Icons.check_box_outline_blank,
-                color: Colors.transparent),
+            leading: const Icon(Icons.check_box_outline_blank, color: Colors.transparent),
             //-------------------------//これを消すと「←」が出てくる（消さない）
 
             bottom: TabBar(

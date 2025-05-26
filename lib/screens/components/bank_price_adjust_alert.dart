@@ -26,13 +26,16 @@ class Deposit {
 }
 
 class BankPriceAdjustAlert extends ConsumerStatefulWidget {
-  const BankPriceAdjustAlert({super.key, required this.isar, this.bankNameList, this.emoneyNameList});
+  const BankPriceAdjustAlert(
+      {super.key, required this.isar, this.bankNameList, this.emoneyNameList, required this.buttonLabelTextList});
 
   final Isar isar;
 
   final List<BankName>? bankNameList;
 
   final List<EmoneyName>? emoneyNameList;
+
+  final List<String> buttonLabelTextList;
 
   @override
   ConsumerState<BankPriceAdjustAlert> createState() => _BankPriceAdjustAlertState();

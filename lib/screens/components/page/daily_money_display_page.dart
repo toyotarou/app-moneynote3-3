@@ -42,6 +42,7 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
     required this.emoneyNameList,
     required this.spendItemList,
     required this.configMap,
+    required this.buttonLabelTextList,
   });
 
   final DateTime date;
@@ -64,6 +65,8 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
   final List<SpendItem> spendItemList;
 
   final Map<String, String> configMap;
+
+  final List<String> buttonLabelTextList;
 
   @override
   ConsumerState<DailyMoneyDisplayPage> createState() => _DailyMoneyDisplayAlertState();
@@ -336,7 +339,11 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
       list.add(Column(
         children: <Widget>[
           const SizedBox(height: 10),
-          BankEmoneyBlankMessage(deposit: '金融機関', isar: widget.isar),
+          BankEmoneyBlankMessage(
+            deposit: '金融機関',
+            isar: widget.isar,
+            buttonLabelTextList: widget.buttonLabelTextList,
+          ),
           const SizedBox(height: 30),
         ],
       ));
@@ -449,7 +456,12 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
       list.add(Column(
         children: <Widget>[
           const SizedBox(height: 10),
-          BankEmoneyBlankMessage(deposit: '電子マネー', index: 1, isar: widget.isar),
+          BankEmoneyBlankMessage(
+            deposit: '電子マネー',
+            index: 1,
+            isar: widget.isar,
+            buttonLabelTextList: widget.buttonLabelTextList,
+          ),
           const SizedBox(height: 30),
         ],
       ));

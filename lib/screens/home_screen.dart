@@ -114,6 +114,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   List<Income>? _incomeList = <Income>[];
 
+  List<String> buttonLabelTextList = <String>[];
+
   ///
   void _init() {
     _makeMoneyList();
@@ -488,6 +490,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   Widget _dispDrawer() {
     const bool isRelease = bool.fromEnvironment('dart.vm.product');
 
+    if (widget.configMap['useBankManage'] == 'true') {
+      buttonLabelTextList.add('金融機関');
+    }
+
+    if (widget.configMap['useEmoneyManage'] == 'true') {
+      buttonLabelTextList.add('電子マネー');
+    }
+
     return Drawer(
       backgroundColor: Colors.blueGrey.withOpacity(0.2),
       child: SingleChildScrollView(
@@ -531,49 +541,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              GestureDetector(
-                onTap: () => MoneyDialog(context: context, widget: DepositTabAlert(isar: widget.isar)),
-                child: Row(
-                  children: <Widget>[
-                    const MenuHeadIcon(),
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-                        margin: const EdgeInsets.all(5),
-                        child: const Text('金融機関、電子マネー名称登録'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  appParamNotifier.setInputButtonClicked(flag: false);
-
-                  MoneyDialog(
+              if (buttonLabelTextList.isNotEmpty) ...<Widget>[
+                GestureDetector(
+                  onTap: () => MoneyDialog(
                     context: context,
-                    widget: BankPriceAdjustAlert(
-                      isar: widget.isar,
-                      bankNameList: bankNameList,
-                      emoneyNameList: emoneyNameList,
-                    ),
-                  );
-                },
-                child: Row(
-                  children: <Widget>[
-                    const MenuHeadIcon(),
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-                        margin: const EdgeInsets.all(5),
-                        child: const Text('金融機関、電子マネー金額修正'),
+                    widget: DepositTabAlert(isar: widget.isar, buttonLabelTextList: buttonLabelTextList),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      const MenuHeadIcon(),
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                          margin: const EdgeInsets.all(5),
+                          child: const Text('金融機関、電子マネー名称登録'),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+                GestureDetector(
+                  onTap: () {
+                    appParamNotifier.setInputButtonClicked(flag: false);
+
+                    MoneyDialog(
+                      context: context,
+                      widget: BankPriceAdjustAlert(
+                        isar: widget.isar,
+                        bankNameList: bankNameList,
+                        emoneyNameList: emoneyNameList,
+                        buttonLabelTextList: buttonLabelTextList,
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      const MenuHeadIcon(),
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                          margin: const EdgeInsets.all(5),
+                          child: const Text('金融機関、電子マネー金額修正'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               GestureDetector(
                 onTap: () async {
                   moneyRepairControllerNotifier.clearMoneyModelListData();
@@ -961,6 +977,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                         thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
                         prevMonthSpendTimePlaceList: prevMonthSpendTimePlaceList ?? <SpendTimePlace>[],
                         configMap: widget.configMap,
+                        buttonLabelTextList: buttonLabelTextList,
                       ),
                     ),
             child: Container(

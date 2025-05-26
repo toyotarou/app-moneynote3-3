@@ -32,6 +32,7 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
     required this.thisMonthSpendTimePlaceList,
     required this.prevMonthSpendTimePlaceList,
     required this.configMap,
+    required this.buttonLabelTextList,
   });
 
   final DateTime date;
@@ -51,6 +52,8 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
   final List<SpendItem> spendItemList;
 
   final Map<String, String> configMap;
+
+  final List<String> buttonLabelTextList;
 
   @override
   ConsumerState<DailyMoneyDisplayAlert> createState() => _DailyMoneyDisplayAlertState();
@@ -145,6 +148,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
           emoneyNameList: widget.emoneyNameList,
           spendItemList: widget.spendItemList,
           configMap: widget.configMap,
+          buttonLabelTextList: widget.buttonLabelTextList,
         ),
       ),
     ];
@@ -180,6 +184,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert>
               emoneyNameList: widget.emoneyNameList,
               spendItemList: widget.spendItemList,
               configMap: widget.configMap,
+              buttonLabelTextList: widget.buttonLabelTextList,
             ),
           ),
         );
