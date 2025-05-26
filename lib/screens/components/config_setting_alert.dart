@@ -9,42 +9,51 @@ import '../../repository/configs_repository.dart';
 import '../home_screen.dart';
 
 class ConfigSettingAlert extends ConsumerStatefulWidget {
-  const ConfigSettingAlert({super.key, required this.isar, required this.configMap, this.baseYm});
+  const ConfigSettingAlert({super.key, required this.isar, this.baseYm});
 
   final Isar isar;
   final String? baseYm;
-  final Map<String, String> configMap;
 
   @override
   ConsumerState<ConfigSettingAlert> createState() => _ConfigSettingAlertState();
 }
 
 class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with ControllersMixin<ConfigSettingAlert> {
+  Map<String, String> configMap = <String, String>{};
+
   ///
   @override
   void initState() {
     super.initState();
 
-    // ignore: always_specify_types
-    Future(() {
-      widget.configMap.forEach(
-        (String key, String value) {
-          if (key == 'useEasyLogin') {
-            // ignore: avoid_bool_literals_in_conditional_expressions
-            appParamNotifier.setConfigUseEasyLoginFlag(flag: value == 'true' ? true : false);
-          }
+    makeConfigMap();
+  }
 
-          if (key == 'useBankManage') {
-            // ignore: avoid_bool_literals_in_conditional_expressions
-            appParamNotifier.setConfigUseBankManageFlag(flag: value == 'true' ? true : false);
-          }
+  ///
+  Future<void> makeConfigMap() async {
+    await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
+      setState(() {
+        if (value!.isNotEmpty) {
+          for (final Config element in value) {
+            configMap[element.configKey] = element.configValue;
 
-          if (key == 'useEmoneyManage') {
-            // ignore: avoid_bool_literals_in_conditional_expressions
-            appParamNotifier.setConfigUseEmoneyManageFlag(flag: value == 'true' ? true : false);
+            if (element.configKey == 'useEasyLogin') {
+              // ignore: avoid_bool_literals_in_conditional_expressions
+              appParamNotifier.setConfigUseEasyLoginFlag(flag: element.configValue == 'true' ? true : false);
+            }
+
+            if (element.configKey == 'useBankManage') {
+              // ignore: avoid_bool_literals_in_conditional_expressions
+              appParamNotifier.setConfigUseBankManageFlag(flag: element.configValue == 'true' ? true : false);
+            }
+
+            if (element.configKey == 'useEmoneyManage') {
+              // ignore: avoid_bool_literals_in_conditional_expressions
+              appParamNotifier.setConfigUseEmoneyManageFlag(flag: element.configValue == 'true' ? true : false);
+            }
           }
-        },
-      );
+        }
+      });
     });
   }
 
@@ -66,8 +75,8 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
                   const Text('設定'),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                    onPressed: () => (widget.configMap.isNotEmpty) ? updateConfig() : inputConfig(),
-                    child: Text((widget.configMap.isNotEmpty) ? '更新' : '登録'),
+                    onPressed: () => (configMap.isNotEmpty) ? updateConfig() : inputConfig(),
+                    child: Text((configMap.isNotEmpty) ? '更新' : '登録'),
                   ),
                 ],
               ),
@@ -151,8 +160,7 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
         context,
         // ignore: inference_failure_on_instance_creation, always_specify_types
         MaterialPageRoute(
-          builder: (BuildContext context) =>
-              HomeScreen(isar: widget.isar, baseYm: widget.baseYm, configMap: widget.configMap),
+          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm, configMap: configMap),
         ),
       );
     }
@@ -168,12 +176,12 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
 
     await widget.isar.writeTxn(
       () async {
-        for (final entry in map.entries) {
-          final cfg = await ConfigsRepository().getConfigByKeyString(isar: widget.isar, key: entry.key);
+        for (final MapEntry<String, String> entry in map.entries) {
+          final Config? config = await ConfigsRepository().getConfigByKeyString(isar: widget.isar, key: entry.key);
 
-          if (cfg != null) {
-            cfg.configValue = entry.value;
-            await ConfigsRepository().updateConfig(isar: widget.isar, config: cfg);
+          if (config != null) {
+            config.configValue = entry.value;
+            await ConfigsRepository().updateConfig(isar: widget.isar, config: config);
           }
         }
       },
@@ -184,8 +192,7 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
         context,
         // ignore: inference_failure_on_instance_creation, always_specify_types
         MaterialPageRoute(
-          builder: (BuildContext context) =>
-              HomeScreen(isar: widget.isar, baseYm: widget.baseYm, configMap: widget.configMap),
+          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm, configMap: configMap),
         ),
       );
     }

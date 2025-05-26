@@ -510,10 +510,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
               ],
               GestureDetector(
-                onTap: () => MoneyDialog(
-                  context: context,
-                  widget: ConfigSettingAlert(isar: widget.isar, configMap: widget.configMap, baseYm: widget.baseYm),
-                ),
+                onTap: () {
+                  MoneyDialog(
+                    context: context,
+                    widget: ConfigSettingAlert(isar: widget.isar, baseYm: widget.baseYm),
+                  );
+                },
                 child: Row(
                   children: <Widget>[
                     const MenuHeadIcon(),
