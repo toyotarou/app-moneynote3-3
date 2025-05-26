@@ -52,10 +52,11 @@ import 'login_screen.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends ConsumerStatefulWidget {
-  HomeScreen({super.key, this.baseYm, required this.isar});
+  HomeScreen({super.key, this.baseYm, required this.isar, required this.configMap});
 
   String? baseYm;
   final Isar isar;
+  final Map<String, String> configMap;
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -429,7 +430,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                             Container(
                               padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
                               decoration: BoxDecoration(
-                                  color: Colors.yellowAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
+                                color: Colors.yellowAccent.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                               child: Text(kurikoshi.toString().toCurrency()),
                             ),
                             const SizedBox(height: 5),
@@ -443,9 +446,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 Row(
                   children: <Widget>[
                     IconButton(
-                      onPressed: () {
-                        appParamNotifier.setCalendarDisp(flag: !appParamState.calendarDisp);
-                      },
+                      onPressed: () => appParamNotifier.setCalendarDisp(flag: !appParamState.calendarDisp),
                       icon: Icon(
                         Icons.calendar_month,
                         color:
@@ -509,7 +510,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
               ],
               GestureDetector(
-                onTap: () => MoneyDialog(context: context, widget: ConfigSettingAlert(isar: widget.isar)),
+                onTap: () => MoneyDialog(
+                  context: context,
+                  widget: ConfigSettingAlert(isar: widget.isar, configMap: widget.configMap),
+                ),
                 child: Row(
                   children: <Widget>[
                     const MenuHeadIcon(),
@@ -548,7 +552,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   MoneyDialog(
                     context: context,
                     widget: BankPriceAdjustAlert(
-                        isar: widget.isar, bankNameList: bankNameList, emoneyNameList: emoneyNameList),
+                      isar: widget.isar,
+                      bankNameList: bankNameList,
+                      emoneyNameList: emoneyNameList,
+                    ),
                   );
                 },
                 child: Row(
@@ -788,10 +795,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(
-                      context,
+                    context,
 
-                      // ignore: inference_failure_on_instance_creation, always_specify_types
-                      MaterialPageRoute(builder: (BuildContext context) => LoginScreen(isar: widget.isar)));
+                    // ignore: inference_failure_on_instance_creation, always_specify_types
+                    MaterialPageRoute(builder: (BuildContext context) => LoginScreen(isar: widget.isar)),
+                  );
                 },
                 child: Row(
                   children: <Widget>[
@@ -950,6 +958,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                         spendItemList: _spendItemList ?? <SpendItem>[],
                         thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
                         prevMonthSpendTimePlaceList: prevMonthSpendTimePlaceList ?? <SpendTimePlace>[],
+
+
+
+                        configMap:widget.configMap,
+
+
+
+
                       ),
                     ),
             child: Container(
@@ -1058,7 +1074,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               if (value!.isNotEmpty) {
                 value
                   ..forEach(
-                      (Money element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element))
+                    (Money element) => dateCurrencySumMap[element.date] = _utility.makeCurrencySum(money: element),
+                  )
                   ..forEach((Money element) => moneyMap[element.date] = element)
                   ..forEach(
                     (Money element) {
@@ -1314,7 +1331,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               if (value!.isNotEmpty) {
                 for (final BankName element in value) {
                   depoNameList.add(
-                      Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'));
+                    Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
+                  );
                 }
               }
             },
@@ -1353,7 +1371,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarsState.prevYearMonth)),
+        builder: (BuildContext context) => HomeScreen(
+          isar: widget.isar,
+          baseYm: calendarsState.prevYearMonth,
+          configMap: widget.configMap,
+        ),
+      ),
     );
   }
 
@@ -1363,7 +1386,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarsState.nextYearMonth)),
+        builder: (BuildContext context) => HomeScreen(
+          isar: widget.isar,
+          baseYm: calendarsState.nextYearMonth,
+          configMap: widget.configMap,
+        ),
+      ),
     );
   }
 

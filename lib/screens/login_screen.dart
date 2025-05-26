@@ -272,7 +272,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
         Navigator.pushReplacement(
             context,
             // ignore: inference_failure_on_instance_creation, always_specify_types
-            MaterialPageRoute(builder: (BuildContext context) => HomeScreen(isar: widget.isar)));
+            MaterialPageRoute(builder: (BuildContext context) => HomeScreen(isar: widget.isar, configMap: configMap)));
       } else {
         errFlg = true;
       }

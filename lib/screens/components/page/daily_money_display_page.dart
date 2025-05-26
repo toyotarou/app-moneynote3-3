@@ -41,6 +41,7 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
     required this.bankNameList,
     required this.emoneyNameList,
     required this.spendItemList,
+    required this.configMap,
   });
 
   final DateTime date;
@@ -61,6 +62,8 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
   final List<EmoneyName> emoneyNameList;
 
   final List<SpendItem> spendItemList;
+
+  final Map<String, String> configMap;
 
   @override
   ConsumerState<DailyMoneyDisplayPage> createState() => _DailyMoneyDisplayAlertState();
@@ -267,6 +270,7 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
                     isar: widget.isar,
                     onedayMoneyList: widget.moneyList,
                     beforedayMoneyList: widget.beforeMoneyList,
+                    configMap: widget.configMap,
                   ),
                 ),
                 child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),

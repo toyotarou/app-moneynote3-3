@@ -14,13 +14,21 @@ import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class MoneyInputAlert extends ConsumerStatefulWidget {
-  MoneyInputAlert({super.key, required this.date, required this.isar, this.onedayMoneyList, this.beforedayMoneyList});
+  MoneyInputAlert(
+      {super.key,
+      required this.date,
+      required this.isar,
+      this.onedayMoneyList,
+      this.beforedayMoneyList,
+      required this.configMap});
 
   final DateTime date;
   final Isar isar;
 
   List<Money>? onedayMoneyList;
   List<Money>? beforedayMoneyList;
+
+  final Map<String, String> configMap;
 
   @override
   ConsumerState<MoneyInputAlert> createState() => _MoneyInputAlertState();
@@ -279,7 +287,11 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
           context,
           // ignore: inference_failure_on_instance_creation, always_specify_types
           MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.date.yyyymm),
+            builder: (BuildContext context) => HomeScreen(
+              isar: widget.isar,
+              baseYm: widget.date.yyyymm,
+              configMap: widget.configMap,
+            ),
           ),
         );
       }

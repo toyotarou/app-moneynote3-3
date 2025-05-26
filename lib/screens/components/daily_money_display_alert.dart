@@ -31,6 +31,7 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
     required this.spendItemList,
     required this.thisMonthSpendTimePlaceList,
     required this.prevMonthSpendTimePlaceList,
+    required this.configMap,
   });
 
   final DateTime date;
@@ -49,19 +50,18 @@ class DailyMoneyDisplayAlert extends ConsumerStatefulWidget {
 
   final List<SpendItem> spendItemList;
 
+  final Map<String, String> configMap;
+
   @override
-  ConsumerState<DailyMoneyDisplayAlert> createState() =>
-      _DailyMoneyDisplayAlertState();
+  ConsumerState<DailyMoneyDisplayAlert> createState() => _DailyMoneyDisplayAlertState();
 }
 
-class _DailyMoneyDisplayAlertState
-    extends ConsumerState<DailyMoneyDisplayAlert> {
+class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayAlert> {
   final Utility _utility = Utility();
 
   List<TabInfo> _tabs = <TabInfo>[];
 
-  Map<String, List<SpendTimePlace>> monthlySpendTimePlaceMap =
-      <String, List<SpendTimePlace>>{};
+  Map<String, List<SpendTimePlace>> monthlySpendTimePlaceMap = <String, List<SpendTimePlace>>{};
 
   ///
   @override
@@ -99,8 +99,7 @@ class _DailyMoneyDisplayAlertState
           child: AppBar(
             backgroundColor: Colors.transparent,
             //-------------------------//これを消すと「←」が出てくる（消さない）
-            leading: const Icon(Icons.check_box_outline_blank,
-                color: Colors.transparent),
+            leading: const Icon(Icons.check_box_outline_blank, color: Colors.transparent),
             //-------------------------//これを消すと「←」が出てくる（消さない）
 
             bottom: TabBar(
@@ -110,16 +109,14 @@ class _DailyMoneyDisplayAlertState
             ),
           ),
         ),
-        body: TabBarView(
-            children: _tabs.map((TabInfo tab) => tab.widget).toList()),
+        body: TabBarView(children: _tabs.map((TabInfo tab) => tab.widget).toList()),
       ),
     );
   }
 
   ///
   void _makeTab() {
-    final DateTime beforeDate =
-        DateTime(widget.date.year, widget.date.month, widget.date.day - 1);
+    final DateTime beforeDate = DateTime(widget.date.year, widget.date.month, widget.date.day - 1);
 
     _tabs = <TabInfo>[
       TabInfo(
@@ -131,25 +128,23 @@ class _DailyMoneyDisplayAlertState
               ? <Money>[widget.moneyMap[widget.date.yyyymmdd]!]
               : <Money>[],
           onedayMoneyTotal: (widget.moneyMap[widget.date.yyyymmdd] != null)
-              ? _utility.makeCurrencySum(
-                  money: widget.moneyMap[widget.date.yyyymmdd])
+              ? _utility.makeCurrencySum(money: widget.moneyMap[widget.date.yyyymmdd])
               : 0,
           beforeMoneyList: (widget.moneyMap[beforeDate.yyyymmdd] != null)
               ? <Money>[widget.moneyMap[beforeDate.yyyymmdd]!]
               : <Money>[],
           beforeMoneyTotal: (widget.moneyMap[beforeDate.yyyymmdd] != null)
-              ? _utility.makeCurrencySum(
-                  money: widget.moneyMap[beforeDate.yyyymmdd])
+              ? _utility.makeCurrencySum(money: widget.moneyMap[beforeDate.yyyymmdd])
               : 0,
           bankPricePadMap: widget.bankPricePadMap,
           bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
-          spendTimePlaceList:
-              (monthlySpendTimePlaceMap[widget.date.yyyymmdd] != null)
-                  ? monthlySpendTimePlaceMap[widget.date.yyyymmdd]!
-                  : <SpendTimePlace>[],
+          spendTimePlaceList: (monthlySpendTimePlaceMap[widget.date.yyyymmdd] != null)
+              ? monthlySpendTimePlaceMap[widget.date.yyyymmdd]!
+              : <SpendTimePlace>[],
           bankNameList: widget.bankNameList,
           emoneyNameList: widget.emoneyNameList,
           spendItemList: widget.spendItemList,
+          configMap: widget.configMap,
         ),
       ),
     ];
@@ -169,24 +164,22 @@ class _DailyMoneyDisplayAlertState
               date: day,
               isar: widget.isar,
               moneyList: <Money>[widget.moneyMap[day.yyyymmdd]!],
-              onedayMoneyTotal: _utility.makeCurrencySum(
-                  money: widget.moneyMap[day.yyyymmdd]),
+              onedayMoneyTotal: _utility.makeCurrencySum(money: widget.moneyMap[day.yyyymmdd]),
               beforeMoneyList: (widget.moneyMap[beforeDay.yyyymmdd] != null)
                   ? <Money>[widget.moneyMap[beforeDay.yyyymmdd]!]
                   : <Money>[],
               beforeMoneyTotal: (widget.moneyMap[beforeDay.yyyymmdd] != null)
-                  ? _utility.makeCurrencySum(
-                      money: widget.moneyMap[beforeDay.yyyymmdd])
+                  ? _utility.makeCurrencySum(money: widget.moneyMap[beforeDay.yyyymmdd])
                   : 0,
               bankPricePadMap: widget.bankPricePadMap,
               bankPriceTotalPadMap: widget.bankPriceTotalPadMap,
-              spendTimePlaceList:
-                  (monthlySpendTimePlaceMap[day.yyyymmdd] != null)
-                      ? monthlySpendTimePlaceMap[day.yyyymmdd]!
-                      : <SpendTimePlace>[],
+              spendTimePlaceList: (monthlySpendTimePlaceMap[day.yyyymmdd] != null)
+                  ? monthlySpendTimePlaceMap[day.yyyymmdd]!
+                  : <SpendTimePlace>[],
               bankNameList: widget.bankNameList,
               emoneyNameList: widget.emoneyNameList,
               spendItemList: widget.spendItemList,
+              configMap: widget.configMap,
             ),
           ),
         );

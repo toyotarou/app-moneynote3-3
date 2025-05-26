@@ -6,15 +6,41 @@ import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
 
 class ConfigSettingAlert extends ConsumerStatefulWidget {
-  const ConfigSettingAlert({super.key, required this.isar});
+  const ConfigSettingAlert({super.key, required this.isar, required this.configMap});
 
   final Isar isar;
+  final Map<String, String> configMap;
 
   @override
   ConsumerState<ConfigSettingAlert> createState() => _ConfigSettingAlertState();
 }
 
 class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with ControllersMixin<ConfigSettingAlert> {
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    widget.configMap.forEach(
+      (String key, String value) {
+        if (key == 'useEasyLogin') {
+          // ignore: avoid_bool_literals_in_conditional_expressions
+          appParamNotifier.setConfigUseEasyLoginFlag(flag: value == 'true' ? true : false);
+        }
+
+        if (key == 'useBankManage') {
+          // ignore: avoid_bool_literals_in_conditional_expressions
+          appParamNotifier.setConfigUseBankManageFlag(flag: value == 'true' ? true : false);
+        }
+
+        if (key == 'useEmoneyManage') {
+          // ignore: avoid_bool_literals_in_conditional_expressions
+          appParamNotifier.setConfigUseEmoneyManageFlag(flag: value == 'true' ? true : false);
+        }
+      },
+    );
+  }
+
   ///
   @override
   Widget build(BuildContext context) {
@@ -32,7 +58,9 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
                 children: <Widget>[
                   const Text('設定'),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      inputConfig();
+                    },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                     child: const Text('登録'),
                   ),
@@ -93,5 +121,20 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
         ),
       ),
     );
+  }
+
+  ///
+  Future<void> inputConfig() async {
+    print(appParamState.configUseEasyLoginFlag);
+    print(appParamState.configUseBankManageFlag);
+    print(appParamState.configUseEmoneyManageFlag);
+
+    final Map<String, String> map = <String, String>{};
+
+    map['useEasyLogin'] = appParamState.configUseEasyLoginFlag.toString();
+    map['useBankManage'] = appParamState.configUseBankManageFlag.toString();
+    map['useEmoneyManage'] = appParamState.configUseEmoneyManageFlag.toString();
+
+    map.forEach((String key, String value) {});
   }
 }
