@@ -19,6 +19,13 @@ class LoginAccountsRepository {
   }
 
   ///
+  Future<void> inputLoginAccountList({required Isar isar, required List<LoginAccount> loginAccountList}) async {
+    for (final LoginAccount element in loginAccountList) {
+      inputLoginAccount(isar: isar, loginAccount: element);
+    }
+  }
+
+  ///
   Future<void> inputLoginAccount({required Isar isar, required LoginAccount loginAccount}) async {
     final IsarCollection<LoginAccount> loginAccountsCollection = getCollection(isar: isar);
     await isar.writeTxn(() async => loginAccountsCollection.put(loginAccount));

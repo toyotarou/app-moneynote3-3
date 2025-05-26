@@ -7,16 +7,20 @@ import 'package:isar/isar.dart';
 
 import '../../../collections/bank_name.dart';
 import '../../../collections/bank_price.dart';
+import '../../../collections/config.dart';
 import '../../../collections/emoney_name.dart';
 import '../../../collections/income.dart';
+import '../../../collections/login_account.dart';
 import '../../../collections/money.dart';
 import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
 import '../../../extensions/extensions.dart';
 import '../../../repository/bank_names_repository.dart';
 import '../../../repository/bank_prices_repository.dart';
+import '../../../repository/configs_repository.dart';
 import '../../../repository/emoney_names_repository.dart';
 import '../../../repository/incomes_repository.dart';
+import '../../../repository/login_accounts_repository.dart';
 import '../../../repository/moneys_repository.dart';
 import '../../../repository/spend_items_repository.dart';
 import '../../../repository/spend_time_places_repository.dart';
@@ -159,6 +163,12 @@ class _DataImportAlertState extends State<DataImportAlert> {
   ///
   Widget displayCsvContents() {
     switch (csvName) {
+      case 'config':
+        importDataList = <Config>[];
+
+      case 'loginAccount':
+        importDataList = <LoginAccount>[];
+
       case 'bankName':
         importDataList = <BankName>[];
 
@@ -203,6 +213,16 @@ class _DataImportAlertState extends State<DataImportAlert> {
       widgetList.add(Row(children: widgetList2));
 
       switch (csvName) {
+        case 'config':
+          importDataList.add(Config()
+            ..configKey = exLine[1].trim()
+            ..configValue = exLine[2].trim());
+
+        case 'loginAccount':
+          importDataList.add(LoginAccount()
+            ..mailAddress = exLine[1].trim()
+            ..password = exLine[2].trim());
+
         case 'bankName':
           importDataList.add(BankName()
             ..bankNumber = exLine[1].trim()
@@ -299,6 +319,26 @@ class _DataImportAlertState extends State<DataImportAlert> {
     }
 
     switch (csvName) {
+      case 'config':
+        await ConfigsRepository()
+            .inputConfigList(isar: widget.isar, configList: importDataList as List<Config>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
+      case 'loginAccount':
+        await LoginAccountsRepository()
+            .inputLoginAccountList(isar: widget.isar, loginAccountList: importDataList as List<LoginAccount>)
+            // ignore: always_specify_types
+            .then((value) {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+
       case 'bankName':
         await BankNamesRepository()
             .inputBankNameList(isar: widget.isar, bankNameList: importDataList as List<BankName>)
