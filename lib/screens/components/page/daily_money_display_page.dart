@@ -111,10 +111,14 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
                 _displayTopInfoPlate(),
                 const SizedBox(height: 20),
                 _displaySingleMoney(),
-                const SizedBox(height: 20),
-                _displayBankNames(),
-                const SizedBox(height: 20),
-                _displayEmoneyNames(),
+                if (widget.buttonLabelTextList.contains('金融機関')) ...<Widget>[
+                  const SizedBox(height: 20),
+                  _displayBankNames(),
+                ],
+                if (widget.buttonLabelTextList.contains('電子マネー')) ...<Widget>[
+                  const SizedBox(height: 20),
+                  _displayEmoneyNames(),
+                ],
                 const SizedBox(height: 20),
                 if (spendDiff != 0) ...<Widget>[
                   _displaySpendTimePlaceList(),

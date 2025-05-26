@@ -26,10 +26,15 @@ class DepositTabAlert extends HookConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<TabInfo> tabs = <TabInfo>[
-      TabInfo('金融機関管理', BankNameListAlert(isar: isar)),
-      TabInfo('電子マネー管理', EmoneyNameListAlert(isar: isar)),
-    ];
+    final List<TabInfo> tabs = <TabInfo>[];
+
+    if (buttonLabelTextList.contains('金融機関')) {
+      tabs.add(TabInfo('金融機関管理', BankNameListAlert(isar: isar)));
+    }
+
+    if (buttonLabelTextList.contains('電子マネー')) {
+      tabs.add(TabInfo('電子マネー管理', EmoneyNameListAlert(isar: isar)));
+    }
 
     // 最初に開くタブを指定する
     final TabController tabController = useTabController(initialLength: tabs.length);

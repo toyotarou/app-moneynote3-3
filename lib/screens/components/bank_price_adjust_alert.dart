@@ -115,23 +115,27 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert>
 
     final List<Deposit> depositNameList = <Deposit>[Deposit('', '')];
 
-    widget.bankNameList?.forEach((BankName element) {
-      depositNameList.add(
-        Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
-      );
+    if (widget.buttonLabelTextList.contains('金融機関')) {
+      widget.bankNameList?.forEach((BankName element) {
+        depositNameList.add(
+          Deposit('${element.depositType}-${element.id}', '${element.bankName} ${element.branchName}'),
+        );
 
-      depoItemList.add(DepoItem(element.id, '${element.bankName}\n${element.branchName}', DepositType.bank));
+        depoItemList.add(DepoItem(element.id, '${element.bankName}\n${element.branchName}', DepositType.bank));
 
-      bankNameMap[element.id] = element;
-    });
+        bankNameMap[element.id] = element;
+      });
+    }
 
-    widget.emoneyNameList?.forEach((EmoneyName element) {
-      depositNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName));
+    if (widget.buttonLabelTextList.contains('電子マネー')) {
+      widget.emoneyNameList?.forEach((EmoneyName element) {
+        depositNameList.add(Deposit('${element.depositType}-${element.id}', element.emoneyName));
 
-      depoItemList.add(DepoItem(element.id, element.emoneyName, DepositType.emoney));
+        depoItemList.add(DepoItem(element.id, element.emoneyName, DepositType.emoney));
 
-      emoneyNameMap[element.id] = element;
-    });
+        emoneyNameMap[element.id] = element;
+      });
+    }
 
     //==============================================
     list.add(const SizedBox(height: 10));
