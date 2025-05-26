@@ -101,9 +101,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
                 _displayInputParts(),
                 const SizedBox(height: 20),
                 Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    alignment: Alignment.topLeft,
-                    child: displayEasyLoginButton()),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.topLeft,
+                  child: displayEasyLoginButton(),
+                ),
               ],
             ),
           ),
@@ -290,34 +291,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
 
   ///
   Widget displayEasyLoginButton() {
-    final List<Widget> list = <Widget>[];
+    if (configMap['useEasyLogin'] == 'true') {
+      final List<Widget> list = <Widget>[];
 
-    if (loginAccountList != null) {
-      for (final LoginAccount element in loginAccountList!) {
-        list.add(
-          ElevatedButton(
-            onPressed: () {
-              mailAddressEditingController.text = element.mailAddress;
-              passwordEditingController.text = element.password;
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-            child: SizedBox(
-              width: 40,
-              child: Text(
-                element.mailAddress,
-                style: const TextStyle(fontSize: 10),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+      if (loginAccountList != null) {
+        for (final LoginAccount element in loginAccountList!) {
+          list.add(
+            ElevatedButton(
+              onPressed: () {
+                mailAddressEditingController.text = element.mailAddress;
+                passwordEditingController.text = element.password;
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+              child: SizedBox(
+                width: 40,
+                child: Text(
+                  element.mailAddress,
+                  style: const TextStyle(fontSize: 10),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
-          ),
-        );
+          );
+        }
       }
+
+      return SizedBox(
+        height: 50,
+        child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: list)),
+      );
     }
 
-    return SizedBox(
-      height: 50,
-      child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: list)),
-    );
+    return const SizedBox.shrink();
   }
 }
