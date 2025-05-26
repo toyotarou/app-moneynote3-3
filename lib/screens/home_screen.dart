@@ -8,6 +8,7 @@ import 'package:isar/isar.dart';
 
 import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
+import '../collections/config.dart';
 import '../collections/emoney_name.dart';
 import '../collections/income.dart';
 import '../collections/money.dart';
@@ -17,6 +18,7 @@ import '../controllers/controllers_mixin.dart';
 import '../extensions/extensions.dart';
 import '../repository/bank_names_repository.dart';
 import '../repository/bank_prices_repository.dart';
+import '../repository/configs_repository.dart';
 import '../repository/emoney_names_repository.dart';
 import '../repository/incomes_repository.dart';
 import '../repository/moneys_repository.dart';
@@ -52,11 +54,10 @@ import 'login_screen.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends ConsumerStatefulWidget {
-  HomeScreen({super.key, this.baseYm, required this.isar, required this.configMap});
+  HomeScreen({super.key, this.baseYm, required this.isar});
 
   String? baseYm;
   final Isar isar;
-  final Map<String, String> configMap;
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -116,6 +117,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   List<String> buttonLabelTextList = <String>[];
 
+  Map<String, String> configMap = <String, String>{};
+
   ///
   void _init() {
     _makeMoneyList();
@@ -128,6 +131,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
     _makeSpendItemList();
 
     _makeIncomeList();
+
+    _makeConfigMap();
   }
 
   bool getAllTotalMoneyMap = false;
@@ -178,22 +183,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               onPressed: () {
                 final List<int> years = <int>[];
 
-                dateCurrencySumMap.forEach((String key, int value) {
-                  final List<String> exKey = key.split('-');
-                  if (!years.contains(exKey[0].toInt())) {
-                    years.add(exKey[0].toInt());
-                  }
+                dateCurrencySumMap.forEach(
+                  (String key, int value) {
+                    final List<String> exKey = key.split('-');
+                    if (!years.contains(exKey[0].toInt())) {
+                      years.add(exKey[0].toInt());
+                    }
 
-                  allTotalMoneyMap[key] = dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
-                });
+                    allTotalMoneyMap[key] = dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
+                  },
+                );
 
                 final Map<String, int> spendMapMonthly = <String, int>{};
 
                 int mSpend = 0;
-                monthlySpendMap.forEach((String key, int value) {
-                  mSpend += value;
-                  spendMapMonthly[key] = mSpend;
-                });
+                monthlySpendMap.forEach(
+                  (String key, int value) {
+                    mSpend += value;
+                    spendMapMonthly[key] = mSpend;
+                  },
+                );
 
                 MoneyDialog(
                   context: context,
@@ -492,11 +501,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
     buttonLabelTextList.clear();
 
-    if (widget.configMap['useBankManage'] == 'true') {
+    if (configMap['useBankManage'] == 'true') {
       buttonLabelTextList.add('金融機関');
     }
 
-    if (widget.configMap['useEmoneyManage'] == 'true') {
+    if (configMap['useEmoneyManage'] == 'true') {
       buttonLabelTextList.add('電子マネー');
     }
 
@@ -682,21 +691,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               if (spendTypeBlankSpendTimePlaceList.isNotEmpty) ...<Widget>[
                 GestureDetector(
                   onTap: () async {
-                    await appParamNotifier
-                        .setInputButtonClicked(flag: false)
-                        // ignore: always_specify_types
-                        .then((value) {
-                      if (mounted) {
-                        MoneyDialog(
-                          context: context,
-                          widget: SpendItemReInputAlert(
-                            isar: widget.isar,
-                            spendItemList: _spendItemList ?? <SpendItem>[],
-                            spendTypeBlankSpendTimePlaceList: spendTypeBlankSpendTimePlaceList,
-                          ),
-                        );
-                      }
-                    });
+                    await appParamNotifier.setInputButtonClicked(flag: false).then(
+                      // ignore: always_specify_types
+                      (value) {
+                        if (mounted) {
+                          MoneyDialog(
+                            context: context,
+                            widget: SpendItemReInputAlert(
+                              isar: widget.isar,
+                              spendItemList: _spendItemList ?? <SpendItem>[],
+                              spendTypeBlankSpendTimePlaceList: spendTypeBlankSpendTimePlaceList,
+                            ),
+                          );
+                        }
+                      },
+                    );
                   },
                   child: Row(
                     children: <Widget>[
@@ -978,7 +987,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                         spendItemList: _spendItemList ?? <SpendItem>[],
                         thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
                         prevMonthSpendTimePlaceList: prevMonthSpendTimePlaceList ?? <SpendTimePlace>[],
-                        configMap: widget.configMap,
                         buttonLabelTextList: buttonLabelTextList,
                       ),
                     ),
@@ -1386,11 +1394,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-        builder: (BuildContext context) => HomeScreen(
-          isar: widget.isar,
-          baseYm: calendarsState.prevYearMonth,
-          configMap: widget.configMap,
-        ),
+        builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarsState.prevYearMonth),
       ),
     );
   }
@@ -1401,11 +1405,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
       context,
       // ignore: inference_failure_on_instance_creation, always_specify_types
       MaterialPageRoute(
-        builder: (BuildContext context) => HomeScreen(
-          isar: widget.isar,
-          baseYm: calendarsState.nextYearMonth,
-          configMap: widget.configMap,
-        ),
+        builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarsState.nextYearMonth),
       ),
     );
   }
@@ -1427,4 +1427,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
           }
         },
       );
+
+  ///
+  Future<void> _makeConfigMap() async {
+    await ConfigsRepository().getConfigList(isar: widget.isar).then(
+      (List<Config>? value) {
+        if (mounted) {
+          setState(
+            () {
+              if (value!.isNotEmpty) {
+                for (final Config element in value) {
+                  configMap[element.configKey] = element.configValue;
+                }
+              }
+            },
+          );
+        }
+      },
+    );
+  }
 }

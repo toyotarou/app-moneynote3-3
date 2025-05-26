@@ -14,7 +14,7 @@ Map<String, dynamic> makeBankPriceMap(
 
   //=======================//
 
-  final Map<String, Map<String, int>> map3 = <String, Map<String, int>>{};
+  Map<String, Map<String, int>> map3 = <String, Map<String, int>>{};
 
   if (bankPriceList.isNotEmpty) {
     //--- (1)
@@ -53,24 +53,26 @@ emoney-5: [{2023-12-11: 50000}]}
 
     final int diff = now.difference(dt).inDays;
 
-    bplMap.forEach((String deposit, List<Map<String, int>> value) {
-      final Map<String, int> map4 = <String, int>{};
+    bplMap.forEach(
+      (String deposit, List<Map<String, int>> value) {
+        final Map<String, int> map4 = <String, int>{};
 
-      int price = 0;
-      for (int i = 0; i <= diff; i++) {
-        final String date = dt.add(Duration(days: i)).yyyymmdd;
+        int price = 0;
+        for (int i = 0; i <= diff; i++) {
+          final String date = dt.add(Duration(days: i)).yyyymmdd;
 
-        for (final Map<String, int> element in value) {
-          if (element[date] != null) {
-            price = element[date] ?? 0;
+          for (final Map<String, int> element in value) {
+            if (element[date] != null) {
+              price = element[date] ?? 0;
+            }
+
+            map4[date] = price;
           }
-
-          map4[date] = price;
         }
-      }
 
-      map3[deposit] = map4;
-    });
+        map3[deposit] = map4;
+      },
+    );
 
     //--- (2)
   }
@@ -91,6 +93,46 @@ emoney-5: [{2023-12-11: 50000}]}
     */
 
   //=======================//
+
+  /// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> コンフィグで「金融機関」「電子マネー」の管理機能を使うか、問うようにした
+  final Map<String, Map<String, int>> map99 = map3.map(
+    (String key, Map<String, int> value) {
+      // ignore: always_specify_types
+      return MapEntry(key, Map<String, int>.from(value));
+    },
+  );
+
+  map3.clear();
+
+  if (buttonLabelTextList.contains('金融機関') && buttonLabelTextList.contains('電子マネー')) {
+    map3 = map99.map(
+      (String key, Map<String, int> value) {
+        // ignore: always_specify_types
+        return MapEntry(key, Map<String, int>.from(value));
+      },
+    );
+  } else if (buttonLabelTextList.contains('金融機関')) {
+    map3 = <String, Map<String, int>>{
+      for (final MapEntry<String, Map<String, int>> entry in map99.entries)
+        entry.key: entry.key.contains('bank')
+            ? Map<String, int>.from(entry.value)
+            : <String, int>{for (final String date in entry.value.keys) date: 0},
+    };
+  } else if (buttonLabelTextList.contains('電子マネー')) {
+    map3 = <String, Map<String, int>>{
+      for (final MapEntry<String, Map<String, int>> entry in map99.entries)
+        entry.key: entry.key.contains('emoney')
+            ? Map<String, int>.from(entry.value)
+            : <String, int>{for (final String date in entry.value.keys) date: 0},
+    };
+  } else if (!buttonLabelTextList.contains('金融機関') && !buttonLabelTextList.contains('電子マネー')) {
+    map3 = <String, Map<String, int>>{
+      for (final MapEntry<String, Map<String, int>> entry in map99.entries)
+        entry.key: <String, int>{for (final String date in entry.value.keys) date: 0},
+    };
+  }
+
+  /// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> コンフィグで「金融機関」「電子マネー」の管理機能を使うか、問うようにした
 
   /////////////////////////////////
 
@@ -122,13 +164,15 @@ flutter: {
 2023-12-20: [10000, 20000, 30000, 40000, 50000, 10000, 20000, 30000, 40000, 50000]}
 */
 
-  aaa.forEach((String key, List<int> value) {
-    int sum = 0;
-    for (final int element in value) {
-      sum += element;
-    }
-    map4[key] = sum;
-  });
+  aaa.forEach(
+    (String key, List<int> value) {
+      int sum = 0;
+      for (final int element in value) {
+        sum += element;
+      }
+      map4[key] = sum;
+    },
+  );
 
 // print(map4);
 /*
@@ -166,13 +210,15 @@ Map<String, int> makeMonthlySpendItemSumMap(
     }
   }
 
-  map.forEach((String key, List<int> value) {
-    int sum = 0;
-    for (final int element in value) {
-      sum += element;
-    }
-    monthlySpendItemSumMap[key] = sum;
-  });
+  map.forEach(
+    (String key, List<int> value) {
+      int sum = 0;
+      for (final int element in value) {
+        sum += element;
+      }
+      monthlySpendItemSumMap[key] = sum;
+    },
+  );
 
   return monthlySpendItemSumMap;
 }
@@ -232,9 +278,11 @@ print(map2);
 
   for (int i = 1; i <= 12; i++) {
     for (final String element in list) {
-      map3[element]?.add((map2[i.toString().padLeft(2, '0')]?[element] != null)
-          ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt()
-          : 0);
+      map3[element]?.add(
+        (map2[i.toString().padLeft(2, '0')]?[element] != null)
+            ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt()
+            : 0,
+      );
     }
   }
 
@@ -253,6 +301,4 @@ print(map2);
 }
 
 ///
-bool checkInputValueLengthCheck({required String value, required int length}) {
-  return value.length <= length;
-}
+bool checkInputValueLengthCheck({required String value, required int length}) => value.length <= length;

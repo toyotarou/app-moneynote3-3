@@ -31,30 +31,34 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
 
   ///
   Future<void> makeConfigMap() async {
-    await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
-      setState(() {
-        if (value!.isNotEmpty) {
-          for (final Config element in value) {
-            configMap[element.configKey] = element.configValue;
+    await ConfigsRepository().getConfigList(isar: widget.isar).then(
+      (List<Config>? value) {
+        setState(
+          () {
+            if (value!.isNotEmpty) {
+              for (final Config element in value) {
+                configMap[element.configKey] = element.configValue;
 
-            if (element.configKey == 'useEasyLogin') {
-              // ignore: avoid_bool_literals_in_conditional_expressions
-              appParamNotifier.setConfigUseEasyLoginFlag(flag: element.configValue == 'true' ? true : false);
-            }
+                if (element.configKey == 'useEasyLogin') {
+                  // ignore: avoid_bool_literals_in_conditional_expressions
+                  appParamNotifier.setConfigUseEasyLoginFlag(flag: element.configValue == 'true' ? true : false);
+                }
 
-            if (element.configKey == 'useBankManage') {
-              // ignore: avoid_bool_literals_in_conditional_expressions
-              appParamNotifier.setConfigUseBankManageFlag(flag: element.configValue == 'true' ? true : false);
-            }
+                if (element.configKey == 'useBankManage') {
+                  // ignore: avoid_bool_literals_in_conditional_expressions
+                  appParamNotifier.setConfigUseBankManageFlag(flag: element.configValue == 'true' ? true : false);
+                }
 
-            if (element.configKey == 'useEmoneyManage') {
-              // ignore: avoid_bool_literals_in_conditional_expressions
-              appParamNotifier.setConfigUseEmoneyManageFlag(flag: element.configValue == 'true' ? true : false);
+                if (element.configKey == 'useEmoneyManage') {
+                  // ignore: avoid_bool_literals_in_conditional_expressions
+                  appParamNotifier.setConfigUseEmoneyManageFlag(flag: element.configValue == 'true' ? true : false);
+                }
+              }
             }
-          }
-        }
-      });
-    });
+          },
+        );
+      },
+    );
   }
 
   ///
@@ -160,7 +164,7 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
         context,
         // ignore: inference_failure_on_instance_creation, always_specify_types
         MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm, configMap: configMap),
+          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm),
         ),
       );
     }
@@ -191,9 +195,7 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
       Navigator.pushReplacement(
         context,
         // ignore: inference_failure_on_instance_creation, always_specify_types
-        MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm, configMap: configMap),
-        ),
+        MaterialPageRoute(builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.baseYm)),
       );
     }
   }

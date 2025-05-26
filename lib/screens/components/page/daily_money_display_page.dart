@@ -41,7 +41,6 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
     required this.bankNameList,
     required this.emoneyNameList,
     required this.spendItemList,
-    required this.configMap,
     required this.buttonLabelTextList,
   });
 
@@ -63,8 +62,6 @@ class DailyMoneyDisplayPage extends ConsumerStatefulWidget {
   final List<EmoneyName> emoneyNameList;
 
   final List<SpendItem> spendItemList;
-
-  final Map<String, String> configMap;
 
   final List<String> buttonLabelTextList;
 
@@ -277,7 +274,6 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
                     isar: widget.isar,
                     onedayMoneyList: widget.moneyList,
                     beforedayMoneyList: widget.beforeMoneyList,
-                    configMap: widget.configMap,
                   ),
                 ),
                 child: Icon(Icons.input, color: Colors.greenAccent.withOpacity(0.6)),
@@ -340,17 +336,19 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
     ];
 
     if (widget.bankNameList.isEmpty) {
-      list.add(Column(
-        children: <Widget>[
-          const SizedBox(height: 10),
-          BankEmoneyBlankMessage(
-            deposit: '金融機関',
-            isar: widget.isar,
-            buttonLabelTextList: widget.buttonLabelTextList,
-          ),
-          const SizedBox(height: 30),
-        ],
-      ));
+      list.add(
+        Column(
+          children: <Widget>[
+            const SizedBox(height: 10),
+            BankEmoneyBlankMessage(
+              deposit: '金融機関',
+              isar: widget.isar,
+              buttonLabelTextList: widget.buttonLabelTextList,
+            ),
+            const SizedBox(height: 30),
+          ],
+        ),
+      );
     } else {
       final List<Widget> list2 = <Widget>[];
 
@@ -366,16 +364,18 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
         }
       }
 
-      list2.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            const SizedBox.shrink(),
-            Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-          ],
+      list2.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              const SizedBox.shrink(),
+              Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+            ],
+          ),
         ),
-      ));
+      );
 
       for (int i = 0; i < widget.bankNameList.length; i++) {
         list2.add(
@@ -457,18 +457,20 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
     ];
 
     if (widget.emoneyNameList.isEmpty) {
-      list.add(Column(
-        children: <Widget>[
-          const SizedBox(height: 10),
-          BankEmoneyBlankMessage(
-            deposit: '電子マネー',
-            index: 1,
-            isar: widget.isar,
-            buttonLabelTextList: widget.buttonLabelTextList,
-          ),
-          const SizedBox(height: 30),
-        ],
-      ));
+      list.add(
+        Column(
+          children: <Widget>[
+            const SizedBox(height: 10),
+            BankEmoneyBlankMessage(
+              deposit: '電子マネー',
+              index: 1,
+              isar: widget.isar,
+              buttonLabelTextList: widget.buttonLabelTextList,
+            ),
+            const SizedBox(height: 30),
+          ],
+        ),
+      );
     } else {
       final List<Widget> list2 = <Widget>[];
 
@@ -485,16 +487,18 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
         }
       }
 
-      list2.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            const SizedBox.shrink(),
-            Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-          ],
+      list2.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              const SizedBox.shrink(),
+              Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
+            ],
+          ),
         ),
-      ));
+      );
 
       for (int i = 0; i < widget.emoneyNameList.length; i++) {
         list2.add(
@@ -578,13 +582,15 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
 
       int keepPrice = -1;
 
-      bankPriceMap?.forEach((String key, int value) {
-        if (keepPrice != value) {
-          listDate = key;
-        }
+      bankPriceMap?.forEach(
+        (String key, int value) {
+          if (keepPrice != value) {
+            listDate = key;
+          }
 
-        keepPrice = value;
-      });
+          keepPrice = value;
+        },
+      );
     }
 
     return listDate;
@@ -669,34 +675,40 @@ class _DailyMoneyDisplayAlertState extends ConsumerState<DailyMoneyDisplayPage>
       makeMonthlySpendItemSumMap(spendItemList: widget.spendItemList, spendTimePlaceList: widget.spendTimePlaceList)
           .forEach((String key, int value) => sum += value);
 
-      list.add(Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            const SizedBox.shrink(),
-            Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
-          ],
-        ),
-      ));
-
-      makeMonthlySpendItemSumMap(spendTimePlaceList: widget.spendTimePlaceList, spendItemList: widget.spendItemList)
-          .forEach((String key, int value) {
-        final String? lineColor =
-            (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
-
-        list.add(Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+      list.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FittedBox(child: Text(key, style: TextStyle(color: Color(lineColor!.toInt())))),
-              Text(value.toString().toCurrency(), style: TextStyle(color: Color(lineColor.toInt()))),
+              const SizedBox.shrink(),
+              Text(sum.toString().toCurrency(), style: const TextStyle(color: Colors.yellowAccent)),
             ],
           ),
-        ));
-      });
+        ),
+      );
+
+      makeMonthlySpendItemSumMap(spendTimePlaceList: widget.spendTimePlaceList, spendItemList: widget.spendItemList)
+          .forEach(
+        (String key, int value) {
+          final String? lineColor =
+              (spendItemColorMap[key] != null && spendItemColorMap[key] != '') ? spendItemColorMap[key] : '0xffffffff';
+
+          list.add(
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  FittedBox(child: Text(key, style: TextStyle(color: Color(lineColor!.toInt())))),
+                  Text(value.toString().toCurrency(), style: TextStyle(color: Color(lineColor.toInt()))),
+                ],
+              ),
+            ),
+          );
+        },
+      );
     }
 
     return Column(mainAxisSize: MainAxisSize.min, children: list);

@@ -14,21 +14,13 @@ import 'parts/error_dialog.dart';
 
 // ignore: must_be_immutable
 class MoneyInputAlert extends ConsumerStatefulWidget {
-  MoneyInputAlert(
-      {super.key,
-      required this.date,
-      required this.isar,
-      this.onedayMoneyList,
-      this.beforedayMoneyList,
-      required this.configMap});
+  MoneyInputAlert({super.key, required this.date, required this.isar, this.onedayMoneyList, this.beforedayMoneyList});
 
   final DateTime date;
   final Isar isar;
 
   List<Money>? onedayMoneyList;
   List<Money>? beforedayMoneyList;
-
-  final Map<String, String> configMap;
 
   @override
   ConsumerState<MoneyInputAlert> createState() => _MoneyInputAlertState();
@@ -263,39 +255,35 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       ..yen_5 = (_tecYen5.text.trim() == '') ? 0 : _tecYen5.text.trim().toInt()
       ..yen_1 = (_tecYen1.text.trim() == '') ? 0 : _tecYen1.text.trim().toInt();
 
-    await MoneysRepository()
-        .inputMoney(isar: widget.isar, money: money)
-        // ignore: always_specify_types
-        .then((value) {
-      _tecYen10000.clear();
-      _tecYen5000.clear();
-      _tecYen2000.clear();
-      _tecYen1000.clear();
-      _tecYen500.clear();
-      _tecYen100.clear();
-      _tecYen50.clear();
-      _tecYen10.clear();
-      _tecYen5.clear();
-      _tecYen1.clear();
+    await MoneysRepository().inputMoney(isar: widget.isar, money: money).then(
+      // ignore: always_specify_types
+      (value) {
+        _tecYen10000.clear();
+        _tecYen5000.clear();
+        _tecYen2000.clear();
+        _tecYen1000.clear();
+        _tecYen500.clear();
+        _tecYen100.clear();
+        _tecYen50.clear();
+        _tecYen10.clear();
+        _tecYen5.clear();
+        _tecYen1.clear();
 
-      if (mounted) {
-        Navigator.pop(context);
+        if (mounted) {
+          Navigator.pop(context);
 
-        Navigator.pop(context);
+          Navigator.pop(context);
 
-        Navigator.pushReplacement(
-          context,
-          // ignore: inference_failure_on_instance_creation, always_specify_types
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen(
-              isar: widget.isar,
-              baseYm: widget.date.yyyymm,
-              configMap: widget.configMap,
+          Navigator.pushReplacement(
+            context,
+            // ignore: inference_failure_on_instance_creation, always_specify_types
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: widget.date.yyyymm),
             ),
-          ),
-        );
-      }
-    });
+          );
+        }
+      },
+    );
   }
 
   ///
@@ -348,46 +336,48 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
       return;
     }
 
-    await widget.isar.writeTxn(() async {
-      await MoneysRepository()
-          .getMoney(isar: widget.isar, id: widget.onedayMoneyList![0].id)
-          .then((Money? value) async {
-        value!
-          ..date = widget.date.yyyymmdd
-          ..yen_10000 = (_tecYen10000.text.trim() == '') ? 0 : _tecYen10000.text.trim().toInt()
-          ..yen_5000 = (_tecYen5000.text.trim() == '') ? 0 : _tecYen5000.text.trim().toInt()
-          ..yen_2000 = (_tecYen2000.text.trim() == '') ? 0 : _tecYen2000.text.trim().toInt()
-          ..yen_1000 = (_tecYen1000.text.trim() == '') ? 0 : _tecYen1000.text.trim().toInt()
-          ..yen_500 = (_tecYen500.text.trim() == '') ? 0 : _tecYen500.text.trim().toInt()
-          ..yen_100 = (_tecYen100.text.trim() == '') ? 0 : _tecYen100.text.trim().toInt()
-          ..yen_50 = (_tecYen50.text.trim() == '') ? 0 : _tecYen50.text.trim().toInt()
-          ..yen_10 = (_tecYen10.text.trim() == '') ? 0 : _tecYen10.text.trim().toInt()
-          ..yen_5 = (_tecYen5.text.trim() == '') ? 0 : _tecYen5.text.trim().toInt()
-          ..yen_1 = (_tecYen1.text.trim() == '') ? 0 : _tecYen1.text.trim().toInt();
+    await widget.isar.writeTxn(
+      () async {
+        await MoneysRepository().getMoney(isar: widget.isar, id: widget.onedayMoneyList![0].id).then(
+          (Money? value) async {
+            value!
+              ..date = widget.date.yyyymmdd
+              ..yen_10000 = (_tecYen10000.text.trim() == '') ? 0 : _tecYen10000.text.trim().toInt()
+              ..yen_5000 = (_tecYen5000.text.trim() == '') ? 0 : _tecYen5000.text.trim().toInt()
+              ..yen_2000 = (_tecYen2000.text.trim() == '') ? 0 : _tecYen2000.text.trim().toInt()
+              ..yen_1000 = (_tecYen1000.text.trim() == '') ? 0 : _tecYen1000.text.trim().toInt()
+              ..yen_500 = (_tecYen500.text.trim() == '') ? 0 : _tecYen500.text.trim().toInt()
+              ..yen_100 = (_tecYen100.text.trim() == '') ? 0 : _tecYen100.text.trim().toInt()
+              ..yen_50 = (_tecYen50.text.trim() == '') ? 0 : _tecYen50.text.trim().toInt()
+              ..yen_10 = (_tecYen10.text.trim() == '') ? 0 : _tecYen10.text.trim().toInt()
+              ..yen_5 = (_tecYen5.text.trim() == '') ? 0 : _tecYen5.text.trim().toInt()
+              ..yen_1 = (_tecYen1.text.trim() == '') ? 0 : _tecYen1.text.trim().toInt();
 
-        await MoneysRepository()
-            .updateMoney(isar: widget.isar, money: value)
-            // ignore: always_specify_types
-            .then((value) {
-          _tecYen10000.clear();
-          _tecYen5000.clear();
-          _tecYen2000.clear();
-          _tecYen1000.clear();
-          _tecYen500.clear();
-          _tecYen100.clear();
-          _tecYen50.clear();
-          _tecYen10.clear();
-          _tecYen5.clear();
-          _tecYen1.clear();
+            await MoneysRepository().updateMoney(isar: widget.isar, money: value).then(
+              // ignore: always_specify_types
+              (value) {
+                _tecYen10000.clear();
+                _tecYen5000.clear();
+                _tecYen2000.clear();
+                _tecYen1000.clear();
+                _tecYen500.clear();
+                _tecYen100.clear();
+                _tecYen50.clear();
+                _tecYen10.clear();
+                _tecYen5.clear();
+                _tecYen1.clear();
 
-          if (mounted) {
-            Navigator.pop(context);
+                if (mounted) {
+                  Navigator.pop(context);
 
-            Navigator.pop(context);
-          }
-        });
-      });
-    });
+                  Navigator.pop(context);
+                }
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   ///
