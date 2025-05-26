@@ -512,7 +512,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               GestureDetector(
                 onTap: () => MoneyDialog(
                   context: context,
-                  widget: ConfigSettingAlert(isar: widget.isar, configMap: widget.configMap),
+                  widget: ConfigSettingAlert(isar: widget.isar, configMap: widget.configMap, baseYm: widget.baseYm),
                 ),
                 child: Row(
                   children: <Widget>[
@@ -958,14 +958,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                         spendItemList: _spendItemList ?? <SpendItem>[],
                         thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
                         prevMonthSpendTimePlaceList: prevMonthSpendTimePlaceList ?? <SpendTimePlace>[],
-
-
-
-                        configMap:widget.configMap,
-
-
-
-
+                        configMap: widget.configMap,
                       ),
                     ),
             child: Container(

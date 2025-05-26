@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
+import '../../collections/config.dart';
 import '../../controllers/controllers_mixin.dart';
 import '../../extensions/extensions.dart';
+import '../../repository/configs_repository.dart';
+import '../home_screen.dart';
 
 class ConfigSettingAlert extends ConsumerStatefulWidget {
-  const ConfigSettingAlert({super.key, required this.isar, required this.configMap});
+  const ConfigSettingAlert({super.key, required this.isar, required this.configMap, this.baseYm});
 
   final Isar isar;
+  final String? baseYm;
   final Map<String, String> configMap;
 
   @override
@@ -21,24 +25,27 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
   void initState() {
     super.initState();
 
-    widget.configMap.forEach(
-      (String key, String value) {
-        if (key == 'useEasyLogin') {
-          // ignore: avoid_bool_literals_in_conditional_expressions
-          appParamNotifier.setConfigUseEasyLoginFlag(flag: value == 'true' ? true : false);
-        }
+    // ignore: always_specify_types
+    Future(() {
+      widget.configMap.forEach(
+        (String key, String value) {
+          if (key == 'useEasyLogin') {
+            // ignore: avoid_bool_literals_in_conditional_expressions
+            appParamNotifier.setConfigUseEasyLoginFlag(flag: value == 'true' ? true : false);
+          }
 
-        if (key == 'useBankManage') {
-          // ignore: avoid_bool_literals_in_conditional_expressions
-          appParamNotifier.setConfigUseBankManageFlag(flag: value == 'true' ? true : false);
-        }
+          if (key == 'useBankManage') {
+            // ignore: avoid_bool_literals_in_conditional_expressions
+            appParamNotifier.setConfigUseBankManageFlag(flag: value == 'true' ? true : false);
+          }
 
-        if (key == 'useEmoneyManage') {
-          // ignore: avoid_bool_literals_in_conditional_expressions
-          appParamNotifier.setConfigUseEmoneyManageFlag(flag: value == 'true' ? true : false);
-        }
-      },
-    );
+          if (key == 'useEmoneyManage') {
+            // ignore: avoid_bool_literals_in_conditional_expressions
+            appParamNotifier.setConfigUseEmoneyManageFlag(flag: value == 'true' ? true : false);
+          }
+        },
+      );
+    });
   }
 
   ///
@@ -58,11 +65,9 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
                 children: <Widget>[
                   const Text('設定'),
                   ElevatedButton(
-                    onPressed: () {
-                      inputConfig();
-                    },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                    child: const Text('登録'),
+                    onPressed: () => (widget.configMap.isNotEmpty) ? updateConfig() : inputConfig(),
+                    child: Text((widget.configMap.isNotEmpty) ? '更新' : '登録'),
                   ),
                 ],
               ),
@@ -125,16 +130,64 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
 
   ///
   Future<void> inputConfig() async {
-    print(appParamState.configUseEasyLoginFlag);
-    print(appParamState.configUseBankManageFlag);
-    print(appParamState.configUseEmoneyManageFlag);
-
     final Map<String, String> map = <String, String>{};
 
     map['useEasyLogin'] = appParamState.configUseEasyLoginFlag.toString();
     map['useBankManage'] = appParamState.configUseBankManageFlag.toString();
     map['useEmoneyManage'] = appParamState.configUseEmoneyManageFlag.toString();
 
-    map.forEach((String key, String value) {});
+    map.forEach(
+      (String key, String value) async {
+        final Config config = Config()
+          ..configKey = key
+          ..configValue = value;
+
+        await ConfigsRepository().inputConfig(isar: widget.isar, config: config);
+      },
+    );
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        // ignore: inference_failure_on_instance_creation, always_specify_types
+        MaterialPageRoute(
+          builder: (BuildContext context) =>
+              HomeScreen(isar: widget.isar, baseYm: widget.baseYm, configMap: widget.configMap),
+        ),
+      );
+    }
+  }
+
+  ///
+  Future<void> updateConfig() async {
+    final Map<String, String> map = <String, String>{};
+
+    map['useEasyLogin'] = appParamState.configUseEasyLoginFlag.toString();
+    map['useBankManage'] = appParamState.configUseBankManageFlag.toString();
+    map['useEmoneyManage'] = appParamState.configUseEmoneyManageFlag.toString();
+
+    await widget.isar.writeTxn(
+      () async {
+        for (final entry in map.entries) {
+          final cfg = await ConfigsRepository().getConfigByKeyString(isar: widget.isar, key: entry.key);
+
+          if (cfg != null) {
+            cfg.configValue = entry.value;
+            await ConfigsRepository().updateConfig(isar: widget.isar, config: cfg);
+          }
+        }
+      },
+    );
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        // ignore: inference_failure_on_instance_creation, always_specify_types
+        MaterialPageRoute(
+          builder: (BuildContext context) =>
+              HomeScreen(isar: widget.isar, baseYm: widget.baseYm, configMap: widget.configMap),
+        ),
+      );
+    }
   }
 }
