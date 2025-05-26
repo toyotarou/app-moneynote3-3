@@ -13,16 +13,20 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../collections/bank_name.dart';
 import '../../../collections/bank_price.dart';
+import '../../../collections/config.dart';
 import '../../../collections/emoney_name.dart';
 import '../../../collections/income.dart';
+import '../../../collections/login_account.dart';
 import '../../../collections/money.dart';
 import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
 import '../../../extensions/extensions.dart';
 import '../../../repository/bank_names_repository.dart';
 import '../../../repository/bank_prices_repository.dart';
+import '../../../repository/configs_repository.dart';
 import '../../../repository/emoney_names_repository.dart';
 import '../../../repository/incomes_repository.dart';
+import '../../../repository/login_accounts_repository.dart';
 import '../../../repository/moneys_repository.dart';
 import '../../../repository/spend_items_repository.dart';
 import '../../../repository/spend_time_places_repository.dart';
@@ -65,8 +69,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
   ///
   @override
   Widget build(BuildContext context) {
-    final String csvName = ref.watch(
-        dataExportProvider.select((DataExportState value) => value.csvName));
+    final String csvName = ref.watch(dataExportProvider.select((DataExportState value) => value.csvName));
 
     final List<String> colorChangeFileNameList = <String>[];
     for (final String element in displayFileNameList) {
@@ -94,6 +97,8 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <String>[
+                  'config',
+                  'loginAccount',
                   'bankName',
                   'bankPrice',
                   'emoneyName',
@@ -109,18 +114,15 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () {
-                              ref
-                                  .read(dataExportProvider.notifier)
-                                  .setCsvName(csvName: e);
+                              ref.read(dataExportProvider.notifier).setCsvName(csvName: e);
                             },
                             child: CircleAvatar(
                               radius: 15,
-                              backgroundColor:
-                                  (colorChangeFileNameList.contains(e))
-                                      ? Colors.greenAccent.withOpacity(0.3)
-                                      : (csvName == e)
-                                          ? Colors.yellowAccent.withOpacity(0.3)
-                                          : Colors.white.withOpacity(0.3),
+                              backgroundColor: (colorChangeFileNameList.contains(e))
+                                  ? Colors.greenAccent.withOpacity(0.3)
+                                  : (csvName == e)
+                                      ? Colors.yellowAccent.withOpacity(0.3)
+                                      : Colors.white.withOpacity(0.3),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -137,8 +139,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => csvOutput(),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                       child: const Text('csv選択'),
                     ),
                   ),
@@ -146,8 +147,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => csvSend(),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
                       child: const Text('送信'),
                     ),
                   ),
@@ -172,8 +172,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
   Future<void> csvOutput() async {
     outputValuesList.clear();
 
-    final String csvName = ref.watch(
-        dataExportProvider.select((DataExportState value) => value.csvName));
+    final String csvName = ref.watch(dataExportProvider.select((DataExportState value) => value.csvName));
 
     if (csvName == '') {
       getErrorDialog(title: '出力できません。', content: '出力するデータを正しく選択してください。');
@@ -184,10 +183,22 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
     outputValuesList.add('export_csv_from_money_note');
 
     switch (csvName) {
+      case 'config':
+        await ConfigsRepository().getConfigList(isar: widget.isar).then((List<Config>? value) {
+          value?.forEach((Config element) {
+            outputValuesList.add(<String>[element.id.toString(), element.configKey, element.configValue].join(','));
+          });
+        });
+
+      case 'loginAccount':
+        await LoginAccountsRepository().getLoginAccountList(isar: widget.isar).then((List<LoginAccount>? value) {
+          value?.forEach((LoginAccount element) {
+            outputValuesList.add(<String>[element.id.toString(), element.mailAddress, element.password].join(','));
+          });
+        });
+
       case 'bankName':
-        await BankNamesRepository()
-            .getBankNameList(isar: widget.isar)
-            .then((List<BankName>? value) {
+        await BankNamesRepository().getBankNameList(isar: widget.isar).then((List<BankName>? value) {
           value?.forEach((BankName element) {
             outputValuesList.add(<String>[
               element.id.toString(),
@@ -203,9 +214,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
         });
 
       case 'bankPrice':
-        await BankPricesRepository()
-            .getBankPriceList(isar: widget.isar)
-            .then((List<BankPrice>? value) {
+        await BankPricesRepository().getBankPriceList(isar: widget.isar).then((List<BankPrice>? value) {
           value?.forEach((BankPrice element) {
             outputValuesList.add(<String>[
               element.id.toString(),
@@ -218,9 +227,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
         });
 
       case 'emoneyName':
-        await EmoneyNamesRepository()
-            .getEmoneyNameList(isar: widget.isar)
-            .then((List<EmoneyName>? value) {
+        await EmoneyNamesRepository().getEmoneyNameList(isar: widget.isar).then((List<EmoneyName>? value) {
           value?.forEach((EmoneyName element) {
             outputValuesList.add(<String>[
               element.id.toString(),
@@ -231,9 +238,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
         });
 
       case 'income':
-        await IncomesRepository()
-            .getIncomeList(isar: widget.isar)
-            .then((List<Income>? value) {
+        await IncomesRepository().getIncomeList(isar: widget.isar).then((List<Income>? value) {
           value?.forEach((Income element) {
             outputValuesList.add(<String>[
               element.id.toString(),
@@ -245,9 +250,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
         });
 
       case 'money':
-        await MoneysRepository()
-            .getMoneyList(isar: widget.isar)
-            .then((List<Money>? value) {
+        await MoneysRepository().getMoneyList(isar: widget.isar).then((List<Money>? value) {
           value?.forEach((Money element) {
             outputValuesList.add(<String>[
               element.id.toString(),
@@ -267,9 +270,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
         });
 
       case 'spendItem':
-        await SpendItemsRepository()
-            .getSpendItemList(isar: widget.isar)
-            .then((List<SpendItem>? value) {
+        await SpendItemsRepository().getSpendItemList(isar: widget.isar).then((List<SpendItem>? value) {
           value?.forEach((SpendItem element) {
             outputValuesList.add(<String>[
               element.id.toString(),
@@ -282,9 +283,7 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
         });
 
       case 'spendTimePlace':
-        await SpendTimePlacesRepository()
-            .getSpendTimePlaceList(isar: widget.isar)
-            .then((List<SpendTimePlace>? value) {
+        await SpendTimePlacesRepository().getSpendTimePlaceList(isar: widget.isar).then((List<SpendTimePlace>? value) {
           value?.forEach((SpendTimePlace element) {
             outputValuesList.add(<String>[
               element.id.toString(),
@@ -368,21 +367,15 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
 
 @freezed
 class DataExportState with _$DataExportState {
-  const factory DataExportState({
-    @Default('') String csvName,
-  }) = _DummyDownloadState;
+  const factory DataExportState({@Default('') String csvName}) = _DummyDownloadState;
 }
 
 @riverpod
 class DataExport extends _$DataExport {
   ///
   @override
-  DataExportState build() {
-    return const DataExportState();
-  }
+  DataExportState build() => const DataExportState();
 
   ///
-  void setCsvName({required String csvName}) {
-    state = state.copyWith(csvName: csvName);
-  }
+  void setCsvName({required String csvName}) => state = state.copyWith(csvName: csvName);
 }
