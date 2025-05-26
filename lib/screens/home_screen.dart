@@ -490,6 +490,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   Widget _dispDrawer() {
     const bool isRelease = bool.fromEnvironment('dart.vm.product');
 
+    buttonLabelTextList.clear();
+
     if (widget.configMap['useBankManage'] == 'true') {
       buttonLabelTextList.add('金融機関');
     }
