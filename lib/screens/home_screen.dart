@@ -1119,7 +1119,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               bankPriceList = value;
 
               if (value != null) {
-                final Map<String, dynamic> bankPriceMap = makeBankPriceMap(bankPriceList: value);
+                final Map<String, dynamic> bankPriceMap =
+                    makeBankPriceMap(bankPriceList: value, buttonLabelTextList: buttonLabelTextList);
                 bankPricePadMap = bankPriceMap['bankPriceDatePadMap'] as Map<String, Map<String, int>>;
                 bankPriceTotalPadMap = bankPriceMap['bankPriceTotalPadMap'] as Map<String, int>;
               }
