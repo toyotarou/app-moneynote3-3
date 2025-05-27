@@ -28,5 +28,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default(true) bool configUseEasyLoginFlag,
     @Default(true) bool configUseBankManageFlag,
     @Default(true) bool configUseEmoneyManageFlag,
+    @Default(true) bool loginPasswordIsObscure,
   }) = _AppParamsResponseState;
 }

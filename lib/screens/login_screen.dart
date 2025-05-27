@@ -176,13 +176,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
                 const SizedBox(height: 20),
                 TextField(
                   controller: passwordEditingController,
-                  decoration: const InputDecoration(
+                  obscureText: appParamState.loginPasswordIsObscure,
+                  decoration: InputDecoration(
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: 'パスワード(30文字以内)',
                     filled: true,
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    suffixIcon: IconButton(
+                      icon: Icon(appParamState.loginPasswordIsObscure ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () =>
+                          appParamNotifier.setLoginPasswordIsObscure(flag: !appParamState.loginPasswordIsObscure),
+                    ),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
                   onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),
@@ -297,19 +303,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
       if (loginAccountList != null) {
         for (final LoginAccount element in loginAccountList!) {
           list.add(
-            ElevatedButton(
-              onPressed: () {
-                mailAddressEditingController.text = element.mailAddress;
-                passwordEditingController.text = element.password;
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-              child: SizedBox(
-                width: 40,
-                child: Text(
-                  element.mailAddress,
-                  style: const TextStyle(fontSize: 10),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: ElevatedButton(
+                onPressed: () {
+                  mailAddressEditingController.text = element.mailAddress;
+                  passwordEditingController.text = element.password;
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.pinkAccent.withOpacity(0.2),
+                  padding: const EdgeInsets.all(2),
+                ),
+                child: SizedBox(
+                  width: 40,
+                  child: Text(
+                    element.mailAddress,
+                    style: const TextStyle(fontSize: 10),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ),

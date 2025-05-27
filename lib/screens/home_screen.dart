@@ -38,6 +38,7 @@ import 'components/date_money_repair_alert.dart';
 import 'components/deposit_tab_alert.dart';
 import 'components/download_data_list_alert.dart';
 import 'components/income_input_alert.dart';
+import 'components/login_account_display_alert.dart';
 import 'components/money_list_alert.dart';
 import 'components/money_score_list_alert.dart';
 import 'components/parts/back_ground_image.dart';
@@ -821,6 +822,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              GestureDetector(
+                onTap: () => MoneyDialog(context: context, widget: LoginAccountDisplayAlert(isar: widget.isar)),
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('ログインアカウント管理'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(
