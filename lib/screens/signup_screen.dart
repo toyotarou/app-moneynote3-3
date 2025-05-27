@@ -45,66 +45,68 @@ class _SignupScreenState extends ConsumerState<SignupScreen> with ControllersMix
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          ClipPath(
-            clipper: CustomShapeClipper(),
-            child: Container(
-              height: context.screenSize.height * 0.9,
-              width: context.screenSize.width * 0.9,
-              margin: const EdgeInsets.only(top: 5, left: 6),
-              color: const Color(0xFFFBB6CE).withOpacity(0.6),
-              child: Text('■', style: TextStyle(color: Colors.white.withOpacity(0.1))),
+      body: SingleChildScrollView(
+        child: Stack(
+          children: <Widget>[
+            ClipPath(
+              clipper: CustomShapeClipper(),
+              child: Container(
+                height: context.screenSize.height * 0.9,
+                width: context.screenSize.width * 0.9,
+                margin: const EdgeInsets.only(top: 5, left: 6),
+                color: const Color(0xFFFBB6CE).withOpacity(0.6),
+                child: Text('■', style: TextStyle(color: Colors.white.withOpacity(0.1))),
+              ),
             ),
-          ),
-          Container(
-            width: context.screenSize.width,
-            height: context.screenSize.height,
-            decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
-          ),
-          SafeArea(
-            child: Column(
-              children: <Widget>[
-                SizedBox(width: context.screenSize.width),
-                const SizedBox(height: 30),
-                Container(
-                  width: context.screenSize.width / 2.5,
-                  height: 140,
-                  decoration:
-                      const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/coinpig.png'))),
-                ),
-                Container(
-                  width: context.screenSize.width / 2.5,
-                  height: 30,
-                  decoration: const BoxDecoration(
-                      image: DecorationImage(image: AssetImage('assets/images/moneynote_title.png'))),
-                ),
-                const SizedBox(height: 20),
-                _displayInputParts(),
-              ],
+            Container(
+              width: context.screenSize.width,
+              height: context.screenSize.height,
+              decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
             ),
-          ),
-          Positioned(
-            bottom: 70,
-            left: 20,
-            right: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                const SizedBox.shrink(),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        // ignore: inference_failure_on_instance_creation, always_specify_types
-                        MaterialPageRoute(builder: (BuildContext context) => LoginScreen(isar: widget.isar)));
-                  },
-                  child: const Text('LOGIN'),
-                ),
-              ],
+            SafeArea(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(width: context.screenSize.width),
+                  const SizedBox(height: 30),
+                  Container(
+                    width: context.screenSize.width / 2.5,
+                    height: 140,
+                    decoration:
+                        const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/coinpig.png'))),
+                  ),
+                  Container(
+                    width: context.screenSize.width / 2.5,
+                    height: 30,
+                    decoration: const BoxDecoration(
+                        image: DecorationImage(image: AssetImage('assets/images/moneynote_title.png'))),
+                  ),
+                  const SizedBox(height: 20),
+                  _displayInputParts(),
+                ],
+              ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 70,
+              left: 20,
+              right: 20,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const SizedBox.shrink(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          // ignore: inference_failure_on_instance_creation, always_specify_types
+                          MaterialPageRoute(builder: (BuildContext context) => LoginScreen(isar: widget.isar)));
+                    },
+                    child: const Text('LOGIN'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -152,13 +154,19 @@ class _SignupScreenState extends ConsumerState<SignupScreen> with ControllersMix
                 const SizedBox(height: 20),
                 TextField(
                   controller: passwordEditingController,
-                  decoration: const InputDecoration(
+                  obscureText: appParamState.loginPasswordIsObscure,
+                  decoration: InputDecoration(
                     isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                     hintText: 'パスワード(30文字以内)',
                     filled: true,
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white54)),
+                    suffixIcon: IconButton(
+                      icon: Icon(appParamState.loginPasswordIsObscure ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () =>
+                          appParamNotifier.setLoginPasswordIsObscure(flag: !appParamState.loginPasswordIsObscure),
+                    ),
                   ),
                   style: const TextStyle(fontSize: 13, color: Colors.white),
                   onTapOutside: (PointerDownEvent event) => FocusManager.instance.primaryFocus?.unfocus(),

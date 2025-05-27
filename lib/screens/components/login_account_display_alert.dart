@@ -133,16 +133,18 @@ class _LoginAccountDisplayAlertState extends ConsumerState<LoginAccountDisplayAl
 
   ///
   Future<void> _deleteLoginAccount({required int id}) async {
-    // ignore: always_specify_types
-    LoginAccountsRepository().deleteLoginAccount(isar: widget.isar, id: id).then((value) {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
+    LoginAccountsRepository().deleteLoginAccount(isar: widget.isar, id: id).then(
+      // ignore: always_specify_types
+      (value) {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
 
-          // ignore: inference_failure_on_instance_creation, always_specify_types
-          MaterialPageRoute(builder: (BuildContext context) => LoginScreen(isar: widget.isar)),
-        );
-      }
-    });
+            // ignore: inference_failure_on_instance_creation, always_specify_types
+            MaterialPageRoute(builder: (BuildContext context) => LoginScreen(isar: widget.isar)),
+          );
+        }
+      },
+    );
   }
 }
