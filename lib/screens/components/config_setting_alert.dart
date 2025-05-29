@@ -173,6 +173,9 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
     );
 
     if (mounted) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+
       Navigator.pushReplacement(
         context,
         // ignore: inference_failure_on_instance_creation, always_specify_types
@@ -231,6 +234,9 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
     }
 
     if (!stopFlag && mounted) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+
       Navigator.pushReplacement(
         context,
         // ignore: inference_failure_on_instance_creation, always_specify_types
