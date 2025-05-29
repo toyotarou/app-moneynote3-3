@@ -185,12 +185,25 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
 
   ///
   Future<void> updateConfig() async {
+    bool stopFlag = true;
+
     final Map<String, String> map = <String, String>{};
 
     map['useEasyLogin'] = appParamState.configUseEasyLoginFlag.toString();
     map['useBankManage'] = appParamState.configUseBankManageFlag.toString();
     map['useEmoneyManage'] = appParamState.configUseEmoneyManageFlag.toString();
     map['useSignUp'] = appParamState.configUseSignUpFlag.toString();
+
+    final Map<String, String> newInputConfig = <String, String>{};
+    map.forEach((String key, String value) {
+      if (configMap[key] == null) {
+        newInputConfig[key] = value;
+      }
+    });
+
+    if (newInputConfig.isEmpty) {
+      stopFlag = false;
+    }
 
     await widget.isar.writeTxn(
       () async {
@@ -205,7 +218,19 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
       },
     );
 
-    if (mounted) {
+    if (newInputConfig.isNotEmpty) {
+      newInputConfig.forEach((String key, String value) async {
+        final Config config = Config()
+          ..configKey = key
+          ..configValue = value;
+
+        await ConfigsRepository().inputConfig(isar: widget.isar, config: config);
+      });
+
+      stopFlag = false;
+    }
+
+    if (!stopFlag && mounted) {
       Navigator.pushReplacement(
         context,
         // ignore: inference_failure_on_instance_creation, always_specify_types
