@@ -109,26 +109,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
                 ],
               ),
             ),
-            Positioned(
-              bottom: 70,
-              left: 20,
-              right: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const SizedBox.shrink(),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          // ignore: inference_failure_on_instance_creation, always_specify_types
-                          MaterialPageRoute(builder: (BuildContext context) => SignupScreen(isar: widget.isar)));
-                    },
-                    child: const Text('SIGN UP'),
-                  ),
-                ],
+            if (configMap['useSignUp'] != 'false') ...<Widget>[
+              Positioned(
+                bottom: 70,
+                left: 20,
+                right: 20,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const SizedBox.shrink(),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            // ignore: inference_failure_on_instance_creation, always_specify_types
+                            MaterialPageRoute(builder: (BuildContext context) => SignupScreen(isar: widget.isar)));
+                      },
+                      child: const Text('SIGN UP'),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),
@@ -299,7 +301,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
 
   ///
   Widget displayEasyLoginButton() {
-    if (configMap['useEasyLogin'] == 'true') {
+    if (configMap['useEasyLogin'] != 'false') {
       final List<Widget> list = <Widget>[];
 
       if (loginAccountList != null) {

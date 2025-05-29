@@ -43,6 +43,7 @@ mixin _$AppParamsResponseState {
   bool get configUseBankManageFlag => throw _privateConstructorUsedError;
   bool get configUseEmoneyManageFlag => throw _privateConstructorUsedError;
   bool get loginPasswordIsObscure => throw _privateConstructorUsedError;
+  bool get configUseSignUpFlag => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppParamsResponseStateCopyWith<AppParamsResponseState> get copyWith =>
@@ -78,7 +79,8 @@ abstract class $AppParamsResponseStateCopyWith<$Res> {
       bool configUseEasyLoginFlag,
       bool configUseBankManageFlag,
       bool configUseEmoneyManageFlag,
-      bool loginPasswordIsObscure});
+      bool loginPasswordIsObscure,
+      bool configUseSignUpFlag});
 }
 
 /// @nodoc
@@ -118,6 +120,7 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
     Object? configUseBankManageFlag = null,
     Object? configUseEmoneyManageFlag = null,
     Object? loginPasswordIsObscure = null,
+    Object? configUseSignUpFlag = null,
   }) {
     return _then(_value.copyWith(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -213,6 +216,10 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
           ? _value.loginPasswordIsObscure
           : loginPasswordIsObscure // ignore: cast_nullable_to_non_nullable
               as bool,
+      configUseSignUpFlag: null == configUseSignUpFlag
+          ? _value.configUseSignUpFlag
+          : configUseSignUpFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -249,7 +256,8 @@ abstract class _$$AppParamsResponseStateImplCopyWith<$Res>
       bool configUseEasyLoginFlag,
       bool configUseBankManageFlag,
       bool configUseEmoneyManageFlag,
-      bool loginPasswordIsObscure});
+      bool loginPasswordIsObscure,
+      bool configUseSignUpFlag});
 }
 
 /// @nodoc
@@ -288,6 +296,7 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
     Object? configUseBankManageFlag = null,
     Object? configUseEmoneyManageFlag = null,
     Object? loginPasswordIsObscure = null,
+    Object? configUseSignUpFlag = null,
   }) {
     return _then(_$AppParamsResponseStateImpl(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -383,6 +392,10 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
           ? _value.loginPasswordIsObscure
           : loginPasswordIsObscure // ignore: cast_nullable_to_non_nullable
               as bool,
+      configUseSignUpFlag: null == configUseSignUpFlag
+          ? _value.configUseSignUpFlag
+          : configUseSignUpFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -413,7 +426,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       this.configUseEasyLoginFlag = true,
       this.configUseBankManageFlag = true,
       this.configUseEmoneyManageFlag = true,
-      this.loginPasswordIsObscure = true})
+      this.loginPasswordIsObscure = true,
+      this.configUseSignUpFlag = true})
       : _selectedRepairRecordNumber = selectedRepairRecordNumber,
         _bigEntries = bigEntries;
 
@@ -497,10 +511,13 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
   @override
   @JsonKey()
   final bool loginPasswordIsObscure;
+  @override
+  @JsonKey()
+  final bool configUseSignUpFlag;
 
   @override
   String toString() {
-    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback, overlayPosition: $overlayPosition, selectedBankPriceYear: $selectedBankPriceYear, sameYearDayCalendarSelectDate: $sameYearDayCalendarSelectDate, configUseEasyLoginFlag: $configUseEasyLoginFlag, configUseBankManageFlag: $configUseBankManageFlag, configUseEmoneyManageFlag: $configUseEmoneyManageFlag, loginPasswordIsObscure: $loginPasswordIsObscure)';
+    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback, overlayPosition: $overlayPosition, selectedBankPriceYear: $selectedBankPriceYear, sameYearDayCalendarSelectDate: $sameYearDayCalendarSelectDate, configUseEasyLoginFlag: $configUseEasyLoginFlag, configUseBankManageFlag: $configUseBankManageFlag, configUseEmoneyManageFlag: $configUseEmoneyManageFlag, loginPasswordIsObscure: $loginPasswordIsObscure, configUseSignUpFlag: $configUseSignUpFlag)';
   }
 
   @override
@@ -557,7 +574,9 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
             (identical(other.configUseEmoneyManageFlag, configUseEmoneyManageFlag) ||
                 other.configUseEmoneyManageFlag == configUseEmoneyManageFlag) &&
             (identical(other.loginPasswordIsObscure, loginPasswordIsObscure) ||
-                other.loginPasswordIsObscure == loginPasswordIsObscure));
+                other.loginPasswordIsObscure == loginPasswordIsObscure) &&
+            (identical(other.configUseSignUpFlag, configUseSignUpFlag) ||
+                other.configUseSignUpFlag == configUseSignUpFlag));
   }
 
   @override
@@ -585,7 +604,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
         configUseEasyLoginFlag,
         configUseBankManageFlag,
         configUseEmoneyManageFlag,
-        loginPasswordIsObscure
+        loginPasswordIsObscure,
+        configUseSignUpFlag
       ]);
 
   @JsonKey(ignore: true)
@@ -620,7 +640,8 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
       final bool configUseEasyLoginFlag,
       final bool configUseBankManageFlag,
       final bool configUseEmoneyManageFlag,
-      final bool loginPasswordIsObscure}) = _$AppParamsResponseStateImpl;
+      final bool loginPasswordIsObscure,
+      final bool configUseSignUpFlag}) = _$AppParamsResponseStateImpl;
 
   @override
   DateTime? get calendarSelectedDate;
@@ -668,6 +689,8 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
   bool get configUseEmoneyManageFlag;
   @override
   bool get loginPasswordIsObscure;
+  @override
+  bool get configUseSignUpFlag;
   @override
   @JsonKey(ignore: true)
   _$$AppParamsResponseStateImplCopyWith<_$AppParamsResponseStateImpl>

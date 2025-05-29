@@ -94,6 +94,18 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
+                            const Text('サインアップ機能を使用する'),
+                            Switch(
+                              value: appParamState.configUseSignUpFlag,
+                              onChanged: (bool value) {
+                                appParamNotifier.setConfigUseSignUpFlag(flag: !appParamState.configUseSignUpFlag);
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
                             const Text('簡易ログイン機能を使用する'),
                             Switch(
                               value: appParamState.configUseEasyLoginFlag,
@@ -148,6 +160,7 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
     map['useEasyLogin'] = appParamState.configUseEasyLoginFlag.toString();
     map['useBankManage'] = appParamState.configUseBankManageFlag.toString();
     map['useEmoneyManage'] = appParamState.configUseEmoneyManageFlag.toString();
+    map['useSignUp'] = appParamState.configUseSignUpFlag.toString();
 
     map.forEach(
       (String key, String value) async {
@@ -177,6 +190,7 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
     map['useEasyLogin'] = appParamState.configUseEasyLoginFlag.toString();
     map['useBankManage'] = appParamState.configUseBankManageFlag.toString();
     map['useEmoneyManage'] = appParamState.configUseEmoneyManageFlag.toString();
+    map['useSignUp'] = appParamState.configUseSignUpFlag.toString();
 
     await widget.isar.writeTxn(
       () async {

@@ -97,4 +97,7 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
 
   ///
   void setLoginPasswordIsObscure({required bool flag}) => state = state.copyWith(loginPasswordIsObscure: flag);
+
+  ///
+  void setConfigUseSignUpFlag({required bool flag}) => state = state.copyWith(configUseSignUpFlag: flag);
 }

@@ -502,11 +502,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
     buttonLabelTextList.clear();
 
-    if (configMap['useBankManage'] == 'true') {
+    if (configMap['useBankManage'] != 'false') {
       buttonLabelTextList.add('金融機関');
     }
 
-    if (configMap['useEmoneyManage'] == 'true') {
+    if (configMap['useEmoneyManage'] != 'false') {
       buttonLabelTextList.add('電子マネー');
     }
 
