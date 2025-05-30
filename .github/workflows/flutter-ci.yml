@@ -1,0 +1,60 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.1'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Static analysis
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Debug coverage ディレクトリ内容
+        if: always()
+        run: |
+          echo "=== coverage folder contents ==="
+          ls -R coverage || true
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+
+      # 以下、リリース APK が必要な場合はコメントを外して使ってください
+      #- name: Build release APK
+      #  run: flutter build apk --release
+      #
+      #- name: Upload Release APK
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: release-apk
+      #    path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/lcov.info

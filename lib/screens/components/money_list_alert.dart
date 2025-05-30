@@ -76,7 +76,9 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> with Controller
                 children: <Widget>[const Text('月間金額推移'), Text(widget.date.yyyymm)],
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              if (widget.moneyList!.isNotEmpty) ...<Widget>[Expanded(child: _dispDateMoneyList())],
+              if (widget.moneyList!.isNotEmpty) ...<Widget>[
+                SizedBox(height: context.screenSize.height * 0.7, child: _dispDateMoneyList())
+              ],
               if (widget.moneyList!.isEmpty) ...<Widget>[
                 const Text('no data', style: TextStyle(color: Colors.yellowAccent, fontSize: 12)),
               ],
@@ -167,28 +169,22 @@ class _MoneyListAlertState extends ConsumerState<MoneyListAlert> with Controller
         }
       });
 
-    return Stack(
-      children: <Widget>[
-        DefaultTextStyle(
-          style: const TextStyle(fontSize: 10),
-          child: Column(
-            children: <Widget>[
-              const SizedBox(height: 36),
-              Column(children: list2),
-            ],
-          ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DefaultTextStyle(
+    return SingleChildScrollView(
+      child: Stack(
+        children: <Widget>[
+          DefaultTextStyle(
             style: const TextStyle(fontSize: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: list,
+            child: Column(children: <Widget>[const SizedBox(height: 36), Column(children: list2)]),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DefaultTextStyle(
+              style: const TextStyle(fontSize: 10),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: list),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
