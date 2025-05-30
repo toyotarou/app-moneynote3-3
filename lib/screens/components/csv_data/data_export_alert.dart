@@ -87,81 +87,83 @@ class _DummyDownloadAlertState extends ConsumerState<DataExportAlert> {
         height: double.infinity,
         child: DefaultTextStyle(
           style: GoogleFonts.kiwiMaru(fontSize: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(width: context.screenSize.width),
-              const SizedBox(height: 20),
-              const Text('データエクスポート'),
-              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <String>[
-                  'config',
-                  'loginAccount',
-                  'bankName',
-                  'bankPrice',
-                  'emoneyName',
-                  'income',
-                  'money',
-                  'spendItem',
-                  'spendTimePlace'
-                ].map(
-                  (String e) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              ref.read(dataExportProvider.notifier).setCsvName(csvName: e);
-                            },
-                            child: CircleAvatar(
-                              radius: 15,
-                              backgroundColor: (colorChangeFileNameList.contains(e))
-                                  ? Colors.greenAccent.withOpacity(0.3)
-                                  : (csvName == e)
-                                      ? Colors.yellowAccent.withOpacity(0.3)
-                                      : Colors.white.withOpacity(0.3),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(width: context.screenSize.width),
+                const SizedBox(height: 20),
+                const Text('データエクスポート'),
+                Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <String>[
+                    'config',
+                    'loginAccount',
+                    'bankName',
+                    'bankPrice',
+                    'emoneyName',
+                    'income',
+                    'money',
+                    'spendItem',
+                    'spendTimePlace'
+                  ].map(
+                    (String e) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                ref.read(dataExportProvider.notifier).setCsvName(csvName: e);
+                              },
+                              child: CircleAvatar(
+                                radius: 15,
+                                backgroundColor: (colorChangeFileNameList.contains(e))
+                                    ? Colors.greenAccent.withOpacity(0.3)
+                                    : (csvName == e)
+                                        ? Colors.yellowAccent.withOpacity(0.3)
+                                        : Colors.white.withOpacity(0.3),
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(e),
-                        ],
+                            const SizedBox(width: 10),
+                            Text(e),
+                          ],
+                        ),
+                      );
+                    },
+                  ).toList(),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => csvOutput(),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                        child: const Text('csv選択'),
                       ),
-                    );
-                  },
-                ).toList(),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => csvOutput(),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                      child: const Text('csv選択'),
                     ),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => csvSend(),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
-                      child: const Text('送信'),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => csvSend(),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent.withOpacity(0.2)),
+                        child: const Text('送信'),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: displayFileNameList.map((String e) {
-                  return Text(e);
-                }).toList(),
-              ),
-            ],
+                  ],
+                ),
+                Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: displayFileNameList.map((String e) {
+                    return Text(e);
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
