@@ -37,13 +37,15 @@ class _SameYearDaySpendGraphAlertState extends ConsumerState<SameYearDaySpendGra
   void initState() {
     super.initState();
 
-    selectedYear = widget.yearList[0];
+    selectedYear = DateTime.now().year.toString();
   }
 
   ///
   @override
   Widget build(BuildContext context) {
     _setChartData();
+
+    widget.yearList.sort((String a, String b) => a.compareTo(b) * -1);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
