@@ -61,6 +61,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
 
   ///
   @override
+  void dispose() {
+    mailAddressEditingController.dispose();
+
+    passwordEditingController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -277,6 +287,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
 
     if (loginAccountMap[mailAddressEditingController.text.trim()] != null) {
       if (passwordEditingController.text.trim() == loginAccountMap[mailAddressEditingController.text.trim()]) {
+        mailAddressEditingController.clear();
+
+        passwordEditingController.clear();
+
         Navigator.pushReplacement(
             context,
             // ignore: inference_failure_on_instance_creation, always_specify_types

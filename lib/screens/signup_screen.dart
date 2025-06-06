@@ -43,6 +43,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> with ControllersMix
 
   ///
   @override
+  void dispose() {
+    mailAddressEditingController.dispose();
+
+    passwordEditingController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(

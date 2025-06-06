@@ -44,6 +44,14 @@ class _EmoneyNameInputAlertState extends ConsumerState<EmoneyNameInputAlert> {
 
   ///
   @override
+  void dispose() {
+    _emoneyNameEditingController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: EdgeInsets.zero,

@@ -109,6 +109,14 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
 
   ///
   @override
+  void dispose() {
+    autoScrollController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (calendarYear == DateTime.now().year) {

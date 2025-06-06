@@ -63,6 +63,18 @@ class _BankNameInputAlertState extends ConsumerState<BankNameInputAlert> with Co
 
   ///
   @override
+  void dispose() {
+    _bankNumberEditingController.dispose();
+    _bankNameEditingController.dispose();
+    _branchNumberEditingController.dispose();
+    _branchNameEditingController.dispose();
+    _accountNumberEditingController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: EdgeInsets.zero,

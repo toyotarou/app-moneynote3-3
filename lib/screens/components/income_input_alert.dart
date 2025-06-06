@@ -49,6 +49,15 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
 
   ///
   @override
+  void dispose() {
+    _incomePriceEditingController.dispose();
+    _incomeSourceEditingController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     // ignore: always_specify_types
     Future(_init);

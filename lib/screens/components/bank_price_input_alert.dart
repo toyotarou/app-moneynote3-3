@@ -61,6 +61,14 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> with 
 
   ///
   @override
+  void dispose() {
+    _bankPriceEditingController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     contextBlue = Theme.of(context).colorScheme.primary;
 

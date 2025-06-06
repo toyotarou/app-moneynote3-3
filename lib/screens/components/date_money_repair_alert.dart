@@ -48,6 +48,14 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert>
 
   ///
   @override
+  void dispose() {
+    repairCountEditingController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,

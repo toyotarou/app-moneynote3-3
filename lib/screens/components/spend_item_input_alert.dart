@@ -87,6 +87,14 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
 
   ///
   @override
+  void dispose() {
+    _spendItemEditingController.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,

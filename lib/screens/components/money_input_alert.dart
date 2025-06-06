@@ -64,6 +64,23 @@ class _MoneyInputAlertState extends ConsumerState<MoneyInputAlert> {
 
   ///
   @override
+  void dispose() {
+    _tecYen10000.dispose();
+    _tecYen5000.dispose();
+    _tecYen2000.dispose();
+    _tecYen1000.dispose();
+    _tecYen500.dispose();
+    _tecYen100.dispose();
+    _tecYen50.dispose();
+    _tecYen10.dispose();
+    _tecYen5.dispose();
+    _tecYen1.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
