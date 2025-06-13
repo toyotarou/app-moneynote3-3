@@ -100,4 +100,8 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
 
   ///
   void setConfigUseSignUpFlag({required bool flag}) => state = state.copyWith(configUseSignUpFlag: flag);
+
+  ///
+  void setEachMonthItemSummarySelectedMonth({required String month}) =>
+      state = state.copyWith(eachMonthItemSummarySelectedMonth: month);
 }

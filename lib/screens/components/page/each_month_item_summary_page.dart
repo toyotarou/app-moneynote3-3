@@ -3,26 +3,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../collections/spend_item.dart';
 import '../../../collections/spend_time_place.dart';
+import '../../../controllers/controllers_mixin.dart';
 import '../../../extensions/extensions.dart';
 
 class EachMonthItemSummaryPage extends ConsumerStatefulWidget {
   const EachMonthItemSummaryPage(
-      {super.key,
-      required this.year,
-      required this.spendTimePlaceList,
-      required this.spendItemList});
+      {super.key, required this.year, required this.spendTimePlaceList, required this.spendItemList});
 
   final int year;
   final List<SpendTimePlace> spendTimePlaceList;
   final List<SpendItem> spendItemList;
 
   @override
-  ConsumerState<EachMonthItemSummaryPage> createState() =>
-      _EachMonthItemSummaryPageState();
+  ConsumerState<EachMonthItemSummaryPage> createState() => _EachMonthItemSummaryPageState();
 }
 
-class _EachMonthItemSummaryPageState
-    extends ConsumerState<EachMonthItemSummaryPage> {
+class _EachMonthItemSummaryPageState extends ConsumerState<EachMonthItemSummaryPage>
+    with ControllersMixin<EachMonthItemSummaryPage> {
   List<SpendTimePlace> stpList = <SpendTimePlace>[];
 
   ///
@@ -31,8 +28,7 @@ class _EachMonthItemSummaryPageState
     super.initState();
 
     stpList = widget.spendTimePlaceList
-        .where((SpendTimePlace element) =>
-            element.date.split('-')[0].toInt() == widget.year)
+        .where((SpendTimePlace element) => element.date.split('-')[0].toInt() == widget.year)
         .toList();
   }
 
@@ -79,8 +75,7 @@ class _EachMonthItemSummaryPageState
       for (final SpendTimePlace element in stpList) {
         final List<String> exDate = element.date.split('-');
         final String elementYearmonth = '${exDate[0]}-${exDate[1]}';
-        final String widgetYearmonth =
-            '${widget.year}-${i.toString().padLeft(2, '0')}';
+        final String widgetYearmonth = '${widget.year}-${i.toString().padLeft(2, '0')}';
 
         if (elementYearmonth == widgetYearmonth) {
           for (final SpendItem element2 in widget.spendItemList) {
@@ -115,11 +110,16 @@ class _EachMonthItemSummaryPageState
 
       if (DateTime(widget.year, i).isBefore(DateTime.now())) {
         list3.add(
-          Container(
-            width: 100,
-            height: 30,
-            alignment: Alignment.center,
-            child: Text(i.toString().padLeft(2, '0')),
+          GestureDetector(
+            onTap: () {
+              appParamNotifier.setEachMonthItemSummarySelectedMonth(month: i.toString().padLeft(2, '0'));
+            },
+            child: Container(
+              width: 100,
+              height: 30,
+              alignment: Alignment.center,
+              child: Text(i.toString().padLeft(2, '0')),
+            ),
           ),
         );
 
@@ -141,11 +141,8 @@ class _EachMonthItemSummaryPageState
                       alignment: Alignment.topRight,
                       padding: const EdgeInsets.only(right: 5),
                       child: Text(
-                        (map[i] != null &&
-                                map[i]![element5.spendItemName] != null)
-                            ? map[i]![element5.spendItemName]!
-                                .toString()
-                                .toCurrency()
+                        (map[i] != null && map[i]![element5.spendItemName] != null)
+                            ? map[i]![element5.spendItemName]!.toString().toCurrency()
                             : '',
                       ),
                     ),
@@ -161,7 +158,16 @@ class _EachMonthItemSummaryPageState
         }
       }
 
-      list2.add(Column(children: list3));
+      list2.add(
+        Container(
+          decoration: BoxDecoration(
+              border: Border.all(
+                  color: (appParamState.eachMonthItemSummarySelectedMonth == i.toString().padLeft(2, '0'))
+                      ? Colors.yellowAccent.withValues(alpha: 0.4)
+                      : Colors.transparent)),
+          child: Column(children: list3),
+        ),
+      );
     }
 
     list.add(Row(children: list2));

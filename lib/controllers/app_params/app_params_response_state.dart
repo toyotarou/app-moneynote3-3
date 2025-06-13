@@ -30,5 +30,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default(true) bool configUseEmoneyManageFlag,
     @Default(true) bool loginPasswordIsObscure,
     @Default(true) bool configUseSignUpFlag,
+    @Default('') String eachMonthItemSummarySelectedMonth,
   }) = _AppParamsResponseState;
 }
