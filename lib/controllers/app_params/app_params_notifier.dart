@@ -104,4 +104,7 @@ class AppParamNotifier extends StateNotifier<AppParamsResponseState> {
   ///
   void setEachMonthItemSummarySelectedMonth({required String month}) =>
       state = state.copyWith(eachMonthItemSummarySelectedMonth: month);
+
+  ///
+  void setDeleteSpendTimePlaceDate({required String date}) => state = state.copyWith(deleteSpendTimePlaceDate: date);
 }

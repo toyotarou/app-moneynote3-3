@@ -46,6 +46,7 @@ mixin _$AppParamsResponseState {
   bool get configUseSignUpFlag => throw _privateConstructorUsedError;
   String get eachMonthItemSummarySelectedMonth =>
       throw _privateConstructorUsedError;
+  String get deleteSpendTimePlaceDate => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppParamsResponseStateCopyWith<AppParamsResponseState> get copyWith =>
@@ -83,7 +84,8 @@ abstract class $AppParamsResponseStateCopyWith<$Res> {
       bool configUseEmoneyManageFlag,
       bool loginPasswordIsObscure,
       bool configUseSignUpFlag,
-      String eachMonthItemSummarySelectedMonth});
+      String eachMonthItemSummarySelectedMonth,
+      String deleteSpendTimePlaceDate});
 }
 
 /// @nodoc
@@ -125,6 +127,7 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
     Object? loginPasswordIsObscure = null,
     Object? configUseSignUpFlag = null,
     Object? eachMonthItemSummarySelectedMonth = null,
+    Object? deleteSpendTimePlaceDate = null,
   }) {
     return _then(_value.copyWith(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -229,6 +232,10 @@ class _$AppParamsResponseStateCopyWithImpl<$Res,
           ? _value.eachMonthItemSummarySelectedMonth
           : eachMonthItemSummarySelectedMonth // ignore: cast_nullable_to_non_nullable
               as String,
+      deleteSpendTimePlaceDate: null == deleteSpendTimePlaceDate
+          ? _value.deleteSpendTimePlaceDate
+          : deleteSpendTimePlaceDate // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -267,7 +274,8 @@ abstract class _$$AppParamsResponseStateImplCopyWith<$Res>
       bool configUseEmoneyManageFlag,
       bool loginPasswordIsObscure,
       bool configUseSignUpFlag,
-      String eachMonthItemSummarySelectedMonth});
+      String eachMonthItemSummarySelectedMonth,
+      String deleteSpendTimePlaceDate});
 }
 
 /// @nodoc
@@ -308,6 +316,7 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
     Object? loginPasswordIsObscure = null,
     Object? configUseSignUpFlag = null,
     Object? eachMonthItemSummarySelectedMonth = null,
+    Object? deleteSpendTimePlaceDate = null,
   }) {
     return _then(_$AppParamsResponseStateImpl(
       calendarSelectedDate: freezed == calendarSelectedDate
@@ -412,6 +421,10 @@ class __$$AppParamsResponseStateImplCopyWithImpl<$Res>
           ? _value.eachMonthItemSummarySelectedMonth
           : eachMonthItemSummarySelectedMonth // ignore: cast_nullable_to_non_nullable
               as String,
+      deleteSpendTimePlaceDate: null == deleteSpendTimePlaceDate
+          ? _value.deleteSpendTimePlaceDate
+          : deleteSpendTimePlaceDate // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -444,7 +457,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
       this.configUseEmoneyManageFlag = true,
       this.loginPasswordIsObscure = true,
       this.configUseSignUpFlag = true,
-      this.eachMonthItemSummarySelectedMonth = ''})
+      this.eachMonthItemSummarySelectedMonth = '',
+      this.deleteSpendTimePlaceDate = ''})
       : _selectedRepairRecordNumber = selectedRepairRecordNumber,
         _bigEntries = bigEntries;
 
@@ -534,10 +548,13 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
   @override
   @JsonKey()
   final String eachMonthItemSummarySelectedMonth;
+  @override
+  @JsonKey()
+  final String deleteSpendTimePlaceDate;
 
   @override
   String toString() {
-    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback, overlayPosition: $overlayPosition, selectedBankPriceYear: $selectedBankPriceYear, sameYearDayCalendarSelectDate: $sameYearDayCalendarSelectDate, configUseEasyLoginFlag: $configUseEasyLoginFlag, configUseBankManageFlag: $configUseBankManageFlag, configUseEmoneyManageFlag: $configUseEmoneyManageFlag, loginPasswordIsObscure: $loginPasswordIsObscure, configUseSignUpFlag: $configUseSignUpFlag, eachMonthItemSummarySelectedMonth: $eachMonthItemSummarySelectedMonth)';
+    return 'AppParamsResponseState(calendarSelectedDate: $calendarSelectedDate, menuNumber: $menuNumber, selectedIncomeYear: $selectedIncomeYear, sameMonthIncomeDeleteFlag: $sameMonthIncomeDeleteFlag, incomeInputDate: $incomeInputDate, inputButtonClicked: $inputButtonClicked, sameDaySelectedDay: $sameDaySelectedDay, selectedGraphMonth: $selectedGraphMonth, calendarDisp: $calendarDisp, selectedYearlySpendCircleGraphSpendItem: $selectedYearlySpendCircleGraphSpendItem, repairSelectDate: $repairSelectDate, repairSelectKind: $repairSelectKind, repairSelectFlag: $repairSelectFlag, selectedRepairRecordNumber: $selectedRepairRecordNumber, bigEntries: $bigEntries, setStateCallback: $setStateCallback, overlayPosition: $overlayPosition, selectedBankPriceYear: $selectedBankPriceYear, sameYearDayCalendarSelectDate: $sameYearDayCalendarSelectDate, configUseEasyLoginFlag: $configUseEasyLoginFlag, configUseBankManageFlag: $configUseBankManageFlag, configUseEmoneyManageFlag: $configUseEmoneyManageFlag, loginPasswordIsObscure: $loginPasswordIsObscure, configUseSignUpFlag: $configUseSignUpFlag, eachMonthItemSummarySelectedMonth: $eachMonthItemSummarySelectedMonth, deleteSpendTimePlaceDate: $deleteSpendTimePlaceDate)';
   }
 
   @override
@@ -598,7 +615,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
                 other.configUseSignUpFlag == configUseSignUpFlag) &&
             (identical(other.eachMonthItemSummarySelectedMonth, eachMonthItemSummarySelectedMonth) ||
                 other.eachMonthItemSummarySelectedMonth ==
-                    eachMonthItemSummarySelectedMonth));
+                    eachMonthItemSummarySelectedMonth) &&
+            (identical(other.deleteSpendTimePlaceDate, deleteSpendTimePlaceDate) || other.deleteSpendTimePlaceDate == deleteSpendTimePlaceDate));
   }
 
   @override
@@ -628,7 +646,8 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
         configUseEmoneyManageFlag,
         loginPasswordIsObscure,
         configUseSignUpFlag,
-        eachMonthItemSummarySelectedMonth
+        eachMonthItemSummarySelectedMonth,
+        deleteSpendTimePlaceDate
       ]);
 
   @JsonKey(ignore: true)
@@ -641,32 +660,32 @@ class _$AppParamsResponseStateImpl implements _AppParamsResponseState {
 
 abstract class _AppParamsResponseState implements AppParamsResponseState {
   const factory _AppParamsResponseState(
-          {final DateTime? calendarSelectedDate,
-          final int menuNumber,
-          final String selectedIncomeYear,
-          final bool sameMonthIncomeDeleteFlag,
-          final String incomeInputDate,
-          final bool inputButtonClicked,
-          final int sameDaySelectedDay,
-          final int selectedGraphMonth,
-          final bool calendarDisp,
-          final String selectedYearlySpendCircleGraphSpendItem,
-          final String repairSelectDate,
-          final int repairSelectKind,
-          final bool repairSelectFlag,
-          final List<int> selectedRepairRecordNumber,
-          final List<OverlayEntry>? bigEntries,
-          final void Function(void Function())? setStateCallback,
-          final Offset? overlayPosition,
-          final String selectedBankPriceYear,
-          final String sameYearDayCalendarSelectDate,
-          final bool configUseEasyLoginFlag,
-          final bool configUseBankManageFlag,
-          final bool configUseEmoneyManageFlag,
-          final bool loginPasswordIsObscure,
-          final bool configUseSignUpFlag,
-          final String eachMonthItemSummarySelectedMonth}) =
-      _$AppParamsResponseStateImpl;
+      {final DateTime? calendarSelectedDate,
+      final int menuNumber,
+      final String selectedIncomeYear,
+      final bool sameMonthIncomeDeleteFlag,
+      final String incomeInputDate,
+      final bool inputButtonClicked,
+      final int sameDaySelectedDay,
+      final int selectedGraphMonth,
+      final bool calendarDisp,
+      final String selectedYearlySpendCircleGraphSpendItem,
+      final String repairSelectDate,
+      final int repairSelectKind,
+      final bool repairSelectFlag,
+      final List<int> selectedRepairRecordNumber,
+      final List<OverlayEntry>? bigEntries,
+      final void Function(void Function())? setStateCallback,
+      final Offset? overlayPosition,
+      final String selectedBankPriceYear,
+      final String sameYearDayCalendarSelectDate,
+      final bool configUseEasyLoginFlag,
+      final bool configUseBankManageFlag,
+      final bool configUseEmoneyManageFlag,
+      final bool loginPasswordIsObscure,
+      final bool configUseSignUpFlag,
+      final String eachMonthItemSummarySelectedMonth,
+      final String deleteSpendTimePlaceDate}) = _$AppParamsResponseStateImpl;
 
   @override
   DateTime? get calendarSelectedDate;
@@ -718,6 +737,8 @@ abstract class _AppParamsResponseState implements AppParamsResponseState {
   bool get configUseSignUpFlag;
   @override
   String get eachMonthItemSummarySelectedMonth;
+  @override
+  String get deleteSpendTimePlaceDate;
   @override
   @JsonKey(ignore: true)
   _$$AppParamsResponseStateImplCopyWith<_$AppParamsResponseStateImpl>

@@ -31,5 +31,6 @@ class AppParamsResponseState with _$AppParamsResponseState {
     @Default(true) bool loginPasswordIsObscure,
     @Default(true) bool configUseSignUpFlag,
     @Default('') String eachMonthItemSummarySelectedMonth,
+    @Default('') String deleteSpendTimePlaceDate,
   }) = _AppParamsResponseState;
 }

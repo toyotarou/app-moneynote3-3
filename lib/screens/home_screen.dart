@@ -36,7 +36,6 @@ import 'components/csv_data/data_import_alert.dart';
 import 'components/daily_money_display_alert.dart';
 import 'components/date_money_repair_alert.dart';
 import 'components/deposit_tab_alert.dart';
-import 'components/download_data_list_alert.dart';
 import 'components/income_input_alert.dart';
 import 'components/login_account_display_alert.dart';
 import 'components/money_list_alert.dart';
@@ -50,6 +49,7 @@ import 'components/spend_item_history_alert.dart';
 import 'components/spend_item_input_alert.dart';
 import 'components/spend_item_re_input_alert.dart';
 import 'components/spend_monthly_list_alert.dart';
+import 'components/spend_time_place_delete_alert.dart';
 import 'components/spend_yearly_block_alert.dart';
 import 'login_screen.dart';
 
@@ -113,8 +113,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   List<String> monthFirstDateList = <String>[];
 
   Map<String, int> monthlySpendMap = <String, int>{};
-
-  List<Income>? _incomeList = <Income>[];
 
   List<String> buttonLabelTextList = <String>[];
 
@@ -636,6 +634,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   ],
                 ),
               ),
+
+              GestureDetector(
+                onTap: () {
+                  appParamNotifier.setDeleteSpendTimePlaceDate(date: '');
+
+                  MoneyDialog(
+                      context: context,
+                      widget: SpendTimePlaceDeleteAlert(
+                          date:
+                              (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          isar: widget.isar,
+                          allSpendTimePlaceList: allSpendTimePlaceList));
+                },
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('詳細データ削除'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
               GestureDetector(
                 onTap: () async {
                   appParamNotifier.setSelectedIncomeYear(year: '');
@@ -749,46 +775,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
-              GestureDetector(
-                onTap: () {
-                  MoneyDialog(
-                    context: context,
-                    widget: DownloadDataListAlert(
-                      isar: widget.isar,
-                      moneyMap: moneyMap,
-                      allSpendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[],
-                      bankNameList: bankNameList ?? <BankName>[],
-                      emoneyNameList: emoneyNameList ?? <EmoneyName>[],
-                      bankPricePadMap: bankPricePadMap,
-                      spendItem: _spendItemList ?? <SpendItem>[],
-                      incomeList: _incomeList ?? <Income>[],
-                    ),
-                  );
-                },
-                child: Row(
-                  children: <Widget>[
-                    const MenuHeadIcon(),
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-                        margin: const EdgeInsets.all(5),
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text('整形データダウンロード'),
-                            Text(
-                              '（このファイルはインポートできません。）',
-                              style: TextStyle(fontSize: 10, color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Divider(color: Colors.white.withOpacity(0.4), thickness: 1),
+              // GestureDetector(
+              //   onTap: () {
+              //     MoneyDialog(
+              //       context: context,
+              //       widget: DownloadDataListAlert(
+              //         isar: widget.isar,
+              //         moneyMap: moneyMap,
+              //         allSpendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[],
+              //         bankNameList: bankNameList ?? <BankName>[],
+              //         emoneyNameList: emoneyNameList ?? <EmoneyName>[],
+              //         bankPricePadMap: bankPricePadMap,
+              //         spendItem: _spendItemList ?? <SpendItem>[],
+              //         incomeList: _incomeList ?? <Income>[],
+              //       ),
+              //     );
+              //   },
+              //   child: Row(
+              //     children: <Widget>[
+              //       const MenuHeadIcon(),
+              //       Expanded(
+              //         child: Container(
+              //           width: double.infinity,
+              //           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+              //           margin: const EdgeInsets.all(5),
+              //           child: const Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: <Widget>[
+              //               Text('整形データダウンロード'),
+              //               Text(
+              //                 '（このファイルはインポートできません。）',
+              //                 style: TextStyle(fontSize: 10, color: Colors.grey),
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // Divider(color: Colors.white.withOpacity(0.4), thickness: 1),
               GestureDetector(
                 onTap: () => MoneyDialog(context: context, widget: DataExportAlert(isar: widget.isar)),
                 child: Row(
@@ -1439,9 +1465,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   ///
   Future<void> _makeIncomeList() async => IncomesRepository().getIncomeList(isar: widget.isar).then(
         (List<Income>? value) {
-          if (mounted) {
-            setState(() => _incomeList = value);
-          }
+          if (mounted) {}
         },
       );
 
