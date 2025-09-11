@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../collections/bank_name.dart';
 import '../../collections/bank_price.dart';
@@ -49,6 +50,8 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> with 
   late Color contextBlue;
 
   List<FocusNode> focusNodeList = <FocusNode>[];
+
+  final AutoScrollController autoScrollController = AutoScrollController();
 
   ///
   @override
@@ -125,7 +128,23 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> with 
                       child: Container(
                           alignment: Alignment.topRight,
                           child: const Text('plus', style: TextStyle(color: Colors.grey)))),
-                  const Expanded(child: SizedBox.shrink()),
+                  Expanded(
+                    child: Row(
+                      children: <Widget>[
+                        const SizedBox(width: 25),
+                        GestureDetector(
+                            onTap: () => autoScrollController.scrollToIndex(0), child: const Icon(Icons.arrow_upward)),
+                        const Spacer(),
+                        GestureDetector(
+                            onTap: () {
+                              if (bankPriceList != null) {
+                                autoScrollController.scrollToIndex(bankPriceList!.length);
+                              }
+                            },
+                            child: const Icon(Icons.arrow_downward)),
+                      ],
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
@@ -135,6 +154,7 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> with 
                   if (snapshot.hasData) {
                     return Expanded(
                       child: SingleChildScrollView(
+                        controller: autoScrollController,
                         child: Column(
                           children: <Widget>[Column(children: snapshot.data!), const SizedBox(height: 20)],
                         ),
@@ -352,33 +372,40 @@ class _BankPriceInputAlertState extends ConsumerState<BankPriceInputAlert> with 
       }
 
       list.add(
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-          child: Row(
-            children: <Widget>[
-              SizedBox(
-                width: 50,
-                child: Column(
-                  children: <Widget>[
-                    Text(bankPriceList![i].date.split('-')[0]),
-                    Text('${bankPriceList![i].date.split('-')[1]}-${bankPriceList![i].date.split('-')[2]}')
-                  ],
+        AutoScrollTag(
+          // ignore: always_specify_types
+          key: ValueKey(i),
+          index: i,
+          controller: autoScrollController,
+
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
+            child: Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 50,
+                  child: Column(
+                    children: <Widget>[
+                      Text(bankPriceList![i].date.split('-')[0]),
+                      Text('${bankPriceList![i].date.split('-')[1]}-${bankPriceList![i].date.split('-')[2]}')
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    displayRecordRow(data: bankPriceList!, index: i, beforePrice: keepPrice),
-                    GestureDetector(
-                      onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
-                      child: Text('delete', style: TextStyle(fontSize: 12, color: contextBlue)),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      displayRecordRow(data: bankPriceList!, index: i, beforePrice: keepPrice),
+                      GestureDetector(
+                        onTap: () => _showDeleteDialog(id: bankPriceList![i].id),
+                        child: Text('delete', style: TextStyle(fontSize: 12, color: contextBlue)),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
