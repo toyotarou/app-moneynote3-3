@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -67,7 +66,7 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: DefaultTextStyle(
-          style: GoogleFonts.kiwiMaru(fontSize: 12),
+          style: const TextStyle(fontFamily: 'KiwiMaru', fontSize: 12),
           child: Column(
             children: <Widget>[
               const SizedBox(height: 20),

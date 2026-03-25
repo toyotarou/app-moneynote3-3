@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
 
 import '../../../collections/bank_name.dart';
@@ -110,7 +109,7 @@ class _DataImportAlertState extends State<DataImportAlert> {
         width: double.infinity,
         height: double.infinity,
         child: DefaultTextStyle(
-          style: GoogleFonts.kiwiMaru(fontSize: 12),
+          style: const TextStyle(fontFamily: 'KiwiMaru', fontSize: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

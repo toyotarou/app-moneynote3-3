@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../collections/spend_item.dart';
 import '../../controllers/controllers_mixin.dart';
@@ -107,7 +106,7 @@ class _SpendYearlyGraphAlertState extends ConsumerState<SpendYearlyGraphAlert>
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: DefaultTextStyle(
-          style: GoogleFonts.kiwiMaru(fontSize: 12),
+          style: const TextStyle(fontFamily: 'KiwiMaru', fontSize: 12),
           child: Column(
             children: <Widget>[
               const SizedBox(height: 20),

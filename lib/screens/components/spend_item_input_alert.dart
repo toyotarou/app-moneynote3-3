@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -102,7 +101,7 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
         child: Container(
           padding: const EdgeInsets.all(10),
           child: DefaultTextStyle(
-            style: GoogleFonts.kiwiMaru(fontSize: 12),
+            style: const TextStyle(fontFamily: 'KiwiMaru', fontSize: 12),
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 20),

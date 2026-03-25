@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../collections/spend_time_place.dart';
@@ -137,7 +136,7 @@ class _SameYearDaySpendPriceListAlertState extends ConsumerState<SameYearDaySpen
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: DefaultTextStyle(
-          style: GoogleFonts.kiwiMaru(fontSize: 12),
+          style: const TextStyle(fontFamily: 'KiwiMaru', fontSize: 12),
           child: Column(
             children: <Widget>[
               const SizedBox(height: 20),

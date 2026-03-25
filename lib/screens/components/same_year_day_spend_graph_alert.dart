@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../extensions/extensions.dart';
 
@@ -52,7 +51,7 @@ class _SameYearDaySpendGraphAlertState extends ConsumerState<SameYearDaySpendGra
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: DefaultTextStyle(
-          style: GoogleFonts.kiwiMaru(fontSize: 12),
+          style: const TextStyle(fontFamily: 'KiwiMaru', fontSize: 12),
           child: Stack(
             children: <Widget>[
               Column(

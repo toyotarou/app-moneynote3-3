@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -68,7 +67,7 @@ class MyApp extends ConsumerWidget {
       ],
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          titleTextStyle: GoogleFonts.kiwiMaru(textStyle: const TextStyle(fontWeight: FontWeight.bold)),
+          titleTextStyle: const TextStyle(fontFamily: 'KiwiMaru', fontWeight: FontWeight.bold),
           backgroundColor: Colors.transparent,
         ),
         useMaterial3: false,
