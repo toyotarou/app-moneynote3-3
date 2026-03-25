@@ -50,8 +50,10 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
     with ControllersMixin<AllTotalMoneyGraphPage> {
   LineChartData graphData = LineChartData();
   LineChartData graphData2 = LineChartData();
+  LineChartData graphData3 = LineChartData();
 
   List<FlSpot> _flspots = <FlSpot>[];
+  Map<String, int> _dateToX = <String, int>{};
 
   int graphMin = 0;
   int graphMax = 0;
@@ -141,6 +143,16 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
               Container(width: context.screenSize.width),
               const SizedBox(height: 30),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+              Expanded(child: LineChart(graphData3)),
+              const SizedBox(height: 60),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(width: context.screenSize.width),
+              const SizedBox(height: 30),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
               Expanded(child: LineChart(graphData)),
               const SizedBox(height: 60),
             ],
@@ -153,6 +165,7 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
   ///
   void _setChartData() {
     _flspots = <FlSpot>[];
+    _dateToX = <String, int>{};
 
     String lastDate = '';
     int lastTotal = 0;
@@ -175,6 +188,7 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
         for (final Map<String, int> element in value) {
           for (final MapEntry<String, int> element2 in element.entries) {
             _flspots.add(FlSpot((i + 1).toDouble(), element2.value.toDouble()));
+            _dateToX[element2.key] = i + 1;
 
             list.add(element2.value);
 
@@ -294,6 +308,18 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
         ],
       );
 
+      graphData3 = LineChartData(
+        minX: 1,
+        maxX: _flspots.length.toDouble(),
+        minY: graphMin.toDouble(),
+        maxY: graphMax.toDouble(),
+        lineTouchData: const LineTouchData(enabled: false),
+        gridData: const FlGridData(show: false),
+        titlesData: const FlTitlesData(show: false),
+        borderData: FlBorderData(show: false),
+        lineBarsData: _buildMonthlyMomentumLines(),
+      );
+
       graphData2 = LineChartData(
         ///
         minX: 1,
@@ -369,5 +395,69 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
         lineBarsData: <LineChartBarData>[],
       );
     }
+  }
+
+  ///
+  List<LineChartBarData> _buildMonthlyMomentumLines() {
+    final List<LineChartBarData> result = <LineChartBarData>[];
+
+    if (_flspots.length < 2) {
+      return result;
+    }
+
+    final DateTime now = DateTime.now();
+    final DateTime today = DateTime(now.year, now.month, now.day);
+
+    final List<int> years = widget.year != null
+        ? <int>[widget.year!]
+        : (_dateToX.keys.map((String k) => int.parse(k.split('-')[0])).toSet().toList()..sort());
+
+    for (final int year in years) {
+      for (int m = 1; m <= 12; m++) {
+        DateTime end = DateTime(year, m + 1, 0); // 月末
+
+        if (year == today.year && m == today.month) {
+          end = today;
+        }
+
+        // 月初・月末の日付文字列で _dateToX から x を引く
+        final String startKey = '$year-${m.toString().padLeft(2, '0')}-01';
+        final String endKey =
+            '${end.year}-${end.month.toString().padLeft(2, '0')}-${end.day.toString().padLeft(2, '0')}';
+
+        final int? sX = _dateToX[startKey];
+        final int? eX = _dateToX[endKey];
+
+        if (sX == null || eX == null) {
+          continue;
+        }
+        if (sX >= eX) {
+          continue;
+        }
+
+        final int sI = sX - 1;
+        final int eI = eX - 1;
+
+        if (sI < 0 || sI >= _flspots.length) {
+          continue;
+        }
+        if (eI < 0 || eI >= _flspots.length) {
+          continue;
+        }
+
+        result.add(
+          LineChartBarData(
+            spots: <FlSpot>[_flspots[sI], _flspots[eI]],
+            color: Colors.white.withOpacity(0.20),
+            barWidth: 10,
+            dotData: const FlDotData(show: false),
+            isStrokeCapRound: true,
+            belowBarData: BarAreaData(),
+          ),
+        );
+      }
+    }
+
+    return result;
   }
 }

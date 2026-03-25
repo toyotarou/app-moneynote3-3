@@ -66,8 +66,8 @@ class MyApp extends ConsumerWidget {
         Locale('ja'),
       ],
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          titleTextStyle: const TextStyle(fontFamily: 'KiwiMaru', fontWeight: FontWeight.bold),
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(fontFamily: 'KiwiMaru', fontWeight: FontWeight.bold),
           backgroundColor: Colors.transparent,
         ),
         useMaterial3: false,
