@@ -86,7 +86,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
 
   ///
   Future<void> _makeTecs() async {
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 30; i++) {
       _placeTecs.add(TextEditingController(text: ''));
       _priceTecs.add(TextEditingController(text: ''));
     }
@@ -210,7 +210,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
   Widget _displayInputParts() {
     final List<Widget> list = <Widget>[];
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 30; i++) {
       final String item = spendTimePlacesControllerState.spendItem[i];
       final String time = spendTimePlacesControllerState.spendTime[i];
       final int price = spendTimePlacesControllerState.spendPrice[i];
@@ -475,7 +475,7 @@ class _SpendTimePlaceInputAlertState extends ConsumerState<SpendTimePlaceInputAl
     int spendPriceCount = 0;
     ////////////////////////// 同数チェック
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 30; i++) {
       //===============================================
       if (spendTimePlacesControllerState.spendItem[i].trim() != '項目名' &&
           spendTimePlacesControllerState.spendTime[i].trim() != '時間' &&

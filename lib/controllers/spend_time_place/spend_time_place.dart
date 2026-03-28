@@ -36,16 +36,15 @@ class SpendTimePlacesController extends _$SpendTimePlacesController {
   @override
   SpendTimePlacesControllerState build() {
     // ignore: always_specify_types
-    final List<String> spendTime = List.generate(20, (index) => '時間');
+    final List<String> spendTime = List.generate(30, (index) => '時間');
     // ignore: always_specify_types
-    final List<String> spendPlace = List.generate(20, (int index) => '');
+    final List<String> spendPlace = List.generate(30, (int index) => '');
     // ignore: always_specify_types
-    final List<String> spendItem = List.generate(20, (int index) => '項目名');
+    final List<String> spendItem = List.generate(30, (int index) => '項目名');
     // ignore: always_specify_types
-    final List<int> spendPrice = List.generate(20, (int index) => 0);
-
+    final List<int> spendPrice = List.generate(30, (int index) => 0);
     // ignore: always_specify_types
-    final List<bool> minusCheck = List.generate(20, (int index) => false);
+    final List<bool> minusCheck = List.generate(30, (int index) => false);
 
     return SpendTimePlacesControllerState(
       spendTime: spendTime,
@@ -117,17 +116,17 @@ class SpendTimePlacesController extends _$SpendTimePlacesController {
   }
 
   ///
-  Future<void> clearInputValue() async{
+  Future<void> clearInputValue() async {
     // ignore: always_specify_types
-    final List<String> spendTime = List.generate(20, (int index) => '時間');
+    final List<String> spendTime = List.generate(30, (int index) => '時間');
     // ignore: always_specify_types
-    final List<String> spendPlace = List.generate(20, (int index) => '');
+    final List<String> spendPlace = List.generate(30, (int index) => '');
     // ignore: always_specify_types
-    final List<String> spendItem = List.generate(20, (int index) => '項目名');
+    final List<String> spendItem = List.generate(30, (int index) => '項目名');
     // ignore: always_specify_types
-    final List<int> spendPrice = List.generate(20, (int index) => 0);
+    final List<int> spendPrice = List.generate(30, (int index) => 0);
     // ignore: always_specify_types
-    final List<bool> minusCheck = List.generate(20, (int index) => false);
+    final List<bool> minusCheck = List.generate(30, (int index) => false);
 
     state = state.copyWith(
       spendTime: spendTime,
