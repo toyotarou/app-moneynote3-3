@@ -195,6 +195,10 @@ class _DataImportAlertState extends State<DataImportAlert> {
     for (int i = 1; i < csvContentsList.length; i++) {
       final List<String> exLine = csvContentsList[i].split(',');
 
+      if (exLine.length == 1) {
+        continue;
+      }
+
       final List<Widget> widgetList2 = <Widget>[];
 
       for (int j = 1; j < exLine.length; j++) {
@@ -311,12 +315,6 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
   ///
   Future<void> registData() async {
-    if ((csvContentsList.length - 1) != importDataList.length) {
-      getErrorDialog(title: '登録できません。', content: '登録するデータが正しく選択されていません。');
-
-      return;
-    }
-
     switch (csvName) {
       case 'config':
         await ConfigsRepository()
