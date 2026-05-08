@@ -118,6 +118,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
 
   Map<String, String> configMap = <String, String>{};
 
+  late final List<String> _ymList;
+  TabController? _tabController;
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+    _ymList = _makeYmList();
+  }
+
+  ///
+  @override
+  void dispose() {
+    _tabController?.removeListener(_onTabChanged);
+    super.dispose();
+  }
+
+  ///
+  List<String> _makeYmList() {
+    final DateTime start = DateTime(2024);
+    final DateTime now = DateTime.now();
+    final List<String> list = <String>[];
+    DateTime cursor = start;
+    while (!cursor.isAfter(DateTime(now.year, now.month))) {
+      list.add(cursor.yyyymm);
+      cursor = DateTime(cursor.year, cursor.month + 1);
+    }
+    return list;
+  }
+
+  ///
+  int _getInitialTabIndex() {
+    final String initial = widget.baseYm ?? DateTime.now().yyyymm;
+    final int idx = _ymList.indexOf(initial);
+    return idx >= 0 ? idx : _ymList.length - 1;
+  }
+
+  ///
+  void _onTabChanged() {
+    if (_tabController != null && !_tabController!.indexIsChanging) {
+      calendarNotifier.setCalendarYearMonth(baseYm: _ymList[_tabController!.index]);
+    }
+  }
+
   ///
   void _init() {
     _makeMoneyList();
@@ -144,124 +188,110 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
     // ignore: always_specify_types
     Future(_init);
 
-    if (widget.baseYm != null) {
-      // ignore: always_specify_types
-      Future(() => calendarNotifier.setCalendarYearMonth(baseYm: widget.baseYm));
-    }
+    return DefaultTabController(
+      length: _ymList.length,
+      initialIndex: _getInitialTabIndex(),
+      child: Builder(
+        builder: (BuildContext tabContext) {
+          final TabController newController = DefaultTabController.of(tabContext);
+          if (newController != _tabController) {
+            _tabController?.removeListener(_onTabChanged);
+            _tabController = newController;
+            _tabController?.addListener(_onTabChanged);
+            calendarNotifier.setCalendarYearMonth(baseYm: _ymList[newController.index]);
+          }
 
-    return Scaffold(
-      backgroundColor: Colors.blueGrey.withOpacity(0.3),
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Row(
-          children: <Widget>[
-            Text(calendarsState.baseYearMonth),
-            const SizedBox(width: 10),
-            IconButton(
-              onPressed: _goPrevMonth,
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white.withOpacity(0.8), size: 14),
-            ),
-            IconButton(
-              onPressed: (DateTime.now().yyyymm == calendarsState.baseYearMonth) ? null : _goNextMonth,
-              icon: Icon(
-                Icons.arrow_forward_ios,
-                color: (DateTime.now().yyyymm == calendarsState.baseYearMonth)
-                    ? Colors.grey.withOpacity(0.6)
-                    : Colors.white.withOpacity(0.8),
-                size: 14,
+          return Scaffold(
+            backgroundColor: Colors.blueGrey.withOpacity(0.3),
+            key: _scaffoldKey,
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: const Text('money note'),
+              centerTitle: false,
+              backgroundColor: Colors.transparent,
+              bottom: TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                indicatorColor: Colors.blueAccent,
+                padding: EdgeInsets.zero,
+                tabs: _ymList.map((String ym) {
+                  final bool isCurrent = ym == DateTime.now().yyyymm;
+                  return Tab(
+                    child: Text(
+                      ym,
+                      style: TextStyle(fontSize: 12, color: isCurrent ? Colors.greenAccent : Colors.white),
+                    ),
+                  );
+                }).toList(),
               ),
-            ),
-          ],
-        ),
-        centerTitle: false,
-        backgroundColor: Colors.transparent,
-        actions: <Widget>[
-          if (appParamState.calendarDisp)
-            IconButton(
-              onPressed: () {
-                final List<int> years = <int>[];
+              actions: <Widget>[
+                if (appParamState.calendarDisp)
+                  IconButton(
+                    onPressed: () {
+                      final List<int> years = <int>[];
 
-                dateCurrencySumMap.forEach(
-                  (String key, int value) {
-                    final List<String> exKey = key.split('-');
-                    if (!years.contains(exKey[0].toInt())) {
-                      years.add(exKey[0].toInt());
+                      dateCurrencySumMap.forEach(
+                        (String key, int value) {
+                          final List<String> exKey = key.split('-');
+                          if (!years.contains(exKey[0].toInt())) {
+                            years.add(exKey[0].toInt());
+                          }
+
+                          allTotalMoneyMap[key] = dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
+                        },
+                      );
+
+                      final Map<String, int> spendMapMonthly = <String, int>{};
+
+                      int mSpend = 0;
+                      monthlySpendMap.forEach(
+                        (String key, int value) {
+                          mSpend += value;
+                          spendMapMonthly[key] = mSpend;
+                        },
+                      );
+
+                      MoneyDialog(
+                        context: context,
+                        widget: AllTotalMoneyGraphAlert(
+                          allTotalMoneyMap: allTotalMoneyMap,
+                          years: years,
+                          isar: widget.isar,
+                          monthlyDateSumMap: dateCurrencySumMap,
+                          bankPriceTotalPadMap: bankPriceTotalPadMap,
+                          monthlySpendMap: spendMapMonthly,
+                          thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
+                          allSpendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[],
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.stacked_line_chart, color: Colors.white.withOpacity(0.6), size: 20),
+                  ),
+                IconButton(
+                  onPressed: () {
+                    final int idx = _ymList.indexOf(DateTime.now().yyyymm);
+                    if (idx >= 0) {
+                      _tabController?.animateTo(idx);
                     }
-
-                    allTotalMoneyMap[key] = dateCurrencySumMap[key]! + bankPriceTotalPadMap[key]!;
                   },
-                );
-
-                final Map<String, int> spendMapMonthly = <String, int>{};
-
-                int mSpend = 0;
-                monthlySpendMap.forEach(
-                  (String key, int value) {
-                    mSpend += value;
-                    spendMapMonthly[key] = mSpend;
-                  },
-                );
-
-                MoneyDialog(
-                  context: context,
-                  widget: AllTotalMoneyGraphAlert(
-                    allTotalMoneyMap: allTotalMoneyMap,
-                    years: years,
-                    isar: widget.isar,
-                    monthlyDateSumMap: dateCurrencySumMap,
-                    bankPriceTotalPadMap: bankPriceTotalPadMap,
-                    monthlySpendMap: spendMapMonthly,
-                    thisMonthSpendTimePlaceList: thisMonthSpendTimePlaceList ?? <SpendTimePlace>[],
-                    allSpendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[],
-                  ),
-                );
-              },
-              icon: Icon(Icons.stacked_line_chart, color: Colors.white.withOpacity(0.6), size: 20),
-            ),
-          IconButton(
-            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-            icon: Icon(Icons.settings, color: Colors.white.withOpacity(0.6), size: 20),
-          )
-        ],
-      ),
-      body: Stack(
-        children: <Widget>[
-          const BackGroundImage(),
-          ClipPath(
-            clipper: CustomShapeClipper(),
-            child: Container(
-              height: context.screenSize.height * 0.9,
-              width: context.screenSize.width * 0.9,
-              margin: const EdgeInsets.only(top: 5, left: 6),
-              color: const Color(0xFFFBB6CE).withOpacity(0.6),
-              child: Text('■', style: TextStyle(color: Colors.white.withOpacity(0.1))),
-            ),
-          ),
-          Container(
-            width: context.screenSize.width,
-            height: context.screenSize.height,
-            decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
-          ),
-          SafeArea(
-            child: Column(
-              children: <Widget>[
-                _displayKurikoshiPrice(),
-                if (appParamState.calendarDisp) ...<Widget>[
-                  ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: context.screenSize.height * 0.45),
-                    child: _getCalendar(),
-                  ),
-                ],
-                if (!appParamState.calendarDisp) ...<Widget>[const SizedBox(height: 10)],
-                _displayMonthSum(),
-                Expanded(child: _displayMonthlySpendTimePlaceList()),
+                  icon: Icon(Icons.refresh, color: Colors.white.withOpacity(0.6), size: 20),
+                ),
+                IconButton(
+                  onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+                  icon: Icon(Icons.settings, color: Colors.white.withOpacity(0.6), size: 20),
+                )
               ],
             ),
-          ),
-        ],
+            body: TabBarView(
+              children: List<Widget>.generate(
+                _ymList.length,
+                (int _) => Builder(builder: (BuildContext _) => _buildBodyContent()),
+              ),
+            ),
+            endDrawer: _dispDrawer(),
+          );
+        },
       ),
-      endDrawer: _dispDrawer(),
     );
   }
 
@@ -296,8 +326,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                         context: context,
                         widget: SpendMonthlyListAlert(
                           isar: widget.isar,
-                          date:
-                              (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          date: DateTime.parse('${calendarsState.baseYearMonth}-01 00:00:00'),
                         ),
                       );
                     },
@@ -314,8 +343,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                       MoneyDialog(
                         context: context,
                         widget: SpendYearlyBlockAlert(
-                          date:
-                              (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          date: DateTime.parse('${calendarsState.baseYearMonth}-01 00:00:00'),
                           isar: widget.isar,
                           allSpendTimePlaceList: allSpendTimePlaceList ?? <SpendTimePlace>[],
                         ),
@@ -393,7 +421,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   Widget _displayKurikoshiPrice() {
     //=================================
 
-    final List<String> exYm = (widget.baseYm != null) ? widget.baseYm!.split('-') : DateTime.now().yyyymm.split('-');
+    final List<String> exYm = calendarsState.baseYearMonth.split('-');
 
     final String lastMonthLastDate = DateTime(exYm[0].toInt(), exYm[1].toInt(), 0).yyyymmdd;
 
@@ -471,9 +499,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                             context: context,
                             widget: MoneyListAlert(
                               isar: widget.isar,
-                              date: (widget.baseYm != null)
-                                  ? DateTime.parse('${widget.baseYm}-01 00:00:00')
-                                  : DateTime.now(),
+                              date: DateTime.parse('${calendarsState.baseYearMonth}-01 00:00:00'),
                               moneyList: moneyList,
                               bankNameList: bankNameList,
                               emoneyNameList: emoneyNameList,
@@ -491,6 +517,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
           ),
         ),
       ),
+    );
+  }
+
+  ///
+  Widget _buildBodyContent() {
+    return Stack(
+      children: <Widget>[
+        const BackGroundImage(),
+        ClipPath(
+          clipper: CustomShapeClipper(),
+          child: Container(
+            height: context.screenSize.height * 0.9,
+            width: context.screenSize.width * 0.9,
+            margin: const EdgeInsets.only(top: 5, left: 6),
+            color: const Color(0xFFFBB6CE).withOpacity(0.6),
+            child: Text('■', style: TextStyle(color: Colors.white.withOpacity(0.1))),
+          ),
+        ),
+        Container(
+          width: context.screenSize.width,
+          height: context.screenSize.height,
+          decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
+        ),
+        SafeArea(
+          child: Column(
+            children: <Widget>[
+              _displayKurikoshiPrice(),
+              if (appParamState.calendarDisp) ...<Widget>[
+                ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: context.screenSize.height * 0.45),
+                  child: _getCalendar(),
+                ),
+              ],
+              if (!appParamState.calendarDisp) ...<Widget>[const SizedBox(height: 10)],
+              _displayMonthSum(),
+              Expanded(child: _displayMonthlySpendTimePlaceList()),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -533,7 +599,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 onTap: () {
                   MoneyDialog(
                     context: context,
-                    widget: ConfigSettingAlert(isar: widget.isar, baseYm: widget.baseYm),
+                    widget: ConfigSettingAlert(isar: widget.isar, baseYm: calendarsState.baseYearMonth),
                   );
                 },
                 child: Row(
@@ -613,7 +679,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   await MoneyDialog(
                     context: context,
                     widget: DateMoneyRepairAlert(
-                      date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                      date: DateTime.parse('${calendarsState.baseYearMonth}-01 00:00:00'),
                       isar: widget.isar,
                     ),
                     executeFunctionWhenDialogClose: true,
@@ -642,8 +708,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   MoneyDialog(
                       context: context,
                       widget: SpendTimePlaceDeleteAlert(
-                          date:
-                              (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                          date: DateTime.parse('${calendarsState.baseYearMonth}-01 00:00:00'),
                           isar: widget.isar,
                           allSpendTimePlaceList: allSpendTimePlaceList));
                 },
@@ -670,7 +735,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                     await MoneyDialog(
                       context: context,
                       widget: IncomeInputAlert(
-                        date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                        date: DateTime.parse('${calendarsState.baseYearMonth}-01 00:00:00'),
                         isar: widget.isar,
                       ),
                     );
@@ -1213,10 +1278,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
               allSpendTimePlaceList = value;
 
               if (value!.isNotEmpty) {
-                final String? yearmonth = (widget.baseYm != null) ? widget.baseYm : DateTime.now().yyyymm;
+                final String yearmonth = calendarsState.baseYearMonth;
 
                 final String prevYearMonth =
-                    DateTime(yearmonth!.split('-')[0].toInt(), yearmonth.split('-')[1].toInt() - 1).yyyymm;
+                    DateTime(yearmonth.split('-')[0].toInt(), yearmonth.split('-')[1].toInt() - 1).yyyymm;
 
                 if (_spendItemList != null) {
                   final Map<String, List<SpendTimePlace>> map = <String, List<SpendTimePlace>>{};
@@ -1372,7 +1437,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                     onTap: () => MoneyDialog(
                       context: context,
                       widget: SpendItemHistoryAlert(
-                        date: (widget.baseYm != null) ? DateTime.parse('${widget.baseYm}-01 00:00:00') : DateTime.now(),
+                        date: DateTime.parse('${calendarsState.baseYearMonth}-01 00:00:00'),
                         isar: widget.isar,
                         item: element.spendItemName,
                         sum: plusSum + minusSum,
@@ -1447,28 +1512,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
           );
         }
       },
-    );
-  }
-
-  ///
-  void _goPrevMonth() {
-    Navigator.pushReplacement(
-      context,
-      // ignore: inference_failure_on_instance_creation, always_specify_types
-      MaterialPageRoute(
-        builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarsState.prevYearMonth),
-      ),
-    );
-  }
-
-  ///
-  void _goNextMonth() {
-    Navigator.pushReplacement(
-      context,
-      // ignore: inference_failure_on_instance_creation, always_specify_types
-      MaterialPageRoute(
-        builder: (BuildContext context) => HomeScreen(isar: widget.isar, baseYm: calendarsState.nextYearMonth),
-      ),
     );
   }
 
