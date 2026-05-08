@@ -50,6 +50,7 @@ import 'components/spend_item_re_input_alert.dart';
 import 'components/spend_monthly_list_alert.dart';
 import 'components/spend_time_place_delete_alert.dart';
 import 'components/spend_yearly_block_alert.dart';
+import 'components/table_data_delete_alert.dart';
 import 'login_screen.dart';
 
 // ignore: must_be_immutable
@@ -847,6 +848,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
               ),
               Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+
+              GestureDetector(
+                onTap: () => MoneyDialog(context: context, widget: const TableDataDeleteAlert()),
+                child: Row(
+                  children: <Widget>[
+                    const MenuHeadIcon(),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                        margin: const EdgeInsets.all(5),
+                        child: const Text('テーブルデータ削除'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.white.withOpacity(0.4), thickness: 5),
+
               GestureDetector(
                 onTap: () => MoneyDialog(context: context, widget: LoginAccountDisplayAlert(isar: widget.isar)),
                 child: Row(
