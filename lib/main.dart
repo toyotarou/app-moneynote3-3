@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'collections/bank_name.dart';
 import 'collections/bank_price.dart';
@@ -17,6 +18,7 @@ import 'collections/money.dart';
 import 'collections/spend_item.dart';
 import 'collections/spend_time_place.dart';
 import 'page_size_checker.dart';
+import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 
 void main() async {
@@ -40,15 +42,19 @@ void main() async {
     LoginAccountSchema
   ], directory: dir.path);
 
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
   await SystemChrome.setPreferredOrientations(
           <DeviceOrientation>[DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
-      .then((_) => runApp(ProviderScope(child: MyApp(isar: isar))));
+      .then((_) => runApp(ProviderScope(child: MyApp(isar: isar, isLoggedIn: isLoggedIn))));
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key, required this.isar});
+  const MyApp({super.key, required this.isar, required this.isLoggedIn});
 
   final Isar isar;
+  final bool isLoggedIn;
 
   ///
   @override
@@ -77,7 +83,12 @@ class MyApp extends ConsumerWidget {
       themeMode: ThemeMode.dark,
       title: 'money note',
       debugShowCheckedModeBanner: false,
-      home: GestureDetector(onTap: () => primaryFocus?.unfocus(), child: LoginScreen(isar: isar)),
+
+      ///AAA
+      home: GestureDetector(
+        onTap: () => primaryFocus?.unfocus(),
+        child: isLoggedIn ? HomeScreen(isar: isar) : LoginScreen(isar: isar),
+      ),
     );
   }
 }

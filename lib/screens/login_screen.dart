@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../collections/config.dart';
 import '../collections/login_account.dart';
@@ -267,7 +268,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
   }
 
   ///
-  void _login() {
+  Future<void> _login() async {
     bool errFlg = false;
 
     if (mailAddressEditingController.text.trim() == '' || passwordEditingController.text.trim() == '') {
@@ -291,6 +292,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with ControllersMixin
 
         passwordEditingController.clear();
 
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+
+        if (!mounted) {
+          return;
+        }
         Navigator.pushReplacement(
             context,
             // ignore: inference_failure_on_instance_creation, always_specify_types

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
@@ -198,7 +199,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
             _tabController?.removeListener(_onTabChanged);
             _tabController = newController;
             _tabController?.addListener(_onTabChanged);
-            calendarNotifier.setCalendarYearMonth(baseYm: _ymList[newController.index]);
+            Future(() => calendarNotifier.setCalendarYearMonth(baseYm: _ymList[newController.index]));
           }
 
           return Scaffold(
@@ -949,7 +950,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                 ),
               ),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  final SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.setBool('isLoggedIn', false);
+                  if (!mounted) {
+                    return;
+                  }
                   Navigator.pushReplacement(
                     context,
 

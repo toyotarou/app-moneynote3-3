@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../collections/login_account.dart';
 import '../../extensions/extensions.dart';
@@ -135,8 +136,13 @@ class _LoginAccountDisplayAlertState extends ConsumerState<LoginAccountDisplayAl
   Future<void> _deleteLoginAccount({required int id}) async {
     LoginAccountsRepository().deleteLoginAccount(isar: widget.isar, id: id).then(
       // ignore: always_specify_types
-      (value) {
+      (value) async {
         if (mounted) {
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', false);
+          if (!mounted) {
+            return;
+          }
           Navigator.pushReplacement(
             context,
 
