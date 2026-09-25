@@ -62,9 +62,7 @@ emoney-5: [{2023-12-11: 50000}]}
         // 日付→金額のマップを先に作れば日数分のループだけで済む。
         // 同じ日付の記録が複数ある場合は、以前と同じく後ろ（リストの後の方）の値が優先される
         final Map<String, int> datePriceMap = <String, int>{};
-        for (final Map<String, int> element in value) {
-          datePriceMap.addAll(element);
-        }
+        value.forEach(datePriceMap.addAll);
 
         final Map<String, int> map4 = <String, int>{};
 

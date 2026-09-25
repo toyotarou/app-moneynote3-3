@@ -262,6 +262,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
             _tabController?.removeListener(_onTabChanged);
             _tabController = newController;
             _tabController?.addListener(_onTabChanged);
+            // ignore: always_specify_types
             Future(() => calendarNotifier.setCalendarYearMonth(baseYm: _ymList[newController.index]));
           }
 

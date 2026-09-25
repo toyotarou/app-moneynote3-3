@@ -200,54 +200,66 @@ void _moneyAttach(IsarCollection<dynamic> col, Id id, Money object) {
 
 extension MoneyByIndex on IsarCollection<Money> {
   Future<Money?> getByDate(String date) {
+    // ignore: experimental_member_use
     return getByIndex(r'date', [date]);
   }
 
   Money? getByDateSync(String date) {
+    // ignore: experimental_member_use
     return getByIndexSync(r'date', [date]);
   }
 
   Future<bool> deleteByDate(String date) {
+    // ignore: experimental_member_use
     return deleteByIndex(r'date', [date]);
   }
 
   bool deleteByDateSync(String date) {
+    // ignore: experimental_member_use
     return deleteByIndexSync(r'date', [date]);
   }
 
   Future<List<Money?>> getAllByDate(List<String> dateValues) {
     final values = dateValues.map((e) => [e]).toList();
+    // ignore: experimental_member_use
     return getAllByIndex(r'date', values);
   }
 
   List<Money?> getAllByDateSync(List<String> dateValues) {
     final values = dateValues.map((e) => [e]).toList();
+    // ignore: experimental_member_use
     return getAllByIndexSync(r'date', values);
   }
 
   Future<int> deleteAllByDate(List<String> dateValues) {
     final values = dateValues.map((e) => [e]).toList();
+    // ignore: experimental_member_use
     return deleteAllByIndex(r'date', values);
   }
 
   int deleteAllByDateSync(List<String> dateValues) {
     final values = dateValues.map((e) => [e]).toList();
+    // ignore: experimental_member_use
     return deleteAllByIndexSync(r'date', values);
   }
 
   Future<Id> putByDate(Money object) {
+    // ignore: experimental_member_use
     return putByIndex(r'date', object);
   }
 
   Id putByDateSync(Money object, {bool saveLinks = true}) {
+    // ignore: experimental_member_use
     return putByIndexSync(r'date', object, saveLinks: saveLinks);
   }
 
   Future<List<Id>> putAllByDate(List<Money> objects) {
+    // ignore: experimental_member_use
     return putAllByIndex(r'date', objects);
   }
 
   List<Id> putAllByDateSync(List<Money> objects, {bool saveLinks = true}) {
+    // ignore: experimental_member_use
     return putAllByIndexSync(r'date', objects, saveLinks: saveLinks);
   }
 }
