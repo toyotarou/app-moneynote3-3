@@ -11,6 +11,7 @@ import '../../collections/emoney_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/emoney_names_repository.dart';
+import '../../utilities/utilities.dart';
 import 'emoney_name_input_alert.dart';
 import 'parts/money_dialog.dart';
 
@@ -28,10 +29,34 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
   // ignore: use_late_for_private_fields_and_variables
   List<EmoneyName>? _emoneyNameList = <EmoneyName>[];
 
+  late final IsarChangeWatcher _isarChangeWatcher;
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    // 以前は build のたびに DB を読み直し → setState → build … を繰り返していた（表示中ずっと読み込みが走っていた）。
+    // 最初に1回読み込み、以降は DB に変更があったときだけ読み直す
+    _makeEmoneyNameList();
+
+    _isarChangeWatcher = IsarChangeWatcher(
+      streams: <Stream<void>>[widget.isar.emoneyNames.watchLazy()],
+      onChanged: _makeEmoneyNameList,
+    );
+  }
+
+  ///
+  @override
+  void dispose() {
+    _isarChangeWatcher.dispose();
+
+    super.dispose();
+  }
+
   ///
   @override
   Widget build(BuildContext context) {
-    _makeEmoneyNameList();
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -89,7 +114,11 @@ class _EmoneyNameListAlertState extends ConsumerState<EmoneyNameListAlert> {
   Future<void> _makeEmoneyNameList() async {
     await EmoneyNamesRepository()
         .getEmoneyNameList(isar: widget.isar)
-        .then((List<EmoneyName>? value) => setState(() => _emoneyNameList = value));
+        .then((List<EmoneyName>? value) {
+      if (mounted) {
+        setState(() => _emoneyNameList = value);
+      }
+    });
   }
 
   ///

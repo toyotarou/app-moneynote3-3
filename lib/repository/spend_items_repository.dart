@@ -24,9 +24,10 @@ class SpendItemsRepository {
   ///
   Future<void> inputSpendItemList(
       {required Isar isar, required List<SpendItem> spendItemList}) async {
-    for (final SpendItem element in spendItemList) {
-      inputSpendItem(isar: isar, spendItem: element);
-    }
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする
+    final IsarCollection<SpendItem> spendItemsCollection =
+        getCollection(isar: isar);
+    await isar.writeTxn(() async => spendItemsCollection.putAll(spendItemList));
   }
 
   ///

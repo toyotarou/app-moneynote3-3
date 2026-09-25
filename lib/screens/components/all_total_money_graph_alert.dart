@@ -54,9 +54,13 @@ class _AllTotalMoneyGraphAlertState extends State<AllTotalMoneyGraphAlert> {
 
     WidgetsBinding.instance.addPostFrameCallback(
       (Duration timeStamp) {
-        setState(() {
-          alertWidth = globalKey.currentContext!.size!.width;
-        });
+        final double? width = globalKey.currentContext?.size?.width;
+
+        // 幅が変わったときだけ setState する
+        // （以前は毎回 setState → build → また setState … と毎フレーム再ビルドし続けていた）
+        if (mounted && width != null && width != alertWidth) {
+          setState(() => alertWidth = width);
+        }
       },
     );
 

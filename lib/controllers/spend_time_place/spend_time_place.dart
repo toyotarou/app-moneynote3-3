@@ -56,7 +56,15 @@ class SpendTimePlacesController extends _$SpendTimePlacesController {
   }
 
   ///
-  void setBaseDiff({required String baseDiff}) => state = state.copyWith(baseDiff: baseDiff);
+  void setBaseDiff({required String baseDiff}) {
+    // SpendTimePlaceInputAlert の build のたびに呼ばれる。同じ値で state を作り直すと
+    // 購読側が再ビルドされ → また呼ばれる … と繰り返すため、値が変わったときだけ更新する
+    if (state.baseDiff == baseDiff) {
+      return;
+    }
+
+    state = state.copyWith(baseDiff: baseDiff);
+  }
 
   ///
   void setBlinkingFlag({required bool blinkingFlag}) => state = state.copyWith(blinkingFlag: blinkingFlag);

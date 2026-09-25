@@ -24,9 +24,10 @@ class BankNamesRepository {
   ///
   Future<void> inputBankNameList(
       {required Isar isar, required List<BankName> bankNameList}) async {
-    for (final BankName element in bankNameList) {
-      inputBankName(isar: isar, bankName: element);
-    }
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする
+    final IsarCollection<BankName> bankNamesCollection =
+        getCollection(isar: isar);
+    await isar.writeTxn(() async => bankNamesCollection.putAll(bankNameList));
   }
 
   ///

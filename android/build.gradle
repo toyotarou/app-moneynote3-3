@@ -37,7 +37,8 @@ subprojects {
                 project.plugins.hasPlugin("com.android.library")) {
             project.android {
                 compileSdkVersion 35
-                buildToolsVersion "34.0.0"
+                // AGP 8.11 の最低要件が 35.0.0 のため（34 のままだと無視され警告が出る）
+                buildToolsVersion "35.0.0"
             }
         }
         if (project.hasProperty("android")) {

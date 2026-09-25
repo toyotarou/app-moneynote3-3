@@ -35,18 +35,43 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert>
 
   List<SpendItem>? _spendItemList = <SpendItem>[];
 
-  ///
-  void _init() {
-    _makeMonthlySpendTimePlaceList();
+  late final IsarChangeWatcher _isarChangeWatcher;
 
-    _makeSpendItemList();
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    // 以前は build のたびに DB を読み直し → setState → build … を繰り返していた（表示中ずっと読み込みが走っていた）。
+    // 最初に1回読み込み、以降は DB に変更があったときだけ読み直す
+    _init();
+
+    _isarChangeWatcher = IsarChangeWatcher(
+      streams: <Stream<void>>[widget.isar.spendTimePlaces.watchLazy(), widget.isar.spendItems.watchLazy()],
+      onChanged: _init,
+    );
+  }
+
+  ///
+  @override
+  void dispose() {
+    _isarChangeWatcher.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  Future<void> _init() async {
+    // 日別の集計に消費アイテム一覧を使うので、先に読み込む
+    // （以前は並行して読んでいたため、最初は空の一覧で集計され、ループの2周目でようやく正しい値になっていた）
+    await _makeSpendItemList();
+
+    await _makeMonthlySpendTimePlaceList();
   }
 
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -79,8 +104,15 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert>
     await SpendTimePlacesRepository()
         .getDateSpendTimePlaceList(isar: widget.isar, param: param)
         .then((List<SpendTimePlace>? value) {
+      if (!mounted) {
+        return;
+      }
+
       setState(() {
         monthlySpendTimePlaceList = value;
+
+        // 以前は追記だけでクリアしていなかったため、削除した記録の値がアプリ再起動まで残っていた。
+        _monthlySpendTimePlaceMap.clear();
 
         if (value!.isNotEmpty) {
           final Map<String, List<SpendTimePlace>> map = <String, List<SpendTimePlace>>{};
@@ -188,5 +220,9 @@ class _SpendMonthlyListAlertState extends ConsumerState<SpendMonthlyListAlert>
   ///
   Future<void> _makeSpendItemList() async => SpendItemsRepository()
       .getSpendItemList(isar: widget.isar)
-      .then((List<SpendItem>? value) => setState(() => _spendItemList = value));
+      .then((List<SpendItem>? value) {
+        if (mounted) {
+          setState(() => _spendItemList = value);
+        }
+      });
 }

@@ -11,6 +11,7 @@ import '../../collections/bank_name.dart';
 import '../../enums/deposit_type.dart';
 import '../../extensions/extensions.dart';
 import '../../repository/bank_names_repository.dart';
+import '../../utilities/utilities.dart';
 import 'bank_name_input_alert.dart';
 import 'parts/money_dialog.dart';
 
@@ -27,10 +28,34 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
   // ignore: use_late_for_private_fields_and_variables
   List<BankName>? _bankNameList = <BankName>[];
 
+  late final IsarChangeWatcher _isarChangeWatcher;
+
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    // 以前は build のたびに DB を読み直し → setState → build … を繰り返していた（表示中ずっと読み込みが走っていた）。
+    // 最初に1回読み込み、以降は DB に変更があったときだけ読み直す
+    _makeBankNameList();
+
+    _isarChangeWatcher = IsarChangeWatcher(
+      streams: <Stream<void>>[widget.isar.bankNames.watchLazy()],
+      onChanged: _makeBankNameList,
+    );
+  }
+
+  ///
+  @override
+  void dispose() {
+    _isarChangeWatcher.dispose();
+
+    super.dispose();
+  }
+
   ///
   @override
   Widget build(BuildContext context) {
-    _makeBankNameList();
 
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
@@ -84,8 +109,11 @@ class _BankNameListAlertState extends ConsumerState<BankNameListAlert> {
   ///
   Future<void> _makeBankNameList() async => BankNamesRepository()
       .getBankNameList(isar: widget.isar)
-      // ignore: always_specify_types
-      .then((value) => setState(() => _bankNameList = value));
+      .then((List<BankName>? value) {
+        if (mounted) {
+          setState(() => _bankNameList = value);
+        }
+      });
 
   ///
   Future<List<Widget>> _displayBankNames() async {

@@ -13,6 +13,7 @@ import '../../extensions/extensions.dart';
 import '../../repository/spend_items_repository.dart';
 import '../../repository/spend_time_places_repository.dart';
 import '../../utilities/functions.dart';
+import '../../utilities/utilities.dart';
 import 'each_month_item_summary_alert.dart';
 import 'parts/money_dialog.dart';
 import 'spend_yearly_graph_alert.dart';
@@ -36,18 +37,43 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
 
   List<SpendItem>? _spendItemList = <SpendItem>[];
 
-  ///
-  void _init() {
-    _makeYearlySpendSumMap();
+  late final IsarChangeWatcher _isarChangeWatcher;
 
-    _makeSpendItemList();
+  ///
+  @override
+  void initState() {
+    super.initState();
+
+    // 以前は build のたびに DB を読み直し → setState → build … を繰り返していた（表示中ずっと読み込みが走っていた）。
+    // 最初に1回読み込み、以降は DB に変更があったときだけ読み直す
+    _init();
+
+    _isarChangeWatcher = IsarChangeWatcher(
+      streams: <Stream<void>>[widget.isar.spendTimePlaces.watchLazy(), widget.isar.spendItems.watchLazy()],
+      onChanged: _init,
+    );
+  }
+
+  ///
+  @override
+  void dispose() {
+    _isarChangeWatcher.dispose();
+
+    super.dispose();
+  }
+
+  ///
+  Future<void> _init() async {
+    // 年間集計に消費アイテム一覧を使うので、先に読み込む
+    // （以前は並行して読んでいたため、最初は空の一覧で集計され、ループの2周目でようやく正しい値になっていた）
+    await _makeSpendItemList();
+
+    await _makeYearlySpendSumMap();
   }
 
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -98,6 +124,10 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
     await SpendTimePlacesRepository()
         .getDateSpendTimePlaceList(isar: widget.isar, param: param)
         .then((List<SpendTimePlace>? value) {
+      if (!mounted) {
+        return;
+      }
+
       setState(() {
         yearlySpendTimePlaceList = value;
 
@@ -296,5 +326,9 @@ class _SpendYearlyBlockAlertState extends ConsumerState<SpendYearlyBlockAlert> {
   ///
   Future<void> _makeSpendItemList() async => SpendItemsRepository()
       .getSpendItemList(isar: widget.isar)
-      .then((List<SpendItem>? value) => setState(() => _spendItemList = value));
+      .then((List<SpendItem>? value) {
+        if (mounted) {
+          setState(() => _spendItemList = value);
+        }
+      });
 }

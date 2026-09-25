@@ -38,9 +38,9 @@ class SpendTimePlacesRepository {
 
   ///
   Future<void> inputSpendTimePriceList({required Isar isar, required List<SpendTimePlace> spendTimePriceList}) async {
-    for (final SpendTimePlace element in spendTimePriceList) {
-      inputSpendTimePrice(isar: isar, spendTimePlace: element);
-    }
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection = getCollection(isar: isar);
+    await isar.writeTxn(() async => spendTimePlacesCollection.putAll(spendTimePriceList));
   }
 
   ///
@@ -64,7 +64,14 @@ class SpendTimePlacesRepository {
 
   ///
   Future<void> deleteSpendTimePriceList({required Isar isar, required List<SpendTimePlace>? spendTimePriceList}) async {
-    spendTimePriceList?.forEach((SpendTimePlace element) => deleteSpendTimePrice(isar: isar, id: element.id));
+    if (spendTimePriceList == null || spendTimePriceList.isEmpty) {
+      return;
+    }
+
+    // 削除完了を待たずに戻っていたため、直後の登録と順序が入れ替わる恐れがあった。1トランザクションで一括削除する
+    final IsarCollection<SpendTimePlace> spendTimePlacesCollection = getCollection(isar: isar);
+    await isar.writeTxn(
+        () async => spendTimePlacesCollection.deleteAll(spendTimePriceList.map((SpendTimePlace e) => e.id).toList()));
   }
 
   ///

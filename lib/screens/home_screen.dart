@@ -10,7 +10,6 @@ import '../collections/bank_name.dart';
 import '../collections/bank_price.dart';
 import '../collections/config.dart';
 import '../collections/emoney_name.dart';
-import '../collections/income.dart';
 import '../collections/money.dart';
 import '../collections/spend_item.dart';
 import '../collections/spend_time_place.dart';
@@ -20,7 +19,6 @@ import '../repository/bank_names_repository.dart';
 import '../repository/bank_prices_repository.dart';
 import '../repository/configs_repository.dart';
 import '../repository/emoney_names_repository.dart';
-import '../repository/incomes_repository.dart';
 import '../repository/moneys_repository.dart';
 import '../repository/spend_items_repository.dart';
 import '../repository/spend_time_places_repository.dart';
@@ -65,7 +63,7 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<HomeScreen>, WidgetsBindingObserver {
   DateTime _calendarMonthFirst = DateTime.now();
   final List<String> _youbiList = <String>[
     'Sunday',
@@ -122,16 +120,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   late final List<String> _ymList;
   TabController? _tabController;
 
+  late final IsarChangeWatcher _isarChangeWatcher;
+
+  /// 読み込み済みの年月（表示月が変わったら読み直す）
+  String? _loadedYearMonth;
+
+  bool _loading = false;
+
+  bool _reloadRequested = false;
+
   ///
   @override
   void initState() {
     super.initState();
     _ymList = _makeYmList();
+
+    WidgetsBinding.instance.addObserver(this);
+
+    // 以前は build のたびに全テーブルを読み直し → setState → build … を繰り返していた（画面表示中ずっと全件読み込みが走っていた）。
+    // DB に変更があったとき（どの画面から書き込まれても）だけ読み直す
+    _isarChangeWatcher = IsarChangeWatcher(
+      streams: <Stream<void>>[
+        widget.isar.moneys.watchLazy(),
+        widget.isar.bankPrices.watchLazy(),
+        widget.isar.spendTimePlaces.watchLazy(),
+        widget.isar.bankNames.watchLazy(),
+        widget.isar.emoneyNames.watchLazy(),
+        widget.isar.spendItems.watchLazy(),
+        widget.isar.configs.watchLazy(),
+      ],
+      onChanged: _loadAll,
+    );
   }
 
   ///
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _isarChangeWatcher.dispose();
     _tabController?.removeListener(_onTabChanged);
     super.dispose();
   }
@@ -164,19 +190,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   }
 
   ///
-  void _init() {
-    _makeMoneyList();
-    _makeBankPriceList();
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // 銀行残高は「今日」までの日割りで作るため、日付をまたいで復帰した場合に備えて読み直す
+    // （以前は常時読み込みループで結果的に更新されていた）
+    if (state == AppLifecycleState.resumed) {
+      _loadAll();
+    }
+  }
 
-    _makeSpendTimePlaceList();
+  ///
+  Future<void> _loadAll() async {
+    // 読み込み中に再読み込み要求が来たら、終わった後にもう1周だけ読み直す（同時に複数走らせない）
+    if (_loading) {
+      _reloadRequested = true;
+      return;
+    }
 
-    _makeBankNameList();
+    _loading = true;
 
-    _makeSpendItemList();
+    try {
+      do {
+        _reloadRequested = false;
 
-    _makeIncomeList();
+        if (!mounted) {
+          return;
+        }
 
-    _makeConfigMap();
+        // 依存関係の順に読む
+        // （銀行残高の集計は設定値（buttonLabelTextList）を、支出の集計は消費アイテム一覧を使うため）
+        await _makeConfigMap();
+        await _makeSpendItemList();
+        await _makeMoneyList();
+        await _makeBankPriceList();
+        await _makeSpendTimePlaceList();
+        await _makeBankNameList();
+      } while (_reloadRequested);
+    } finally {
+      _loading = false;
+
+      // 読み込み途中で例外が起きた場合でも、その間に来た再読み込み要求は捨てない
+      if (_reloadRequested && mounted) {
+        // ignore: always_specify_types
+        Future(_loadAll);
+      }
+    }
   }
 
   bool getAllTotalMoneyMap = false;
@@ -186,8 +244,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
+    // 初回と、表示する年月が変わったときだけ読み込む
+    if (_loadedYearMonth != calendarsState.baseYearMonth) {
+      _loadedYearMonth = calendarsState.baseYearMonth;
+
+      // ignore: always_specify_types
+      Future(_loadAll);
+    }
 
     return DefaultTabController(
       length: _ymList.length,
@@ -230,6 +293,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                   IconButton(
                     onPressed: () {
                       final List<int> years = <int>[];
+
+                      // 前回開いたときの値（削除済みの日付を含む）が残らないよう、毎回作り直す
+                      allTotalMoneyMap.clear();
 
                       dateCurrencySumMap.forEach(
                         (String key, int value) {
@@ -408,7 +474,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                       ),
                     );
                   },
-                  child: Icon(FontAwesomeIcons.diamond, color: Colors.white.withOpacity(0.6), size: 20),
+                  child: FaIcon(FontAwesomeIcons.diamond, color: Colors.white.withOpacity(0.6), size: 20),
                 ),
               ],
             ),
@@ -508,7 +574,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
                             ),
                           );
                         },
-                        icon: Icon(FontAwesomeIcons.list, color: Colors.white.withOpacity(0.6), size: 16),
+                        icon: FaIcon(FontAwesomeIcons.list, color: Colors.white.withOpacity(0.6), size: 16),
                       ),
                     ],
                   ],
@@ -565,15 +631,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
   Widget _dispDrawer() {
     const bool isRelease = bool.fromEnvironment('dart.vm.product');
 
-    buttonLabelTextList.clear();
-
-    if (configMap['useBankManage'] != 'false') {
-      buttonLabelTextList.add('金融機関');
-    }
-
-    if (configMap['useEmoneyManage'] != 'false') {
-      buttonLabelTextList.add('電子マネー');
-    }
+    _updateButtonLabelTextList();
 
     return Drawer(
       backgroundColor: Colors.blueGrey.withOpacity(0.2),
@@ -1226,6 +1284,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
             () {
               moneyList = value;
 
+              // 以前は追記だけでクリアしていなかったため、削除した記録の値がアプリ再起動まで残っていた。
+              // ダイアログにも同じインスタンスを渡しているので、作り直さずに中身を入れ替える
+              dateCurrencySumMap.clear();
+              moneyMap.clear();
+              monthFirstDateList.clear();
+
               if (value!.isNotEmpty) {
                 value
                   ..forEach(
@@ -1282,6 +1346,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
           setState(
             () {
               allSpendTimePlaceList = value;
+
+              // 以前は追記だけでクリアしていなかったため、削除した記録の値がアプリ再起動まで残っていた。
+              // （明細が0件になった場合も、前回の集計が残らないようにここで空にしておく）
+              monthlySpendTimePlaceSumMap.clear();
+              thisMonthSpendTimePlaceList = <SpendTimePlace>[];
+              prevMonthSpendTimePlaceList = <SpendTimePlace>[];
+
+              if (_spendItemList != null) {
+                spendTimePlaceCountMap = <String, List<SpendTimePlace>>{
+                  for (final SpendItem element in _spendItemList!) element.spendItemName: <SpendTimePlace>[],
+                };
+              }
 
               if (value!.isNotEmpty) {
                 final String yearmonth = calendarsState.baseYearMonth;
@@ -1530,12 +1606,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
         },
       );
 
-  ///
-  Future<void> _makeIncomeList() async => IncomesRepository().getIncomeList(isar: widget.isar).then(
-        (List<Income>? value) {
-          if (mounted) {}
-        },
-      );
 
   ///
   Future<void> _makeConfigMap() async {
@@ -1544,15 +1614,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with ControllersMixin<H
         if (mounted) {
           setState(
             () {
+              // 以前は追記だけでクリアしていなかったため、削除した記録の値がアプリ再起動まで残っていた。
+              configMap.clear();
+
               if (value!.isNotEmpty) {
                 for (final Config element in value) {
                   configMap[element.configKey] = element.configValue;
                 }
               }
+
+              // 銀行残高の集計（_makeBankPriceList）で使うので、描画を待たずにここで更新しておく
+              _updateButtonLabelTextList();
             },
           );
         }
       },
     );
+  }
+
+  ///
+  void _updateButtonLabelTextList() {
+    buttonLabelTextList.clear();
+
+    if (configMap['useBankManage'] != 'false') {
+      buttonLabelTextList.add('金融機関');
+    }
+
+    if (configMap['useEmoneyManage'] != 'false') {
+      buttonLabelTextList.add('電子マネー');
+    }
   }
 }

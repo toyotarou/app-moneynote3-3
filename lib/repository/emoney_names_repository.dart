@@ -25,9 +25,10 @@ class EmoneyNamesRepository {
   ///
   Future<void> inputEmoneyNameList(
       {required Isar isar, required List<EmoneyName> emoneyNameList}) async {
-    for (final EmoneyName element in emoneyNameList) {
-      inputEmoneyName(isar: isar, emoneyName: element);
-    }
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする
+    final IsarCollection<EmoneyName> emoneyNamesCollection =
+        getCollection(isar: isar);
+    await isar.writeTxn(() async => emoneyNamesCollection.putAll(emoneyNameList));
   }
 
   ///

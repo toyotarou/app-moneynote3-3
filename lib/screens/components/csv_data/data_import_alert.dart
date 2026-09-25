@@ -315,96 +315,102 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
   ///
   Future<void> registData() async {
-    switch (csvName) {
-      case 'config':
-        await ConfigsRepository()
-            .inputConfigList(isar: widget.isar, configList: importDataList as List<Config>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+    // 一括登録は1トランザクションになり、失敗すると例外が返るようになった（以前は失敗しても気付けなかった）。
+    // 失敗時はダイアログで知らせる
+    try {
+      switch (csvName) {
+        case 'config':
+          await ConfigsRepository()
+              .inputConfigList(isar: widget.isar, configList: importDataList as List<Config>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
 
-      case 'loginAccount':
-        await LoginAccountsRepository()
-            .inputLoginAccountList(isar: widget.isar, loginAccountList: importDataList as List<LoginAccount>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'loginAccount':
+          await LoginAccountsRepository()
+              .inputLoginAccountList(isar: widget.isar, loginAccountList: importDataList as List<LoginAccount>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
 
-      case 'bankName':
-        await BankNamesRepository()
-            .inputBankNameList(isar: widget.isar, bankNameList: importDataList as List<BankName>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'bankName':
+          await BankNamesRepository()
+              .inputBankNameList(isar: widget.isar, bankNameList: importDataList as List<BankName>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
 
-      case 'bankPrice':
-        await BankPricesRepository()
-            .inputBankPriceList(isar: widget.isar, bankPriceList: importDataList as List<BankPrice>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'bankPrice':
+          await BankPricesRepository()
+              .inputBankPriceList(isar: widget.isar, bankPriceList: importDataList as List<BankPrice>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
 
-      case 'emoneyName':
-        await EmoneyNamesRepository()
-            .inputEmoneyNameList(isar: widget.isar, emoneyNameList: importDataList as List<EmoneyName>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'emoneyName':
+          await EmoneyNamesRepository()
+              .inputEmoneyNameList(isar: widget.isar, emoneyNameList: importDataList as List<EmoneyName>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
 
-      case 'income':
-        await IncomesRepository()
-            .inputIncomeList(isar: widget.isar, incomeList: importDataList as List<Income>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'income':
+          await IncomesRepository()
+              .inputIncomeList(isar: widget.isar, incomeList: importDataList as List<Income>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
 
-      case 'money':
-        await MoneysRepository()
-            .inputMoneyList(isar: widget.isar, moneyList: importDataList as List<Money>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'money':
+          await MoneysRepository()
+              .inputMoneyList(isar: widget.isar, moneyList: importDataList as List<Money>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
 
-      case 'spendItem':
-        await SpendItemsRepository()
-            .inputSpendItemList(isar: widget.isar, spendItemList: importDataList as List<SpendItem>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'spendItem':
+          await SpendItemsRepository()
+              .inputSpendItemList(isar: widget.isar, spendItemList: importDataList as List<SpendItem>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
 
-      case 'spendTimePlace':
-        await SpendTimePlacesRepository()
-            .inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: importDataList as List<SpendTimePlace>)
-            // ignore: always_specify_types
-            .then((value) {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
+        case 'spendTimePlace':
+          await SpendTimePlacesRepository()
+              .inputSpendTimePriceList(isar: widget.isar, spendTimePriceList: importDataList as List<SpendTimePlace>)
+              // ignore: always_specify_types
+              .then((value) {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
+      }
+    } catch (e) {
+      getErrorDialog(title: '登録できませんでした。', content: e.toString());
     }
   }
 }

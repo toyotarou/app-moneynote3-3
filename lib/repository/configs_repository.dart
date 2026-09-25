@@ -20,9 +20,9 @@ class ConfigsRepository {
 
   ///
   Future<void> inputConfigList({required Isar isar, required List<Config> configList}) async {
-    for (final Config element in configList) {
-      inputConfig(isar: isar, config: element);
-    }
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする
+    final IsarCollection<Config> configsCollection = getCollection(isar: isar);
+    await isar.writeTxn(() async => configsCollection.putAll(configList));
   }
 
   ///

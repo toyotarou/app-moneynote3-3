@@ -222,13 +222,14 @@ class _ConfigSettingAlertState extends ConsumerState<ConfigSettingAlert> with Co
     );
 
     if (newInputConfig.isNotEmpty) {
-      newInputConfig.forEach((String key, String value) async {
+      // 以前は forEach(async ...) で登録の完了を待たずにホーム画面を作り直していた。1件ずつ完了を待つ
+      for (final MapEntry<String, String> entry in newInputConfig.entries) {
         final Config config = Config()
-          ..configKey = key
-          ..configValue = value;
+          ..configKey = entry.key
+          ..configValue = entry.value;
 
         await ConfigsRepository().inputConfig(isar: widget.isar, config: config);
-      });
+      }
 
       stopFlag = false;
     }

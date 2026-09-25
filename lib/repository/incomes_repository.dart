@@ -26,9 +26,9 @@ class IncomesRepository {
   ///
   Future<void> inputIncomeList(
       {required Isar isar, required List<Income> incomeList}) async {
-    for (final Income element in incomeList) {
-      inputIncome(isar: isar, income: element);
-    }
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする
+    final IsarCollection<Income> incomesCollection = getCollection(isar: isar);
+    await isar.writeTxn(() async => incomesCollection.putAll(incomeList));
   }
 
   ///

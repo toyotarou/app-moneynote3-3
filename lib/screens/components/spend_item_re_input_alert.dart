@@ -202,15 +202,19 @@ class _SpendItemReInputAlertState extends ConsumerState<SpendItemReInputAlert>
       return;
     }
 
-    await widget.isar.writeTxn(() async {
-      // ignore: avoid_function_literals_in_foreach_calls
-      widget.spendTypeBlankSpendTimePlaceList
-          // ignore: avoid_function_literals_in_foreach_calls
-          .forEach((SpendTimePlace element) async {
-        final SpendTimePlace spendTimePlace = element..spendType = reinputSpendNameMap[element.id]!;
-        await widget.isar.spendTimePlaces.put(spendTimePlace);
-      });
-    });
+    // 以前はトランザクション内の forEach(async ...) が完了を待たれず、トランザクション終了後に put が走って
+    // 失敗していた（再設定が保存されない）。入力された分だけまとめて putAll し、完了を待つ
+    final List<SpendTimePlace> updateList = <SpendTimePlace>[];
+
+    for (final SpendTimePlace element in widget.spendTypeBlankSpendTimePlaceList) {
+      final String? spendType = reinputSpendNameMap[element.id];
+
+      if (spendType != null) {
+        updateList.add(element..spendType = spendType);
+      }
+    }
+
+    await widget.isar.writeTxn(() async => widget.isar.spendTimePlaces.putAll(updateList));
 
     if (mounted) {
       Navigator.pop(context);

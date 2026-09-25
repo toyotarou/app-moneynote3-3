@@ -40,7 +40,8 @@ dependencies:
 
   flutter_localizations:
     sdk: flutter
-  font_awesome_flutter: ^10.7.0
+  # 10.x は新しい Flutter SDK（IconData が final class になった）でビルドできないため 11 系へ
+  font_awesome_flutter: ^11.0.0
   scroll_to_index: ^3.0.1
   external_path: ^2.2.0
   charset_converter: ^2.3.0

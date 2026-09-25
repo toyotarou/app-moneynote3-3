@@ -142,7 +142,8 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert>
 
     //===================================================
 
-    appParamState.selectedRepairRecordNumber.toSet().toList().forEach((int element) async {
+    // 以前は forEach(async ...) で更新の完了を待たずに画面を閉じていた。1件ずつ完了を待つ
+    for (final int element in appParamState.selectedRepairRecordNumber.toSet().toList()) {
       await widget.isar.writeTxn(() async {
         final MoneyModel moneyModel = moneyRepairControllerState.moneyModelList[element];
 
@@ -164,7 +165,7 @@ class _DateMoneyRepairAlertState extends ConsumerState<DateMoneyRepairAlert>
           await MoneysRepository().updateMoney(isar: widget.isar, money: value);
         });
       });
-    });
+    }
 
     //===================================================
 

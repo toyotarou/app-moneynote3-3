@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 
 import '../collections/money.dart';
@@ -22,7 +23,8 @@ class MoneysRepository {
   ///
   Future<Money?> getDateMoney({required Isar isar, required Map<String, dynamic> param}) async {
     final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
-    return moneysCollection.filter().dateEqualTo(param['date'] as String).findFirst();
+    // date にはユニークインデックスがあるので、全件走査の filter ではなくインデックス検索を使う
+    return moneysCollection.where().dateEqualTo(param['date'] as String).findFirst();
   }
 
   ///
@@ -38,9 +40,32 @@ class MoneysRepository {
 
   ///
   Future<void> inputMoneyList({required Isar isar, required List<Money> moneyList}) async {
-    for (final Money element in moneyList) {
-      inputMoney(isar: isar, money: element);
-    }
+    final IsarCollection<Money> moneysCollection = getCollection(isar: isar);
+
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする。
+    // date はユニークインデックスなので、従来どおり「既に登録済みの日付」「取り込みデータ内で重複した2件目以降」は登録しない
+    // （以前はその分だけ put が失敗し、残りは登録されていた。まとめて putAll すると1件の重複で全件失敗するため事前に除外する）
+    await isar.writeTxn(() async {
+      final List<Money?> existing =
+          await moneysCollection.getAllByDate(moneyList.map((Money e) => e.date).toList());
+
+      final Set<String> usedDates = <String>{
+        for (final Money? money in existing)
+          if (money != null) money.date,
+      };
+
+      final List<Money> putList = <Money>[];
+
+      for (final Money element in moneyList) {
+        if (usedDates.add(element.date)) {
+          putList.add(element);
+        } else {
+          debugPrint('inputMoneyList: ${element.date} は登録済みのためスキップしました');
+        }
+      }
+
+      await moneysCollection.putAll(putList);
+    });
   }
 
   ///

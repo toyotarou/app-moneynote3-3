@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -102,5 +104,47 @@ class Utility {
       //縦線
       getDrawingVerticalLine: (double value) => flline,
     );
+  }
+}
+
+/// Isar のコレクション変更（isar.xxx.watchLazy()）を監視し、変更があったらコールバックを呼ぶ。
+/// CSV 取り込みなどで短時間に何度も変更が来た場合は、最後の変更から [debounce] 後に1回だけ呼ぶ。
+///
+/// 以前は各画面の build の中で毎回 DB を読み直し → setState → build … を繰り返して最新化していた
+/// （画面を開いている間ずっと全件読み込みが走り続けていた）ため、その代わりに使う。
+class IsarChangeWatcher {
+  IsarChangeWatcher({
+    required List<Stream<void>> streams,
+    required this.onChanged,
+    this.debounce = const Duration(milliseconds: 150),
+  }) {
+    for (final Stream<void> stream in streams) {
+      _subscriptions.add(stream.listen((_) => _schedule()));
+    }
+  }
+
+  final VoidCallback onChanged;
+
+  final Duration debounce;
+
+  final List<StreamSubscription<void>> _subscriptions = <StreamSubscription<void>>[];
+
+  Timer? _timer;
+
+  ///
+  void _schedule() {
+    _timer?.cancel();
+    _timer = Timer(debounce, onChanged);
+  }
+
+  ///
+  void dispose() {
+    _timer?.cancel();
+
+    for (final StreamSubscription<void> subscription in _subscriptions) {
+      subscription.cancel();
+    }
+
+    _subscriptions.clear();
   }
 }

@@ -20,9 +20,9 @@ class LoginAccountsRepository {
 
   ///
   Future<void> inputLoginAccountList({required Isar isar, required List<LoginAccount> loginAccountList}) async {
-    for (final LoginAccount element in loginAccountList) {
-      inputLoginAccount(isar: isar, loginAccount: element);
-    }
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする
+    final IsarCollection<LoginAccount> loginAccountsCollection = getCollection(isar: isar);
+    await isar.writeTxn(() async => loginAccountsCollection.putAll(loginAccountList));
   }
 
   ///

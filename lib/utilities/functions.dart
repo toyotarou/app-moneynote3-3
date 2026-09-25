@@ -53,21 +53,26 @@ emoney-5: [{2023-12-11: 50000}]}
 
     final int diff = now.difference(dt).inDays;
 
+    // 日付文字列は全口座で共通なので1回だけ作る
+    final List<String> dateList = <String>[for (int i = 0; i <= diff; i++) dt.add(Duration(days: i)).yyyymmdd];
+
     bplMap.forEach(
       (String deposit, List<Map<String, int>> value) {
+        // 以前は「日数 × その口座の全記録」の二重ループだった（記録が増えるほど急激に重くなる）。
+        // 日付→金額のマップを先に作れば日数分のループだけで済む。
+        // 同じ日付の記録が複数ある場合は、以前と同じく後ろ（リストの後の方）の値が優先される
+        final Map<String, int> datePriceMap = <String, int>{};
+        for (final Map<String, int> element in value) {
+          datePriceMap.addAll(element);
+        }
+
         final Map<String, int> map4 = <String, int>{};
 
         int price = 0;
-        for (int i = 0; i <= diff; i++) {
-          final String date = dt.add(Duration(days: i)).yyyymmdd;
+        for (final String date in dateList) {
+          price = datePriceMap[date] ?? price;
 
-          for (final Map<String, int> element in value) {
-            if (element[date] != null) {
-              price = element[date] ?? 0;
-            }
-
-            map4[date] = price;
-          }
+          map4[date] = price;
         }
 
         map3[deposit] = map4;
@@ -198,27 +203,21 @@ Map<String, int> makeMonthlySpendItemSumMap(
     }
   }
 
-  final Map<String, List<int>> map = <String, List<int>>{};
+  // 以前は「項目数 × 明細数」で毎回リスト全体を絞り込んでいた。明細を1回だけ走査して項目ごとに合計する
+  final Map<String, int> sumBySpendType = <String, int>{};
 
-  for (final String element in list) {
-    final List<SpendTimePlace> filtered =
-        spendTimePlaceList.where((SpendTimePlace element2) => element2.spendType == element).toList();
-    if (filtered.isNotEmpty) {
-      for (final SpendTimePlace element3 in filtered) {
-        (map[element3.spendType] ??= <int>[]).add(element3.price);
-      }
-    }
+  for (final SpendTimePlace element in spendTimePlaceList) {
+    sumBySpendType[element.spendType] = (sumBySpendType[element.spendType] ?? 0) + element.price;
   }
 
-  map.forEach(
-    (String key, List<int> value) {
-      int sum = 0;
-      for (final int element in value) {
-        sum += element;
-      }
-      monthlySpendItemSumMap[key] = sum;
-    },
-  );
+  // キーの並び順は以前と同じく spendItemList の順（同名項目が重複していれば、以前と同じく重複分も加算される）
+  for (final String element in list) {
+    final int? sum = sumBySpendType[element];
+
+    if (sum != null) {
+      monthlySpendItemSumMap[element] = (monthlySpendItemSumMap[element] ?? 0) + sum;
+    }
+  }
 
   return monthlySpendItemSumMap;
 }
@@ -236,16 +235,13 @@ Map<String, List<int>> makeYearlySpendItemSumMap(
 
   final Map<String, List<SpendTimePlace>> map = <String, List<SpendTimePlace>>{};
 
+  // 以前は12か月それぞれで全明細を走査していた。1回の走査で月ごとに振り分ける
   for (int i = 1; i <= 12; i++) {
-    final List<SpendTimePlace> list2 = <SpendTimePlace>[];
+    map[i.toString().padLeft(2, '0')] = <SpendTimePlace>[];
+  }
 
-    for (final SpendTimePlace element in spendTimePlaceList) {
-      if (i.toString().padLeft(2, '0') == element.date.split('-')[1]) {
-        list2.add(element);
-      }
-    }
-
-    map[i.toString().padLeft(2, '0')] = list2;
+  for (final SpendTimePlace element in spendTimePlaceList) {
+    map[element.date.split('-')[1]]?.add(element);
   }
 
 //  print(map['02']);
@@ -278,11 +274,7 @@ print(map2);
 
   for (int i = 1; i <= 12; i++) {
     for (final String element in list) {
-      map3[element]?.add(
-        (map2[i.toString().padLeft(2, '0')]?[element] != null)
-            ? '${map2[i.toString().padLeft(2, '0')]?[element]}'.toInt()
-            : 0,
-      );
+      map3[element]?.add(map2[i.toString().padLeft(2, '0')]?[element] ?? 0);
     }
   }
 

@@ -309,11 +309,13 @@ class _SpendItemInputAlertState extends ConsumerState<SpendItemInputAlert> {
     final List<SpendTimePlace> getSpendTimePlaces =
         await spendTimePlacesCollection.filter().spendTypeEqualTo(spendItemNameMap[id]!).findAll();
 
-    await widget.isar
-        // ignore: avoid_function_literals_in_foreach_calls
-        .writeTxn(() async => getSpendTimePlaces
-            // ignore: avoid_function_literals_in_foreach_calls
-            .forEach((SpendTimePlace element) async => widget.isar.spendTimePlaces.put(element..spendType = '')));
+    // 以前はトランザクション内の forEach(async ...) が完了を待たれず、トランザクション終了後に put が走って
+    // 失敗していた（明細の項目名が空に戻らないまま項目だけ削除されていた）。まとめて putAll し、完了を待つ
+    for (final SpendTimePlace element in getSpendTimePlaces) {
+      element.spendType = '';
+    }
+
+    await widget.isar.writeTxn(() async => spendTimePlacesCollection.putAll(getSpendTimePlaces));
     //-----------------------------------
 
     final IsarCollection<SpendItem> spendItemsCollection = widget.isar.spendItems;

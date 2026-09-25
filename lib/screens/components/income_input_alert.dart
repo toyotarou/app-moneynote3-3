@@ -10,6 +10,7 @@ import '../../extensions/extensions.dart';
 import '../../repository/incomes_repository.dart';
 
 import '../../utilities/functions.dart';
+import '../../utilities/utilities.dart';
 import 'parts/error_dialog.dart';
 
 class IncomeInputAlert extends ConsumerStatefulWidget {
@@ -32,6 +33,8 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
 
   List<FocusNode> focusNodeList = <FocusNode>[];
 
+  late final IsarChangeWatcher _isarChangeWatcher;
+
   ///
   @override
   void initState() {
@@ -39,6 +42,15 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
 
     // ignore: always_specify_types
     focusNodeList = List.generate(100, (int index) => FocusNode());
+
+    // 以前は build のたびに DB を読み直し → setState → build … を繰り返していた（表示中ずっと読み込みが走っていた）。
+    // 最初に1回読み込み、以降は DB に変更があったときだけ読み直す
+    _init();
+
+    _isarChangeWatcher = IsarChangeWatcher(
+      streams: <Stream<void>>[widget.isar.incomes.watchLazy()],
+      onChanged: _init,
+    );
   }
 
   ///
@@ -49,8 +61,14 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
   ///
   @override
   void dispose() {
+    _isarChangeWatcher.dispose();
+
     _incomePriceEditingController.dispose();
     _incomeSourceEditingController.dispose();
+
+    for (final FocusNode focusNode in focusNodeList) {
+      focusNode.dispose();
+    }
 
     super.dispose();
   }
@@ -58,9 +76,6 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
   ///
   @override
   Widget build(BuildContext context) {
-    // ignore: always_specify_types
-    Future(_init);
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -203,11 +218,16 @@ class _IncomeListAlertState extends ConsumerState<IncomeInputAlert> with Control
 
   ///
   Future<void> _makeIncomeList() async {
-    _yearList = <String>[];
-
     await IncomesRepository().getIncomeList(isar: widget.isar).then((List<Income>? value) {
+      if (!mounted) {
+        return;
+      }
+
       setState(() {
         _incomeList = value;
+
+        // 読み込みが重なっても年が二重に追加されないよう、setState の中で作り直す
+        _yearList = <String>[];
 
         if (value != null) {
           final Map<String, String> map = <String, String>{};

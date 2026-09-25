@@ -31,9 +31,10 @@ class BankPricesRepository {
   ///
   Future<void> inputBankPriceList(
       {required Isar isar, required List<BankPrice> bankPriceList}) async {
-    for (final BankPrice element in bankPriceList) {
-      inputBankPrice(isar: isar, bankPrice: element);
-    }
+    // 1件ずつ（await せずに）トランザクションを開いていたのを、1トランザクションの一括登録にする
+    final IsarCollection<BankPrice> bankPricesCollection =
+        getCollection(isar: isar);
+    await isar.writeTxn(() async => bankPricesCollection.putAll(bankPriceList));
   }
 
   ///
@@ -47,9 +48,11 @@ class BankPricesRepository {
   ///
   Future<void> deleteBankPriceList(
       {required Isar isar, required List<BankPrice> bankPriceList}) async {
-    for (final BankPrice element in bankPriceList) {
-      deleteBankPrice(isar: isar, id: element.id);
-    }
+    // 削除完了を待たずに戻っていたため、直後の登録と順序が入れ替わる恐れがあった。1トランザクションで一括削除する
+    final IsarCollection<BankPrice> bankPricesCollection =
+        getCollection(isar: isar);
+    await isar.writeTxn(() async =>
+        bankPricesCollection.deleteAll(bankPriceList.map((BankPrice e) => e.id).toList()));
   }
 
   ///

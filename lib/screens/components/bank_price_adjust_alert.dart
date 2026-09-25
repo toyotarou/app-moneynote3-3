@@ -434,35 +434,36 @@ class _BankPriceAdjustAlertState extends ConsumerState<BankPriceAdjustAlert>
     //---------------------------//
     final IsarCollection<BankPrice> bankPricesCollection = BankPricesRepository().getCollection(isar: widget.isar);
 
-    // ignore: avoid_function_literals_in_foreach_calls
-    insertBankPriceList.forEach((String element) async {
-      final List<String> exElement = element.split('|');
+    // 同じ日付の旧データの削除と新データの登録を、1つのトランザクションで行う。
+    // 以前は forEach(async ...) で削除の完了を待たずに登録へ進んでいたため、順序が入れ替わると
+    // 登録したばかりのデータを削除してしまう恐れがあった。また別々のトランザクションだと、
+    // 途中で失敗したときに旧データだけが消えて新データが入らない状態になり得た
+    await widget.isar.writeTxn(() async {
+      for (final String element in insertBankPriceList) {
+        final List<String> exElement = element.split('|');
 
-      final List<BankPrice> getBankPrices = await bankPricesCollection
-          .filter()
-          .depositTypeEqualTo(exElement[0])
-          .bankIdEqualTo(exElement[1].toInt())
-          .dateEqualTo(exElement[2])
-          .findAll();
+        final List<BankPrice> getBankPrices = await bankPricesCollection
+            .filter()
+            .depositTypeEqualTo(exElement[0])
+            .bankIdEqualTo(exElement[1].toInt())
+            .dateEqualTo(exElement[2])
+            .findAll();
 
-      if (getBankPrices.isNotEmpty) {
-        await BankPricesRepository().deleteBankPriceList(isar: widget.isar, bankPriceList: getBankPrices);
+        if (getBankPrices.isNotEmpty) {
+          await bankPricesCollection.deleteAll(getBankPrices.map((BankPrice e) => e.id).toList());
+        }
       }
+
+      await bankPricesCollection.putAll(list);
     });
 
     //---------------------------//
 
-    await BankPricesRepository()
-        .inputBankPriceList(isar: widget.isar, bankPriceList: list)
-        // ignore: always_specify_types
-        .then((value) async => bankPriceAdjustNotifier
-                .clearInputValue()
-                // ignore: always_specify_types
-                .then((value) {
-              if (mounted) {
-                Navigator.pop(context);
-              }
-            }));
+    await bankPriceAdjustNotifier.clearInputValue();
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 }
 
