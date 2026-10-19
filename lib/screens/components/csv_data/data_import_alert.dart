@@ -60,17 +60,16 @@ class _DataImportAlertState extends State<DataImportAlert> {
 
   ///
   Future<void> _pickAndLoadCsvFile() async {
-    final FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: <String>['csv']);
+    final PlatformFile? result = await FilePicker.pickFile(type: FileType.custom, allowedExtensions: <String>['csv']);
 
     if (result != null) {
       ///
-      fileName = result.files.single.name;
+      fileName = result.name;
 
       csvName = fileName.split('_')[0];
 
       ///
-      final File file = File(result.files.single.path!);
+      final File file = File(result.path!);
       final String csvString = await file.readAsString();
       final List<String> exCsvString = csvString.split('\n');
 

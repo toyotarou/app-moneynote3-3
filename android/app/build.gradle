@@ -2,7 +2,8 @@
 
 plugins {
     id "com.android.application"
-    id "org.jetbrains.kotlin.android"
+    // 組み込みKotlin（AGP 9）へ移行したため不要
+    // id "org.jetbrains.kotlin.android"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -18,8 +19,8 @@ def flutterVersionName = localProps["flutter.versionName"] ?: "1.0"
 android {
     namespace "com.example.money_note"
 
-    compileSdk 35
-    ndkVersion "27.0.12077973"
+    compileSdk 36
+    ndkVersion "28.2.13676358"
 
     defaultConfig {
         applicationId "com.example.money_note"

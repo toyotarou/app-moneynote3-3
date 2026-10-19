@@ -58,6 +58,11 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
   int graphMin = 0;
   int graphMax = 0;
 
+  double? _startY;
+  double? _endY;
+  String _startDate = '';
+  String _endDate = '';
+
   ///
   @override
   Widget build(BuildContext context) {
@@ -157,6 +162,39 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
               const SizedBox(height: 60),
             ],
           ),
+
+          ///
+          if (_startY != null && _endY != null && graphMax > graphMin)
+            IgnorePointer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(width: context.screenSize.width),
+                  const SizedBox(height: 30),
+                  const Divider(color: Colors.transparent, thickness: 5),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment(
+                        0.92,
+                        ((((graphMax - ((_startY! + _endY!) / 2.0)) / (graphMax - graphMin)) * 2) - 1).clamp(-1.0, 1.0),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: const <BoxShadow>[BoxShadow(blurRadius: 4, spreadRadius: 1)],
+                        ),
+                        child: Text(
+                          _formatDelta(_endY! - _startY!),
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 60),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -166,6 +204,11 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
   void _setChartData() {
     _flspots = <FlSpot>[];
     _dateToX = <String, int>{};
+
+    _startY = null;
+    _endY = null;
+    _startDate = '';
+    _endDate = '';
 
     String lastDate = '';
     int lastTotal = 0;
@@ -196,6 +239,14 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
 
             if (element2.value > 0) {
               lastTotal = element2.value;
+
+              if (_startY == null) {
+                _startY = element2.value.toDouble();
+                _startDate = element2.key;
+              }
+
+              _endY = element2.value.toDouble();
+              _endDate = element2.key;
             }
 
             i++;
@@ -306,6 +357,37 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
             barWidth: 1,
           ),
         ],
+
+        ///
+        extraLinesData: ExtraLinesData(
+          horizontalLines: <HorizontalLine>[
+            if (_startY != null)
+              HorizontalLine(
+                y: _startY!,
+                color: Colors.redAccent,
+                dashArray: const <int>[6, 6],
+                label: HorizontalLineLabel(
+                  show: true,
+                  style: const TextStyle(color: Colors.white, fontSize: 11),
+                  labelResolver: (_) => ' $_startDate ',
+                  padding: const EdgeInsets.only(left: 6, bottom: 2),
+                ),
+              ),
+            if (_endY != null)
+              HorizontalLine(
+                y: _endY!,
+                color: Colors.redAccent,
+                dashArray: const <int>[6, 6],
+                label: HorizontalLineLabel(
+                  show: true,
+                  alignment: Alignment.bottomLeft,
+                  style: const TextStyle(color: Colors.white, fontSize: 11),
+                  labelResolver: (_) => ' $_endDate  ${_formatDelta(_endY! - _startY!)} ',
+                  padding: const EdgeInsets.only(left: 6, top: 2),
+                ),
+              ),
+          ],
+        ),
       );
 
       graphData3 = LineChartData(
@@ -395,6 +477,12 @@ class _AllTotalMoneyGraphPageState extends ConsumerState<AllTotalMoneyGraphPage>
         lineBarsData: <LineChartBarData>[],
       );
     }
+  }
+
+  ///
+  String _formatDelta(double d) {
+    final String s = d.round().toString().toCurrency();
+    return d >= 0 ? '+$s' : s;
   }
 
   ///
